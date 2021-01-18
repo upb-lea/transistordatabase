@@ -29,6 +29,8 @@ Added constructors for all classes. Can handle "proper" creation and missing val
 parameters were supplied.
 1.0.3 / 08.01.2021 / Manuel Klaedtke: Added validity checks for Channel- and SwitchEnergyData arguments.
 SwitchEnergyData now has very strict definitions for which dataset_type can be used.
+1.0.4 / 18.01.2021 / Manuel Klaedtke: Restructured Metadata class. Renamed attributes and deleted v_max and i_max from
+ChannelData class.
 """
 import persistent
 import datetime
@@ -121,8 +123,7 @@ class Transistor(persistent.Persistent):
         creation_date: ["datetime.date", None]  # Mandatory/Automatic
         last_modified: ["datetime.date", None]  # Mandatory/Automatic
         # Manufacturer- and part-specific data
-        manufacturer: [str, None]  # Mandatory for Transistor. Optional for Diode and Switch
-        technology: [str, None]  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
+        manufacturer: [str, None]  # Mandatory
         datasheet_hyperlink: [str, None]  # Make sure this link is valid.  # Optional
         datasheet_date: ["datetime.date", None]  # Should not be changed manually.  # Optional
         datasheet_version: [str, None]  # Optional
@@ -210,8 +211,11 @@ class Transistor(persistent.Persistent):
     class Switch:
         """Contains data associated with the switchting-characteristics of a MOSFET or IGBT. Can contain multiple
         channel-, e_on- and e_off-datasets. """
+        # Metadata
+        comment: [str, None]  # Optional
+        manufacturer: [str, None]  # Optional
+        technology: [str, None]  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
         # These are documented in their respective class definitions.
-        meta: "Metadata"
         thermal: "FosterThermalModel"  # Transient thermal model.  # Optional
         channel: List["ChannelData"]  # Switch channel voltage and current data.
         e_on: List["SwitchEnergyData"]  # Switch on energy data.
@@ -227,7 +231,9 @@ class Transistor(persistent.Persistent):
                 self.c_oss = switch_args.get('c_oss')
                 self.c_iss = switch_args.get('c_iss')
                 self.c_rss = switch_args.get('c_rss')
-                self.meta = Transistor.Metadata(switch_args.get('meta'))
+                self.comment = switch_args.get('comment')
+                self.manufacturer = switch_args.get('manufacturer')
+                self.technology = switch_args.get('technology')
                 # This currently accepts dictionaries and lists of dictionaries. Validity is only checked by keys and
                 # not their values.
                 self.channel = []  # Default case: Empty list
@@ -264,7 +270,9 @@ class Transistor(persistent.Persistent):
                 self.c_oss = None
                 self.c_iss = None
                 self.c_rss = None
-                self.meta = Transistor.Metadata(None)
+                self.comment = None
+                self.manufacturer = None
+                self.technology = None
                 self.channel = []
                 self.e_on = []
                 self.e_off = []
@@ -275,8 +283,11 @@ class Transistor(persistent.Persistent):
     class Diode:
         """Contains data associated with the (reverse) diode-characteristics of a MOSFET or IGBT. Can contain multiple
         channel- and e_rr- datasets."""
-        # # These are documented in their respective class definitions.
-        meta: ["Metadata", None]
+        # Metadata
+        comment: [str, None]  # Optional
+        manufacturer: [str, None]  # Optional
+        technology: [str, None]  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
+        # These are documented in their respective class definitions.
         thermal: ["FosterThermalModel", None]  # Transient thermal model.
         channel: List["ChannelData"]  # Diode forward voltage and forward current data.
         e_rr: List["SwitchEnergyData"]  # Reverse recovery energy data.
@@ -284,7 +295,9 @@ class Transistor(persistent.Persistent):
         def __init__(self, diode_args, foster_args):
             self.thermal = Transistor.FosterThermalModel(foster_args)
             if isinstance(diode_args, dict):
-                self.meta = Transistor.Metadata(diode_args.get('meta'))
+                self.comment = diode_args.get('comment')
+                self.manufacturer = diode_args.get('manufacturer')
+                self.technology = diode_args.get('technology')
                 # This currently accepts dictionaries and lists of dictionaries. Validity is only checked by keys and
                 # not their values.
                 self.channel = []  # Default case: Empty list
@@ -310,7 +323,9 @@ class Transistor(persistent.Persistent):
                     self.e_rr.append(Transistor.SwitchEnergyData(diode_args.get('e_rr')))
 
             elif diode_args is None:
-                self.meta = Transistor.Metadata(None)
+                self.comment = None
+                self.manufacturer = None
+                self.technology = None
                 self.channel = []
                 self.e_rr = []
             else:
@@ -327,17 +342,12 @@ class Transistor(persistent.Persistent):
         t_j: float  # Mandatory
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
         v_i_data: "np.ndarray[np.float64]"  # Units: Row 1: V; Row 2: A  # Mandatory
-        # Maximums of the dataset. This is not the absolute maximum rating.
-        #ToDo: Delete these attributes.
-        v_max: np.float64  # Dimension: V
-        i_max: np.float64  # Dimension: A
 
         def __init__(self, args):
             if isinstance(args, dict):
                 self.t_j = args.get('t_j')
                 self.v_i_data = args.get('v_i_data')
-                self.v_max = np.amax(self.v_i_data[0, :])
-                self.i_max = np.amax(self.v_i_data[1, :])
+
             else:
                 raise TypeError('The arguments for ChannelData-object creation need to be given as a dictionary.')
 

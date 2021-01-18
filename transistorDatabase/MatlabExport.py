@@ -23,6 +23,8 @@ Changelog:
 VERSION / DATE / NAME: Comment
 1.0.0 / 04.01.2021 / Henning Steinhagen: Initial Version
 1.0.1 / 08.01.2021 / Henning Steinhagen: Reformatted Code + exportTransistor implementation
+1.0.2 / 18.01.2021 / Manuel Klaedtke: Updated names and implemented changes accordingly to the restructuring of
+Metadata class and some other attributes
 """
 
 import scipy.io as sio
@@ -47,7 +49,7 @@ def exportTransistor(transistorName):
 
     Transistor = root.transistorName
 
-    Metadata_dict = {'Author': Transistor.Metadata.author, 'Meta_type': Transistor.Metadata.technology,
+    Metadata_dict = {'Author': Transistor.Metadata.author,
                      'Template_version': Transistor.Metadata.template_version,
                      'Template_date': Transistor.Metadata.template_date,
                      'Creation_date': Transistor.Metadata.creation_date,
@@ -68,22 +70,24 @@ def exportTransistor(transistorName):
                                'Transient_data': Transistor.FosterThermalModel.transient_data}
 
     # ??? Transistor.Switch.meta
-    Switch_dict = {'c_oss': Transistor.Switch.c_oss, 'c_iss': Transistor.Switch.c_iss,
+    Switch_dict = {'Comment': Transistor.Metadata.comment, 'Manufacturer': Transistor.Metadata.manufacturer,
+                   'Technology': Transistor.Metadata.technology,
+                   'c_oss': Transistor.Switch.c_oss, 'c_iss': Transistor.Switch.c_iss,
                    'c_rss': Transistor.Switch.c_rss, 'meta': Transistor.Switch.meta,
                    'channel': Transistor.Switch.channel, 'e_on': Transistor.Switch.e_on,
                    'e_off': Transistor.Switch.e_off}
 
     # ??? Transistor.Diode.meta/thermal
-    Diode_dict = {'meta': Transistor.Diode.meta, 'thermal': Transistor.Diode.thermal,
+    Diode_dict = {'Comment': Transistor.Metadata.comment, 'Manufacturer': Transistor.Metadata.manufacturer,
+                  'Technology': Transistor.Metadata.technology, 'thermal': Transistor.Diode.thermal,
                   'channel': Transistor.Diode.channel, 'e_rr': Transistor.Diode.e_rr}
 
-    ChannelData_dict = {'t_j': Transistor.ChannelData.t_j, 'v_i_data': Transistor.ChannelData.v_i_data,
-                        'v_max': Transistor.ChannelData.v_max, 'i_max': Transistor.ChannelData.i_max}
+    ChannelData_dict = {'t_j': Transistor.ChannelData.t_j, 'v_i_data': Transistor.ChannelData.v_i_data}
 
     SwitchEnergyData_dict = {'dataset_type': Transistor.SwitchEnergyData.dataset_type,
                              't_j': Transistor.SwitchEnergyData.t_j,
                              'v_supply': Transistor.SwitchEnergyData.v_supply,
-                             'v_switch': Transistor.SwitchEnergyData.v_g,
+                             'v_g': Transistor.SwitchEnergyData.v_g,
                              'e_x': Transistor.SwitchEnergyData.e_x, 'r_g': Transistor.SwitchEnergyData.r_g,
                              'i_x': Transistor.SwitchEnergyData.i_x, 'i_e_data': Transistor.SwitchEnergyData.i_e_data,
                              'r_e_data': Transistor.SwitchEnergyData.r_e_data}
