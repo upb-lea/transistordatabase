@@ -120,7 +120,7 @@ class Transistor(persistent.Persistent):
             if dataset_dict.keys() < check_keys:
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'v_max', 'i_max'")
-            elif dataset_dict.get('name') not in ['MOSFET', 'IGBT']:
+            elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT']:
                 raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT'")
             else:
                 return True
