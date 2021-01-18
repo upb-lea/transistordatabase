@@ -31,6 +31,8 @@ parameters were supplied.
 SwitchEnergyData now has very strict definitions for which dataset_type can be used.
 1.0.4 / 18.01.2021 / Manuel Klaedtke: Restructured Metadata class. Renamed attributes and deleted v_max and i_max from
 ChannelData class.
+1.0.5 / 18.01.2021 / Manuel Klaedtke: Added additional validity checks and errors if mandatory arguments are missing or
+not correctly specified. Added new attributes 'i_cont' and 'housing_type'
 """
 import persistent
 import datetime
@@ -43,26 +45,24 @@ class Transistor(persistent.Persistent):
     user-interaction with this class is necessary (ToDo!)
     Documentation on how to add or extract a transistor-object to/from the database can be found in (ToDo!)
     """
-    name: [str, None]  # Name of the transistor. Choose as specific as possible. # Mandatory
-    transistor_type: [str, None]  # Mandatory  # ToDo: Must be either IGBT or MOSFET.
+    name: str  # Name of the transistor. Choose as specific as possible. # Mandatory
+    transistor_type: str  # Mandatory
     # These are documented in their respective class definitions
-    switch: ["Switch", None]
-    diode: ["Diode", None]
-    meta: ["Metadata", None]
-    # # Thermal data. See git for equivalent thermal circuit diagram.
-    r_th_cs: [float, None]  # Unit: K/W  # Optional
-    r_th_switch_cs: [float, None]  # Unit: K/W  # Optional
-    r_th_diode_cs: [float, None]  # Unit: K/W  # Optional
-    # # Absolute maximum ratings
-    v_max: [float, None]  # Unit: V  # Mandatory
-    i_max: [float, None]  # Unit: A  # Mandatory
-    # ToDo: Add rated operation region I_cont (e.g. Fuji: I_c, Semikron: I_c,nom)
+    switch: "Switch"
+    diode: "Diode"
+    meta: "Metadata"
+    # Thermal data. See git for equivalent thermal circuit diagram.
+    r_th_cs: [float, int, None]  # Unit: K/W  # Optional
+    r_th_switch_cs: [float, int, None]  # Unit: K/W  # Optional
+    r_th_diode_cs: [float, int, None]  # Unit: K/W  # Optional
+    # Absolute maximum ratings
+    v_max: [float, int]  # Unit: V  # Mandatory
+    i_max: [float, int]  # Unit: A  # Mandatory
+    # Rated operation region
+    i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom # ToDo: Is this mandatory?
 
     def __init__(self, transistor_args, metadata_args, foster_args, switch_args, diode_args):
-        self.meta = self.Metadata(metadata_args)
-        self.diode = self.Diode(diode_args, foster_args)
-        self.switch = self.Switch(switch_args, foster_args)
-        if isinstance(transistor_args, dict):
+        if self.isvalid_dict(transistor_args, 'Transistor'):
             self.name = transistor_args.get('name')
             self.transistor_type = transistor_args.get('transistor_type')
             self.r_th_cs = transistor_args.get('r_th_cs')
@@ -70,20 +70,21 @@ class Transistor(persistent.Persistent):
             self.r_th_diode_cs = transistor_args.get('r_th_diode_cs')
             self.v_max = transistor_args.get('v_max')
             self.i_max = transistor_args.get('i_max')
-        elif transistor_args is None:
-            self.name = None
-            self.type = None
-            self.r_th_cs = None
-            self.r_th_switch_cs = None
-            self.r_th_diode_cs = None
-            self.v_max = None
-            self.i_max = None
         else:
-            raise TypeError('The arguments for object creation need to be given as a dictionary or not at all '
-                            '(None)')
+            raise TypeError("'transistor_args' must be a dictionary containing at least the following"
+                            "keys: 'name', 'transistor_type', 'v_max', 'i_max'")
+        if self.isvalid_dict(metadata_args, 'Metadata'):
+            self.meta = self.Metadata(metadata_args)
+        else:
+            raise TypeError("'metadata_args' must be a dictionary containing at least the following"
+                            "keys: 'author', 'manufacturer', 'housing_area', 'cooling_area', 'housing_type'")
+        self.diode = self.Diode(diode_args, foster_args)
+        self.switch = self.Switch(switch_args, foster_args)
 
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
+        """This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
+        are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' for 'transistor_type')."""
         # ToDo: Add check for mandatory attributes.
         # ToDo: Add structure for Errors. e.g.: xx has wrong type, xx has wrong type, etc.
         if not isinstance(dataset_dict, dict):
@@ -94,75 +95,82 @@ class Transistor(persistent.Persistent):
             # Check if all necessary keys are contained in the dict.
             if dataset_dict.keys() >= check_keys:
                 return True
+            else:
+                return False  # ToDo: Should this raise an error or just not create the object? Or raise warning?
+                # ToDo: My idea: Just a warning but count how many dictionaries were invalid.
         elif dict_type == 'SwitchEnergyData':
             if dataset_dict.contains('dataset_type'):
                 # Determine necessary keys.
                 if dataset_dict.get('dataset_type') == 'single':
-                    check_keys = {'t_j', 'e_x', 'r_g', 'i_x'}
+                    check_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
                 elif dataset_dict.get('dataset_type') == 'graph_r_e':
-                    check_keys = {'t_j', 'r_e_data', 'i_x'}
+                    check_keys = {'t_j', 'v_supply', 'v_g', 'r_e_data', 'i_x'}
                 elif dataset_dict.get('dataset_type') == 'graph_i_e':
-                    check_keys = {'t_j', 'i_e_data', 'r_g'}
+                    check_keys = {'t_j', 'v_supply', 'v_g', 'i_e_data', 'r_g'}
                 else:
                     raise ValueError("Wrong dataset_type for creation of SwitchEnergyData object. Must be 'single', "
                                      "'r_e' or 'i_e'. Check SwitchEnergyData class for further information.")
                 # Check if all necessary keys are contained in the dict.
                 if dataset_dict.keys() >= check_keys:
                     return True
+                else:
+                    return False  # ToDo: Should this raise an error or just not create the object? Or raise warning?
+        elif dict_type == 'Transistor':
+            check_keys = {'name', 'transistor_type', 'v_max', 'i_max'}
+            if dataset_dict.keys() < check_keys:
+                raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
+                               "creation. Mandatory keys: 'name', 'transistor_type', 'v_max', 'i_max'")
+            elif dataset_dict.get('name') not in ['MOSFET', 'IGBT']:
+                raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT'")
+            else:
+                return True
+        elif dict_type == 'Metadata':
+            check_keys = {'author', 'manufacturer', 'housing_area', 'cooling_area', 'housing_type'}
+            if dataset_dict.keys() < check_keys:
+                raise KeyError("Dictionary 'metadata_args' does not contain all keys necessary for Metadata object "
+                               "creation. Mandatory keys: 'author', 'manufacturer', 'housing_area', 'cooling_area', "
+                               "'housing_type'")
+            else:
+                return True  # ToDo: Add check for 'housing_type' to be from list of specific strings.
 
     class Metadata:
         """Contains metadata of the transistor/switch/diode. Only used to not bloat the other classes. The attributes
         ending on _date are set automatically each time a relevant change to other attributes is made (ToDo!)"""
         # User-specific data
-        author: [str, None]  # Mandatory
+        author: str  # Mandatory
         comment: [str, None]  # Optional
         # Date and template data. Should not be changed manually.
         # ToDo: Add methods to automatically determine dates and template_version on construction or update.
-        template_version: [str, None]  # Mandatory/Automatic
-        template_date: ["datetime.date", None]  # Mandatory/Automatic
-        creation_date: ["datetime.date", None]  # Mandatory/Automatic
-        last_modified: ["datetime.date", None]  # Mandatory/Automatic
+        template_version: str  # Mandatory/Automatic
+        template_date: "datetime.date"  # Mandatory/Automatic
+        creation_date: "datetime.date"  # Mandatory/Automatic
+        last_modified: "datetime.date"  # Mandatory/Automatic
         # Manufacturer- and part-specific data
-        manufacturer: [str, None]  # Mandatory
+        manufacturer: str  # Mandatory
         datasheet_hyperlink: [str, None]  # Make sure this link is valid.  # Optional
         datasheet_date: ["datetime.date", None]  # Should not be changed manually.  # Optional
         datasheet_version: [str, None]  # Optional
-        housing_area: [float, None]  # Unit: mm^2  # Mandatory
-        cooling_area: [float, None]  # Unit: mm^2  # Mandatory
-        # ToDo: Add housing_type. e.g. TO-220, etc. # Mandatory # Must be from a list of specific string.
+        housing_area: float  # Unit: mm^2  # Mandatory
+        cooling_area: float  # Unit: mm^2  # Mandatory
+        housing_type: str  # e.g. TO-220, etc. # Mandatory. Must be from a list of specific strings.
+        # ToDo: Specify list of strings.
 
         def __init__(self, metadata_args):
-            if isinstance(metadata_args, dict):
-                self.author = metadata_args.get('author')
-                self.technology = metadata_args.get('meta_type')
-                self.template_version = metadata_args.get('template_version')
-                self.template_date = metadata_args.get('template_date')
-                self.creation_date = metadata_args.get('creation_date')
-                self.last_modified = metadata_args.get('ast_modified')
-                self.comment = metadata_args.get('comment')
-                self.manufacturer = metadata_args.get('manufacturer')
-                self.datasheet_hyperlink = metadata_args.get('datasheet_hyperlink')
-                self.datasheet_date = metadata_args.get('datasheet_date')
-                self.datasheet_version = metadata_args.get('datasheet_version')
-                self.housing_area = metadata_args.get('housing_area')
-                self.cooling_area = metadata_args.get('cooling_area')
-            elif metadata_args is None:
-                self.author = None
-                self.technology = None
-                self.template_version = None
-                self.template_date = None
-                self.creation_date = None
-                self.last_modified = None
-                self.comment = None
-                self.manufacturer = None
-                self.datasheet_hyperlink = None
-                self.datasheet_date = None
-                self.datasheet_version = None
-                self.housing_area = None
-                self.cooling_area = None
-            else:
-                raise TypeError('The arguments for object creation need to be given as a dictionary or not at all '
-                                '(None)')
+            # Validity of metadata_args is checked in the constructor of Transistor class and thus does not need to be
+            # checked again here.
+            self.author = metadata_args.get('author')
+            self.technology = metadata_args.get('meta_type')
+            self.template_version = metadata_args.get('template_version')
+            self.template_date = metadata_args.get('template_date')
+            self.creation_date = metadata_args.get('creation_date')
+            self.last_modified = metadata_args.get('ast_modified')
+            self.comment = metadata_args.get('comment')
+            self.manufacturer = metadata_args.get('manufacturer')
+            self.datasheet_hyperlink = metadata_args.get('datasheet_hyperlink')
+            self.datasheet_date = metadata_args.get('datasheet_date')
+            self.datasheet_version = metadata_args.get('datasheet_version')
+            self.housing_area = metadata_args.get('housing_area')
+            self.cooling_area = metadata_args.get('cooling_area')
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal model. This model describes the transient
@@ -170,7 +178,7 @@ class Transistor(persistent.Persistent):
         transient temperature data supplied in transient_data or by manually specifying the individual 2 out of 3 of the
          parameters R, C, and tau."""
         # ToDo: Add function to estimate parameters from transient data.
-        # ToDo: Add function to automatically missing parameters from given ones.
+        # ToDo: Add function to automatically calculate missing parameters from given ones.
         # Thermal resistances of RC-network (array).
         r_th_vector: ["np.ndarray[np.float64]", None]  # Unit: K/W  # Optional
         # Sum of thermal resistances of n-pole RC-network (scalar).
@@ -373,12 +381,12 @@ class Transistor(persistent.Persistent):
         v_supply: float  # Unit: V  # Mandatory
         v_g: float  # Unit: V  # Mandatory
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
-        e_x: float  # Unit: mJ
-        r_g: float  # Unit: Ohm
-        i_x: float  # Unit: A
+        e_x: [float, None]  # Unit: mJ
+        r_g: [float, None]  # Unit: Ohm
+        i_x: [float, None]  # Unit: A
         # Dataset. Only one of these is allowed. The other should be 'None'.
-        i_e_data: "np.ndarray[np.float64]"  # Units: Row 1: A; Row 2: mJ
-        r_e_data: "np.ndarray[np.float64]"  # Units: Row 1: Ohm; Row 2: mJ
+        i_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: mJ
+        r_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: Ohm; Row 2: mJ
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
         # ToDo: Add additional class for linearized switching loss model with capacitances. (See infineon application
         #  note.)
@@ -387,17 +395,16 @@ class Transistor(persistent.Persistent):
         # ToDO: Option 3: K_i, K_v, G_i. Add as empty class with pass.
 
         def __init__(self, args):
-            if isinstance(args, dict):
-                # ToDo: Always check dataset_type and determine which arguments should be ignored.
-                self.dataset_type = args.get('dataset_type')
-                self.v_supply = args.get('v_supply')
-                self.v_g = args.get('v_switch')
-                self.t_j = args.get('t_j')
-                self.e_x = args.get('e_x')
-                self.r_g = args.get('r_g')
-                self.i_x = args.get('i_x')
-                self.i_e_data = args.get('i_e_data')
-                self.r_e_data = args.get('r_e_data')
+            # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
+            # checked again here.
+            # ToDo: Always check dataset_type and determine which arguments should be ignored.
+            self.dataset_type = args.get('dataset_type')
+            self.v_supply = args.get('v_supply')
+            self.v_g = args.get('v_switch')
+            self.t_j = args.get('t_j')
+            self.e_x = args.get('e_x')
+            self.r_g = args.get('r_g')
+            self.i_x = args.get('i_x')
+            self.i_e_data = args.get('i_e_data')
+            self.r_e_data = args.get('r_e_data')
 
-            else:
-                raise TypeError('The arguments for SwitchEnergyData-object creation need to be given as a dictionary.')
