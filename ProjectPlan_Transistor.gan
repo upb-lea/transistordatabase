@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Transistordatenbank" company="" webLink="http://" view-date="2020-12-14" view-index="0" gantt-divider-location="770" resource-divider-location="300" version="2.8.5" locale="de">
+    <description/>
+    <view zooming-state="default:7" id="gantt-chart">
+        <field id="tpd3" name="Vorgang" width="321" order="0"/>
+        <field id="tpd4" name="Anfang" width="65" order="1"/>
+        <field id="tpd5" name="Ende" width="62" order="2"/>
+        <field id="tpc0" name="Kommentar" width="318" order="3"/>
+        <option id="color.recent"><![CDATA[#ff66ff #999999 #ffcccc #ffff00 #33ffff #3333ff #66ff66 #ff6600]]></option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Ressource" width="210" order="0"/>
+        <field id="1" name="Rolle" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+            <taskproperty id="tpc0" name="Kommentar" type="custom" valuetype="text"/>
+        </taskproperties>
+        <task id="8" name="Rudimentary Functionality" meeting="false" start="2020-12-14" duration="30" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc0" value="Documentation parallely"/>
+            <task id="9" name="Class definition" color="#ff6600" meeting="false" start="2020-12-14" duration="5" complete="0" expand="true">
+                <depend id="10" type="2" difference="0" hardness="Strong"/>
+                <customproperty taskproperty-id="tpc0" value="Including documentation"/>
+            </task>
+            <task id="10" name="Constructors and Adders finished" color="#ff6600" meeting="false" start="2020-12-21" duration="10" complete="0" expand="true">
+                <depend id="25" type="2" difference="0" hardness="Strong"/>
+                <customproperty taskproperty-id="tpc0" value="Method for creating object and expanding parameters (schmeme migration) is developed"/>
+            </task>
+            <task id="25" name="Rudimentary methods" color="#ff6600" meeting="false" start="2021-01-04" duration="5" complete="0" expand="true">
+                <depend id="27" type="2" difference="0" hardness="Strong"/>
+                <customproperty taskproperty-id="tpc0" value="Linearization, Matlab export, etc. (Matlab import?)"/>
+            </task>
+            <task id="27" name="Investigation on PLECs/Simulink models" color="#ff6600" meeting="false" start="2021-01-11" duration="3" complete="0" expand="true">
+                <depend id="29" type="2" difference="0" hardness="Strong"/>
+                <customproperty taskproperty-id="tpc0" value="What data is needed for exporters (PLECs, Simulink)"/>
+            </task>
+            <task id="29" name="Grabit replacement" color="#ff6600" meeting="false" start="2021-01-14" duration="2" complete="0" expand="true">
+                <depend id="30" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="30" name="Virtual datasheet" color="#ff6600" meeting="false" start="2021-01-18" duration="5" complete="0" expand="true">
+                <depend id="21" type="2" difference="0" hardness="Strong"/>
+                <customproperty taskproperty-id="tpc0" value="Standardized Sheet (in PDF?)"/>
+            </task>
+        </task>
+        <task id="21" name="Simulink model" meeting="false" start="2021-01-25" duration="15" complete="0" expand="true">
+            <depend id="127" type="2" difference="0" hardness="Strong"/>
+            <task id="62" name="Concept" color="#66ff66" meeting="false" start="2021-01-25" duration="5" complete="0" expand="true">
+                <depend id="28" type="2" difference="0" hardness="Strong"/>
+                <customproperty taskproperty-id="tpc0" value="Which functionality is supported, two models (IGBT, MOSFET?)"/>
+            </task>
+            <task id="28" name="Simulink block(s)" color="#66ff66" meeting="false" start="2021-02-01" duration="5" complete="0" expand="true">
+                <depend id="22" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="22" name="Simulink exporter" color="#66ff66" meeting="false" start="2021-02-08" duration="5" complete="0" expand="true"/>
+        </task>
+        <task id="127" name="GUI to import" color="#000000" meeting="false" start="2021-02-15" duration="5" complete="0" expand="true">
+            <depend id="17" type="2" difference="0" hardness="Strong"/>
+            <task id="129" name="Concept" color="#33ffff" meeting="false" start="2021-02-15" duration="2" complete="0" expand="true">
+                <depend id="144" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="144" name="Development importer" color="#33ffff" meeting="false" start="2021-02-17" duration="3" complete="0" expand="true"/>
+        </task>
+        <task id="17" name="PLECs" color="#000000" meeting="false" start="2021-02-22" duration="15" complete="0" expand="true">
+            <depend id="109" type="2" difference="0" hardness="Strong"/>
+            <task id="63" name="Concept" color="#3333ff" meeting="false" start="2021-02-22" duration="5" complete="0" expand="true">
+                <depend id="23" type="2" difference="0" hardness="Strong"/>
+                <customproperty taskproperty-id="tpc0" value="Which functionality is supported, two models (IGBT, MOSFET?)"/>
+            </task>
+            <task id="23" name="PLECs block" color="#3333ff" meeting="false" start="2021-03-01" duration="5" complete="0" expand="true">
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="20" name="PLECs exporter" color="#3333ff" meeting="false" start="2021-03-08" duration="5" complete="0" expand="true"/>
+        </task>
+        <task id="109" name="Gecko-Circuit" color="#000000" meeting="false" start="2021-03-15" duration="10" complete="0" expand="true">
+            <depend id="119" type="2" difference="0" hardness="Strong"/>
+            <task id="112" name="Concept" color="#ffff00" meeting="false" start="2021-03-15" duration="5" complete="0" expand="true">
+                <depend id="117" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="117" name="Block and exporter" color="#ffff00" meeting="false" start="2021-03-22" duration="5" complete="0" expand="true"/>
+        </task>
+        <task id="119" name="LT-Spice" meeting="false" start="2021-03-29" duration="10" complete="0" expand="true">
+            <task id="121" name="Concept" color="#ffcccc" meeting="false" start="2021-03-29" duration="5" complete="0" expand="true">
+                <depend id="122" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="122" name="Block" color="#ffcccc" meeting="false" start="2021-04-05" duration="5" complete="0" expand="true">
+                <depend id="125" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="125" name="AEG Tool" meeting="false" start="2021-04-12" duration="5" complete="0" expand="true">
+            <depend id="141" type="2" difference="0" hardness="Strong"/>
+            <task id="139" name="Concept and exporter" color="#999999" meeting="false" start="2021-04-12" duration="5" complete="0" expand="true"/>
+        </task>
+        <task id="141" name="Comparison for research" meeting="false" start="2021-04-19" duration="70" complete="0" expand="true">
+            <task id="143" name="open end" color="#ff66ff" meeting="false" start="2021-04-19" duration="70" complete="0" expand="true"/>
+        </task>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
