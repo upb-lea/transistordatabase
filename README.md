@@ -18,6 +18,13 @@ git clone git@github.com:upb-lea/Transistor_Database.git
 ## Usage
 
 
+## Roadmap
+Planned features in 2021
+* show a virtual datasheet of a transistor
+* exporters to a few programs, e.g. Simulink, GeckoCIRCUITS, PLECs, ...
+* save measurement data from double pulse measurements in the transistor database
+* compare resistors within the database (e.g. compare measurements wit datasheet values, or compare datasheet values for transistor A with transistor B)
+
 
 ## Bug Reports
 Please use the issues report button within github to report bugs.
