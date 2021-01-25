@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Transistordatenbank" company="" webLink="http://" view-date="2020-12-14" view-index="0" gantt-divider-location="770" resource-divider-location="300" version="2.8.5" locale="de">
+<?xml version="1.0" encoding="UTF-8"?><project name="Transistordatenbank" company="" webLink="http://" view-date="2020-12-14" view-index="0" gantt-divider-location="770" resource-divider-location="300" version="2.8.10" locale="de">
     <description/>
     <view zooming-state="default:7" id="gantt-chart">
         <field id="tpd3" name="Vorgang" width="321" order="0"/>
@@ -59,59 +59,59 @@
             </task>
             <task id="30" name="Virtual datasheet" color="#ff6600" meeting="false" start="2021-01-18" duration="5" complete="0" expand="true">
                 <depend id="21" type="2" difference="0" hardness="Strong"/>
-                <customproperty taskproperty-id="tpc0" value="Standardized Sheet (in PDF?)"/>
+                <customproperty taskproperty-id="tpc0" value="Standardized Sheet (in PDF?). Plot functionality first."/>
             </task>
         </task>
-        <task id="21" name="Simulink model" meeting="false" start="2021-01-25" duration="15" complete="0" expand="true">
+        <task id="21" name="Simulink model" meeting="false" start="2021-02-01" duration="15" complete="0" expand="true">
             <depend id="127" type="2" difference="0" hardness="Strong"/>
-            <task id="62" name="Concept" color="#66ff66" meeting="false" start="2021-01-25" duration="5" complete="0" expand="true">
+            <task id="62" name="Concept" color="#66ff66" meeting="false" start="2021-02-01" duration="5" complete="0" expand="true">
                 <depend id="28" type="2" difference="0" hardness="Strong"/>
                 <customproperty taskproperty-id="tpc0" value="Which functionality is supported, two models (IGBT, MOSFET?)"/>
             </task>
-            <task id="28" name="Simulink block(s)" color="#66ff66" meeting="false" start="2021-02-01" duration="5" complete="0" expand="true">
+            <task id="28" name="Simulink block(s)" color="#66ff66" meeting="false" start="2021-02-08" duration="5" complete="0" expand="true">
                 <depend id="22" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="22" name="Simulink exporter" color="#66ff66" meeting="false" start="2021-02-08" duration="5" complete="0" expand="true"/>
+            <task id="22" name="Simulink exporter" color="#66ff66" meeting="false" start="2021-02-15" duration="5" complete="0" expand="true"/>
         </task>
-        <task id="127" name="GUI to import" color="#000000" meeting="false" start="2021-02-15" duration="5" complete="0" expand="true">
+        <task id="127" name="GUI to import" color="#000000" meeting="false" start="2021-02-22" duration="5" complete="0" expand="true">
             <depend id="17" type="2" difference="0" hardness="Strong"/>
-            <task id="129" name="Concept" color="#33ffff" meeting="false" start="2021-02-15" duration="2" complete="0" expand="true">
+            <task id="129" name="Concept" color="#33ffff" meeting="false" start="2021-02-22" duration="2" complete="0" expand="true">
                 <depend id="144" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="144" name="Development importer" color="#33ffff" meeting="false" start="2021-02-17" duration="3" complete="0" expand="true"/>
+            <task id="144" name="Development importer" color="#33ffff" meeting="false" start="2021-02-24" duration="3" complete="0" expand="true"/>
         </task>
-        <task id="17" name="PLECs" color="#000000" meeting="false" start="2021-02-22" duration="15" complete="0" expand="true">
+        <task id="17" name="PLECs" color="#000000" meeting="false" start="2021-03-01" duration="15" complete="0" expand="true">
             <depend id="109" type="2" difference="0" hardness="Strong"/>
-            <task id="63" name="Concept" color="#3333ff" meeting="false" start="2021-02-22" duration="5" complete="0" expand="true">
+            <task id="63" name="Concept" color="#3333ff" meeting="false" start="2021-03-01" duration="5" complete="0" expand="true">
                 <depend id="23" type="2" difference="0" hardness="Strong"/>
                 <customproperty taskproperty-id="tpc0" value="Which functionality is supported, two models (IGBT, MOSFET?)"/>
             </task>
-            <task id="23" name="PLECs block" color="#3333ff" meeting="false" start="2021-03-01" duration="5" complete="0" expand="true">
+            <task id="23" name="PLECs block" color="#3333ff" meeting="false" start="2021-03-08" duration="5" complete="0" expand="true">
                 <depend id="20" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="20" name="PLECs exporter" color="#3333ff" meeting="false" start="2021-03-08" duration="5" complete="0" expand="true"/>
+            <task id="20" name="PLECs exporter" color="#3333ff" meeting="false" start="2021-03-15" duration="5" complete="0" expand="true"/>
         </task>
-        <task id="109" name="Gecko-Circuit" color="#000000" meeting="false" start="2021-03-15" duration="10" complete="0" expand="true">
+        <task id="109" name="Gecko-Circuit" color="#000000" meeting="false" start="2021-03-22" duration="10" complete="0" expand="true">
             <depend id="119" type="2" difference="0" hardness="Strong"/>
-            <task id="112" name="Concept" color="#ffff00" meeting="false" start="2021-03-15" duration="5" complete="0" expand="true">
+            <task id="112" name="Concept" color="#ffff00" meeting="false" start="2021-03-22" duration="5" complete="0" expand="true">
                 <depend id="117" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="117" name="Block and exporter" color="#ffff00" meeting="false" start="2021-03-22" duration="5" complete="0" expand="true"/>
+            <task id="117" name="Block and exporter" color="#ffff00" meeting="false" start="2021-03-29" duration="5" complete="0" expand="true"/>
         </task>
-        <task id="119" name="LT-Spice" meeting="false" start="2021-03-29" duration="10" complete="0" expand="true">
-            <task id="121" name="Concept" color="#ffcccc" meeting="false" start="2021-03-29" duration="5" complete="0" expand="true">
+        <task id="119" name="LT-Spice" meeting="false" start="2021-04-05" duration="10" complete="0" expand="true">
+            <task id="121" name="Concept" color="#ffcccc" meeting="false" start="2021-04-05" duration="5" complete="0" expand="true">
                 <depend id="122" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="122" name="Block" color="#ffcccc" meeting="false" start="2021-04-05" duration="5" complete="0" expand="true">
+            <task id="122" name="Block" color="#ffcccc" meeting="false" start="2021-04-12" duration="5" complete="0" expand="true">
                 <depend id="125" type="2" difference="0" hardness="Strong"/>
             </task>
         </task>
-        <task id="125" name="AEG Tool" meeting="false" start="2021-04-12" duration="5" complete="0" expand="true">
+        <task id="125" name="AEG Tool" meeting="false" start="2021-04-19" duration="5" complete="0" expand="true">
             <depend id="141" type="2" difference="0" hardness="Strong"/>
-            <task id="139" name="Concept and exporter" color="#999999" meeting="false" start="2021-04-12" duration="5" complete="0" expand="true"/>
+            <task id="139" name="Concept and exporter" color="#999999" meeting="false" start="2021-04-19" duration="5" complete="0" expand="true"/>
         </task>
-        <task id="141" name="Comparison for research" meeting="false" start="2021-04-19" duration="70" complete="0" expand="true">
-            <task id="143" name="open end" color="#ff66ff" meeting="false" start="2021-04-19" duration="70" complete="0" expand="true"/>
+        <task id="141" name="Comparison for research" meeting="false" start="2021-04-26" duration="70" complete="0" expand="true">
+            <task id="143" name="open end" color="#ff66ff" meeting="false" start="2021-04-26" duration="70" complete="0" expand="true"/>
         </task>
     </tasks>
     <resources/>
