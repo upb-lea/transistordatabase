@@ -36,7 +36,7 @@ Developers in the past
 
 
 ## Changelog
-Fint the changelog [here](CHANGELOG.md)
+Find the changelog [here](CHANGELOG.md)
 
 ## License
 [GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
