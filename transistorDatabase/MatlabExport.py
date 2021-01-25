@@ -26,6 +26,7 @@ VERSION / DATE / NAME: Comment
 1.0.2 / 18.01.2021 / Manuel Klaedtke: Updated names and implemented changes accordingly to the restructuring of
 Metadata class and some other attributes
 1.1.0 / 24.01.2021 / Henning Steinhagen: Implemented compatibilityCheck
+1.2.0 / 25.01.2021 / Henning Steinhagen: Implemented exportTransistorV1 (Legacy format to old .mat Database)
 """
 
 import scipy.io as sio
@@ -37,6 +38,99 @@ def compatibilityTest (attribute):
         return np.nan
     else:
         return attribute
+
+#Exports transistor in legacy format
+def exportTransistorV1(transistorName):
+
+    Transistor = transistorName
+
+    zzz = 0
+
+    Switch_dict = {'Manufacturer': zzz,
+                   'I_channel_max': zzz,
+                   'V_channel_max': zzz,
+                   'T_J_channel': zzz,
+                   'T_J_switching': zzz,
+                   'r_channel': zzz,
+                   'V0_channel': zzz,
+                   'I_channel': zzz,
+                   'V_channel_vec': zzz,
+                   'V_channel': zzz,
+                   'I_channel_25': zzz,
+                   'I_channel_125': zzz,
+                   'I_channel_T_J': zzz,
+                   'T_J_ref': zzz,
+                   'E_on_ref': zzz,
+                   'E_off_ref': zzz,
+                   'I_ref': zzz,
+                   'V_ref': zzz,
+                   'R_g_on_ref': zzz,
+                   'R_g_off_ref': zzz,
+                   'K_i': zzz,
+                   'K_v': zzz,
+                   'G_i': zzz,
+                   'E_on_125': zzz,
+                   'E_on_150': zzz,
+                   'E_off_125': zzz,
+                   'E_off_150': zzz,
+                   'E_on_T_J': zzz,
+                   'E_off_T_J': zzz,
+                   'C_oss': zzz,
+                   'C_iss': zzz,
+                   'C_rss': zzz,
+                   'R_th_total': zzz,
+                   'R_th_vector': zzz,
+                   'tau_total': zzz,
+                   'tau_vector': zzz,
+                   'C_th_total': zzz,
+                   'C_th_vector': zzz}
+
+    Diode_dict = {'Manufacturer': zzz,
+                   'T_J_channel': zzz,
+                   'T_J_switching': zzz,
+                   'r_channel': zzz,
+                   'V0_channel': zzz,
+                   'I_channel': zzz,
+                   'V_channel_vec': zzz,
+                   'V_channel': zzz,
+                   'I_channel_25': zzz,
+                   'I_channel_125': zzz,
+                   'I_channel_T_J': zzz,
+                   'T_J_ref': zzz,
+                   'E_rr_ref': zzz,
+                   'I_ref': zzz,
+                   'V_ref': zzz,
+                   'K_i': zzz,
+                   'K_v': zzz,
+                   'G_i': zzz,
+                   'E_rr_125': zzz,
+                   'E_rr_150': zzz,
+                   'E_rr_T_J': zzz,
+                   'R_th_total': zzz,
+                   'R_th_vector': zzz,
+                   'tau_total': zzz,
+                   'tau_vector': zzz,
+                   'C_th_vector': zzz}
+
+    Transistor_dict = {'Name': zzz,
+                       'R_th_CS': zzz,
+                       'R_th_Switch_CS': zzz,
+                       'R_th_Diode_CS': zzz,
+                       'Manufacturer_Housing': zzz,
+                       'Type': zzz,
+                       'Template_Version': zzz,
+                       'Template_Date': zzz,
+                       'Author': zzz,
+                       'Date_of_transitor_creation': zzz,
+                       'Comment': zzz,
+                       'U_max': zzz,
+                       'I_max': zzz,
+                       'I_linearize_UI_charts': zzz,
+                       'Switch': Switch_dict,
+                       'Diode': Diode_dict}
+
+    sio.savemat('Transistor_test.mat', {'Transistor_test': Transistor_dict})
+
 
 
 def exportTransistor(transistorName):
