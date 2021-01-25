@@ -33,6 +33,8 @@ SwitchEnergyData now has very strict definitions for which dataset_type can be u
 ChannelData class.
 1.0.5 / 18.01.2021 / Manuel Klaedtke: Added additional validity checks and errors if mandatory arguments are missing or
 not correctly specified. Added new attributes 'i_cont' and 'housing_type'
+1.0.6 / 25.01.2021 / Manuel Klaedtke: Restructured raised errors for dictionary validity checks. Almost all errors are
+now raised directly in isvalid_dict() and new behavior is added regarding empty or 'None' dictionaries.
 """
 import persistent
 import datetime
@@ -59,7 +61,7 @@ class Transistor(persistent.Persistent):
     v_max: [float, int]  # Unit: V  # Mandatory
     i_max: [float, int]  # Unit: A  # Mandatory
     # Rated operation region
-    i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom # ToDo: Is this mandatory?
+    i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom
 
     def __init__(self, transistor_args, metadata_args, foster_args, switch_args, diode_args):
         if self.isvalid_dict(transistor_args, 'Transistor'):
@@ -71,24 +73,35 @@ class Transistor(persistent.Persistent):
             self.v_max = transistor_args.get('v_max')
             self.i_max = transistor_args.get('i_max')
         else:
-            raise TypeError("'transistor_args' must be a dictionary containing at least the following"
-                            "keys: 'name', 'transistor_type', 'v_max', 'i_max'")
+            # ToDo: Is this a value or a type error?
+            # ToDo: Move these raises to isvalid_dict by checking dict_type for 'None' or empty dicts?
+            raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
+                            "are mandatory: 'name', 'transistor_type', 'v_max', 'i_max', 'i_cont'")
+
         if self.isvalid_dict(metadata_args, 'Metadata'):
             self.meta = self.Metadata(metadata_args)
         else:
-            raise TypeError("'metadata_args' must be a dictionary containing at least the following"
-                            "keys: 'author', 'manufacturer', 'housing_area', 'cooling_area', 'housing_type'")
+            raise TypeError("Dictionary 'metadata_args' is empty or 'None'. This is not allowed since following keys"
+                            "are mandatory: 'author', 'manufacturer', 'housing_area', 'cooling_area', 'housing_type'")
         self.diode = self.Diode(diode_args, foster_args)
         self.switch = self.Switch(switch_args, foster_args)
 
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
         """This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
-        are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' for 'transistor_type')."""
+        are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' for 'transistor_type').
+        Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
+        Raises appropriate errors if dictionary invalid in other ways."""
         # ToDo: Add check for mandatory attributes.
         # ToDo: Add structure for Errors. e.g.: xx has wrong type, xx has wrong type, etc.
-        if not isinstance(dataset_dict, dict):
-            return False
+        if dataset_dict is None:
+
+            return False  # None represents an empty dataset. Can be valid depending on circumstances, hence no error.
+        elif not isinstance(dataset_dict, dict):
+            raise TypeError("Expected dictionary with " + str(dict_type) + " arguments but got "
+                            + str(type(dataset_dict)) + " instead.")
+        elif not bool(dataset_dict):
+            return False  # Empty dictionary. Can be valid depending on circumstances, hence no error.
         elif dict_type == 'ChannelData':
             # Determine necessary keys.
             check_keys = {'t_j', 'v_i_data'}
@@ -96,10 +109,12 @@ class Transistor(persistent.Persistent):
             if dataset_dict.keys() >= check_keys:
                 return True
             else:
-                return False  # ToDo: Should this raise an error or just not create the object? Or raise warning?
+                raise KeyError("Dictionary does not contain all keys necessary for ChannelData object "
+                               "creation. Mandatory keys: 't_j', 'v_i_data'")
+                # ToDo: Should this raise an error or just not create the object? Or raise warning?
                 # ToDo: My idea: Just a warning but count how many dictionaries were invalid.
         elif dict_type == 'SwitchEnergyData':
-            if dataset_dict.contains('dataset_type'):
+            if 'dataset_type' in dataset_dict:
                 # Determine necessary keys.
                 if dataset_dict.get('dataset_type') == 'single':
                     check_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
@@ -114,12 +129,18 @@ class Transistor(persistent.Persistent):
                 if dataset_dict.keys() >= check_keys:
                     return True
                 else:
-                    return False  # ToDo: Should this raise an error or just not create the object? Or raise warning?
+                    raise KeyError("Dictionary does not contain all keys necessary for SwitchEnergyData object "
+                                   "creation. Mandatory keys are documented in the SwitchEnergyData class.")
+            else:
+                raise KeyError("Dictionary does not contain 'dataset_type' key necessary for SwitchEnergyData object "
+                               "creation. 'dataset_type' must be 'single', 'r_e' or 'i_e'. Check SwitchEnergyData class"
+                               " for further information.")
+
         elif dict_type == 'Transistor':
-            check_keys = {'name', 'transistor_type', 'v_max', 'i_max'}
+            check_keys = {'name', 'transistor_type', 'v_max', 'i_max', 'i_cont'}
             if dataset_dict.keys() < check_keys:
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
-                               "creation. Mandatory keys: 'name', 'transistor_type', 'v_max', 'i_max'")
+                               "creation. Mandatory keys: 'name', 'transistor_type', 'v_max', 'i_max', 'i_cont'")
             elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT']:
                 raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT'")
             else:
@@ -132,6 +153,15 @@ class Transistor(persistent.Persistent):
                                "'housing_type'")
             else:
                 return True  # ToDo: Add check for 'housing_type' to be from list of specific strings.
+
+        elif dict_type == 'FosterThermalModel':
+            return True  # FosterThermalModel does not have mandatory keys. # ToDo: Add type checks
+
+        elif dict_type == 'Switch':
+            return True  # Switch does not have mandatory keys. # ToDo: Add type checks
+
+        elif dict_type == 'Diode':
+            return True  # Diode does not have mandatory keys. # ToDo: Add type checks
 
     class Metadata:
         """Contains metadata of the transistor/switch/diode. Only used to not bloat the other classes. The attributes
@@ -156,21 +186,24 @@ class Transistor(persistent.Persistent):
         # ToDo: Specify list of strings.
 
         def __init__(self, metadata_args):
-            # Validity of metadata_args is checked in the constructor of Transistor class and thus does not need to be
-            # checked again here.
-            self.author = metadata_args.get('author')
-            self.technology = metadata_args.get('meta_type')
-            self.template_version = metadata_args.get('template_version')
-            self.template_date = metadata_args.get('template_date')
-            self.creation_date = metadata_args.get('creation_date')
-            self.last_modified = metadata_args.get('ast_modified')
-            self.comment = metadata_args.get('comment')
-            self.manufacturer = metadata_args.get('manufacturer')
-            self.datasheet_hyperlink = metadata_args.get('datasheet_hyperlink')
-            self.datasheet_date = metadata_args.get('datasheet_date')
-            self.datasheet_version = metadata_args.get('datasheet_version')
-            self.housing_area = metadata_args.get('housing_area')
-            self.cooling_area = metadata_args.get('cooling_area')
+            if Transistor.isvalid_dict(metadata_args, 'Metadata'):
+                self.author = metadata_args.get('author')
+                self.technology = metadata_args.get('meta_type')
+                self.template_version = metadata_args.get('template_version')
+                self.template_date = metadata_args.get('template_date')
+                self.creation_date = metadata_args.get('creation_date')
+                self.last_modified = metadata_args.get('ast_modified')
+                self.comment = metadata_args.get('comment')
+                self.manufacturer = metadata_args.get('manufacturer')
+                self.datasheet_hyperlink = metadata_args.get('datasheet_hyperlink')
+                self.datasheet_date = metadata_args.get('datasheet_date')
+                self.datasheet_version = metadata_args.get('datasheet_version')
+                self.housing_area = metadata_args.get('housing_area')
+                self.cooling_area = metadata_args.get('cooling_area')
+            else:
+                raise TypeError(
+                    "Dictionary 'metadata_args' is empty or 'None'. This is not allowed since following keys"
+                    "are mandatory: 'author', 'manufacturer', 'housing_area', 'cooling_area', 'housing_type'")
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal model. This model describes the transient
@@ -196,7 +229,7 @@ class Transistor(persistent.Persistent):
         transient_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: s; Row 2: K/W  # Optional
 
         def __init__(self, args):
-            if isinstance(args, dict):
+            if Transistor.isvalid_dict(args, 'FosterThermalModel'):
                 self.r_th_total = args.get('r_th_total')
                 self.r_th_vector = args.get('r_th_vector')
                 self.c_th_total = args.get('c_th_total')
@@ -204,7 +237,7 @@ class Transistor(persistent.Persistent):
                 self.tau_total = args.get('tau_total')
                 self.tau_vector = args.get('tau_vector')
                 self.transient_data = args.get('transient_data')
-            elif args is None:
+            else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
                 self.r_th_total = None
                 self.r_th_vector = None
                 self.c_th_total = None
@@ -212,9 +245,6 @@ class Transistor(persistent.Persistent):
                 self.tau_total = None
                 self.tau_vector = None
                 self.transient_data = None
-            else:
-                raise TypeError('The arguments for object creation need to be given as a dictionary or not at all '
-                                '(None)')
 
     class Switch:
         """Contains data associated with the switchting-characteristics of a MOSFET or IGBT. Can contain multiple
@@ -229,13 +259,13 @@ class Transistor(persistent.Persistent):
         e_on: List["SwitchEnergyData"]  # Switch on energy data.
         e_off: List["SwitchEnergyData"]  # Switch of energy data.
         # Constant Capacitances
-        c_oss: [float, None]  # Unit: pF  # Optional
-        c_iss: [float, None]  # Unit: pF  # Optional
-        c_rss: [float, None]  # Unit: pF  # Optional
+        c_oss: [float, int, None]  # Unit: pF  # Optional
+        c_iss: [float, int, None]  # Unit: pF  # Optional
+        c_rss: [float, int, None]  # Unit: pF  # Optional
 
         def __init__(self, switch_args, foster_args):
             self.thermal = Transistor.FosterThermalModel(foster_args)
-            if isinstance(switch_args, dict):
+            if Transistor.isvalid_dict(switch_args, 'Switch'):
                 self.c_oss = switch_args.get('c_oss')
                 self.c_iss = switch_args.get('c_iss')
                 self.c_rss = switch_args.get('c_rss')
@@ -247,10 +277,19 @@ class Transistor(persistent.Persistent):
                 self.channel = []  # Default case: Empty list
                 if isinstance(switch_args.get('channel'), list):
                     # Loop through list and check each dict for validity. Only create ChannelData objects from valid
-                    # dicts
+                    # dicts. 'None' and empty dicts are ignored.
                     for dataset in switch_args.get('channel'):
-                        if Transistor.isvalid_dict(dataset, 'ChannelData'):
-                            self.channel.append(Transistor.ChannelData(dataset))
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'ChannelData'):
+                                self.channel.append(Transistor.ChannelData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('channel')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                          'of Switch-ChannelData dictionaries: ',) + error.args
+                            raise
                 elif Transistor.isvalid_dict(switch_args.get('channel'), 'ChannelData'):
                     # Only create ChannelData objects from valid dicts
                     self.channel.append(Transistor.ChannelData(switch_args.get('channel')))
@@ -258,10 +297,19 @@ class Transistor(persistent.Persistent):
                 self.e_on = []  # Default case: Empty list
                 if isinstance(switch_args.get('e_on'), list):
                     # Loop through list and check each dict for validity. Only create SwitchEnergyData objects from
-                    # valid dicts
+                    # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in switch_args.get('e_on'):
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.e_on.append(Transistor.SwitchEnergyData(dataset))
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                                self.e_on.append(Transistor.SwitchEnergyData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('e_on')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                          'of Switch-SwitchEnergyData dictionaries for e_on: ',) + error.args
+                            raise
                 elif Transistor.isvalid_dict(switch_args.get('e_on'), 'SwitchEnergyData'):
                     # Only create SwitchEnergyData objects from valid dicts
                     self.e_on.append(Transistor.SwitchEnergyData(switch_args.get('e_on')))
@@ -269,12 +317,21 @@ class Transistor(persistent.Persistent):
                 self.e_off = []  # Default case: Empty list
                 if isinstance(switch_args.get('e_off'), list):
                     for dataset in switch_args.get('e_off'):
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.e_off.append(Transistor.SwitchEnergyData(dataset))
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                                self.e_off.append(Transistor.SwitchEnergyData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('e_off')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                          'of Switch-SwitchEnergyData dictionaries for e_off: ',) + error.args
+                            raise
                 elif Transistor.isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
                     self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off')))
 
-            elif switch_args is None:
+            else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
                 self.c_oss = None
                 self.c_iss = None
                 self.c_rss = None
@@ -284,9 +341,6 @@ class Transistor(persistent.Persistent):
                 self.channel = []
                 self.e_on = []
                 self.e_off = []
-            else:
-                raise TypeError('The arguments for object creation need to be given as a dictionary or not at all '
-                                '(None)')
 
     class Diode:
         """Contains data associated with the (reverse) diode-characteristics of a MOSFET or IGBT. Can contain multiple
@@ -302,7 +356,7 @@ class Transistor(persistent.Persistent):
 
         def __init__(self, diode_args, foster_args):
             self.thermal = Transistor.FosterThermalModel(foster_args)
-            if isinstance(diode_args, dict):
+            if Transistor.isvalid_dict(diode_args, 'Diode'):
                 self.comment = diode_args.get('comment')
                 self.manufacturer = diode_args.get('manufacturer')
                 self.technology = diode_args.get('technology')
@@ -311,10 +365,19 @@ class Transistor(persistent.Persistent):
                 self.channel = []  # Default case: Empty list
                 if isinstance(diode_args.get('channel'), list):
                     # Loop through list and check each dict for validity. Only create ChannelData objects from valid
-                    # dicts
+                    # dicts. 'None' and empty dicts are ignored.
                     for dataset in diode_args.get('channel'):
-                        if Transistor.isvalid_dict(dataset, 'ChannelData'):
-                            self.channel.append(Transistor.ChannelData(dataset))
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'ChannelData'):
+                                self.channel.append(Transistor.ChannelData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = diode_args.get('channel')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                          'of Diode-ChannelData dictionaries: ',) + error.args
+                            raise
                 elif Transistor.isvalid_dict(diode_args.get('channel'), 'ChannelData'):
                     # Only create ChannelData objects from valid dicts
                     self.channel.append(Transistor.ChannelData(diode_args.get('channel')))
@@ -322,23 +385,30 @@ class Transistor(persistent.Persistent):
                 self.e_rr = []  # Default case: Empty list
                 if isinstance(diode_args.get('e_rr'), list):
                     # Loop through list and check each dict for validity. Only create SwitchEnergyData objects from
-                    # valid dicts
+                    # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in diode_args.get('e_rr'):
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.e_rr.append(Transistor.SwitchEnergyData(dataset))
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                                self.e_rr.append(Transistor.SwitchEnergyData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = diode_args.get('e_rr')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                          'of Diode-SwitchEnergyData dictionaries for e_rr: ',) + error.args
+                            raise
+
                 elif Transistor.isvalid_dict(diode_args.get('e_rr'), 'SwitchEnergyData'):
                     # Only create SwitchEnergyData objects from valid dicts
                     self.e_rr.append(Transistor.SwitchEnergyData(diode_args.get('e_rr')))
 
-            elif diode_args is None:
+            else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
                 self.comment = None
                 self.manufacturer = None
                 self.technology = None
                 self.channel = []
                 self.e_rr = []
-            else:
-                raise TypeError('The arguments for Diode-object creation need to be given as a dictionary or not at all'
-                                ' (None)')
 
     class ChannelData:
         """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
@@ -347,17 +417,15 @@ class Transistor(persistent.Persistent):
         This data can be used to linearize the transistor at a specific operating point (ToDo!)"""
 
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
-        t_j: float  # Mandatory
+        t_j: [int, float]  # Mandatory
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
         v_i_data: "np.ndarray[np.float64]"  # Units: Row 1: V; Row 2: A  # Mandatory
 
         def __init__(self, args):
-            if isinstance(args, dict):
-                self.t_j = args.get('t_j')
-                self.v_i_data = args.get('v_i_data')
-
-            else:
-                raise TypeError('The arguments for ChannelData-object creation need to be given as a dictionary.')
+            # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
+            # checked again here.
+            self.t_j = args.get('t_j')
+            self.v_i_data = args.get('v_i_data')
 
     class SwitchEnergyData:
         """Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
@@ -377,13 +445,13 @@ class Transistor(persistent.Persistent):
         # graph_i_e: i_e is a 2-dim numpy array with two rows. r_g is a scalar. Given e.g. by an E vs I graph.
         dataset_type: str  # Mandatory
         # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
-        t_j: float  # Unit: °C  # Mandatory
-        v_supply: float  # Unit: V  # Mandatory
-        v_g: float  # Unit: V  # Mandatory
+        t_j: [int, float]  # Unit: °C  # Mandatory
+        v_supply: [int, float]  # Unit: V  # Mandatory
+        v_g: [int, float]  # Unit: V  # Mandatory
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
-        e_x: [float, None]  # Unit: mJ
-        r_g: [float, None]  # Unit: Ohm
-        i_x: [float, None]  # Unit: A
+        e_x: [int, float, None]  # Unit: mJ
+        r_g: [int, float, None]  # Unit: Ohm
+        i_x: [int, float, None]  # Unit: A
         # Dataset. Only one of these is allowed. The other should be 'None'.
         i_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: mJ
         r_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: Ohm; Row 2: mJ
