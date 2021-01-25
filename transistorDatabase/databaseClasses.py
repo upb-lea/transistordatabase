@@ -3,10 +3,10 @@ Initial author: Manuel Klaedtke
 Date of creation: 21.12.2020
 Last modified by: Manuel Klaedtke
 Date of modification: 08.01.2021
-Version: 1.0
+Version: 1.0.7
 Compatibility: Python
 Other files required: Numpy and ZODB package
-Link to file: https://git.uni-paderborn.de/lea-git/lea-git-public/matlab-functions/transistor_database/-/blob/master/transistorDatabase/DatabaseClasses.py
+Link to file: https://github.com/upb-lea/Transistor_Database/blob/main/transistorDatabase/databaseClasses.py
 Syntax: Constructor arguments need to be given as valid dictionaries.
 See method isvalid_dict for specifications of validity for different types of dictionaries.
 ToDo: Add functions that help users specifying these dictionaries in a valid way.
@@ -35,10 +35,14 @@ ChannelData class.
 not correctly specified. Added new attributes 'i_cont' and 'housing_type'
 1.0.6 / 25.01.2021 / Manuel Klaedtke: Restructured raised errors for dictionary validity checks. Almost all errors are
 now raised directly in isvalid_dict() and new behavior is added regarding empty or 'None' dictionaries.
+1.0.7 / 25.01.2021 / Manuel Klaedtke: Restrict valid housing types to those defined in housing_types.txt. Only
+alphanumeric characters are used for string-comparison of housing types and spelling for the saved object is applied as
+defined in the housing_types.txt.
 """
 import persistent
 import datetime
 import numpy as np
+import re
 from typing import List
 
 
@@ -111,8 +115,6 @@ class Transistor(persistent.Persistent):
             else:
                 raise KeyError("Dictionary does not contain all keys necessary for ChannelData object "
                                "creation. Mandatory keys: 't_j', 'v_i_data'")
-                # ToDo: Should this raise an error or just not create the object? Or raise warning?
-                # ToDo: My idea: Just a warning but count how many dictionaries were invalid.
         elif dict_type == 'SwitchEnergyData':
             if 'dataset_type' in dataset_dict:
                 # Determine necessary keys.
@@ -152,7 +154,17 @@ class Transistor(persistent.Persistent):
                                "creation. Mandatory keys: 'author', 'manufacturer', 'housing_area', 'cooling_area', "
                                "'housing_type'")
             else:
-                return True  # ToDo: Add check for 'housing_type' to be from list of specific strings.
+                # Import list of valid housing types from "housing_types.txt"
+                with open("housing_types.txt", "r") as housing_types_txt:
+                    housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
+                # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
+                alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
+                housing_type = dataset_dict.get('housing_type')
+                if re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower() not in alphanum_housing_types:
+                    raise ValueError("Housing type " + str(housing_type) + " is not allowed. See file "
+                                     "'housing_types.txt' for a list of supported types.")
+                else:
+                    return True
 
         elif dict_type == 'FosterThermalModel':
             return True  # FosterThermalModel does not have mandatory keys. # ToDo: Add type checks
@@ -200,6 +212,17 @@ class Transistor(persistent.Persistent):
                 self.datasheet_version = metadata_args.get('datasheet_version')
                 self.housing_area = metadata_args.get('housing_area')
                 self.cooling_area = metadata_args.get('cooling_area')
+                # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
+                # Import list of valid housing types from "housing_types.txt"
+                with open("housing_types.txt", "r") as housing_types_txt:
+                    housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
+                # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
+                alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
+                housing_type = metadata_args.get('housing_type')
+                # Get index where the housing_type was found in "housing_types.txt"
+                idx = alphanum_housing_types.index(re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower())
+                # Don't save the name in metadata_args but the matching name in "housing_types.txt"
+                self.housing_type = housing_types[idx]
             else:
                 raise TypeError(
                     "Dictionary 'metadata_args' is empty or 'None'. This is not allowed since following keys"
