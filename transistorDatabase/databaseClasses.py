@@ -1,44 +1,3 @@
-"""
-Initial author: Manuel Klaedtke
-Date of creation: 21.12.2020
-Last modified by: Manuel Klaedtke
-Date of modification: 08.01.2021
-Version: 1.0.7
-Compatibility: Python
-Other files required: Numpy and ZODB package
-Link to file: https://github.com/upb-lea/Transistor_Database/blob/main/transistorDatabase/databaseClasses.py
-Syntax: Constructor arguments need to be given as valid dictionaries.
-See method isvalid_dict for specifications of validity for different types of dictionaries.
-ToDo: Add functions that help users specifying these dictionaries in a valid way.
-
-Description:
-Classes of the transistor database. Contains properties of the transistor that are specifically grouped within
-different objects. This file does not (yet) include methods (ToDo!).
-
-Input parameters: None. Might change with different constructor options and methods.
-Output parameters: An object of the respective class. (Also outputs of the respective class methods (ToDo!))
-Example: Not yet included (ToDo!)
-Known Bugs:
-Changelog:
-VERSION / DATE / NAME: Comment
-1.0.0 / 21.12.2020 / Manuel Klaedtke: Initial Version
-1.0.1 / 07.01.2021 / Manuel Klaedtke: Renamed parameters previously called "type" to be more specific.
-Changed structure of the ChannelData class.
-1.0.2 / 07.01.2021 / Manuel Klaedtke: Nested classes as inner class of Transistor.
-Added constructors for all classes. Can handle "proper" creation and missing values now. Added error messages if wrong
-parameters were supplied.
-1.0.3 / 08.01.2021 / Manuel Klaedtke: Added validity checks for Channel- and SwitchEnergyData arguments.
-SwitchEnergyData now has very strict definitions for which dataset_type can be used.
-1.0.4 / 18.01.2021 / Manuel Klaedtke: Restructured Metadata class. Renamed attributes and deleted v_max and i_max from
-ChannelData class.
-1.0.5 / 18.01.2021 / Manuel Klaedtke: Added additional validity checks and errors if mandatory arguments are missing or
-not correctly specified. Added new attributes 'i_cont' and 'housing_type'
-1.0.6 / 25.01.2021 / Manuel Klaedtke: Restructured raised errors for dictionary validity checks. Almost all errors are
-now raised directly in isvalid_dict() and new behavior is added regarding empty or 'None' dictionaries.
-1.0.7 / 25.01.2021 / Manuel Klaedtke: Restrict valid housing types to those defined in housing_types.txt. Only
-alphanumeric characters are used for string-comparison of housing types and spelling for the saved object is applied as
-defined in the housing_types.txt.
-"""
 import persistent
 import datetime
 import numpy as np
@@ -76,9 +35,10 @@ class Transistor(persistent.Persistent):
             self.r_th_diode_cs = transistor_args.get('r_th_diode_cs')
             self.v_max = transistor_args.get('v_max')
             self.i_max = transistor_args.get('i_max')
+            self.i_cont = transistor_args.get('i_cont')
         else:
             # ToDo: Is this a value or a type error?
-            # ToDo: Move these raises to isvalid_dict by checking dict_type for 'None' or empty dicts?
+            # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
             raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
                             "are mandatory: 'name', 'transistor_type', 'v_max', 'i_max', 'i_cont'")
 
@@ -96,10 +56,9 @@ class Transistor(persistent.Persistent):
         are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' for 'transistor_type').
         Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
         Raises appropriate errors if dictionary invalid in other ways."""
-        # ToDo: Add check for mandatory attributes.
         # ToDo: Add structure for Errors. e.g.: xx has wrong type, xx has wrong type, etc.
+        # ToDo: Error if given key is not allowed?
         if dataset_dict is None:
-
             return False  # None represents an empty dataset. Can be valid depending on circumstances, hence no error.
         elif not isinstance(dataset_dict, dict):
             raise TypeError("Expected dictionary with " + str(dict_type) + " arguments but got "
@@ -110,45 +69,67 @@ class Transistor(persistent.Persistent):
             # Determine necessary keys.
             check_keys = {'t_j', 'v_i_data'}
             # Check if all necessary keys are contained in the dict.
-            if dataset_dict.keys() >= check_keys:
-                return True
-            else:
+            if dataset_dict.keys() < check_keys:
                 raise KeyError("Dictionary does not contain all keys necessary for ChannelData object "
                                "creation. Mandatory keys: 't_j', 'v_i_data'")
+            # Check if all values have appropriate types.
+            elif check_realnum(dataset_dict.get('t_j')) and check_2d_dataset(dataset_dict.get('v_i_data')):
+                # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
+                return True
+
         elif dict_type == 'SwitchEnergyData':
-            if 'dataset_type' in dataset_dict:
-                # Determine necessary keys.
-                if dataset_dict.get('dataset_type') == 'single':
-                    check_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
-                elif dataset_dict.get('dataset_type') == 'graph_r_e':
-                    check_keys = {'t_j', 'v_supply', 'v_g', 'r_e_data', 'i_x'}
-                elif dataset_dict.get('dataset_type') == 'graph_i_e':
-                    check_keys = {'t_j', 'v_supply', 'v_g', 'i_e_data', 'r_g'}
-                else:
-                    raise ValueError("Wrong dataset_type for creation of SwitchEnergyData object. Must be 'single', "
-                                     "'r_e' or 'i_e'. Check SwitchEnergyData class for further information.")
-                # Check if all necessary keys are contained in the dict.
-                if dataset_dict.keys() >= check_keys:
-                    return True
-                else:
-                    raise KeyError("Dictionary does not contain all keys necessary for SwitchEnergyData object "
-                                   "creation. Mandatory keys are documented in the SwitchEnergyData class.")
-            else:
+            if 'dataset_type' not in dataset_dict:
                 raise KeyError("Dictionary does not contain 'dataset_type' key necessary for SwitchEnergyData object "
                                "creation. 'dataset_type' must be 'single', 'r_e' or 'i_e'. Check SwitchEnergyData class"
                                " for further information.")
+            # Determine necessary keys.
+            elif dataset_dict.get('dataset_type') == 'single':
+                check_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
+                numeric_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
+                array_keys = {}
+            elif dataset_dict.get('dataset_type') == 'graph_r_e':
+                check_keys = {'t_j', 'v_supply', 'v_g', 'r_e_data', 'i_x'}
+                numeric_keys = {'t_j', 'v_supply', 'v_g', 'i_x'}
+                array_keys = {'r_e_data'}
+            elif dataset_dict.get('dataset_type') == 'graph_i_e':
+                check_keys = {'t_j', 'v_supply', 'v_g', 'i_e_data', 'r_g'}
+                numeric_keys = {'t_j', 'v_supply', 'v_g', 'r_g'}
+                array_keys = {'i_e_data'}
+            else:
+                raise ValueError("Wrong dataset_type for creation of SwitchEnergyData object. Must be 'single', "
+                                 "'graph_r_e' or 'graph_i_e'. Check SwitchEnergyData class for further "
+                                 "information.")
+            # Check if all necessary keys are contained in the dict.
+            if dataset_dict.keys() < check_keys:
+                raise KeyError("Dictionary does not contain all keys necessary for SwitchEnergyData object "
+                               "creation. Mandatory keys are documented in the SwitchEnergyData class.")
+            # Check if all values have appropriate types.
+            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                    all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
+                # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
+                return True
 
         elif dict_type == 'Transistor':
+            # ToDo: Add type checks for optional arguments
             check_keys = {'name', 'transistor_type', 'v_max', 'i_max', 'i_cont'}
+            str_keys = {'name', 'transistor_type'}
+            numeric_keys = {'v_max', 'i_max', 'i_cont'}
             if dataset_dict.keys() < check_keys:
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'v_max', 'i_max', 'i_cont'")
             elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT']:
                 raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT'")
-            else:
+            # Check if all values have appropriate types.
+            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                    all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
+                # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
                 return True
+
         elif dict_type == 'Metadata':
+            # ToDo: Add type checks for optional arguments
             check_keys = {'author', 'manufacturer', 'housing_area', 'cooling_area', 'housing_type'}
+            str_keys = {'author', 'manufacturer', 'housing_type'}
+            numeric_keys = {'housing_area', 'cooling_area'}
             if dataset_dict.keys() < check_keys:
                 raise KeyError("Dictionary 'metadata_args' does not contain all keys necessary for Metadata object "
                                "creation. Mandatory keys: 'author', 'manufacturer', 'housing_area', 'cooling_area', "
@@ -163,17 +144,62 @@ class Transistor(persistent.Persistent):
                 if re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower() not in alphanum_housing_types:
                     raise ValueError("Housing type " + str(housing_type) + " is not allowed. See file "
                                      "'housing_types.txt' for a list of supported types.")
-                else:
+                # Check if all attributes have valid type.
+                elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                        all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
+                    # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
                     return True
 
         elif dict_type == 'FosterThermalModel':
-            return True  # FosterThermalModel does not have mandatory keys. # ToDo: Add type checks
+            # FosterThermalModel does not have mandatory keys.
+            # Check which optional keys are given.
+            check_keys = list(dataset_dict.keys())
+            numeric_keys = {'r_th_total', 'c_th_total', 'tau_total'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys if numeric_key in check_keys}  # actual keys
+            list_keys = {'r_th_vector', 'c_th_vector', 'tau_vector'}  # possible keys
+            list_keys = {list_key for list_key in list_keys if list_key in check_keys}  # actual keys
+            array_keys = {'transient_data'}  # possible keys
+            array_keys = {array_key for array_key in array_keys if array_key in check_keys}  # actual keys
+            # Check if all elements in 'r_th_vector', 'c_th_vector', 'tau_vector' are real numeric (float, int)
+            bool_list_numeric = all([all([check_realnum(single_value) for single_value in dataset_dict.get(list_key)])
+                                    for list_key in list_keys])
+            # Check if 'r_th_vector', 'c_th_vector', 'tau_vector' have same length
+            # ToDo: Check if at least 2/3 of C, R, tau are given.
+            list_sizes = [len(dataset_dict.get(list_key)) for list_key in list_keys]
+            if not list_sizes.count(list_sizes[0]) == len(list_sizes):
+                raise TypeError("The lists 'r_th_vector', 'c_th_vector', 'tau_vector' (if given) must be the same "
+                                "size.")
+            # Check if all values have appropriate types.
+            if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                    all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]) and \
+                    bool_list_numeric:
+                # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
+                return True
 
         elif dict_type == 'Switch':
-            return True  # Switch does not have mandatory keys. # ToDo: Add type checks
+            # Switch does not have mandatory keys.
+            # Check which optional keys are given.
+            check_keys = list(dataset_dict.keys())
+            str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
+            str_keys = {str_key for str_key in str_keys if str_key in check_keys}  # actual keys
+            numeric_keys = {'c_oss', 'c_iss', 'c_rss'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys if numeric_key in check_keys}  # actual keys
+            # Check if all values have appropriate types.
+            if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                    all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
+                # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
+                return True
 
         elif dict_type == 'Diode':
-            return True  # Diode does not have mandatory keys. # ToDo: Add type checks
+            # Diode does not have mandatory keys.
+            # Check which optional keys are given.
+            check_keys = list(dataset_dict.keys())
+            str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
+            str_keys = {str_key for str_key in str_keys if str_key in check_keys}  # actual keys
+            # Check if all values have appropriate types.
+            if all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
+                # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
+                return True
 
     class Metadata:
         """Contains metadata of the transistor/switch/diode. Only used to not bloat the other classes. The attributes
@@ -190,12 +216,11 @@ class Transistor(persistent.Persistent):
         # Manufacturer- and part-specific data
         manufacturer: str  # Mandatory
         datasheet_hyperlink: [str, None]  # Make sure this link is valid.  # Optional
-        datasheet_date: ["datetime.date", None]  # Should not be changed manually.  # Optional
+        datasheet_date: ["datetime.date", None]  # Optional
         datasheet_version: [str, None]  # Optional
         housing_area: float  # Unit: mm^2  # Mandatory
         cooling_area: float  # Unit: mm^2  # Mandatory
         housing_type: str  # e.g. TO-220, etc. # Mandatory. Must be from a list of specific strings.
-        # ToDo: Specify list of strings.
 
         def __init__(self, metadata_args):
             if Transistor.isvalid_dict(metadata_args, 'Metadata'):
@@ -204,7 +229,7 @@ class Transistor(persistent.Persistent):
                 self.template_version = metadata_args.get('template_version')
                 self.template_date = metadata_args.get('template_date')
                 self.creation_date = metadata_args.get('creation_date')
-                self.last_modified = metadata_args.get('ast_modified')
+                self.last_modified = metadata_args.get('last_modified')
                 self.comment = metadata_args.get('comment')
                 self.manufacturer = metadata_args.get('manufacturer')
                 self.datasheet_hyperlink = metadata_args.get('datasheet_hyperlink')
@@ -491,11 +516,37 @@ class Transistor(persistent.Persistent):
             # ToDo: Always check dataset_type and determine which arguments should be ignored.
             self.dataset_type = args.get('dataset_type')
             self.v_supply = args.get('v_supply')
-            self.v_g = args.get('v_switch')
+            self.v_g = args.get('v_g')
             self.t_j = args.get('t_j')
             self.e_x = args.get('e_x')
             self.r_g = args.get('r_g')
             self.i_x = args.get('i_x')
             self.i_e_data = args.get('i_e_data')
             self.r_e_data = args.get('r_e_data')
+
+
+def check_realnum(x):
+    """Check if argument is real numeric scalar. Raise TypeError if not. """
+    if not any([isinstance(x, int), isinstance(x, float)]):
+        raise TypeError('{0} is not numeric.'.format(x))
+    else:
+        return True
+
+
+def check_2d_dataset(x):
+    """Check if argument is real 2D-dataset of right shape. Raise TypeError if not. """
+    if isinstance(x, np.ndarray):
+        if np.all(np.isreal(x)):
+            if x.ndim == 2:
+                if x.shape[0] == 2:
+                    return True
+    raise TypeError("Invalid dataset. Must be 2D-numpy array with shape (2,x) and real numeric values.")
+
+
+def check_str(x):
+    """Check if argument is string. Raise TypeError if not. Function not necessary but helpful to keep raising of errors
+    consistent with other type checks."""
+    if isinstance(x, str):
+        return True
+    raise TypeError('{0} is not a string.'.format(x))
 
