@@ -2,14 +2,14 @@
 Initial author: Henning Steinhagen
 Date of creation: 04.01.2021
 Last modified by: Henning
-Date of modification: 08.01.2021
+Date of modification: 01.02.2021
 Version: 1.0
 Compatibility: Python
 Other files required: Numpy and ZODB package
 Link to file: https://git.uni-paderborn.de/lea-git/lea-git-public/matlab-functions/transistor_database/-/blob/master/transistorDatabase/MatlabExport.py
-ToDo: Create Metadata cases.
-ToDo: Load an object from the DB.
-ToDo: Change Filename
+ToDo: Check transistor name for forbidden symbols
+ToDo: implement linearization and update attributes (each attribute has its own TODO)
+ToDo: Add input parameters (e.g. for a given temperature set)
 
 Description:
 Pulls single transistor from the database and builds an single .mat file in the format of nested structs.
@@ -27,6 +27,7 @@ VERSION / DATE / NAME: Comment
 Metadata class and some other attributes
 1.1.0 / 24.01.2021 / Henning Steinhagen: Implemented compatibilityCheck
 1.2.0 / 25.01.2021 / Henning Steinhagen: Implemented exportTransistorV1 (Legacy format to old .mat Database)
+1.2.1 / 01.02.2021 / Henning Steinhagen: Added functionality to exportTransistorV1 and build functions to extract Data
 """
 
 import scipy.io as sio
@@ -53,6 +54,7 @@ def findChannelData(Transistor, channel, temperature, attribute, identifier):
     for x in ChannelData:
         if ChannelData[i].t_j == temperature:
             DataSet = getattr(ChannelData[i], attribute)
+            # TODO add interpolLUT function and return instead of raw DataSet for V/I
             if identifier == 'V':
                 return DataSet[0]
             elif identifier == 'I':
@@ -70,41 +72,118 @@ def findChannelData(Transistor, channel, temperature, attribute, identifier):
     return np.nan
 
 
+# TODO Modify identifier when implemented in databaseClasses.py
+# TODO Modify which DataSet is used when identifiers are implemented
+def findSwitchEnergyData(Transistor, switchEnergyInstance, temperature, attribute, identifier):
+
+    SwitchEnergyData = eval(switchEnergyInstance)
+    i = 0
+
+    for x in SwitchEnergyData:
+        if SwitchEnergyData[i].t_j == temperature:
+            DataSet = getattr(SwitchEnergyData[i], attribute)
+            # TODO add interpolLUT function and return instead of raw DataSet
+            if identifier == 'E_on':
+                return DataSet[0]
+            elif identifier == 'E_off':
+                return DataSet[1]
+            elif identifier == 'E_rr':
+                return DataSet[0]
+        else:
+            i += 1
+    return np.nan
+
+
 # Exports transistor in legacy format
 def exportTransistorV1(transistorName):
     Transistor = transistorName
 
-    zzz = np.nan
+    # maximum data for plots and for non-linear data, given by data sheet plots
+    # TODO Set max points via variables (Given to the exporter function?)
+    Temp_Switch_I_channel_max = 1200
+    Temp_Switch_V_channel_max = 3.5
+    Switch_I_channel_max = findChannelData(Transistor,'Transistor.switch.channel', 25, 'v_i_data', 'I_max')
+    Switch_V_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'V_max')
+
+    # Junction temperatures for channel losses and switching losses
+    # TODO Set temperature via variables (Given to the exporter function?)
+    Switch_T_J_channel = [25, 125]
+    Switch_T_J_switching = [125, 150]
+
+    # TODO Add linearized data
+    Switch_r_channel = np.nan
+    Switch_V0_channel = np.nan
+
+    Switch_I_channel = np.linspace(0, Temp_Switch_I_channel_max, Temp_Switch_I_channel_max + 1)
+    Switch_I_channel_T_J = [[findChannelData(transistorName, 'Transistor.switch.channel', 25, 'v_i_data', 'I')],
+                            [findChannelData(transistorName, 'Transistor.switch.channel', 125, 'v_i_data', 'I')]]
+
+    # TODO V_Channel endpoint change to variable?
+    Switch_V_channel = np.linspace(0, Temp_Switch_V_channel_max, 20)
+    # TODO Add function after linearized data is added
+    Switch_V_channel_vec = np.nan
+
+    # TODO replace when implemented in databaseClasses.py
+    Switch_T_J_ref = np.nan
+    Switch_E_on_ref = np.nan
+    Switch_E_off_ref = np.nan
+    Switch_I_ref = np.nan
+    Switch_V_ref = np.nan
+    Switch_R_g_on_ref = np.nan
+    Switch_R_g_off_ref = np.nan
+
+    # TODO implement interpolLUT either here in findSwitchEnergyData or in databaseClasses.py
+    Switch_E_on_125 = findSwitchEnergyData(transistorName, 'Transistor.switch.e_on', 125,
+                                           'Fill Attribute', 'Fill identifier')
+    Switch_E_on_150 = findSwitchEnergyData(transistorName, 'Transistor.switch.e_on', 150,
+                                           'Fill Attribute', 'Fill identifier')
+    Switch_E_off_125 = findSwitchEnergyData(transistorName, 'Transistor.switch.e_off', 125,
+                                           'Fill Attribute', 'Fill identifier')
+    Switch_E_off_150 = findSwitchEnergyData(transistorName, 'Transistor.switch.e_off', 150,
+                                           'Fill Attribute', 'Fill identifier')
+    Switch_E_on_T_J = [[findSwitchEnergyData(transistorName, 'Transistor.switch.e_on', 125,
+                                           'Fill Attribute', 'Fill identifier')],
+                       [findSwitchEnergyData(transistorName, 'Transistor.switch.e_on', 150,
+                                           'Fill Attribute', 'Fill identifier')]]
+    Switch_E_off_T_J = [[findSwitchEnergyData(transistorName, 'Transistor.switch.e_off', 125,
+                                             'Fill Attribute', 'Fill identifier')],
+                        [findSwitchEnergyData(transistorName, 'Transistor.switch.e_off', 150,
+                                             'Fill Attribute', 'Fill identifier')]]
+
+    # TODO replace 'switchEnergy.*' when implemented in databaseClasses.py
+    Switch_K_i = compatibilityTest(transistorName, 'Transistor.switch.switchEnergy.k_i')
+    Switch_K_v = compatibilityTest(transistorName, 'Transistor.switch.switchEnergy.k_v')
+    Switch_G_i = compatibilityTest(transistorName, 'Transistor.switch.switchEnergy.g_i')
 
     Switch_dict = {'Manufacturer': compatibilityTest(transistorName, 'Transistor.switch.manufacturer'),
-                   'I_channel_max': zzz,
-                   'V_channel_max': zzz,
-                   'T_J_channel': zzz,
-                   'T_J_switching': zzz,
-                   'r_channel': zzz,
-                   'V0_channel': zzz,
-                   'I_channel': zzz,
-                   'V_channel_vec': zzz,
-                   'V_channel': zzz,
+                   'I_channel_max': Switch_I_channel_max,
+                   'V_channel_max': Switch_V_channel_max,
+                   'T_J_channel': Switch_T_J_channel,
+                   'T_J_switching': Switch_T_J_switching,
+                   'r_channel': Switch_r_channel,
+                   'V0_channel': Switch_V0_channel,
+                   'I_channel': Switch_I_channel,
+                   'V_channel_vec': Switch_V_channel_vec,
+                   'V_channel': Switch_V_channel,
                    'I_channel_25': findChannelData(transistorName, 'Transistor.switch.channel', 25, 'v_i_data', 'I'),
                    'I_channel_125': findChannelData(transistorName, 'Transistor.switch.channel', 125, 'v_i_data', 'I'),
-                   'I_channel_T_J': zzz,
-                   'T_J_ref': zzz,
-                   'E_on_ref': zzz,
-                   'E_off_ref': zzz,
-                   'I_ref': zzz,
-                   'V_ref': zzz,
-                   'R_g_on_ref': zzz,
-                   'R_g_off_ref': zzz,
-                   'K_i': zzz,
-                   'K_v': zzz,
-                   'G_i': zzz,
-                   'E_on_125': zzz,
-                   'E_on_150': zzz,
-                   'E_off_125': zzz,
-                   'E_off_150': zzz,
-                   'E_on_T_J': zzz,
-                   'E_off_T_J': zzz,
+                   'I_channel_T_J': Switch_I_channel_T_J,
+                   'T_J_ref': Switch_T_J_ref,
+                   'E_on_ref': Switch_E_on_ref,
+                   'E_off_ref': Switch_E_off_ref,
+                   'I_ref': Switch_I_ref,
+                   'V_ref': Switch_V_ref,
+                   'R_g_on_ref': Switch_R_g_on_ref,
+                   'R_g_off_ref': Switch_R_g_off_ref,
+                   'K_i': Switch_K_i,
+                   'K_v': Switch_K_v,
+                   'G_i': Switch_G_i,
+                   'E_on_125': Switch_E_on_125,
+                   'E_on_150': Switch_E_on_150,
+                   'E_off_125': Switch_E_off_125,
+                   'E_off_150': Switch_E_off_150,
+                   'E_on_T_J': Switch_E_on_T_J,
+                   'E_off_T_J': Switch_E_off_T_J,
                    'C_oss': compatibilityTest(transistorName, 'Transistor.switch.c_oss'),
                    'C_iss': compatibilityTest(transistorName, 'Transistor.switch.c_iss'),
                    'C_rss': compatibilityTest(transistorName, 'Transistor.switch.c_rss'),
@@ -115,27 +194,73 @@ def exportTransistorV1(transistorName):
                    'C_th_total': compatibilityTest(transistorName, 'Transistor.switch.thermal.c_th_total'),
                    'C_th_vector': compatibilityTest(transistorName, 'Transistor.switch.thermal.c_th_vector')}
 
+
+    # maximum data for plots and for non-linear data, given by data sheet plots
+    # TODO Set max points via Variable (Given to the exporter function)
+    Temp_Diode_I_channel_max = 1200
+    Temp_Diode_V_channel_max = 3.5
+    Diode_I_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'I_max')
+    Diode_V_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'V_max')
+
+    # Junction temperatures for channel losses and switching losses
+    # TODO Set temperature via Variable (Given to the exporter function?)
+    Diode_T_J_channel = [25, 125]
+    Diode_T_J_switching = [125, 150]
+
+    # TODO Add function after linearized data is available
+    Diode_r_channel = np.nan
+    Diode_V0_channel = np.nan
+
+    Diode_I_channel = np.linspace(0, Temp_Diode_I_channel_max, Temp_Diode_I_channel_max + 1)
+    Diode_I_channel_T_J = [[findChannelData(transistorName, 'Transistor.diode.channel', 25, 'v_i_data', 'I')],
+                           [findChannelData(transistorName, 'Transistor.diode.channel', 125, 'v_i_data', 'I')]]
+
+    # TODO V_Channel Endpoint change to variable?
+    Diode_V_channel = np.linspace(0, Temp_Diode_V_channel_max, 20)
+    # TODO Add function after linearized data is added
+    Diode_V_channel_vec = np.nan
+
+    # TODO replace when implemented in databaseClasses.py
+    Diode_T_J_ref = np.nan
+    Diode_E_rr_ref = np.nan
+    Diode_I_ref = np.nan
+    Diode_V_ref = np.nan
+
+    Diode_E_rr_125 = findSwitchEnergyData(transistorName, 'Transistor.diode.e_rr', 125,
+                                           'Fill Attribute', 'Fill identifier')
+    Diode_E_rr_150 = findSwitchEnergyData(transistorName, 'Transistor.diode.e_rr', 150,
+                                           'Fill Attribute', 'Fill identifier')
+    Diode_E_rr_T_J = [[findSwitchEnergyData(transistorName, 'Transistor.diode.e_rr', 125,
+                                           'Fill Attribute', 'Fill identifier')],
+                      [findSwitchEnergyData(transistorName, 'Transistor.diode.e_rr', 150,
+                                           'Fill Attribute', 'Fill identifier')]]
+
+    # TODO replace 'switchEnergy.*' when implemented in databaseClasses.py
+    Diode_K_i = compatibilityTest(transistorName, 'Transistor.diode.switchEnergy.k_i')
+    Diode_K_v = compatibilityTest(transistorName, 'Transistor.diode.switchEnergy.k_v')
+    Diode_G_i = compatibilityTest(transistorName, 'Transistor.diode.switchEnergy.g_i')
+
     Diode_dict = {'Manufacturer': compatibilityTest(transistorName, 'Transistor.diode.manufacturer'),
-                  'T_J_channel': zzz,
-                  'T_J_switching': zzz,
-                  'r_channel': zzz,
-                  'V0_channel': zzz,
-                  'I_channel': zzz,
-                  'V_channel_vec': zzz,
-                  'V_channel': zzz,
+                  'T_J_channel': Diode_T_J_channel,
+                  'T_J_switching': Diode_T_J_switching,
+                  'r_channel': Diode_r_channel,
+                  'V0_channel': Diode_V0_channel,
+                  'I_channel': Diode_I_channel,
+                  'V_channel_vec': Diode_V_channel_vec,
+                  'V_channel': Diode_V_channel,
                   'I_channel_25': findChannelData(transistorName, 'Transistor.diode.channel', 25, 'v_i_data', 'I'),
                   'I_channel_125': findChannelData(transistorName, 'Transistor.diode.channel', 125, 'v_i_data', 'I'),
-                  'I_channel_T_J': zzz,
-                  'T_J_ref': zzz,
-                  'E_rr_ref': zzz,
-                  'I_ref': zzz,
-                  'V_ref': zzz,
-                  'K_i': zzz,
-                  'K_v': zzz,
-                  'G_i': zzz,
-                  'E_rr_125': zzz,
-                  'E_rr_150': zzz,
-                  'E_rr_T_J': zzz,
+                  'I_channel_T_J':  Diode_I_channel_T_J,
+                  'T_J_ref': Diode_T_J_ref,
+                  'E_rr_ref': Diode_E_rr_ref,
+                  'I_ref': Diode_I_ref,
+                  'V_ref': Diode_V_ref,
+                  'K_i': Diode_K_i,
+                  'K_v': Diode_K_v,
+                  'G_i': Diode_G_i,
+                  'E_rr_125': Diode_E_rr_125,
+                  'E_rr_150': Diode_E_rr_150,
+                  'E_rr_T_J': Diode_E_rr_T_J,
                   'R_th_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.t_th_total'),
                   'R_th_vector': compatibilityTest(transistorName, 'Transistor.diode.thermal.r_th_vector'),
                   'tau_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.tau_total'),
@@ -143,10 +268,13 @@ def exportTransistorV1(transistorName):
                   'C_th_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.c_th_total'),
                   'C_th_vector': compatibilityTest(transistorName, 'Transistor.diode.thermal.c_th_vector')}
 
+    # TODO add after linearization function was implemented
+    Transistor_I_linearize_UI_charts = np.nan
+
     Transistor_dict = {'Name': compatibilityTest(transistorName, 'Transistor.name'),
-                       'R_th_CS': zzz,
-                       'R_th_Switch_CS': zzz,
-                       'R_th_Diode_CS': zzz,
+                       'R_th_CS': compatibilityTest(transistorName, 'Transistor.r_th_cs'),
+                       'R_th_Switch_CS': compatibilityTest(transistorName, 'Transistor.r_th_switch_cs'),
+                       'R_th_Diode_CS': compatibilityTest(transistorName, 'Transistor.r_th_diode_cs'),
                        'Manufacturer_Housing': compatibilityTest(transistorName, 'Transistor.meta.housing_type'),
                        'Type': compatibilityTest(transistorName, 'Transistor.transistor_type'),
                        'Template_Version': compatibilityTest(transistorName, 'Transistor.meta.template_version'),
@@ -156,11 +284,11 @@ def exportTransistorV1(transistorName):
                        'Comment': compatibilityTest(transistorName, 'Transistor.meta.comment'),
                        'U_max': compatibilityTest(transistorName, 'Transistor.v_max'),
                        'I_max': compatibilityTest(transistorName, 'Transistor.i_max'),
-                       'I_linearize_UI_charts': zzz,
+                       'I_linearize_UI_charts': Transistor_I_linearize_UI_charts,
                        'Switch': Switch_dict,
                        'Diode': Diode_dict}
 
-    sio.savemat('Transistor_test.mat', {'Transistor_test': Transistor_dict})
+    sio.savemat(Transistor.name + '.mat', {Transistor.name: Transistor_dict})
 
 
 def exportTransistor(transistorName):
