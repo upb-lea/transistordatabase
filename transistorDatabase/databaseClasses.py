@@ -35,6 +35,7 @@ class Transistor(persistent.Persistent):
             self.r_th_diode_cs = transistor_args.get('r_th_diode_cs')
             self.v_max = transistor_args.get('v_max')
             self.i_max = transistor_args.get('i_max')
+            self.i_cont = transistor_args.get('i_cont')
         else:
             # ToDo: Is this a value or a type error?
             # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
@@ -109,6 +110,7 @@ class Transistor(persistent.Persistent):
                 return True
 
         elif dict_type == 'Transistor':
+            # ToDo: Add type checks for optional arguments
             check_keys = {'name', 'transistor_type', 'v_max', 'i_max', 'i_cont'}
             str_keys = {'name', 'transistor_type'}
             numeric_keys = {'v_max', 'i_max', 'i_cont'}
@@ -124,6 +126,7 @@ class Transistor(persistent.Persistent):
                 return True
 
         elif dict_type == 'Metadata':
+            # ToDo: Add type checks for optional arguments
             check_keys = {'author', 'manufacturer', 'housing_area', 'cooling_area', 'housing_type'}
             str_keys = {'author', 'manufacturer', 'housing_type'}
             numeric_keys = {'housing_area', 'cooling_area'}
@@ -213,7 +216,7 @@ class Transistor(persistent.Persistent):
         # Manufacturer- and part-specific data
         manufacturer: str  # Mandatory
         datasheet_hyperlink: [str, None]  # Make sure this link is valid.  # Optional
-        datasheet_date: ["datetime.date", None]  # Should not be changed manually.  # Optional
+        datasheet_date: ["datetime.date", None]  # Optional
         datasheet_version: [str, None]  # Optional
         housing_area: float  # Unit: mm^2  # Mandatory
         cooling_area: float  # Unit: mm^2  # Mandatory
@@ -513,7 +516,7 @@ class Transistor(persistent.Persistent):
             # ToDo: Always check dataset_type and determine which arguments should be ignored.
             self.dataset_type = args.get('dataset_type')
             self.v_supply = args.get('v_supply')
-            self.v_g = args.get('v_switch')
+            self.v_g = args.get('v_g')
             self.t_j = args.get('t_j')
             self.e_x = args.get('e_x')
             self.r_g = args.get('r_g')
