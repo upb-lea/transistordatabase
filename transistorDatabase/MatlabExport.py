@@ -67,6 +67,8 @@ def findChannelData(Transistor, channel, temperature, attribute, identifier):
                 return np.max(DataSet[1])
             elif identifier == 'I_min':
                 return np.min(DataSet[1])
+            elif identifier == 0:
+                return DataSet
         else:
             i += 1
     return np.nan
@@ -93,9 +95,21 @@ def findSwitchEnergyData(Transistor, switchEnergyInstance, temperature, attribut
             i += 1
     return np.nan
 
+# Gather list data (e.g. channel/e_on/e_off/e_rr
+def buildList(Transistor, attribute):
 
-# Exports transistor in legacy format
-def exportTransistorV1(transistorName):
+    if compatibilityTest(Transistor, attribute) != np.nan:
+        ListData = eval(attribute)
+        Dataset = np.empty((len(ListData),), dtype=np.object)
+        for i in range(len(ListData)):
+            Dataset[i] = ListData[i]
+    else:
+        Dataset = np.nan
+    return Dataset
+
+
+# Exports transistor in legacy Simulink format
+def export_simulink_v1(transistorName):
     Transistor = transistorName
 
     # maximum data for plots and for non-linear data, given by data sheet plots
@@ -115,8 +129,8 @@ def exportTransistorV1(transistorName):
     Switch_V0_channel = np.nan
 
     Switch_I_channel = np.linspace(0, Temp_Switch_I_channel_max, Temp_Switch_I_channel_max + 1)
-    Switch_I_channel_T_J = [[findChannelData(transistorName, 'Transistor.switch.channel', 25, 'v_i_data', 'I')],
-                            [findChannelData(transistorName, 'Transistor.switch.channel', 125, 'v_i_data', 'I')]]
+    Switch_I_channel_T_J = [[findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'I')],
+                            [findChannelData(Transistor, 'Transistor.switch.channel', 125, 'v_i_data', 'I')]]
 
     # TODO V_Channel endpoint change to variable?
     Switch_V_channel = np.linspace(0, Temp_Switch_V_channel_max, 20)
@@ -133,29 +147,29 @@ def exportTransistorV1(transistorName):
     Switch_R_g_off_ref = np.nan
 
     # TODO implement interpolLUT either here in findSwitchEnergyData or in databaseClasses.py
-    Switch_E_on_125 = findSwitchEnergyData(transistorName, 'Transistor.switch.e_on', 125,
+    Switch_E_on_125 = findSwitchEnergyData(Transistor, 'Transistor.switch.e_on', 125,
                                            'Fill Attribute', 'Fill identifier')
-    Switch_E_on_150 = findSwitchEnergyData(transistorName, 'Transistor.switch.e_on', 150,
+    Switch_E_on_150 = findSwitchEnergyData(Transistor, 'Transistor.switch.e_on', 150,
                                            'Fill Attribute', 'Fill identifier')
-    Switch_E_off_125 = findSwitchEnergyData(transistorName, 'Transistor.switch.e_off', 125,
-                                           'Fill Attribute', 'Fill identifier')
-    Switch_E_off_150 = findSwitchEnergyData(transistorName, 'Transistor.switch.e_off', 150,
-                                           'Fill Attribute', 'Fill identifier')
-    Switch_E_on_T_J = [[findSwitchEnergyData(transistorName, 'Transistor.switch.e_on', 125,
-                                           'Fill Attribute', 'Fill identifier')],
-                       [findSwitchEnergyData(transistorName, 'Transistor.switch.e_on', 150,
-                                           'Fill Attribute', 'Fill identifier')]]
-    Switch_E_off_T_J = [[findSwitchEnergyData(transistorName, 'Transistor.switch.e_off', 125,
+    Switch_E_off_125 = findSwitchEnergyData(Transistor, 'Transistor.switch.e_off', 125,
+                                            'Fill Attribute', 'Fill identifier')
+    Switch_E_off_150 = findSwitchEnergyData(Transistor, 'Transistor.switch.e_off', 150,
+                                            'Fill Attribute', 'Fill identifier')
+    Switch_E_on_T_J = [[findSwitchEnergyData(Transistor, 'Transistor.switch.e_on', 125,
                                              'Fill Attribute', 'Fill identifier')],
-                        [findSwitchEnergyData(transistorName, 'Transistor.switch.e_off', 150,
+                       [findSwitchEnergyData(Transistor, 'Transistor.switch.e_on', 150,
                                              'Fill Attribute', 'Fill identifier')]]
+    Switch_E_off_T_J = [[findSwitchEnergyData(Transistor, 'Transistor.switch.e_off', 125,
+                                              'Fill Attribute', 'Fill identifier')],
+                        [findSwitchEnergyData(Transistor, 'Transistor.switch.e_off', 150,
+                                              'Fill Attribute', 'Fill identifier')]]
 
     # TODO replace 'switchEnergy.*' when implemented in databaseClasses.py
-    Switch_K_i = compatibilityTest(transistorName, 'Transistor.switch.switchEnergy.k_i')
-    Switch_K_v = compatibilityTest(transistorName, 'Transistor.switch.switchEnergy.k_v')
-    Switch_G_i = compatibilityTest(transistorName, 'Transistor.switch.switchEnergy.g_i')
+    Switch_K_i = compatibilityTest(Transistor, 'Transistor.switch.switchEnergy.k_i')
+    Switch_K_v = compatibilityTest(Transistor, 'Transistor.switch.switchEnergy.k_v')
+    Switch_G_i = compatibilityTest(Transistor, 'Transistor.switch.switchEnergy.g_i')
 
-    Switch_dict = {'Manufacturer': compatibilityTest(transistorName, 'Transistor.switch.manufacturer'),
+    Switch_dict = {'Manufacturer': compatibilityTest(Transistor, 'Transistor.switch.manufacturer'),
                    'I_channel_max': Switch_I_channel_max,
                    'V_channel_max': Switch_V_channel_max,
                    'T_J_channel': Switch_T_J_channel,
@@ -165,8 +179,8 @@ def exportTransistorV1(transistorName):
                    'I_channel': Switch_I_channel,
                    'V_channel_vec': Switch_V_channel_vec,
                    'V_channel': Switch_V_channel,
-                   'I_channel_25': findChannelData(transistorName, 'Transistor.switch.channel', 25, 'v_i_data', 'I'),
-                   'I_channel_125': findChannelData(transistorName, 'Transistor.switch.channel', 125, 'v_i_data', 'I'),
+                   'I_channel_25': findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'I'),
+                   'I_channel_125': findChannelData(Transistor, 'Transistor.switch.channel', 125, 'v_i_data', 'I'),
                    'I_channel_T_J': Switch_I_channel_T_J,
                    'T_J_ref': Switch_T_J_ref,
                    'E_on_ref': Switch_E_on_ref,
@@ -184,15 +198,15 @@ def exportTransistorV1(transistorName):
                    'E_off_150': Switch_E_off_150,
                    'E_on_T_J': Switch_E_on_T_J,
                    'E_off_T_J': Switch_E_off_T_J,
-                   'C_oss': compatibilityTest(transistorName, 'Transistor.switch.c_oss'),
-                   'C_iss': compatibilityTest(transistorName, 'Transistor.switch.c_iss'),
-                   'C_rss': compatibilityTest(transistorName, 'Transistor.switch.c_rss'),
-                   'R_th_total': compatibilityTest(transistorName, 'Transistor.switch.thermal.t_th_total'),
-                   'R_th_vector': compatibilityTest(transistorName, 'Transistor.switch.thermal.r_th_vector'),
-                   'tau_total': compatibilityTest(transistorName, 'Transistor.switch.thermal.tau_total'),
-                   'tau_vector': compatibilityTest(transistorName, 'Transistor.switch.thermal.tau_vector'),
-                   'C_th_total': compatibilityTest(transistorName, 'Transistor.switch.thermal.c_th_total'),
-                   'C_th_vector': compatibilityTest(transistorName, 'Transistor.switch.thermal.c_th_vector')}
+                   'C_oss': compatibilityTest(Transistor, 'Transistor.switch.c_oss'),
+                   'C_iss': compatibilityTest(Transistor, 'Transistor.switch.c_iss'),
+                   'C_rss': compatibilityTest(Transistor, 'Transistor.switch.c_rss'),
+                   'R_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.t_th_total'),
+                   'R_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.r_th_vector'),
+                   'tau_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.tau_total'),
+                   'tau_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.tau_vector'),
+                   'C_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.c_th_total'),
+                   'C_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.c_th_vector')}
 
 
     # maximum data for plots and for non-linear data, given by data sheet plots
@@ -212,8 +226,8 @@ def exportTransistorV1(transistorName):
     Diode_V0_channel = np.nan
 
     Diode_I_channel = np.linspace(0, Temp_Diode_I_channel_max, Temp_Diode_I_channel_max + 1)
-    Diode_I_channel_T_J = [[findChannelData(transistorName, 'Transistor.diode.channel', 25, 'v_i_data', 'I')],
-                           [findChannelData(transistorName, 'Transistor.diode.channel', 125, 'v_i_data', 'I')]]
+    Diode_I_channel_T_J = [[findChannelData(Transistor, 'Transistor.diode.channel', 25, 'v_i_data', 'I')],
+                           [findChannelData(Transistor, 'Transistor.diode.channel', 125, 'v_i_data', 'I')]]
 
     # TODO V_Channel Endpoint change to variable?
     Diode_V_channel = np.linspace(0, Temp_Diode_V_channel_max, 20)
@@ -226,21 +240,21 @@ def exportTransistorV1(transistorName):
     Diode_I_ref = np.nan
     Diode_V_ref = np.nan
 
-    Diode_E_rr_125 = findSwitchEnergyData(transistorName, 'Transistor.diode.e_rr', 125,
+    Diode_E_rr_125 = findSwitchEnergyData(Transistor, 'Transistor.diode.e_rr', 125,
                                            'Fill Attribute', 'Fill identifier')
-    Diode_E_rr_150 = findSwitchEnergyData(transistorName, 'Transistor.diode.e_rr', 150,
+    Diode_E_rr_150 = findSwitchEnergyData(Transistor, 'Transistor.diode.e_rr', 150,
                                            'Fill Attribute', 'Fill identifier')
-    Diode_E_rr_T_J = [[findSwitchEnergyData(transistorName, 'Transistor.diode.e_rr', 125,
+    Diode_E_rr_T_J = [[findSwitchEnergyData(Transistor, 'Transistor.diode.e_rr', 125,
                                            'Fill Attribute', 'Fill identifier')],
-                      [findSwitchEnergyData(transistorName, 'Transistor.diode.e_rr', 150,
+                      [findSwitchEnergyData(Transistor, 'Transistor.diode.e_rr', 150,
                                            'Fill Attribute', 'Fill identifier')]]
 
     # TODO replace 'switchEnergy.*' when implemented in databaseClasses.py
-    Diode_K_i = compatibilityTest(transistorName, 'Transistor.diode.switchEnergy.k_i')
-    Diode_K_v = compatibilityTest(transistorName, 'Transistor.diode.switchEnergy.k_v')
-    Diode_G_i = compatibilityTest(transistorName, 'Transistor.diode.switchEnergy.g_i')
+    Diode_K_i = compatibilityTest(Transistor, 'Transistor.diode.switchEnergy.k_i')
+    Diode_K_v = compatibilityTest(Transistor, 'Transistor.diode.switchEnergy.k_v')
+    Diode_G_i = compatibilityTest(Transistor, 'Transistor.diode.switchEnergy.g_i')
 
-    Diode_dict = {'Manufacturer': compatibilityTest(transistorName, 'Transistor.diode.manufacturer'),
+    Diode_dict = {'Manufacturer': compatibilityTest(Transistor, 'Transistor.diode.manufacturer'),
                   'T_J_channel': Diode_T_J_channel,
                   'T_J_switching': Diode_T_J_switching,
                   'r_channel': Diode_r_channel,
@@ -248,8 +262,8 @@ def exportTransistorV1(transistorName):
                   'I_channel': Diode_I_channel,
                   'V_channel_vec': Diode_V_channel_vec,
                   'V_channel': Diode_V_channel,
-                  'I_channel_25': findChannelData(transistorName, 'Transistor.diode.channel', 25, 'v_i_data', 'I'),
-                  'I_channel_125': findChannelData(transistorName, 'Transistor.diode.channel', 125, 'v_i_data', 'I'),
+                  'I_channel_25': findChannelData(Transistor, 'Transistor.diode.channel', 25, 'v_i_data', 'I'),
+                  'I_channel_125': findChannelData(Transistor, 'Transistor.diode.channel', 125, 'v_i_data', 'I'),
                   'I_channel_T_J':  Diode_I_channel_T_J,
                   'T_J_ref': Diode_T_J_ref,
                   'E_rr_ref': Diode_E_rr_ref,
@@ -261,112 +275,99 @@ def exportTransistorV1(transistorName):
                   'E_rr_125': Diode_E_rr_125,
                   'E_rr_150': Diode_E_rr_150,
                   'E_rr_T_J': Diode_E_rr_T_J,
-                  'R_th_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.t_th_total'),
-                  'R_th_vector': compatibilityTest(transistorName, 'Transistor.diode.thermal.r_th_vector'),
-                  'tau_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.tau_total'),
-                  'tau_vector': compatibilityTest(transistorName, 'Transistor.diode.thermal.tau_vector'),
-                  'C_th_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.c_th_total'),
-                  'C_th_vector': compatibilityTest(transistorName, 'Transistor.diode.thermal.c_th_vector')}
+                  'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.t_th_total'),
+                  'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_vector'),
+                  'tau_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_total'),
+                  'tau_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_vector'),
+                  'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_total'),
+                  'C_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_vector')}
 
     # TODO add after linearization function was implemented
     Transistor_I_linearize_UI_charts = np.nan
 
-    Transistor_dict = {'Name': compatibilityTest(transistorName, 'Transistor.name'),
-                       'R_th_CS': compatibilityTest(transistorName, 'Transistor.r_th_cs'),
-                       'R_th_Switch_CS': compatibilityTest(transistorName, 'Transistor.r_th_switch_cs'),
-                       'R_th_Diode_CS': compatibilityTest(transistorName, 'Transistor.r_th_diode_cs'),
-                       'Manufacturer_Housing': compatibilityTest(transistorName, 'Transistor.meta.housing_type'),
-                       'Type': compatibilityTest(transistorName, 'Transistor.transistor_type'),
-                       'Template_Version': compatibilityTest(transistorName, 'Transistor.meta.template_version'),
-                       'Template_Date': compatibilityTest(transistorName, 'Transistor.meta.template_date'),
-                       'Author': compatibilityTest(transistorName, 'Transistor.meta.author'),
-                       'Date_of_transistor_creation': compatibilityTest(transistorName, 'Transistor.meta.creation_date'),
-                       'Comment': compatibilityTest(transistorName, 'Transistor.meta.comment'),
-                       'U_max': compatibilityTest(transistorName, 'Transistor.v_max'),
-                       'I_max': compatibilityTest(transistorName, 'Transistor.i_max'),
+    Transistor_dict = {'Name': compatibilityTest(Transistor, 'Transistor.name'),
+                       'R_th_CS': compatibilityTest(Transistor, 'Transistor.r_th_cs'),
+                       'R_th_Switch_CS': compatibilityTest(Transistor, 'Transistor.r_th_switch_cs'),
+                       'R_th_Diode_CS': compatibilityTest(Transistor, 'Transistor.r_th_diode_cs'),
+                       'Manufacturer_Housing': compatibilityTest(Transistor, 'Transistor.meta.housing_type'),
+                       'Type': compatibilityTest(Transistor, 'Transistor.transistor_type'),
+                       'Template_Version': compatibilityTest(Transistor, 'Transistor.meta.template_version'),
+                       'Template_Date': compatibilityTest(Transistor, 'Transistor.meta.template_date'),
+                       'Author': compatibilityTest(Transistor, 'Transistor.meta.author'),
+                       'Date_of_transistor_creation': compatibilityTest(Transistor, 'Transistor.meta.creation_date'),
+                       'Comment': compatibilityTest(Transistor, 'Transistor.meta.comment'),
+                       'U_max': compatibilityTest(Transistor, 'Transistor.v_max'),
+                       'I_max': compatibilityTest(Transistor, 'Transistor.i_max'),
                        'I_linearize_UI_charts': Transistor_I_linearize_UI_charts,
                        'Switch': Switch_dict,
                        'Diode': Diode_dict}
 
-    sio.savemat(Transistor.name + '.mat', {Transistor.name: Transistor_dict})
+    sio.savemat(Transistor.name + '_S1.mat', {Transistor.name: Transistor_dict})
 
 
-def exportTransistor(transistorName):
+# Exports raw data to a .mat File
+def export_matlab_v1(transistorName):
     Transistor = transistorName
-    print(compatibilityTest(transistorName, 'Transistor.name'))
-    print(compatibilityTest(transistorName, 'Transistor.author'))
-    print(compatibilityTest(transistorName, 'Transistor.r_th_cs'))
 
-    Metadata_dict = {'Author': compatibilityTest(transistorName, 'Transistor.meta.author'),
-                     'Template_version': compatibilityTest(transistorName, 'Transistor.meta.template_version'),
-                     'Template_date': compatibilityTest(transistorName, 'Transistor.meta.template_date'),
-                     'Creation_date': compatibilityTest(transistorName, 'Transistor.meta.creation_date'),
-                     'Last_modified': compatibilityTest(transistorName, 'Transistor.meta.last_modified'),
-                     'Comment': compatibilityTest(transistorName, 'Transistor.meta.comment'),
-                     'Manufacturer': compatibilityTest(transistorName, 'Transistor.meta.manufacturer'),
-                     'Datasheet_hyperlink': compatibilityTest(transistorName, 'Transistor.meta.datasheet_hyperlink'),
-                     'Datasheet_date': compatibilityTest(transistorName, 'Transistor.meta.datasheet_date'),
-                     'Datasheet_version': compatibilityTest(transistorName, 'Transistor.meta.datasheet_version'),
-                     'Housing_area': compatibilityTest(transistorName, 'Transistor.meta.housing_area'),
-                     'Contact_area': compatibilityTest(transistorName, 'Transistor.meta.cooling_area'),
-                     #                'Housing_type': compatibilityTest(Transistor.meta.housing_type)
-                     }
+    Metadata_dict = {'Author': compatibilityTest(Transistor, 'Transistor.meta.author'),
+                     'Template_version': compatibilityTest(Transistor, 'Transistor.meta.template_version'),
+                     'Template_date': compatibilityTest(Transistor, 'Transistor.meta.template_date'),
+                     'Creation_date': compatibilityTest(Transistor, 'Transistor.meta.creation_date'),
+                     'Last_modified': compatibilityTest(Transistor, 'Transistor.meta.last_modified'),
+                     'Comment': compatibilityTest(Transistor, 'Transistor.meta.comment'),
+                     'Manufacturer': compatibilityTest(Transistor, 'Transistor.meta.manufacturer'),
+                     'Datasheet_hyperlink': compatibilityTest(Transistor, 'Transistor.meta.datasheet_hyperlink'),
+                     'Datasheet_date': compatibilityTest(Transistor, 'Transistor.meta.datasheet_date'),
+                     'Datasheet_version': compatibilityTest(Transistor, 'Transistor.meta.datasheet_version'),
+                     'Housing_area': compatibilityTest(Transistor, 'Transistor.meta.housing_area'),
+                     'Contact_area': compatibilityTest(Transistor, 'Transistor.meta.cooling_area'),
+                     'Housing_type': compatibilityTest(Transistor, 'Transistor.meta.housing_type')}
 
-    FosterThermalModel_dict = {'R_th_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.r_th_total'),
-                               'R_th_vector': compatibilityTest(transistorName, 'Transistor.diode.thermal.r_th_vector'),
-                               'C_th_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.c_th_total'),
-                               'C_th_vector': compatibilityTest(transistorName, 'Transistor.diode.thermal.c_th_vector'),
-                               'Tau_total': compatibilityTest(transistorName, 'Transistor.diode.thermal.tau_total'),
-                               'Tau_vector': compatibilityTest(transistorName, 'Transistor.diode.thermal.tau_vector'),
-                               'Transient_data': compatibilityTest(transistorName,
-                                                                   'Transistor.diode.thermal.transient_data')}
+    Diode_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_total'),
+                         'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_vector'),
+                         'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_total'),
+                         'C_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_vector'),
+                         'Tau_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_total'),
+                         'Tau_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_vector'),
+                         'Transient_data': compatibilityTest(Transistor, 'Transistor.diode.thermal.transient_data')}
 
-    # ??? Transistor.Switch.meta
-    Switch_dict = {'Comment': compatibilityTest(transistorName, 'Transistor.meta.comment'),
-                   'Manufacturer': compatibilityTest(transistorName, 'Transistor.meta.manufacturer'),
-                   'Technology': compatibilityTest(transistorName, 'Transistor.meta.technology'),
-                   'c_oss': compatibilityTest(transistorName, 'Transistor.switch.c_oss'),
-                   'c_iss': compatibilityTest(transistorName, 'Transistor.switch.c_iss'),
-                   'c_rss': compatibilityTest(transistorName, 'Transistor.switch.c_rss'),
-                   'channel': compatibilityTest(transistorName, 'Transistor.switch.channel'),
-                   'e_on': compatibilityTest(transistorName, 'Transistor.switch.e_on'),
-                   'e_off': compatibilityTest(transistorName, 'Transistor.switch.e_off')}
+    Switch_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_total'),
+                          'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_vector'),
+                          'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_total'),
+                          'C_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_vector'),
+                          'Tau_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_total'),
+                          'Tau_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_vector'),
+                          'Transient_data': compatibilityTest(Transistor, 'Transistor.diode.thermal.transient_data')}
 
-    # ??? Transistor.Diode.meta/thermal
-    Diode_dict = {'Comment': compatibilityTest(transistorName, 'Transistor.meta.comment'),
-                  'Manufacturer': compatibilityTest(transistorName, 'Transistor.meta.manufacturer'),
-                  'Technology': compatibilityTest(transistorName, 'Transistor.meta.technology'),
-                  'thermal': compatibilityTest(transistorName, 'Transistor.diode.thermal'),
-                  'channel': compatibilityTest(transistorName, 'Transistor.diode.channel'),
-                  'e_rr': compatibilityTest(transistorName, 'Transistor.diode.e_rr')}
+    Switch_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.meta.comment'),
+                   'Manufacturer': compatibilityTest(Transistor, 'Transistor.meta.manufacturer'),
+                   'Technology': compatibilityTest(Transistor, 'Transistor.meta.technology'),
+                   'c_oss': compatibilityTest(Transistor, 'Transistor.switch.c_oss'),
+                   'c_iss': compatibilityTest(Transistor, 'Transistor.switch.c_iss'),
+                   'c_rss': compatibilityTest(Transistor, 'Transistor.switch.c_rss'),
+                   'channel': buildList(Transistor, 'Transistor.list.channel'),
+                   'e_on': buildList(Transistor, 'Transistor.switch.e_on'),
+                   'e_off': buildList(Transistor, 'Transistor.switch.e_off'),
+                   'Foster Thermal Model': Switch_Foster_dict}
 
-    ChannelData_dict = {'t_j': compatibilityTest(transistorName, 'Transistor.switch.channel.t_j'),
-                        'v_i_data': compatibilityTest(transistorName, 'Transistor.switch.channel.v_i_data')}
+    Diode_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.meta.comment'),
+                  'Manufacturer': compatibilityTest(Transistor, 'Transistor.meta.manufacturer'),
+                  'Technology': compatibilityTest(Transistor, 'Transistor.meta.technology'),
+                  'thermal': compatibilityTest(Transistor, 'Transistor.diode.thermal'),
+                  'channel': buildList(Transistor, 'Transistor.diode.channel'),
+                  'e_rr': buildList(Transistor, 'Transistor.diode.e_rr'),
+                  'Foster Thermal Model': Diode_Foster_dict}
 
-    SwitchEnergyData_dict = {
-        'dataset_type': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.dataset_type'),
-        't_j': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.t_j'),
-        'v_supply': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.v_supply'),
-        'v_g': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.v_g'),
-        'e_x': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.e_x'),
-        'r_g': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.r_g'),
-        'i_x': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.i_x'),
-        'i_e_data': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.i_e_data'),
-        'r_e_data': compatibilityTest(transistorName, 'Transistor.SwitchEnergyData.r_e_data')}
-
-    Transistor_dict = {'name': compatibilityTest(transistorName, 'Transistor.name'),
-                       'type': compatibilityTest(transistorName, 'Transistor.type'),
-                       'r_th_cs': compatibilityTest(transistorName, 'Transistor.r_th_cs'),
-                       'r_th_switch': compatibilityTest(transistorName, 'Transistor.r_th_switch_cs'),
-                       'r_th_diode_cs': compatibilityTest(transistorName, 'Transistor.r_th_diode_cs'),
-                       'v_max': compatibilityTest(transistorName, 'Transistor.v_max'),
-                       'i_max': compatibilityTest(transistorName, 'Transistor.i_max'),
-                       'i_cont': compatibilityTest(transistorName, 'Transistor.i_cont'),
+    Transistor_dict = {'name': compatibilityTest(Transistor, 'Transistor.name'),
+                       'type': compatibilityTest(Transistor, 'Transistor.type'),
+                       'r_th_cs': compatibilityTest(Transistor, 'Transistor.r_th_cs'),
+                       'r_th_switch': compatibilityTest(Transistor, 'Transistor.r_th_switch_cs'),
+                       'r_th_diode_cs': compatibilityTest(Transistor, 'Transistor.r_th_diode_cs'),
+                       'v_max': compatibilityTest(Transistor, 'Transistor.v_max'),
+                       'i_max': compatibilityTest(Transistor, 'Transistor.i_max'),
+                       'i_cont': compatibilityTest(Transistor, 'Transistor.i_cont'),
                        'Metadata': Metadata_dict,
                        'Switch': Switch_dict,
-                       'Switch Energy Data': SwitchEnergyData_dict,
-                       'Diode': Diode_dict,
-                       'Channel Data': ChannelData_dict,
-                       'Foster Thermal Model': FosterThermalModel_dict}
+                       'Diode': Diode_dict}
 
-    sio.savemat('Transistor_test.mat', {'Transistor_test': Transistor_dict})
+    sio.savemat(Transistor.name + '_M1.mat', {Transistor.name: Transistor_dict})
