@@ -24,7 +24,7 @@ class Transistor(persistent.Persistent):
     v_max: [float, int]  # Unit: V  # Mandatory
     i_max: [float, int]  # Unit: A  # Mandatory
     # Rated operation region
-    i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom
+    i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom # Mandatory
 
     def __init__(self, transistor_args, metadata_args, foster_args, switch_args, diode_args):
         if self.isvalid_dict(transistor_args, 'Transistor'):
@@ -497,12 +497,12 @@ class Transistor(persistent.Persistent):
         v_supply: [int, float]  # Unit: V  # Mandatory
         v_g: [int, float]  # Unit: V  # Mandatory
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
-        e_x: [int, float, None]  # Unit: mJ
+        e_x: [int, float, None]  # Unit: J
         r_g: [int, float, None]  # Unit: Ohm
         i_x: [int, float, None]  # Unit: A
         # Dataset. Only one of these is allowed. The other should be 'None'.
-        i_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: mJ
-        r_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: Ohm; Row 2: mJ
+        i_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
+        r_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: Ohm; Row 2: J
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
         # ToDo: Add additional class for linearized switching loss model with capacitances. (See infineon application
         #  note.)
@@ -551,11 +551,21 @@ def check_str(x):
     raise TypeError('{0} is not a string.'.format(x))
 
 
-def csv2array(csv_filename):
+def csv2array(csv_filename, set_first_value_to_zero):
     """Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
-    https://apps.automeris.io/wpd/"""
+    https://apps.automeris.io/wpd/
+
+    csv_filename: str. Insert .csv filename, e.g. "switch_channel_25_15v"
+    set_first_value_to_zero: boolean True/False. Set 'True' to change the first value pair to zero. This is necessary in
+        case of webplotdigitizer returns the first value pair e.g. as -0,13; 0,00349.
+    """
     array = np.genfromtxt(csv_filename, delimiter=";",
                           converters={0: lambda s: float(s.decode("UTF-8").replace(",", ".")),
                                       1: lambda s: float(s.decode("UTF-8").replace(",", "."))})
+
+    if set_first_value_to_zero == True:
+        array[0][0] = 0
+        array[0][1] = 0
+
     return np.transpose(array)
