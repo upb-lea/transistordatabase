@@ -345,7 +345,7 @@ def export_matlab_v1(transistorName):
                    'c_oss': compatibilityTest(Transistor, 'Transistor.switch.c_oss'),
                    'c_iss': compatibilityTest(Transistor, 'Transistor.switch.c_iss'),
                    'c_rss': compatibilityTest(Transistor, 'Transistor.switch.c_rss'),
-                   'channel': buildList(Transistor, 'Transistor.list.channel'),
+                   'channel': buildList(Transistor, 'Transistor.switch.channel'),
                    'e_on': buildList(Transistor, 'Transistor.switch.e_on'),
                    'e_off': buildList(Transistor, 'Transistor.switch.e_off'),
                    'Foster Thermal Model': Switch_Foster_dict}
