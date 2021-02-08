@@ -550,3 +550,12 @@ def check_str(x):
         return True
     raise TypeError('{0} is not a string.'.format(x))
 
+
+def csv2array(csv_filename):
+    """Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
+    are supported as decimal separators. .csv file can generated from a 2D-graph for example via
+    https://apps.automeris.io/wpd/"""
+    array = np.genfromtxt(csv_filename, delimiter=";",
+                          converters={0: lambda s: float(s.decode("UTF-8").replace(",", ".")),
+                                      1: lambda s: float(s.decode("UTF-8").replace(",", "."))})
+    return np.transpose(array)
