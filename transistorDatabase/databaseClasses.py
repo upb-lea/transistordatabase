@@ -53,7 +53,7 @@ class Transistor(persistent.Persistent):
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
         """This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
-        are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' for 'transistor_type').
+        are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'transistor_type').
         Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
         Raises appropriate errors if dictionary invalid in other ways."""
         # ToDo: Add structure for Errors. e.g.: xx has wrong type, xx has wrong type, etc.
@@ -117,8 +117,8 @@ class Transistor(persistent.Persistent):
             if dataset_dict.keys() < check_keys:
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'v_max', 'i_max', 'i_cont'")
-            elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT']:
-                raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT'")
+            elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT', 'SiC-MOSFET']:
+                raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT' or 'SiC-MOSFET'")
             # Check if all values have appropriate types.
             elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
                     all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
@@ -295,7 +295,7 @@ class Transistor(persistent.Persistent):
                 self.transient_data = None
 
     class Switch:
-        """Contains data associated with the switchting-characteristics of a MOSFET or IGBT. Can contain multiple
+        """Contains data associated with the switchting-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
         channel-, e_on- and e_off-datasets. """
         # Metadata
         comment: [str, None]  # Optional
@@ -391,7 +391,7 @@ class Transistor(persistent.Persistent):
                 self.e_off = []
 
     class Diode:
-        """Contains data associated with the (reverse) diode-characteristics of a MOSFET or IGBT. Can contain multiple
+        """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
         channel- and e_rr- datasets."""
         # Metadata
         comment: [str, None]  # Optional
