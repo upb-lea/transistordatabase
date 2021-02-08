@@ -9,11 +9,13 @@ Functionality examples
 
 
 ## Installation
+### install the sources
 ```
 cd /Documents/Folder/of/Interest   
 git clone git@github.com:upb-lea/Transistor_Database.git
 ```
-
+### installing TBD using pip
+coming soon.
 
 ## Usage
 
@@ -24,6 +26,7 @@ Planned features in 2021
 * exporters to a few programs, e.g. Simulink, GeckoCIRCUITS, PLECs, ...
 * save measurement data from double pulse measurements in the transistor database
 * compare resistors within the database (e.g. compare measurements wit datasheet values, or compare datasheet values for transistor A with transistor B)
+* provide a pip package
 
 
 ## Bug Reports
@@ -31,9 +34,8 @@ Please use the issues report button within github to report bugs.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+For contributing, please refer to this [section](Contributing.md).
      
-For drawings (e.g. in readme-files), we recomment to use the program [Inkscape](https://inkscape.org/). It is open source software and runs on Linux, Mac and Windows. If you want to draw electirc circuits, we recommend this library on [github](https://github.com/upb-lea/Inkscape_electric_Symbols).
-
 ## Authors and acknowledgement
 Actual developers
 * Manuel Klädtke
