@@ -574,10 +574,12 @@ class Transistor(persistent.Persistent):
             self.r_e_data = args.get('r_e_data')
 
     def linearize_switch_ui_graph(self, temperature, gatevoltage, current):
-        """ get interpolated channel parameters """
+        """ get interpolated channel parameters. This function searches for ui_graphs with the choosen temperature and gatevoltage. At the desired current,
+        the equivalent parameters for u_channel and r_channel are returned"""
         # ToDo: rethink method name. May include switch or diode as a parameter and use one global function
         # ToDo: check if this function works for all types of transistors
         # ToDo: Error handling
+        # ToDo: Unittest for this method
 
         # in case of failure, return None
         v_channel = None
