@@ -73,32 +73,7 @@ def Template():
     ####################################
     # switch parameters
     ####################################
-
-    channel_25 = {"t_j": 25, "v_i_data": csv2array('switch_channel_25_vg15.csv', True)}  # insert csv here
-    channel_175 = {"t_j": 175, "v_i_data": csv2array('switch_channel_175_vg15.csv', True)}  # insert csv here
-
-    # switching behaviour
-    dataset_type = "single" # Mandatory
-    t_j = 125  # Unit: °C  # Mandatory
-    v_supply = 800  # Unit: V  # Mandatory
-    v_g = 15  # Unit: V  # Mandatory
-
-    # turn on
-    e_on = 15e-3  # Unit: J
-    r_g_on = 2.5   # Unit: Ohm
-    i_on =  100 # Unit: A
-
-    # turn off
-    e_off = 25e-3  # Unit: J
-    r_g_off = 5   # Unit: Ohm
-    i_off = 100  # Unit: A
-
-    e_on_25 = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g, 'e_x': e_on, 'r_g': r_g_on, 'i_x': i_on}
-    e_off_25 = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g, 'e_x': e_off, 'r_g': r_g_off, 'i_x': i_off}
-
-
-
-    # Metadata
+    #### Metadata
     comment = "SiC switch"  # Optional
     manufacturer = "CREE"  # Optional
     technology = "unknown" # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
@@ -108,6 +83,51 @@ def Template():
     c_iss = 3  # Unit: pF  # Optional
     c_rss = 4    # Unit: pF  # Optional
 
+    #### Channel parameters
+    # channel data 25 degree
+    channel_25_15 = {"t_j": 25, 'v_g': 15,"v_i_data": csv2array('switch_channel_25_vg15.csv', True, True)}  # insert csv here
+    channel_25_13 = {"t_j": 25, 'v_g': 13, "v_i_data": csv2array('switch_channel_25_vg13.csv', True, True)}  # insert csv here
+    channel_25_11 = {"t_j": 25, 'v_g': 11, "v_i_data": csv2array('switch_channel_25_vg11.csv', True, True)}  # insert csv here
+    channel_25_9 = {"t_j": 25, 'v_g': 9, "v_i_data": csv2array('switch_channel_25_vg9.csv', True, True)}  # insert csv here
+    channel_25_7 = {"t_j": 25, 'v_g': 7, "v_i_data": csv2array('switch_channel_25_vg7.csv', True, True)}  # insert csv here
+    # channel data 175 degree
+    channel_175_15 = {"t_j": 175, 'v_g': 15,"v_i_data": csv2array('switch_channel_175_vg15.csv', True, True)}  # insert csv here
+    channel_175_13 = {"t_j": 175, 'v_g': 13, "v_i_data": csv2array('switch_channel_175_vg13.csv', True, True)}  # insert csv here
+    channel_175_11 = {"t_j": 175, 'v_g': 11, "v_i_data": csv2array('switch_channel_175_vg11.csv', True, True)}  # insert csv here
+    channel_175_9 = {"t_j": 175, 'v_g': 9, "v_i_data": csv2array('switch_channel_175_vg9.csv', True, True)}  # insert csv here
+    channel_175_7 = {"t_j": 175, 'v_g': 7, "v_i_data": csv2array('switch_channel_175_vg7.csv', True, True)}  # insert csv here
+
+
+   # print(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False))
+    print(np.shape(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False, False)))
+
+    #### switching parameters
+    e_on_25_600 = {"dataset_type": "graph_i_e",
+                   "t_j": 25,
+                   'v_g': 15,
+                   'v_supply': 600,
+                   'r_g': 2.5,
+                   "i_e_data": csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False, False)}  # insert csv here
+    e_on_25_800 = {"dataset_type": "graph_i_e",
+                   "t_j": 25,
+                   'v_g': 15,
+                   'v_supply': 600,
+                   'r_g': 2.5,
+                   "i_e_data": csv2array('switch_switching_eon_2.5Ohm_800V_25deg_15V.csv', False, False)}  # insert csv here
+    e_off_25_600 = {"dataset_type": "graph_i_e",
+                   "t_j": 25,
+                   'v_g': -4,
+                   'v_supply': 600,
+                   'r_g': 2.5,
+                   "i_e_data": csv2array('switch_switching_eoff_2.5Ohm_600V_25deg_-4V.csv', False, False)}  # insert csv here
+    e_off_25_800 = {"dataset_type": "graph_i_e",
+                    "t_j": 25,
+                    'v_g': -4,
+                    'v_supply': 600,
+                    'r_g': 2.5,
+                    "i_e_data": csv2array('switch_switching_eoff_2.5Ohm_800V_25deg_-4V.csv', False, False)}  # insert csv here
+
+    #### Bring the switch_args together
     switch_args = {
         'comment': comment,
         'manufacturer': manufacturer,
@@ -115,9 +135,9 @@ def Template():
         'c_oss': c_oss,
         'c_iss': c_iss,
         'c_rss': c_rss,
-        'channel': [channel_25, channel_175],
-        'e_on': [e_on_25, e_on_25],
-        'e_off': [e_off_25, e_off_25]}
+        'channel': [channel_25_15, channel_25_13, channel_25_11, channel_25_9, channel_25_7, channel_175_15, channel_175_13, channel_175_11, channel_175_9, channel_175_7],
+        'e_on': [e_on_25_600, e_on_25_800],
+        'e_off': [e_off_25_600, e_off_25_800]}
 
     ####################################
     # switch foster parameters
@@ -131,11 +151,26 @@ def Template():
     ####################################
     # diode parameters
     ####################################
+    comment = ''
+    manufacturer = 'unknown'
+    technology = ''
+
+    #### Channel parameters
+    channel_25_0 = {"t_j": 25, 'v_g': 0, "v_i_data": csv2array('diode_channel_25_0vgs.csv', True, True)}  # insert csv here
+    channel_25_neg2 = {"t_j": 25, 'v_g': -2, "v_i_data": csv2array('diode_channel_25_-2vgs.csv', True, True)}  # insert csv here
+    channel_25_neg4 = {"t_j": 25, 'v_g': -4, "v_i_data": csv2array('diode_channel_25_-4vgs.csv', True, True)}  # insert csv here
+
+    channel_175_0 = {"t_j": 25, 'v_g': 0, "v_i_data": csv2array('diode_channel_175_0vgs.csv', True, True)}  # insert csv here
+    channel_175_neg2 = {"t_j": 25, 'v_g': -2, "v_i_data": csv2array('diode_channel_175_-2vgs.csv', True, True)}  # insert csv here
+    channel_175_neg4 = {"t_j": 25, 'v_g': -4, "v_i_data": csv2array('diode_channel_175_-4vgs.csv', True, True)}  # insert csv here
 
 
 
-    diode_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
-                  'channel': [], 'e_rr': []}
+    diode_args = {'comment': comment,
+                  'manufacturer': manufacturer,
+                  'technology': technology,
+                  'channel': [channel_25_0, channel_25_neg2, channel_25_neg4, channel_175_0, channel_175_neg2, channel_175_neg4],
+                  'e_rr': []}
 
 
     ####################################
