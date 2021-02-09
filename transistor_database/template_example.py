@@ -84,17 +84,17 @@ def Template():
 
     #### Channel parameters
     # channel data 25 degree
-    channel_25_15 = {"t_j": 25, 'v_g': 15,"v_i_data": csv2array('switch_channel_25_vg15.csv', True, True)}  # insert csv here
-    channel_25_13 = {"t_j": 25, 'v_g': 13, "v_i_data": csv2array('switch_channel_25_vg13.csv', True, True)}  # insert csv here
-    channel_25_11 = {"t_j": 25, 'v_g': 11, "v_i_data": csv2array('switch_channel_25_vg11.csv', True, True)}  # insert csv here
-    channel_25_9 = {"t_j": 25, 'v_g': 9, "v_i_data": csv2array('switch_channel_25_vg9.csv', True, True)}  # insert csv here
-    channel_25_7 = {"t_j": 25, 'v_g': 7, "v_i_data": csv2array('switch_channel_25_vg7.csv', True, True)}  # insert csv here
+    channel_25_15 = {"t_j": 25, 'v_g': 15,"v_i_data": csv2array('switch_channel_25_vg15.csv', True, False)}  # insert csv here
+    channel_25_13 = {"t_j": 25, 'v_g': 13, "v_i_data": csv2array('switch_channel_25_vg13.csv', True, False)}  # insert csv here
+    channel_25_11 = {"t_j": 25, 'v_g': 11, "v_i_data": csv2array('switch_channel_25_vg11.csv', True, False)}  # insert csv here
+    channel_25_9 = {"t_j": 25, 'v_g': 9, "v_i_data": csv2array('switch_channel_25_vg9.csv', True, False)}  # insert csv here
+    channel_25_7 = {"t_j": 25, 'v_g': 7, "v_i_data": csv2array('switch_channel_25_vg7.csv', True, False)}  # insert csv here
     # channel data 175 degree
-    channel_175_15 = {"t_j": 175, 'v_g': 15,"v_i_data": csv2array('switch_channel_175_vg15.csv', True, True)}  # insert csv here
-    channel_175_13 = {"t_j": 175, 'v_g': 13, "v_i_data": csv2array('switch_channel_175_vg13.csv', True, True)}  # insert csv here
-    channel_175_11 = {"t_j": 175, 'v_g': 11, "v_i_data": csv2array('switch_channel_175_vg11.csv', True, True)}  # insert csv here
-    channel_175_9 = {"t_j": 175, 'v_g': 9, "v_i_data": csv2array('switch_channel_175_vg9.csv', True, True)}  # insert csv here
-    channel_175_7 = {"t_j": 175, 'v_g': 7, "v_i_data": csv2array('switch_channel_175_vg7.csv', True, True)}  # insert csv here
+    channel_175_15 = {"t_j": 175, 'v_g': 15,"v_i_data": csv2array('switch_channel_175_vg15.csv', True, False)}  # insert csv here
+    channel_175_13 = {"t_j": 175, 'v_g': 13, "v_i_data": csv2array('switch_channel_175_vg13.csv', True, False)}  # insert csv here
+    channel_175_11 = {"t_j": 175, 'v_g': 11, "v_i_data": csv2array('switch_channel_175_vg11.csv', True, False)}  # insert csv here
+    channel_175_9 = {"t_j": 175, 'v_g': 9, "v_i_data": csv2array('switch_channel_175_vg9.csv', True, False)}  # insert csv here
+    channel_175_7 = {"t_j": 175, 'v_g': 7, "v_i_data": csv2array('switch_channel_175_vg7.csv', True, False)}  # insert csv here
 
 
    # print(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False))
@@ -190,6 +190,7 @@ if __name__ == '__main__':
     print("transistor metadata")
     print('---------------------')
     print(transistor.name)
+    print(transistor.transistor_type)
     print(transistor.meta.author)
     print(transistor.meta.comment)
     print(transistor.meta.manufacturer)
@@ -214,6 +215,15 @@ if __name__ == '__main__':
     print("switch data")
     print('---------------------')
     print(transistor.switch.channel[0].v_i_data)
+    print(transistor.switch.channel[0].t_j)
+
+    #transistor.switch.print_all_channel_data()
+    #transistor.switch.print_channel_data_vge(15)
+    #transistor.switch.print_channel_data_temp(175)
+
+    v_channel, r_channel = transistor.linearize_switch_ui_graph(175, 15, 40)  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    print("v_channel_linearized = {} V".format(v_channel))
+    print("r_channel_linearized = {} Ohm".format(r_channel))
 
     print('---------------------')
     print("diode metadata")
@@ -221,5 +231,9 @@ if __name__ == '__main__':
     print(transistor.diode.manufacturer)
     print(transistor.diode.comment)
     print(transistor.diode.technology)
+
+
+
+
 
     # ToDo: store transistor in database

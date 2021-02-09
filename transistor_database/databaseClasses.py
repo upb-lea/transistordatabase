@@ -3,6 +3,7 @@ import datetime
 import numpy as np
 import re
 from typing import List
+from matplotlib import pyplot as plt
 
 
 class Transistor(persistent.Persistent):
@@ -392,6 +393,49 @@ class Transistor(persistent.Persistent):
                 self.e_on = []
                 self.e_off = []
 
+        def print_all_channel_data(self):
+            """ Plot all channel data """
+            plt.figure()
+            for i_channel in np.array(range(0,len(self.channel))):
+                labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
+                plt.plot(self.channel[i_channel].v_i_data[0], self.channel[i_channel].v_i_data[1], label=labelplot)
+
+            plt.legend()
+            plt.xlabel('Voltage in V')
+            plt.ylabel('Current in A')
+            plt.grid()
+            plt.show()
+
+        def print_channel_data_vge(self, gatevoltage):
+            """ Plot channel data with a choosen gate-voltage"""
+            plt.figure()
+            for i_channel in np.array(range(0,len(self.channel))):
+                if self.channel[i_channel].v_g == gatevoltage:
+                    labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
+                    plt.plot(self.channel[i_channel].v_i_data[0], self.channel[i_channel].v_i_data[1], label=labelplot)
+
+            plt.legend()
+            plt.xlabel('Voltage in V')
+            plt.ylabel('Current in A')
+            plt.grid()
+            plt.show()
+
+        def print_channel_data_temp(self, temperature):
+            """ Plot channel data with choosen temperature"""
+            plt.figure()
+            for i_channel in np.array(range(0,len(self.channel))):
+                if self.channel[i_channel].t_j == temperature:
+                    labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
+                    plt.plot(self.channel[i_channel].v_i_data[0], self.channel[i_channel].v_i_data[1], label=labelplot)
+
+            plt.legend()
+            plt.xlabel('Voltage in V')
+            plt.ylabel('Current in A')
+            plt.grid()
+            plt.show()
+
+
+
     class Diode:
         """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
         channel- and e_rr- datasets."""
@@ -528,6 +572,39 @@ class Transistor(persistent.Persistent):
             self.i_x = args.get('i_x')
             self.i_e_data = args.get('i_e_data')
             self.r_e_data = args.get('r_e_data')
+
+    def linearize_switch_ui_graph(self, temperature, gatevoltage, current):
+        """ get interpolated channel parameters """
+        # ToDo: rethink method name. May include switch or diode as a parameter and use one global function
+        # ToDo: check if this function works for all types of transistors
+        # ToDo: Error handling
+
+        # in case of failure, return None
+        v_channel = None
+        r_channel = None
+
+        # sweep trough channel array
+        for i_channel in np.array(range(0, len(self.switch.channel))):
+            # check if input parameters match to stored data
+            if self.switch.channel[i_channel].t_j == temperature and self.switch.channel[i_channel].v_g == gatevoltage:
+                # check kind of transistor type due to forward voltage value
+                if self.transistor_type == 'MOSFET' or self.transistor_type == 'SiC-MOSFET':
+                    # transistor has no forward voltage
+                    # interpolate data
+                    voltage_interpolated = np.interp(current, self.switch.channel[i_channel].v_i_data[1],
+                                                     self.switch.channel[i_channel].v_i_data[0])
+                    # return values
+                    v_channel = 0  # no forward voltage
+                    r_channel = voltage_interpolated / current
+                else:
+                    # transistor has forward voltage
+                    # ToDo: Implement functionality to linearize channel parameters for transistors with forward voltage
+                    pass
+
+        return round(v_channel,2), round(r_channel,4)
+
+
+
 
 
 def check_realnum(x):
