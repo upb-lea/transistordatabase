@@ -35,7 +35,6 @@ def Template():
 
     """
 
-
     ####################################
     # transistor parameters
     ####################################
@@ -151,9 +150,9 @@ def Template():
     ####################################
     # diode parameters
     ####################################
-    comment = ''
-    manufacturer = 'unknown'
-    technology = ''
+    comment = 'comment diode'
+    manufacturer = 'manufacturer diode'
+    technology = 'technology diode'
 
     #### Channel parameters
     channel_25_0 = {"t_j": 25, 'v_g': 0, "v_i_data": csv2array('diode_channel_25_0vgs.csv', True, True)}  # insert csv here
@@ -187,8 +186,40 @@ def Template():
 if __name__ == '__main__':
     transistor = Template()
 
+    print('---------------------')
+    print("transistor metadata")
+    print('---------------------')
     print(transistor.name)
+    print(transistor.meta.author)
+    print(transistor.meta.comment)
+    print(transistor.meta.manufacturer)
+    print(transistor.meta.datasheet_hyperlink)
+    print(transistor.meta.datasheet_date)
+    print(transistor.meta.datasheet_version)
+    print(transistor.meta.housing_area)
+    print(transistor.meta.cooling_area)
+    print(transistor.meta.housing_type)
+
+
+    print('---------------------')
+    print("switch metadata")
+    print('---------------------')
     print(transistor.switch.manufacturer)
+    print(transistor.switch.comment)
+    print(transistor.switch.technology)
+
+
+
+    print('---------------------')
+    print("switch data")
+    print('---------------------')
     print(transistor.switch.channel[0].v_i_data)
+
+    print('---------------------')
+    print("diode metadata")
+    print('---------------------')
+    print(transistor.diode.manufacturer)
+    print(transistor.diode.comment)
+    print(transistor.diode.technology)
 
     # ToDo: store transistor in database
