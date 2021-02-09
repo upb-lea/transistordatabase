@@ -65,7 +65,9 @@ class Transistor(persistent.Persistent):
                             + str(type(dataset_dict)) + " instead.")
         elif not bool(dataset_dict):
             return False  # Empty dictionary. Can be valid depending on circumstances, hence no error.
+
         elif dict_type == 'ChannelData':
+            # ToDo: v_g mandatory for switch, but nut for diode
             # Determine necessary keys.
             check_keys = {'t_j', 'v_i_data'}
             # Check if all necessary keys are contained in the dict.
@@ -466,14 +468,17 @@ class Transistor(persistent.Persistent):
 
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
         t_j: [int, float]  # Mandatory
+        v_g: [int, float]  # Switch: Mandatory, Diode: optional (standard diode useless, for GaN 'diode' necessary
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
         v_i_data: "np.ndarray[np.float64]"  # Units: Row 1: V; Row 2: A  # Mandatory
+
 
         def __init__(self, args):
             # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
             # checked again here.
             self.t_j = args.get('t_j')
             self.v_i_data = args.get('v_i_data')
+            self.v_g = args.get('v_g')
 
     class SwitchEnergyData:
         """Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
@@ -551,21 +556,30 @@ def check_str(x):
     raise TypeError('{0} is not a string.'.format(x))
 
 
-def csv2array(csv_filename, set_first_value_to_zero):
+def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero):
     """Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
     https://apps.automeris.io/wpd/
 
     csv_filename: str. Insert .csv filename, e.g. "switch_channel_25_15v"
+
     set_first_value_to_zero: boolean True/False. Set 'True' to change the first value pair to zero. This is necessary in
         case of webplotdigitizer returns the first value pair e.g. as -0,13; 0,00349.
+
+    set_second_y_value_to_zero: boolean True/False. Set 'True' to set the second y-value to zero. This is interesting in
+        case of diode / igbt forward channel characteristic, if you want to make sure to set the point where the ui-graph
+        leaves the u axis on the u-point to zero. Otherwise there might be a very small (and negative) value of u.
     """
     array = np.genfromtxt(csv_filename, delimiter=";",
                           converters={0: lambda s: float(s.decode("UTF-8").replace(",", ".")),
                                       1: lambda s: float(s.decode("UTF-8").replace(",", "."))})
 
     if set_first_value_to_zero == True:
-        array[0][0] = 0
-        array[0][1] = 0
+        array[0][0] = 0    # x value
+        array[0][1] = 0    # y value
+
+    if set_second_y_value_to_zero == True:
+        array[1][1] = 0    # y value
+
 
     return np.transpose(array)
