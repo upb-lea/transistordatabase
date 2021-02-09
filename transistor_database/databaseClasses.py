@@ -585,21 +585,27 @@ class Transistor(persistent.Persistent):
 
         # sweep trough channel array
         for i_channel in np.array(range(0, len(self.switch.channel))):
-            # check if input parameters match to stored data
+            # check if input parameters match to stored data. Only 'v_i_data'-data is used
             if self.switch.channel[i_channel].t_j == temperature and self.switch.channel[i_channel].v_g == gatevoltage:
+
+                # interpolate data
+                voltage_interpolated = np.interp(current, self.switch.channel[i_channel].v_i_data[1],
+                                                 self.switch.channel[i_channel].v_i_data[0])
+
                 # check kind of transistor type due to forward voltage value
                 if self.transistor_type == 'MOSFET' or self.transistor_type == 'SiC-MOSFET':
                     # transistor has no forward voltage
-                    # interpolate data
-                    voltage_interpolated = np.interp(current, self.switch.channel[i_channel].v_i_data[1],
-                                                     self.switch.channel[i_channel].v_i_data[0])
+
                     # return values
-                    v_channel = 0  # no forward voltage
+                    v_channel = 0  # no forward voltage du to resistance behaviour
                     r_channel = voltage_interpolated / current
                 else:
-                    # transistor has forward voltage
-                    # ToDo: Implement functionality to linearize channel parameters for transistors with forward voltage
-                    pass
+                    # transistor has forward voltage. Other interpolating point will be with 10% more current
+                    # ToDo: Test this function if IGBT is available
+                    voltage_interpolated_2 = np.interp(current * 1.1, self.switch.channel[i_channel].v_i_data[1],
+                                                     self.switch.channel[i_channel].v_i_data[0])
+                    r_channel = (voltage_interpolated_2 - voltage_interpolated) (0.1 * current)
+                    v_channel = voltage_interpolated - r_channel * current
 
         return round(v_channel,2), round(r_channel,4)
 
