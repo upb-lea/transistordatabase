@@ -18,6 +18,30 @@ git clone git@github.com:upb-lea/Transistor_Database.git
 coming soon.
 
 ## Usage
+### Generate a new transistor, use the template
+#### transistor object working
+Transistor      
+ |     
+ +-Metadata      
+ |     
+ +-Switch     
+ |  +-Switch Metadata     
+ |  +-Channel Data     
+ |  +-Switching Data
+ |          
+ +-Diode     
+    +-Switch Metadata     
+    +-Channel Data     
+    +-Switching Data     
+ 
+
+
+
+#### reading curves from the datasheet
+For reading datasheet curves, use the tool [WebPlotDigitizer](https://automeris.io/WebPlotDigitizer/). There is a online-version available. Also you can download it for Linux, Mac and Windows. WebPlotDigitizer is open source software.
+
+### Load a transistor from the database
+
 
 
 ## Roadmap
