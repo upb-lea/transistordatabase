@@ -83,18 +83,24 @@ def Template():
     c_rss = 4    # Unit: pF  # Optional
 
     #### Channel parameters
+    # channel data minus 40 degree
+    channel_m40_15 = {"t_j": -40, 'v_g': 15,"v_i_data": csv2array('switch_channel_m40_15V.csv', True, False)}  # insert csv here
+    channel_m40_13 = {"t_j": -40, 'v_g': 13, "v_i_data": csv2array('switch_channel_m40_13V.csv', True, False)}  # insert csv here
+    channel_m4_11 = {"t_j": -40, 'v_g': 11, "v_i_data": csv2array('switch_channel_m40_11V.csv', True, False)}  # insert csv here
+    channel_m40_9 = {"t_j": -40, 'v_g': 9, "v_i_data": csv2array('switch_channel_m40_9V.csv', True, False)}  # insert csv here
+    channel_m40_7 = {"t_j": -40, 'v_g': 7, "v_i_data": csv2array('switch_channel_m40_7V.csv', True, False)}  # insert csv here
     # channel data 25 degree
-    channel_25_15 = {"t_j": 25, 'v_g': 15,"v_i_data": csv2array('switch_channel_25_vg15.csv', True, False)}  # insert csv here
-    channel_25_13 = {"t_j": 25, 'v_g': 13, "v_i_data": csv2array('switch_channel_25_vg13.csv', True, False)}  # insert csv here
-    channel_25_11 = {"t_j": 25, 'v_g': 11, "v_i_data": csv2array('switch_channel_25_vg11.csv', True, False)}  # insert csv here
-    channel_25_9 = {"t_j": 25, 'v_g': 9, "v_i_data": csv2array('switch_channel_25_vg9.csv', True, False)}  # insert csv here
-    channel_25_7 = {"t_j": 25, 'v_g': 7, "v_i_data": csv2array('switch_channel_25_vg7.csv', True, False)}  # insert csv here
+    channel_25_15 = {"t_j": 25, 'v_g': 15,"v_i_data": csv2array('switch_channel_25_15V.csv', True, False)}  # insert csv here
+    channel_25_13 = {"t_j": 25, 'v_g': 13, "v_i_data": csv2array('switch_channel_25_13V.csv', True, False)}  # insert csv here
+    channel_25_11 = {"t_j": 25, 'v_g': 11, "v_i_data": csv2array('switch_channel_25_11V.csv', True, False)}  # insert csv here
+    channel_25_9 = {"t_j": 25, 'v_g': 9, "v_i_data": csv2array('switch_channel_25_9V.csv', True, False)}  # insert csv here
+    channel_25_7 = {"t_j": 25, 'v_g': 7, "v_i_data": csv2array('switch_channel_25_7V.csv', True, False)}  # insert csv here
     # channel data 175 degree
-    channel_175_15 = {"t_j": 175, 'v_g': 15,"v_i_data": csv2array('switch_channel_175_vg15.csv', True, False)}  # insert csv here
-    channel_175_13 = {"t_j": 175, 'v_g': 13, "v_i_data": csv2array('switch_channel_175_vg13.csv', True, False)}  # insert csv here
-    channel_175_11 = {"t_j": 175, 'v_g': 11, "v_i_data": csv2array('switch_channel_175_vg11.csv', True, False)}  # insert csv here
-    channel_175_9 = {"t_j": 175, 'v_g': 9, "v_i_data": csv2array('switch_channel_175_vg9.csv', True, False)}  # insert csv here
-    channel_175_7 = {"t_j": 175, 'v_g': 7, "v_i_data": csv2array('switch_channel_175_vg7.csv', True, False)}  # insert csv here
+    channel_175_15 = {"t_j": 175, 'v_g': 15,"v_i_data": csv2array('switch_channel_175_15V.csv', True, False)}  # insert csv here
+    channel_175_13 = {"t_j": 175, 'v_g': 13, "v_i_data": csv2array('switch_channel_175_13V.csv', True, False)}  # insert csv here
+    channel_175_11 = {"t_j": 175, 'v_g': 11, "v_i_data": csv2array('switch_channel_175_11V.csv', True, False)}  # insert csv here
+    channel_175_9 = {"t_j": 175, 'v_g': 9, "v_i_data": csv2array('switch_channel_175_9V.csv', True, False)}  # insert csv here
+    channel_175_7 = {"t_j": 175, 'v_g': 7, "v_i_data": csv2array('switch_channel_175_7V.csv', True, False)}  # insert csv here
 
 
    # print(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False))
@@ -134,7 +140,7 @@ def Template():
         'c_oss': c_oss,
         'c_iss': c_iss,
         'c_rss': c_rss,
-        'channel': [channel_25_15, channel_25_13, channel_25_11, channel_25_9, channel_25_7, channel_175_15, channel_175_13, channel_175_11, channel_175_9, channel_175_7],
+        'channel': [channel_m40_7, channel_m40_9, channel_m4_11, channel_m40_13, channel_m40_15, channel_25_15, channel_25_13, channel_25_11, channel_25_9, channel_25_7, channel_175_15, channel_175_13, channel_175_11, channel_175_9, channel_175_7],
         'e_on': [e_on_25_600, e_on_25_800],
         'e_off': [e_off_25_600, e_off_25_800]}
 
@@ -217,7 +223,7 @@ if __name__ == '__main__':
     print(transistor.switch.channel[0].v_i_data)
     print(transistor.switch.channel[0].t_j)
 
-    #transistor.switch.print_all_channel_data()
+    transistor.switch.print_all_channel_data()
     #transistor.switch.print_channel_data_vge(15)
     #transistor.switch.print_channel_data_temp(175)
 
@@ -232,8 +238,6 @@ if __name__ == '__main__':
     print(transistor.diode.comment)
     print(transistor.diode.technology)
 
-
-
-
-
+    #store_transistor(transistor)
+    #load_transistor()
     # ToDo: store transistor in database
