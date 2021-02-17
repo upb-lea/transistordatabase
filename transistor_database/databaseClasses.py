@@ -149,6 +149,32 @@ class Transistor(persistent.Persistent):
                 # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
                 return True
 
+        elif dict_type == 'Switch_LinearizedModel':
+            # Determine necessary keys.
+            check_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
+            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
+            # Check if all necessary keys are contained in the dict.
+            if dataset_dict.keys() < check_keys:
+                raise KeyError("Dictionary does not contain all keys necessary for Switch LinearizedModel object "
+                               "creation. Mandatory keys: 't_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'")
+            # Check if all values have appropriate types.
+            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]):
+                # TypeError is raised in 'check_realnum()' if check fails.
+                return True
+
+        elif dict_type == 'Diode_LinearizedModel':
+            # Determine necessary keys.
+            check_keys = {'t_j', 'v_g', 'i_channel', 'r_channel'}
+            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
+            # Check if all necessary keys are contained in the dict.
+            if dataset_dict.keys() < check_keys:
+                raise KeyError("Dictionary does not contain all keys necessary for Diode LinearizedModel object "
+                               "creation. Mandatory keys: 't_j', 'v_g', 'i_channel', 'r_channel'")
+            # Check if all values have appropriate types.
+            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]):
+                # TypeError is raised in 'check_realnum()' if check fails.
+                return True
+
         elif dict_type == 'Transistor':
             # ToDo: Add type checks for optional arguments
             check_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
@@ -282,6 +308,7 @@ class Transistor(persistent.Persistent):
         channel: List["ChannelData"]  # Switch channel voltage and current data.
         e_on: List["SwitchEnergyData"]  # Switch on energy data.
         e_off: List["SwitchEnergyData"]  # Switch of energy data.
+        linearized_switch: List["LinearizedModel"]  # Static data valid for a specific operating point.
         # Constant Capacitances
         c_oss: [float, int, None]  # Unit: pF  # Optional
         c_iss: [float, int, None]  # Unit: pF  # Optional
@@ -357,6 +384,26 @@ class Transistor(persistent.Persistent):
                 elif Transistor.isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
                     self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off')))
 
+                self.linearized_switch = []  # Default case: Empty list
+                if isinstance(switch_args.get('linearized_switch'), list):
+                    # Loop through list and check each dict for validity. Only create LinearizedModel objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in switch_args.get('linearized_switch'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'Switch_LinearizedModel'):
+                                self.linearized_switch.append(Transistor.LinearizedModel(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('linearized_switch')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                          'of Switch-LinearizedModel dictionaries: ',) + error.args
+                            raise
+                elif Transistor.isvalid_dict(switch_args.get('linearized_switch'), 'Switch_LinearizedModel'):
+                    # Only create LinearizedModel objects from valid dicts
+                    self.linearized_switch.append(Transistor.LinearizedModel(switch_args.get('linearized_switch')))
+
             else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
                 self.c_oss = None
                 self.c_iss = None
@@ -367,6 +414,7 @@ class Transistor(persistent.Persistent):
                 self.channel = []
                 self.e_on = []
                 self.e_off = []
+                self.linearized_switch = []
 
         def print_all_channel_data(self):
             """ Plot all channel data """
@@ -420,6 +468,7 @@ class Transistor(persistent.Persistent):
         thermal: ["FosterThermalModel", None]  # Transient thermal model.
         channel: List["ChannelData"]  # Diode forward voltage and forward current data.
         e_rr: List["SwitchEnergyData"]  # Reverse recovery energy data.
+        linearized_diode: List["LinearizedModel"]  # Static data. Valid for a specific operating point.
 
         def __init__(self, diode_args):
             # Current behavior on empty 'foster' dictionary: thermal object is still created but with empty attributes.
@@ -429,8 +478,7 @@ class Transistor(persistent.Persistent):
                 self.comment = diode_args.get('comment')
                 self.manufacturer = diode_args.get('manufacturer')
                 self.technology = diode_args.get('technology')
-                # This currently accepts dictionaries and lists of dictionaries. Validity is only checked by keys and
-                # not their values.
+                # This currently accepts dictionaries and lists of dictionaries.
                 self.channel = []  # Default case: Empty list
                 if isinstance(diode_args.get('channel'), list):
                     # Loop through list and check each dict for validity. Only create ChannelData objects from valid
@@ -464,13 +512,33 @@ class Transistor(persistent.Persistent):
                             dict_list = diode_args.get('e_rr')
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                          'of Diode-SwitchEnergyData dictionaries for e_rr: ',) + error.args
+                            error.args = ('KeyError occurred for index [' + str(
+                                dict_list.index(dataset)) + '] in list '
+                                                            'of Diode-SwitchEnergyData dictionaries for e_rr: ',) + error.args
                             raise
-
                 elif Transistor.isvalid_dict(diode_args.get('e_rr'), 'SwitchEnergyData'):
                     # Only create SwitchEnergyData objects from valid dicts
                     self.e_rr.append(Transistor.SwitchEnergyData(diode_args.get('e_rr')))
+
+                self.linearized_diode = []  # Default case: Empty list
+                if isinstance(diode_args.get('linearized_diode'), list):
+                    # Loop through list and check each dict for validity. Only create LinearizedModel objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in diode_args.get('linearized_diode'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'Diode_LinearizedModel'):
+                                self.linearized_diode.append(Transistor.LinearizedModel(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = diode_args.get('linearized_diode')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                          'of Diode-LinearizedModel dictionaries: ',) + error.args
+                            raise
+                elif Transistor.isvalid_dict(diode_args.get('linearized_diode'), 'Diode_LinearizedModel'):
+                    # Only create LinearizedModel objects from valid dicts
+                    self.linearized_diode.append(Transistor.LinearizedModel(diode_args.get('linearized_diode')))
 
             else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
                 self.comment = None
@@ -478,6 +546,23 @@ class Transistor(persistent.Persistent):
                 self.technology = None
                 self.channel = []
                 self.e_rr = []
+                self.linearized_diode = []
+
+    class LinearizedModel:
+        """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
+        t_j, i_channel and v_g (not for all diode types)."""
+        t_j: [int, float]  # Unit: K # Mandatory
+        v_g: [int, float, None]  # Unit: V # Mandatory for Switch, Optional for some Diode types
+        i_channel: [int, float]  # Unit: A # Mandatory
+        r_channel: [int, float]  # Unit: Ohm Mandatory
+        v0_channel: [int, float]  # Unit: V # Mandatory
+
+        def __init__(self, args):
+            self.t_j = args.get('t_j')
+            self.v_g = args.get('v_g')
+            self.i_channel = args.get('i_channel')
+            self.r_channel = args.get('r_channel')
+            self.v0_channel = args.get('v0_channel')
 
     class ChannelData:
         """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.

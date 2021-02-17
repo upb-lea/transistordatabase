@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example template to generate a transistor object
 - transistor method: linearize_switch_ui_graph
 - transistor.switch methods: print_all_channel_data, print_channel_data_vge, print_channel_data_temp
+- New class LinearizedModel: Contains data for a linearized Switch/Diode depending on given operating point.
+### Removed
+- Removed Metadata class. Added its attributes to Transistor class instead
+### Changed
+- Restructured foster thermal model argument handover
 
 ## [0.1.0] - 2021-02-04
 ### Added
