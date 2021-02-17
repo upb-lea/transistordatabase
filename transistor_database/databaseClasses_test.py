@@ -43,6 +43,9 @@ class MyTestCase(unittest.TestCase):
     channel = {'t_j': t_j, 'v_i_data': v_i_data}
     switchenergy = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
                     'e_x': e_x, 'r_g': r_g, 'i_x': i_x}
+    foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
+                   'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
+                   'transient_data': transient_data}
     # Create argument dictionaries
     transistor_args = {'name': name, 'transistor_type': transistor_type, 'author': author, 'comment': comment,
                        'manufacturer': manufacturer, 'datasheet_hyperlink': datasheet_hyperlink,
@@ -50,23 +53,15 @@ class MyTestCase(unittest.TestCase):
                        'datasheet_version': datasheet_version, 'housing_area': housing_area,
                        'cooling_area': cooling_area, 'housing_type': housing_type, 'v_max': v_max,
                        'i_max': i_max, 'i_cont': i_cont}
-    metadata_args = {'author': author, 'comment': comment, 'manufacturer': manufacturer,
-                     'datasheet_hyperlink': datasheet_hyperlink, 'datasheet_date': datasheet_date,
-                     'datasheet_version': datasheet_version, 'housing_area': housing_area,
-                     'cooling_area': cooling_area, 'housing_type': housing_type}
-
-    foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
-                   'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
-                   'transient_data': transient_data}
     switch_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'c_oss': c_oss, 'c_iss': c_iss, 'c_rss': c_rss, 'channel': channel,
-                   'e_on': switchenergy, 'e_off': switchenergy}
+                   'e_on': switchenergy, 'e_off': switchenergy, 'foster': foster_args}
     diode_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
-                  'channel': channel, 'e_rr': switchenergy}
+                  'channel': channel, 'e_rr': switchenergy, 'foster': foster_args}
 
     def test_basic(self):
         # Create transistor object
-        transistor = Transistor(self.transistor_args, self.foster_args, self.switch_args,
+        transistor = Transistor(self.transistor_args, self.switch_args,
                                 self.diode_args)
         # Test transistor attributes
         self.assertEqual(transistor.name, self.name)

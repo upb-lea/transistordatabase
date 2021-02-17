@@ -44,7 +44,7 @@ class Transistor(persistent.Persistent):
     # Rated operation region
     i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom # Mandatory
 
-    def __init__(self, transistor_args, foster_args, switch_args, diode_args):
+    def __init__(self, transistor_args, switch_args, diode_args):
         if self.isvalid_dict(transistor_args, 'Transistor'):
             self.name = transistor_args.get('name')
             self.transistor_type = transistor_args.get('transistor_type')
@@ -85,8 +85,8 @@ class Transistor(persistent.Persistent):
                             "are mandatory: 'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', "
                             "'cooling_area', 'housing_type', 'v_max', 'i_max', 'i_cont'")
 
-        self.diode = self.Diode(diode_args, foster_args)
-        self.switch = self.Switch(switch_args, foster_args)
+        self.diode = self.Diode(diode_args)
+        self.switch = self.Switch(switch_args)
 
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
@@ -287,8 +287,10 @@ class Transistor(persistent.Persistent):
         c_iss: [float, int, None]  # Unit: pF  # Optional
         c_rss: [float, int, None]  # Unit: pF  # Optional
 
-        def __init__(self, switch_args, foster_args):
-            self.thermal = Transistor.FosterThermalModel(foster_args)
+        def __init__(self, switch_args):
+            # Current behavior on empty 'foster' dictionary: thermal object is still created but with empty attributes.
+            # ToDo: Is this the right behavior or should the 'thermal' attribute be left empty istead?
+            self.thermal = Transistor.FosterThermalModel(switch_args.get('foster'))
             if Transistor.isvalid_dict(switch_args, 'Switch'):
                 self.c_oss = switch_args.get('c_oss')
                 self.c_iss = switch_args.get('c_iss')
@@ -419,8 +421,10 @@ class Transistor(persistent.Persistent):
         channel: List["ChannelData"]  # Diode forward voltage and forward current data.
         e_rr: List["SwitchEnergyData"]  # Reverse recovery energy data.
 
-        def __init__(self, diode_args, foster_args):
-            self.thermal = Transistor.FosterThermalModel(foster_args)
+        def __init__(self, diode_args):
+            # Current behavior on empty 'foster' dictionary: thermal object is still created but with empty attributes.
+            # ToDo: Is this the right behavior or should the 'thermal' attribute be left empty istead?
+            self.thermal = Transistor.FosterThermalModel(diode_args.get('foster'))
             if Transistor.isvalid_dict(diode_args, 'Diode'):
                 self.comment = diode_args.get('comment')
                 self.manufacturer = diode_args.get('manufacturer')

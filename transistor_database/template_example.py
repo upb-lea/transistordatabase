@@ -130,6 +130,14 @@ def Template():
                     'r_g': 2.5,
                     "i_e_data": csv2array('switch_switching_eoff_2.5Ohm_800V_25deg_-4V.csv', False, False)}  # insert csv here
 
+    ### switch foster parameters
+    #
+    # switch_foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
+    #                'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
+    #                'transient_data': transient_data}
+    switch_foster_args = None
+
+
     #### Bring the switch_args together
     switch_args = {
         'comment': comment,
@@ -140,16 +148,10 @@ def Template():
         'c_rss': c_rss,
         'channel': [channel_m40_7, channel_m40_9, channel_m4_11, channel_m40_13, channel_m40_15, channel_25_15, channel_25_13, channel_25_11, channel_25_9, channel_25_7, channel_175_15, channel_175_13, channel_175_11, channel_175_9, channel_175_7],
         'e_on': [e_on_25_600, e_on_25_800],
-        'e_off': [e_off_25_600, e_off_25_800]}
+        'e_off': [e_off_25_600, e_off_25_800],
+        'foster': switch_foster_args}
 
-    ####################################
-    # switch foster parameters
-    ####################################
-    #
-    # foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
-    #                'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
-    #                'transient_data': transient_data}
-    foster_args = None
+
 
     ####################################
     # diode parameters
@@ -167,17 +169,19 @@ def Template():
     channel_175_neg2 = {"t_j": 25, 'v_g': -2, "v_i_data": csv2array('diode_channel_175_-2vgs.csv', True, True)}  # insert csv here
     channel_175_neg4 = {"t_j": 25, 'v_g': -4, "v_i_data": csv2array('diode_channel_175_-4vgs.csv', True, True)}  # insert csv here
 
-
+    ### diode foster parameters
+    diode_foster_args = None
 
     diode_args = {'comment': comment,
                   'manufacturer': manufacturer,
                   'technology': technology,
                   'channel': [channel_25_0, channel_25_neg2, channel_25_neg4, channel_175_0, channel_175_neg2, channel_175_neg4],
-                  'e_rr': []}
+                  'e_rr': [],
+                  'foster': diode_foster_args}
 
 
     ####################################
-    # diode foster parameters
+
     ####################################
     # ToDo:
 
@@ -185,7 +189,7 @@ def Template():
     # create transistor object
     ####################################
     # Create transistor object
-    return Transistor(transistor_args, foster_args, switch_args, diode_args)
+    return Transistor(transistor_args, switch_args, diode_args)
 
 if __name__ == '__main__':
     transistor = Template()
