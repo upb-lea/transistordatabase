@@ -409,6 +409,32 @@ class Transistor(persistent.Persistent):
             plt.grid()
             plt.show()
 
+
+        def print_energy_data(self):
+            """ Plot all channel data """
+            plt.figure()
+            # look for e_on losses
+            for i_energy_data in np.array(range(0,len(self.e_on))):
+                if self.e_on[i_energy_data].dataset_type == 'graph_i_e':
+                    labelplot = "e_on: v_supply = " + str(self.e_on[i_energy_data].v_supply) + "V, vg = " + str(self.e_on[i_energy_data].v_g) + " V, T_J = " + str(self.e_on[i_energy_data].t_j) + " °C, R_g = " + str(self.e_on[i_energy_data].r_g) + " Ohm"
+                    plt.plot(self.e_on[i_energy_data].i_e_data[0], self.e_on[i_energy_data].i_e_data[1], label=labelplot)
+
+            # look for e_off losses
+            for i_energy_data in np.array(range(0, len(self.e_off))):
+                if self.e_off[i_energy_data].dataset_type == 'graph_i_e':
+                    labelplot = "e_off: v_supply = " + str(self.e_off[i_energy_data].v_supply) + "V, vg = " + str(
+                        self.e_off[i_energy_data].v_g) + " V, T_J = " + str(
+                        self.e_off[i_energy_data].t_j) + " °C, R_g = " + str(
+                        self.e_off[i_energy_data].r_g) + " Ohm"
+                    plt.plot(self.e_off[i_energy_data].i_e_data[0], self.e_off[i_energy_data].i_e_data[1],
+                             label=labelplot)
+
+            plt.legend()
+            plt.xlabel('Current in A')
+            plt.ylabel('Loss-energy in J')
+            plt.grid()
+            plt.show()
+
     class Diode:
         """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
         channel- and e_rr- datasets."""
