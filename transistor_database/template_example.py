@@ -44,14 +44,9 @@ def Template():
     i_max = 250
     i_cont = 115
 
-    # Create argument dictionaries
-    transistor_args = {'name': name, 'transistor_type': transistor_type, 'v_max': v_max,
-                       'i_max': i_max, 'i_cont': i_cont}
-    ####################################
-    # metadata parameters
-    ####################################
-    # ToDo: use SI-based things. No mJ, no mJ, ...
 
+    # metadata parameters
+    # ToDo: use SI-based things. No mJ, no mJ, ...
     author = 'Nikolas Foerster'
     comment = ''
     manufacturer = 'Wolfspeed'
@@ -62,10 +57,13 @@ def Template():
     cooling_area = 160e-6
     housing_type = 'TO247'
 
-    metadata_args = {'author': author, 'comment': comment, 'manufacturer': manufacturer,
-                     'datasheet_hyperlink': datasheet_hyperlink, 'datasheet_date': datasheet_date,
-                     'datasheet_version': datasheet_version, 'housing_area': housing_area,
-                     'cooling_area': cooling_area, 'housing_type': housing_type}
+    # Create argument dictionaries
+    transistor_args = {'name': name, 'transistor_type': transistor_type, 'author': author, 'comment': comment,
+                       'manufacturer': manufacturer,
+                       'datasheet_hyperlink': datasheet_hyperlink, 'datasheet_date': datasheet_date,
+                       'datasheet_version': datasheet_version, 'housing_area': housing_area,
+                       'cooling_area': cooling_area, 'housing_type': housing_type, 'v_max': v_max,
+                       'i_max': i_max, 'i_cont': i_cont}
 
 
 
@@ -187,7 +185,7 @@ def Template():
     # create transistor object
     ####################################
     # Create transistor object
-    return Transistor(transistor_args, metadata_args, foster_args, switch_args, diode_args)
+    return Transistor(transistor_args, foster_args, switch_args, diode_args)
 
 if __name__ == '__main__':
     transistor = Template()
@@ -197,15 +195,15 @@ if __name__ == '__main__':
     print('---------------------')
     print(transistor.name)
     print(transistor.transistor_type)
-    print(transistor.meta.author)
-    print(transistor.meta.comment)
-    print(transistor.meta.manufacturer)
-    print(transistor.meta.datasheet_hyperlink)
-    print(transistor.meta.datasheet_date)
-    print(transistor.meta.datasheet_version)
-    print(transistor.meta.housing_area)
-    print(transistor.meta.cooling_area)
-    print(transistor.meta.housing_type)
+    print(transistor.author)
+    print(transistor.comment)
+    print(transistor.manufacturer)
+    print(transistor.datasheet_hyperlink)
+    print(transistor.datasheet_date)
+    print(transistor.datasheet_version)
+    print(transistor.housing_area)
+    print(transistor.cooling_area)
+    print(transistor.housing_type)
 
 
     print('---------------------')

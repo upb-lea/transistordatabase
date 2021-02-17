@@ -30,6 +30,8 @@ Metadata class and some other attributes
 1.2.0 / 25.01.2021 / Henning Steinhagen: Implemented exportTransistorV1 (Legacy format to old .mat Database)
 1.2.1 / 01.02.2021 / Henning Steinhagen: Added functionality to exportTransistorV1 and build functions to extract Data
 1.3.0 / 02.02.2021 / Henning Steinhagen: Added functionality to export_matlab_v1 + commented code + renamed functions
+1.4.0 / 17.02.2021 / Manuel Klädtke: Removed Metadata class and added all its attributes to Transistor class. Updated
+export functions accordingly.
 """
 
 import scipy.io as sio
@@ -319,13 +321,13 @@ def export_simulink_v1(transistorName):
                        'R_th_CS': compatibilityTest(Transistor, 'Transistor.r_th_cs'),
                        'R_th_Switch_CS': compatibilityTest(Transistor, 'Transistor.r_th_switch_cs'),
                        'R_th_Diode_CS': compatibilityTest(Transistor, 'Transistor.r_th_diode_cs'),
-                       'Manufacturer_Housing': compatibilityTest(Transistor, 'Transistor.meta.housing_type'),
+                       'Manufacturer_Housing': compatibilityTest(Transistor, 'Transistor.housing_type'),
                        'Type': compatibilityTest(Transistor, 'Transistor.transistor_type'),
-                       'Template_Version': compatibilityTest(Transistor, 'Transistor.meta.template_version'),
-                       'Template_Date': compatibilityTest(Transistor, 'Transistor.meta.template_date'),
-                       'Author': compatibilityTest(Transistor, 'Transistor.meta.author'),
-                       'Date_of_transistor_creation': compatibilityTest(Transistor, 'Transistor.meta.creation_date'),
-                       'Comment': compatibilityTest(Transistor, 'Transistor.meta.comment'),
+                       'Template_Version': compatibilityTest(Transistor, 'Transistor.template_version'),
+                       'Template_Date': compatibilityTest(Transistor, 'Transistor.template_date'),
+                       'Author': compatibilityTest(Transistor, 'Transistor.author'),
+                       'Date_of_transistor_creation': compatibilityTest(Transistor, 'Transistor.creation_date'),
+                       'Comment': compatibilityTest(Transistor, 'Transistor.comment'),
                        'U_max': compatibilityTest(Transistor, 'Transistor.v_max'),
                        'I_max': compatibilityTest(Transistor, 'Transistor.i_max'),
                        'I_linearize_UI_charts': Transistor_I_linearize_UI_charts,
@@ -343,20 +345,6 @@ def export_simulink_v1(transistorName):
 def export_matlab_v1(transistorName):
     Transistor = transistorName
 
-    Metadata_dict = {'Author': compatibilityTest(Transistor, 'Transistor.meta.author'),
-                     'Template_version': compatibilityTest(Transistor, 'Transistor.meta.template_version'),
-                     'Template_date': compatibilityTest(Transistor, 'Transistor.meta.template_date'),
-                     'Creation_date': compatibilityTest(Transistor, 'Transistor.meta.creation_date'),
-                     'Last_modified': compatibilityTest(Transistor, 'Transistor.meta.last_modified'),
-                     'Comment': compatibilityTest(Transistor, 'Transistor.meta.comment'),
-                     'Manufacturer': compatibilityTest(Transistor, 'Transistor.meta.manufacturer'),
-                     'Datasheet_hyperlink': compatibilityTest(Transistor, 'Transistor.meta.datasheet_hyperlink'),
-                     'Datasheet_date': compatibilityTest(Transistor, 'Transistor.meta.datasheet_date'),
-                     'Datasheet_version': compatibilityTest(Transistor, 'Transistor.meta.datasheet_version'),
-                     'Housing_area': compatibilityTest(Transistor, 'Transistor.meta.housing_area'),
-                     'Contact_area': compatibilityTest(Transistor, 'Transistor.meta.cooling_area'),
-                     'Housing_type': compatibilityTest(Transistor, 'Transistor.meta.housing_type')}
-
     Diode_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_total'),
                          'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_vector'),
                          'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_total'),
@@ -373,9 +361,9 @@ def export_matlab_v1(transistorName):
                           'Tau_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.tau_vector'),
                           'Transient_data': compatibilityTest(Transistor, 'Transistor.switch.thermal.transient_data')}
 
-    Switch_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.meta.comment'),
-                   'Manufacturer': compatibilityTest(Transistor, 'Transistor.meta.manufacturer'),
-                   'Technology': compatibilityTest(Transistor, 'Transistor.meta.technology'),
+    Switch_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.comment'),
+                   'Manufacturer': compatibilityTest(Transistor, 'Transistor.manufacturer'),
+                   'Technology': compatibilityTest(Transistor, 'Transistor.technology'),
                    'c_oss': compatibilityTest(Transistor, 'Transistor.switch.c_oss'),
                    'c_iss': compatibilityTest(Transistor, 'Transistor.switch.c_iss'),
                    'c_rss': compatibilityTest(Transistor, 'Transistor.switch.c_rss'),
@@ -384,22 +372,34 @@ def export_matlab_v1(transistorName):
                    'e_off': buildList(Transistor, 'Transistor.switch.e_off'),
                    'Foster Thermal Model': Switch_Foster_dict}
 
-    Diode_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.meta.comment'),
-                  'Manufacturer': compatibilityTest(Transistor, 'Transistor.meta.manufacturer'),
-                  'Technology': compatibilityTest(Transistor, 'Transistor.meta.technology'),
+    Diode_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.comment'),
+                  'Manufacturer': compatibilityTest(Transistor, 'Transistor.manufacturer'),
+                  'Technology': compatibilityTest(Transistor, 'Transistor.technology'),
                   'channel': buildList(Transistor, 'Transistor.diode.channel'),
                   'e_rr': buildList(Transistor, 'Transistor.diode.e_rr'),
                   'Foster Thermal Model': Diode_Foster_dict}
 
     Transistor_dict = {'name': compatibilityTest(Transistor, 'Transistor.name'),
                        'type': compatibilityTest(Transistor, 'Transistor.type'),
+                       'Author': compatibilityTest(Transistor, 'Transistor.author'),
+                       'Template_version': compatibilityTest(Transistor, 'Transistor.template_version'),
+                       'Template_date': compatibilityTest(Transistor, 'Transistor.template_date'),
+                       'Creation_date': compatibilityTest(Transistor, 'Transistor.creation_date'),
+                       'Last_modified': compatibilityTest(Transistor, 'Transistor.last_modified'),
+                       'Comment': compatibilityTest(Transistor, 'Transistor.comment'),
+                       'Manufacturer': compatibilityTest(Transistor, 'Transistor.manufacturer'),
+                       'Datasheet_hyperlink': compatibilityTest(Transistor, 'Transistor.datasheet_hyperlink'),
+                       'Datasheet_date': compatibilityTest(Transistor, 'Transistor.datasheet_date'),
+                       'Datasheet_version': compatibilityTest(Transistor, 'Transistor.datasheet_version'),
+                       'Housing_area': compatibilityTest(Transistor, 'Transistor.housing_area'),
+                       'Contact_area': compatibilityTest(Transistor, 'Transistor.cooling_area'),
+                       'Housing_type': compatibilityTest(Transistor, 'Transistor.housing_type'),
                        'r_th_cs': compatibilityTest(Transistor, 'Transistor.r_th_cs'),
                        'r_th_switch': compatibilityTest(Transistor, 'Transistor.r_th_switch_cs'),
                        'r_th_diode_cs': compatibilityTest(Transistor, 'Transistor.r_th_diode_cs'),
                        'v_max': compatibilityTest(Transistor, 'Transistor.v_max'),
                        'i_max': compatibilityTest(Transistor, 'Transistor.i_max'),
                        'i_cont': compatibilityTest(Transistor, 'Transistor.i_cont'),
-                       'Metadata': Metadata_dict,
                        'Switch': Switch_dict,
                        'Diode': Diode_dict}
 

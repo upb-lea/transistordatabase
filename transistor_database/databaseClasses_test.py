@@ -44,7 +44,11 @@ class MyTestCase(unittest.TestCase):
     switchenergy = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
                     'e_x': e_x, 'r_g': r_g, 'i_x': i_x}
     # Create argument dictionaries
-    transistor_args = {'name': name, 'transistor_type': transistor_type, 'v_max': v_max,
+    transistor_args = {'name': name, 'transistor_type': transistor_type, 'author': author, 'comment': comment,
+                       'manufacturer': manufacturer, 'datasheet_hyperlink': datasheet_hyperlink,
+                       'datasheet_date': datasheet_date,
+                       'datasheet_version': datasheet_version, 'housing_area': housing_area,
+                       'cooling_area': cooling_area, 'housing_type': housing_type, 'v_max': v_max,
                        'i_max': i_max, 'i_cont': i_cont}
     metadata_args = {'author': author, 'comment': comment, 'manufacturer': manufacturer,
                      'datasheet_hyperlink': datasheet_hyperlink, 'datasheet_date': datasheet_date,
@@ -62,24 +66,23 @@ class MyTestCase(unittest.TestCase):
 
     def test_basic(self):
         # Create transistor object
-        transistor = Transistor(self.transistor_args, self.metadata_args, self.foster_args, self.switch_args,
+        transistor = Transistor(self.transistor_args, self.foster_args, self.switch_args,
                                 self.diode_args)
         # Test transistor attributes
         self.assertEqual(transistor.name, self.name)
         self.assertEqual(transistor.transistor_type, self.transistor_type)
+        self.assertEqual(transistor.author, self.author)
+        self.assertEqual(transistor.comment, self.comment)
+        self.assertEqual(transistor.manufacturer, self.manufacturer)
+        self.assertEqual(transistor.datasheet_hyperlink, self.datasheet_hyperlink)
+        self.assertEqual(transistor.datasheet_date, self.datasheet_date)
+        self.assertEqual(transistor.datasheet_version, self.datasheet_version)
+        self.assertEqual(transistor.housing_area, self.housing_area)
+        self.assertEqual(transistor.cooling_area, self.cooling_area)
+        self.assertEqual(transistor.housing_type, self.housing_type)
         self.assertEqual(transistor.v_max, self.v_max)
         self.assertEqual(transistor.i_max, self.i_max)
         self.assertEqual(transistor.i_cont, self.i_cont)
-        # Test metadata attributes
-        self.assertEqual(transistor.meta.author, self.author)
-        self.assertEqual(transistor.meta.comment, self.comment)
-        self.assertEqual(transistor.meta.manufacturer, self.manufacturer)
-        self.assertEqual(transistor.meta.datasheet_hyperlink, self.datasheet_hyperlink)
-        self.assertEqual(transistor.meta.datasheet_date, self.datasheet_date)
-        self.assertEqual(transistor.meta.datasheet_version, self.datasheet_version)
-        self.assertEqual(transistor.meta.housing_area, self.housing_area)
-        self.assertEqual(transistor.meta.cooling_area, self.cooling_area)
-        self.assertEqual(transistor.meta.housing_type, self.housing_type)
         # Test Diode attributes
         self.assertEqual(transistor.diode.comment, self.comment)
         self.assertEqual(transistor.diode.manufacturer, self.manufacturer)
