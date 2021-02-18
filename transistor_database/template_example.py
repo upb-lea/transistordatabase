@@ -225,9 +225,9 @@ if __name__ == '__main__':
     print(transistor.switch.channel[0].v_i_data)
     print(transistor.switch.channel[0].t_j)
 
-    #transistor.switch.print_all_channel_data()
-    #transistor.switch.print_channel_data_vge(15)
-    #transistor.switch.print_channel_data_temp(175)
+    #transistor.switch.plot_all_channel_data()
+    #transistor.switch.plot_channel_data_vge(15)
+    #transistor.switch.plot_channel_data_temp(175)
 
     v_channel, r_channel = transistor.linearize_switch_ui_graph(175, 15, 40)  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
     print("v_channel_linearized = {} V".format(v_channel))
@@ -240,9 +240,8 @@ if __name__ == '__main__':
     print(transistor.diode.comment)
     print(transistor.diode.technology)
 
-
-    print("implement new function")
-    transistor.switch.print_energy_data()
+    # transistor.switch.plot_energy_data()
+    # transistor.diode.plot_energy_data()
 
     #store_transistor(transistor)
     #load_transistor()

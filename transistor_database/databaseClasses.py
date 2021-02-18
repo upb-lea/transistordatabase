@@ -416,7 +416,7 @@ class Transistor(persistent.Persistent):
                 self.e_off = []
                 self.linearized_switch = []
 
-        def print_all_channel_data(self):
+        def plot_all_channel_data(self):
             """ Plot all channel data """
             plt.figure()
             for i_channel in np.array(range(0,len(self.channel))):
@@ -429,7 +429,7 @@ class Transistor(persistent.Persistent):
             plt.grid()
             plt.show()
 
-        def print_channel_data_vge(self, gatevoltage):
+        def plot_channel_data_vge(self, gatevoltage):
             """ Plot channel data with a chosen gate-voltage"""
             plt.figure()
             for i_channel in np.array(range(0,len(self.channel))):
@@ -443,7 +443,7 @@ class Transistor(persistent.Persistent):
             plt.grid()
             plt.show()
 
-        def print_channel_data_temp(self, temperature):
+        def plot_channel_data_temp(self, temperature):
             """ Plot channel data with chosen temperature"""
             plt.figure()
             for i_channel in np.array(range(0,len(self.channel))):
@@ -458,8 +458,8 @@ class Transistor(persistent.Persistent):
             plt.show()
 
 
-        def print_energy_data(self):
-            """ Plot all channel data """
+        def plot_energy_data(self):
+            """ Plot all switching data """
             plt.figure()
             # look for e_on losses
             for i_energy_data in np.array(range(0,len(self.e_on))):
@@ -573,6 +573,37 @@ class Transistor(persistent.Persistent):
                 self.channel = []
                 self.e_rr = []
                 self.linearized_diode = []
+
+        def plot_energy_data(self):
+            """ Plot all switching data """
+
+            # look for e_off losses
+            if len(self.e_rr) != 0:
+                plt.figure()
+                for i_energy_data in np.array(range(0, len(self.e_rr))):
+                    # check if data is available as 'graph_i_e'
+                    if self.e_rr[i_energy_data].dataset_type == 'graph_i_e':
+                        # add label plot
+                        labelplot = "e_rr: v_supply = " + str(
+                            self.e_rr[i_energy_data].v_supply) + "V, T_J = " + str(
+                            self.e_rr[i_energy_data].t_j) + " °C, R_g = " + str(
+                            self.e_rr[i_energy_data].r_g) + " Ohm"
+                        # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
+                        # if ture, add gate-voltage to label
+                        if isinstance(e_rr[i_energy_data].v_g, (int, float)):
+                            labelplot = labelplot + ", vg = " + str(
+                            self.e_rr[i_energy_data].v_g) + " V"
+
+                        # plot
+                        plt.plot(self.e_rr[i_energy_data].i_e_data[0], self.e_rr[i_energy_data].i_e_data[1],
+                                 label=labelplot)
+                plt.legend()
+                plt.xlabel('Current in A')
+                plt.ylabel('Loss-energy in J')
+                plt.grid()
+                plt.show()
+            else:
+                print("No Data available")
 
     class LinearizedModel:
         """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
