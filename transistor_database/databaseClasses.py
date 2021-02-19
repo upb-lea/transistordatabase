@@ -27,8 +27,8 @@ class Transistor(persistent.Persistent):
     datasheet_hyperlink: [str, None]  # Make sure this link is valid.  # Optional
     datasheet_date: ["datetime.date", None]  # Optional
     datasheet_version: [str, None]  # Optional
-    housing_area: float  # Unit: mm^2  # Mandatory # ToDo: Also SI Units?
-    cooling_area: float  # Unit: mm^2  # Mandatory
+    housing_area: float  # Unit: m^2  # Mandatory
+    cooling_area: float  # Unit: m^2  # Mandatory
     housing_type: str  # e.g. TO-220, etc. # Mandatory. Must be from a list of specific strings.
     # These are documented in their respective class definitions
     switch: "Switch"
@@ -109,7 +109,7 @@ class Transistor(persistent.Persistent):
             # Determine necessary keys.
             check_keys = {'t_j', 'v_i_data'}
             # Check if all necessary keys are contained in the dict.
-            if dataset_dict.keys() < check_keys:
+            if not dataset_dict.keys() >= check_keys:
                 raise KeyError("Dictionary does not contain all keys necessary for ChannelData object "
                                "creation. Mandatory keys: 't_j', 'v_i_data'")
             # Check if all values have appropriate types.
@@ -140,7 +140,7 @@ class Transistor(persistent.Persistent):
                                  "'graph_r_e' or 'graph_i_e'. Check SwitchEnergyData class for further "
                                  "information.")
             # Check if all necessary keys are contained in the dict.
-            if dataset_dict.keys() < check_keys:
+            if not dataset_dict.keys() >= check_keys:
                 raise KeyError("Dictionary does not contain all keys necessary for SwitchEnergyData object "
                                "creation. Mandatory keys are documented in the SwitchEnergyData class.")
             # Check if all values have appropriate types.
@@ -154,7 +154,7 @@ class Transistor(persistent.Persistent):
             check_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
             numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
             # Check if all necessary keys are contained in the dict.
-            if dataset_dict.keys() < check_keys:
+            if not dataset_dict.keys() >= check_keys:
                 raise KeyError("Dictionary does not contain all keys necessary for Switch LinearizedModel object "
                                "creation. Mandatory keys: 't_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'")
             # Check if all values have appropriate types.
@@ -165,9 +165,9 @@ class Transistor(persistent.Persistent):
         elif dict_type == 'Diode_LinearizedModel':
             # Determine necessary keys.
             check_keys = {'t_j', 'v_g', 'i_channel', 'r_channel'}
-            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
+            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'} # ToDo: Add proper type check for optional values
             # Check if all necessary keys are contained in the dict.
-            if dataset_dict.keys() < check_keys:
+            if not dataset_dict.keys() >= check_keys:
                 raise KeyError("Dictionary does not contain all keys necessary for Diode LinearizedModel object "
                                "creation. Mandatory keys: 't_j', 'v_g', 'i_channel', 'r_channel'")
             # Check if all values have appropriate types.
@@ -181,7 +181,7 @@ class Transistor(persistent.Persistent):
                           'housing_type', 'v_max', 'i_max', 'i_cont'}
             str_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'}
             numeric_keys = {'housing_area', 'cooling_area', 'v_max', 'i_max', 'i_cont'}
-            if dataset_dict.keys() < check_keys:
+            if not dataset_dict.keys() >= check_keys:
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'author', 'manufacturer', "
                                "'housing_area', 'cooling_area', 'housing_type', 'v_max', 'i_max', 'i_cont'")
@@ -205,15 +205,17 @@ class Transistor(persistent.Persistent):
                     return True
 
         elif dict_type == 'FosterThermalModel':
-            # FosterThermalModel does not have mandatory keys.
             # Check which optional keys are given.
-            check_keys = list(dataset_dict.keys())
+            # check_keys = {}  # FosterThermalModel does not have mandatory keys.
             numeric_keys = {'r_th_total', 'c_th_total', 'tau_total'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys if numeric_key in check_keys}  # actual keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys
+                            if numeric_key in list(dataset_dict.keys())}  # actual keys
             list_keys = {'r_th_vector', 'c_th_vector', 'tau_vector'}  # possible keys
-            list_keys = {list_key for list_key in list_keys if list_key in check_keys}  # actual keys
+            list_keys = {list_key for list_key in list_keys
+                         if list_key in list(dataset_dict.keys())}  # actual keys
             array_keys = {'transient_data'}  # possible keys
-            array_keys = {array_key for array_key in array_keys if array_key in check_keys}  # actual keys
+            array_keys = {array_key for array_key in array_keys
+                          if array_key in list(dataset_dict.keys())}  # actual keys
             # Check if all elements in 'r_th_vector', 'c_th_vector', 'tau_vector' are real numeric (float, int)
             bool_list_numeric = all([all([check_realnum(single_value) for single_value in dataset_dict.get(list_key)])
                                     for list_key in list_keys])
@@ -233,23 +235,27 @@ class Transistor(persistent.Persistent):
         elif dict_type == 'Switch':
             # Switch does not have mandatory keys.
             # Check which optional keys are given.
-            check_keys = list(dataset_dict.keys())
+            check_keys = {'r_g_int'}
             str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
-            str_keys = {str_key for str_key in str_keys if str_key in check_keys}  # actual keys
-            numeric_keys = {'c_oss', 'c_iss', 'c_rss'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys if numeric_key in check_keys}  # actual keys
-            # Check if all values have appropriate types.
-            if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                    all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
-                # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
-                return True
+            str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
+            numeric_keys = {'c_oss', 'c_iss', 'c_rss', 'r_g_int'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys
+                            if numeric_key in list(dataset_dict.keys())}  # actual keys
+            if not dataset_dict.keys() >= check_keys:
+                raise KeyError("Dictionary 'switch_args' does not contain all keys necessary for Transistor object "
+                               "creation. Mandatory keys: 'r_g_int'")
+            else:
+                # Check if all values have appropriate types.
+                if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                        all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
+                    # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
+                    return True
 
         elif dict_type == 'Diode':
-            # Diode does not have mandatory keys.
+            # check_keys = {}  # Diode does not have mandatory keys (yet).
             # Check which optional keys are given.
-            check_keys = list(dataset_dict.keys())
             str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
-            str_keys = {str_key for str_key in str_keys if str_key in check_keys}  # actual keys
+            str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
             # Check if all values have appropriate types.
             if all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
                 # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
@@ -313,6 +319,8 @@ class Transistor(persistent.Persistent):
         c_oss: [float, int, None]  # Unit: pF  # Optional
         c_iss: [float, int, None]  # Unit: pF  # Optional
         c_rss: [float, int, None]  # Unit: pF  # Optional
+        #
+        r_g_int: [float, int]  # Unit: Ohm # Mandatory
 
         def __init__(self, switch_args):
             # Current behavior on empty 'foster' dictionary: thermal object is still created but with empty attributes.
@@ -322,6 +330,7 @@ class Transistor(persistent.Persistent):
                 self.c_oss = switch_args.get('c_oss')
                 self.c_iss = switch_args.get('c_iss')
                 self.c_rss = switch_args.get('c_rss')
+                self.r_g_int = switch_args.get('r_g_int')
                 self.comment = switch_args.get('comment')
                 self.manufacturer = switch_args.get('manufacturer')
                 self.technology = switch_args.get('technology')
@@ -632,43 +641,79 @@ class Transistor(persistent.Persistent):
             self.i_e_data = args.get('i_e_data')
             self.r_e_data = args.get('r_e_data')
 
-    def linearize_switch_ui_graph(self, temperature, gatevoltage, current):
-        """ get interpolated channel parameters. This function searches for ui_graphs with the choosen temperature and gatevoltage. At the desired current,
-        the equivalent parameters for u_channel and r_channel are returned"""
+    def linearize_channel_ui_graph(self, t_j, v_g, i_channel, switch_or_diode):
+        """Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
+        the desired current, the equivalent parameters for u_channel and r_channel are returned"""
         # ToDo: rethink method name. May include switch or diode as a parameter and use one global function
         # ToDo: check if this function works for all types of transistors
         # ToDo: Error handling
         # ToDo: Unittest for this method
 
+        # ToDo: This method may not be able to be called from inside an inner class, since it needs a transistor object
+        #  to work.
         # in case of failure, return None
         v_channel = None
         r_channel = None
 
-        # sweep trough channel array
-        for i_channel in np.array(range(0, len(self.switch.channel))):
-            # check if input parameters match to stored data. Only 'v_i_data'-data is used
-            if self.switch.channel[i_channel].t_j == temperature and self.switch.channel[i_channel].v_g == gatevoltage:
+        if switch_or_diode == 'switch':
+            # sweep trough channel array
+            for channel_idx in np.array(range(0, len(self.switch.channel))):
+                # check if input parameters match to stored data. Only 'v_i_data'-data is used
+                if self.switch.channel[channel_idx].t_j == t_j and self.switch.channel[channel_idx].v_g == v_g:
+                # ToDo: Is this right? Calculation is done for every object that fits the input arguments but only the
+                #  last iteration is returned
+                    # interpolate data
+                    voltage_interpolated = np.interp(i_channel, self.switch.channel[channel_idx].v_i_data[1],
+                                                     self.switch.channel[channel_idx].v_i_data[0])
 
-                # interpolate data
-                voltage_interpolated = np.interp(current, self.switch.channel[i_channel].v_i_data[1],
-                                                 self.switch.channel[i_channel].v_i_data[0])
+                    # check kind of transistor type due to forward voltage value
+                    if self.transistor_type == 'MOSFET' or self.transistor_type == 'SiC-MOSFET':
+                        # transistor has no forward voltage
 
-                # check kind of transistor type due to forward voltage value
-                if self.transistor_type == 'MOSFET' or self.transistor_type == 'SiC-MOSFET':
-                    # transistor has no forward voltage
+                        # return values
+                        v_channel = 0  # no forward voltage du to resistance behaviour
+                        r_channel = voltage_interpolated / i_channel
+                    else:
+                        # transistor has forward voltage. Other interpolating point will be with 10% more current
+                        # ToDo: Test this function if IGBT is available
+                        voltage_interpolated_2 = np.interp(i_channel * 1.1, self.switch.channel[channel_idx].v_i_data[1],
+                                                           self.switch.channel[channel_idx].v_i_data[0])
+                        r_channel = (voltage_interpolated_2 - voltage_interpolated)/(0.1 * i_channel)
+                        v_channel = voltage_interpolated - r_channel * i_channel
+        elif switch_or_diode == 'diode':
+            if self.transistor_type == 'SiC-MOSFET':  # ToDo: Add GaNs
+                candidate_datasets = [channel for channel in self.diode.channel
+                                      if (channel.t_j == t_j and channel.v_g == v_g)]
+                if len(candidate_datasets) == 0:
+                    available_datasets = [(channel.t_j, channel.v_g) for channel in self.diode.channel]
+                    print("Available operating points: (t_j, v_g)")
+                    print(available_datasets)
+                    raise ValueError("No data available for linearization at the given operating point. "
+                                     "A list of available operating points is printed above.")
+            else:
+                candidate_datasets = [channel for channel in self.diode.channel
+                                      if channel.t_j == t_j]
+                if len(candidate_datasets) == 0:
+                    available_datasets = [channel.t_j for channel in self.diode.channel]
+                    print("Available operating points: (t_j)")
+                    print(available_datasets)
+                    raise ValueError("No data available for linearization at the given operating point. "
+                                     "A list of available operating points is printed above.")
+            # interpolate data
+            # ToDo: Only first entry of candidate_datasets is used. Add case where multiple datasets fit the operating
+            #  point? => Add Warning ("Selection of 2nd dataset not yet implemented"), not Error.
+            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].v_i_data[1],
+                                             candidate_datasets[0].v_i_data[0])
+            voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].v_i_data[1],
+                                               candidate_datasets[0].v_i_data[0])
+            r_channel = (voltage_interpolated_2 - voltage_interpolated) / (0.1 * i_channel)
+            v_channel = voltage_interpolated - r_channel * i_channel
 
-                    # return values
-                    v_channel = 0  # no forward voltage du to resistance behaviour
-                    r_channel = voltage_interpolated / current
-                else:
-                    # transistor has forward voltage. Other interpolating point will be with 10% more current
-                    # ToDo: Test this function if IGBT is available
-                    voltage_interpolated_2 = np.interp(current * 1.1, self.switch.channel[i_channel].v_i_data[1],
-                                                     self.switch.channel[i_channel].v_i_data[0])
-                    r_channel = (voltage_interpolated_2 - voltage_interpolated) (0.1 * current)
-                    v_channel = voltage_interpolated - r_channel * current
-
-        return round(v_channel,2), round(r_channel,4)
+        else:
+            raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
+                             "linearization.")
+        # ToDo: Directly return LinearizedModel object instead of these two values?
+        return round(v_channel, 2), round(r_channel, 4)
 
 
 def check_realnum(x):

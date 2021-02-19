@@ -73,7 +73,7 @@ def Template():
     #### Metadata
     comment = "SiC switch"  # Optional
     manufacturer = "CREE"  # Optional
-    technology = "unknown" # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
+    technology = "unknown"  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
 
     # Constant Capacitances
     c_oss = 5   # Unit: pF  # Optional
@@ -229,7 +229,7 @@ if __name__ == '__main__':
     #transistor.switch.print_channel_data_vge(15)
     #transistor.switch.print_channel_data_temp(175)
 
-    v_channel, r_channel = transistor.linearize_switch_ui_graph(175, 15, 40)  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    v_channel, r_channel = transistor.linearize_channel_ui_graph(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
     print("v_channel_linearized = {} V".format(v_channel))
     print("r_channel_linearized = {} Ohm".format(r_channel))
 
