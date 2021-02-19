@@ -114,7 +114,7 @@ def Template():
     e_on_25_800 = {"dataset_type": "graph_i_e",
                    "t_j": 25,
                    'v_g': 15,
-                   'v_supply': 600,
+                   'v_supply': 800,
                    'r_g': 2.5,
                    "i_e_data": csv2array('switch_switching_eon_2.5Ohm_800V_25deg_15V.csv', False, False)}  # insert csv here
     e_off_25_600 = {"dataset_type": "graph_i_e",
@@ -126,7 +126,7 @@ def Template():
     e_off_25_800 = {"dataset_type": "graph_i_e",
                     "t_j": 25,
                     'v_g': -4,
-                    'v_supply': 600,
+                    'v_supply': 800,
                     'r_g': 2.5,
                     "i_e_data": csv2array('switch_switching_eoff_2.5Ohm_800V_25deg_-4V.csv', False, False)}  # insert csv here
 
@@ -225,9 +225,9 @@ if __name__ == '__main__':
     print(transistor.switch.channel[0].v_i_data)
     print(transistor.switch.channel[0].t_j)
 
-    transistor.switch.print_all_channel_data()
-    #transistor.switch.print_channel_data_vge(15)
-    #transistor.switch.print_channel_data_temp(175)
+    #transistor.switch.plot_all_channel_data()
+    #transistor.switch.plot_channel_data_vge(15)
+    #transistor.switch.plot_channel_data_temp(175)
 
     v_channel, r_channel = transistor.linearize_channel_ui_graph(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
     print("v_channel_linearized = {} V".format(v_channel))
@@ -239,6 +239,9 @@ if __name__ == '__main__':
     print(transistor.diode.manufacturer)
     print(transistor.diode.comment)
     print(transistor.diode.technology)
+
+    # transistor.switch.plot_energy_data()
+    # transistor.diode.plot_energy_data()
 
     #store_transistor(transistor)
     #load_transistor()
