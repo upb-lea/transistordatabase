@@ -106,14 +106,24 @@ class Transistor(persistent.Persistent):
 
         elif dict_type == 'ChannelData':
             # ToDo: v_g mandatory for switch, but nut for diode
-            # Determine necessary keys.
-            check_keys = {'t_j', 'v_i_data'}
-            # Check if all necessary keys are contained in the dict.
-            if not dataset_dict.keys() >= check_keys:
+            # Determine mandatory keys.
+            mandatory_keys = {'t_j', 'v_i_data'}
+            # Determine types of mandatory and optional keys.
+            numeric_keys = {'t_j'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys
+                            if numeric_key in list(dataset_dict.keys())}  # actual keys
+            array_keys = {'v_i_data'}  # possible keys
+            array_keys = {array_key for array_key in array_keys
+                          if array_key in list(dataset_dict.keys())}  # actual keys
+            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+            # ToDo: First check might not even be necessary since missing keys return value 'None'?
+            if not dataset_dict.keys() >= mandatory_keys or \
+                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary does not contain all keys necessary for ChannelData object "
                                "creation. Mandatory keys: 't_j', 'v_i_data'")
             # Check if all values have appropriate types.
-            elif check_realnum(dataset_dict.get('t_j')) and check_2d_dataset(dataset_dict.get('v_i_data')):
+            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                    all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
                 # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
                 return True
 
@@ -122,25 +132,39 @@ class Transistor(persistent.Persistent):
                 raise KeyError("Dictionary does not contain 'dataset_type' key necessary for SwitchEnergyData object "
                                "creation. 'dataset_type' must be 'single', 'r_e' or 'i_e'. Check SwitchEnergyData class"
                                " for further information.")
-            # Determine necessary keys.
+            # Determine mandatory keys.
             elif dataset_dict.get('dataset_type') == 'single':
-                check_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
-                numeric_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
+                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
+                # Determine types of mandatory and optional keys.
+                numeric_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}  # possible keys
+                numeric_keys = {numeric_key for numeric_key in numeric_keys
+                                if numeric_key in list(dataset_dict.keys())}  # actual keys
                 array_keys = {}
             elif dataset_dict.get('dataset_type') == 'graph_r_e':
-                check_keys = {'t_j', 'v_supply', 'v_g', 'r_e_data', 'i_x'}
-                numeric_keys = {'t_j', 'v_supply', 'v_g', 'i_x'}
-                array_keys = {'r_e_data'}
+                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'r_e_data', 'i_x'}
+                # Determine types of mandatory and optional keys.
+                numeric_keys = {'t_j', 'v_supply', 'v_g', 'i_x'}  # possible keys
+                numeric_keys = {numeric_key for numeric_key in numeric_keys
+                                if numeric_key in list(dataset_dict.keys())}  # actual keys
+                array_keys = {'r_e_data'}  # possible keys
+                array_keys = {array_key for array_key in array_keys
+                              if array_key in list(dataset_dict.keys())}  # actual keys
             elif dataset_dict.get('dataset_type') == 'graph_i_e':
-                check_keys = {'t_j', 'v_supply', 'v_g', 'i_e_data', 'r_g'}
-                numeric_keys = {'t_j', 'v_supply', 'v_g', 'r_g'}
+                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'i_e_data', 'r_g'}
+                # Determine types of mandatory and optional keys.
+                numeric_keys = {'t_j', 'v_supply', 'v_g', 'r_g'}  # possible keys
+                numeric_keys = {numeric_key for numeric_key in numeric_keys
+                                if numeric_key in list(dataset_dict.keys())}  # actual keys
                 array_keys = {'i_e_data'}
+                array_keys = {array_key for array_key in array_keys
+                              if array_key in list(dataset_dict.keys())}  # actual keys
             else:
                 raise ValueError("Wrong dataset_type for creation of SwitchEnergyData object. Must be 'single', "
                                  "'graph_r_e' or 'graph_i_e'. Check SwitchEnergyData class for further "
                                  "information.")
-            # Check if all necessary keys are contained in the dict.
-            if not dataset_dict.keys() >= check_keys:
+            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+            if not dataset_dict.keys() >= mandatory_keys or \
+                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary does not contain all keys necessary for SwitchEnergyData object "
                                "creation. Mandatory keys are documented in the SwitchEnergyData class.")
             # Check if all values have appropriate types.
@@ -151,10 +175,14 @@ class Transistor(persistent.Persistent):
 
         elif dict_type == 'Switch_LinearizedModel':
             # Determine necessary keys.
-            check_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
-            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
-            # Check if all necessary keys are contained in the dict.
-            if not dataset_dict.keys() >= check_keys:
+            mandatory_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
+            # Determine types of mandatory and optional keys.
+            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys
+                            if numeric_key in list(dataset_dict.keys())}  # actual keys
+            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+            if not dataset_dict.keys() >= mandatory_keys or \
+                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary does not contain all keys necessary for Switch LinearizedModel object "
                                "creation. Mandatory keys: 't_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'")
             # Check if all values have appropriate types.
@@ -163,11 +191,15 @@ class Transistor(persistent.Persistent):
                 return True
 
         elif dict_type == 'Diode_LinearizedModel':
-            # Determine necessary keys.
-            check_keys = {'t_j', 'v_g', 'i_channel', 'r_channel'}
-            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'} # ToDo: Add proper type check for optional values
-            # Check if all necessary keys are contained in the dict.
-            if not dataset_dict.keys() >= check_keys:
+            # Determine mandatory keys.
+            mandatory_keys = {'t_j', 'v_g', 'i_channel', 'r_channel'}
+            # Determine types of mandatory and optional keys.
+            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys
+                            if numeric_key in list(dataset_dict.keys())}  # actual keys
+            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+            if not dataset_dict.keys() >= mandatory_keys or \
+                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary does not contain all keys necessary for Diode LinearizedModel object "
                                "creation. Mandatory keys: 't_j', 'v_g', 'i_channel', 'r_channel'")
             # Check if all values have appropriate types.
@@ -176,12 +208,18 @@ class Transistor(persistent.Persistent):
                 return True
 
         elif dict_type == 'Transistor':
-            # ToDo: Add type checks for optional arguments
-            check_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
+            # Determine mandatory keys.
+            mandatory_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
                           'housing_type', 'v_max', 'i_max', 'i_cont'}
-            str_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'}
-            numeric_keys = {'housing_area', 'cooling_area', 'v_max', 'i_max', 'i_cont'}
-            if not dataset_dict.keys() >= check_keys:
+            # Determine types of mandatory and optional keys.
+            str_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'}  # possible keys
+            str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
+            numeric_keys = {'housing_area', 'cooling_area', 'v_max', 'i_max', 'i_cont'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys
+                            if numeric_key in list(dataset_dict.keys())}  # actual keys
+            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+            if not dataset_dict.keys() >= mandatory_keys or \
+                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'author', 'manufacturer', "
                                "'housing_area', 'cooling_area', 'housing_type', 'v_max', 'i_max', 'i_cont'")
@@ -205,8 +243,9 @@ class Transistor(persistent.Persistent):
                     return True
 
         elif dict_type == 'FosterThermalModel':
-            # Check which optional keys are given.
-            # check_keys = {}  # FosterThermalModel does not have mandatory keys.
+            # Determine mandatory keys.
+            # mandatory_keys = {}  # FosterThermalModel does not have mandatory keys.
+            # Determine types of mandatory and optional keys.
             numeric_keys = {'r_th_total', 'c_th_total', 'tau_total'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
@@ -233,15 +272,17 @@ class Transistor(persistent.Persistent):
                 return True
 
         elif dict_type == 'Switch':
-            # Switch does not have mandatory keys.
-            # Check which optional keys are given.
-            check_keys = {'r_g_int'}
+            # Determine mandatory keys.
+            mandatory_keys = {'r_g_int'}
+            # Determine types of mandatory and optional keys.
             str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
             numeric_keys = {'c_oss', 'c_iss', 'c_rss', 'r_g_int'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
-            if not dataset_dict.keys() >= check_keys:
+            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+            if not dataset_dict.keys() >= mandatory_keys or \
+                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary 'switch_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'r_g_int'")
             else:
@@ -252,8 +293,9 @@ class Transistor(persistent.Persistent):
                     return True
 
         elif dict_type == 'Diode':
-            # check_keys = {}  # Diode does not have mandatory keys (yet).
-            # Check which optional keys are given.
+            # Determine mandatory keys.
+            # mandatory_keys = {}  # Diode does not have mandatory keys (yet).
+            # Determine types of mandatory and optional keys.
             str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
             # Check if all values have appropriate types.
@@ -774,27 +816,32 @@ class Transistor(persistent.Persistent):
 
 
 def check_realnum(x):
-    """Check if argument is real numeric scalar. Raise TypeError if not. """
-    if not any([isinstance(x, int), isinstance(x, float)]):
+    """Check if argument is real numeric scalar. Raise TypeError if not. None is also accepted because it is valid for
+    optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand."""
+    if not any([isinstance(x, int), isinstance(x, float), x is None]):
         raise TypeError('{0} is not numeric.'.format(x))
     else:
         return True
 
 
 def check_2d_dataset(x):
-    """Check if argument is real 2D-dataset of right shape. Raise TypeError if not. """
+    """Check if argument is real 2D-dataset of right shape. Raise TypeError if not. None is also accepted because it is
+    valid for optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand."""
     if isinstance(x, np.ndarray):
         if np.all(np.isreal(x)):
             if x.ndim == 2:
                 if x.shape[0] == 2:
                     return True
+    elif x is None:
+        return True
     raise TypeError("Invalid dataset. Must be 2D-numpy array with shape (2,x) and real numeric values.")
 
 
 def check_str(x):
     """Check if argument is string. Raise TypeError if not. Function not necessary but helpful to keep raising of errors
-    consistent with other type checks."""
-    if isinstance(x, str):
+    consistent with other type checks. None is also accepted because it is valid for optional keys. Mandatory keys that
+    must not contain None are checked somewhere else beforehand."""
+    if isinstance(x, str) or x is None:
         return True
     raise TypeError('{0} is not a string.'.format(x))
 
