@@ -57,6 +57,7 @@ def Template():
     cooling_area = 160e-6
     housing_type = 'TO247'
 
+
     # Create argument dictionaries
     transistor_args = {'name': name, 'transistor_type': transistor_type, 'author': author, 'comment': comment,
                        'manufacturer': manufacturer,
@@ -74,6 +75,8 @@ def Template():
     comment = "SiC switch"  # Optional
     manufacturer = "CREE"  # Optional
     technology = "unknown"  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
+    # mandatory
+    r_g_int = 2.6
 
     # Constant Capacitances
     c_oss = 5   # Unit: pF  # Optional
@@ -143,6 +146,7 @@ def Template():
         'comment': comment,
         'manufacturer': manufacturer,
         'technology': technology,
+        'r_g_int': r_g_int,
         'c_oss': c_oss,
         'c_iss': c_iss,
         'c_rss': c_rss,
