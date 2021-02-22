@@ -38,34 +38,25 @@ def Template():
     ####################################
     # transistor parameters
     ####################################
-    name = 'CREE_C3M0016120K'
-    transistor_type = 'SiC-MOSFET'
-    v_max = 1200
-    i_max = 250
-    i_cont = 115
-
-
-    # metadata parameters
-    # ToDo: use SI-based things. No mJ, no mJ, ...
-    author = 'Nikolas Foerster'
-    comment = ''
-    manufacturer = 'Wolfspeed'
-    datasheet_hyperlink = 'https://www.wolfspeed.com/downloads/dl/file/id/1483/product/0/c3m0016120k.pdf'
-    datasheet_date = '2019-04'
-    datasheet_version = "unknown"
-    housing_area = 367e-6
-    cooling_area = 160e-6
-    housing_type = 'TO247'
-
-
     # Create argument dictionaries
-    transistor_args = {'name': name, 'transistor_type': transistor_type, 'author': author, 'comment': comment,
-                       'manufacturer': manufacturer,
-                       'datasheet_hyperlink': datasheet_hyperlink, 'datasheet_date': datasheet_date,
-                       'datasheet_version': datasheet_version, 'housing_area': housing_area,
-                       'cooling_area': cooling_area, 'housing_type': housing_type, 'v_max': v_max,
-                       'i_max': i_max, 'i_cont': i_cont}
-
+    transistor_args = {'name': 'CREE_C3M0016120K',
+                       'transistor_type': 'SiC-MOSFET',
+                       'author': 'Nikolas Förster',
+                       'comment': '',
+                       'manufacturer': 'Wolfspeed',
+                       'datasheet_hyperlink': 'https://www.wolfspeed.com/downloads/dl/file/id/1483/product/0/c3m0016120k.pdf',
+                       'datasheet_date': '2019-04',
+                       'datasheet_version': "unknown",
+                       'housing_area': 367e-6,
+                       'cooling_area': 160e-6,
+                       'housing_type': 'TO247',
+                       'v_max': 1200,
+                       'i_max': 250,
+                       'i_cont': 115,
+                       'c_iss':  {"t_j": 25, "graph_v_c": csv2array('transistor_c_iss.csv', False, False, True)},  # insert csv here
+                       'c_oss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_oss.csv', False, False, True)},  # insert csv here
+                       'c_rss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_rss.csv', False, False, True)}  # insert csv here
+                       }
 
 
     ####################################
@@ -85,27 +76,27 @@ def Template():
 
     #### Channel parameters
     # channel data minus 40 degree
-    channel_m40_15 = {"t_j": -40, 'v_g': 15,"v_i_data": csv2array('switch_channel_m40_15V.csv', True, False)}  # insert csv here
-    channel_m40_13 = {"t_j": -40, 'v_g': 13, "v_i_data": csv2array('switch_channel_m40_13V.csv', True, False)}  # insert csv here
-    channel_m4_11 = {"t_j": -40, 'v_g': 11, "v_i_data": csv2array('switch_channel_m40_11V.csv', True, False)}  # insert csv here
-    channel_m40_9 = {"t_j": -40, 'v_g': 9, "v_i_data": csv2array('switch_channel_m40_9V.csv', True, False)}  # insert csv here
-    channel_m40_7 = {"t_j": -40, 'v_g': 7, "v_i_data": csv2array('switch_channel_m40_7V.csv', True, False)}  # insert csv here
+    channel_m40_15 = {"t_j": -40, 'v_g': 15,"v_i_data": csv2array('switch_channel_m40_15V.csv', True, False, False)}  # insert csv here
+    channel_m40_13 = {"t_j": -40, 'v_g': 13, "v_i_data": csv2array('switch_channel_m40_13V.csv', True, False, False)}  # insert csv here
+    channel_m4_11 = {"t_j": -40, 'v_g': 11, "v_i_data": csv2array('switch_channel_m40_11V.csv', True, False, False)}  # insert csv here
+    channel_m40_9 = {"t_j": -40, 'v_g': 9, "v_i_data": csv2array('switch_channel_m40_9V.csv', True, False, False)}  # insert csv here
+    channel_m40_7 = {"t_j": -40, 'v_g': 7, "v_i_data": csv2array('switch_channel_m40_7V.csv', True, False, False)}  # insert csv here
     # channel data 25 degree
-    channel_25_15 = {"t_j": 25, 'v_g': 15,"v_i_data": csv2array('switch_channel_25_15V.csv', True, False)}  # insert csv here
-    channel_25_13 = {"t_j": 25, 'v_g': 13, "v_i_data": csv2array('switch_channel_25_13V.csv', True, False)}  # insert csv here
-    channel_25_11 = {"t_j": 25, 'v_g': 11, "v_i_data": csv2array('switch_channel_25_11V.csv', True, False)}  # insert csv here
-    channel_25_9 = {"t_j": 25, 'v_g': 9, "v_i_data": csv2array('switch_channel_25_9V.csv', True, False)}  # insert csv here
-    channel_25_7 = {"t_j": 25, 'v_g': 7, "v_i_data": csv2array('switch_channel_25_7V.csv', True, False)}  # insert csv here
+    channel_25_15 = {"t_j": 25, 'v_g': 15,"v_i_data": csv2array('switch_channel_25_15V.csv', True, False, False)}  # insert csv here
+    channel_25_13 = {"t_j": 25, 'v_g': 13, "v_i_data": csv2array('switch_channel_25_13V.csv', True, False, False)}  # insert csv here
+    channel_25_11 = {"t_j": 25, 'v_g': 11, "v_i_data": csv2array('switch_channel_25_11V.csv', True, False, False)}  # insert csv here
+    channel_25_9 = {"t_j": 25, 'v_g': 9, "v_i_data": csv2array('switch_channel_25_9V.csv', True, False, False)}  # insert csv here
+    channel_25_7 = {"t_j": 25, 'v_g': 7, "v_i_data": csv2array('switch_channel_25_7V.csv', True, False, False)}  # insert csv here
     # channel data 175 degree
-    channel_175_15 = {"t_j": 175, 'v_g': 15,"v_i_data": csv2array('switch_channel_175_15V.csv', True, False)}  # insert csv here
-    channel_175_13 = {"t_j": 175, 'v_g': 13, "v_i_data": csv2array('switch_channel_175_13V.csv', True, False)}  # insert csv here
-    channel_175_11 = {"t_j": 175, 'v_g': 11, "v_i_data": csv2array('switch_channel_175_11V.csv', True, False)}  # insert csv here
-    channel_175_9 = {"t_j": 175, 'v_g': 9, "v_i_data": csv2array('switch_channel_175_9V.csv', True, False)}  # insert csv here
-    channel_175_7 = {"t_j": 175, 'v_g': 7, "v_i_data": csv2array('switch_channel_175_7V.csv', True, False)}  # insert csv here
+    channel_175_15 = {"t_j": 175, 'v_g': 15,"v_i_data": csv2array('switch_channel_175_15V.csv', True, False, False)}  # insert csv here
+    channel_175_13 = {"t_j": 175, 'v_g': 13, "v_i_data": csv2array('switch_channel_175_13V.csv', True, False, False)}  # insert csv here
+    channel_175_11 = {"t_j": 175, 'v_g': 11, "v_i_data": csv2array('switch_channel_175_11V.csv', True, False, False)}  # insert csv here
+    channel_175_9 = {"t_j": 175, 'v_g': 9, "v_i_data": csv2array('switch_channel_175_9V.csv', True, False, False)}  # insert csv here
+    channel_175_7 = {"t_j": 175, 'v_g': 7, "v_i_data": csv2array('switch_channel_175_7V.csv', True, False, False)}  # insert csv here
 
 
    # print(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False))
-    print(np.shape(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False, False)))
+    print(np.shape(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False, False, False)))
 
     #### switching parameters
     e_on_25_600 = {"dataset_type": "graph_i_e",
@@ -113,25 +104,25 @@ def Template():
                    'v_g': 15,
                    'v_supply': 600,
                    'r_g': 2.5,
-                   "i_e_data": csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False, False)}  # insert csv here
+                   "i_e_data": csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False, False, False)}  # insert csv here
     e_on_25_800 = {"dataset_type": "graph_i_e",
                    "t_j": 25,
                    'v_g': 15,
                    'v_supply': 800,
                    'r_g': 2.5,
-                   "i_e_data": csv2array('switch_switching_eon_2.5Ohm_800V_25deg_15V.csv', False, False)}  # insert csv here
+                   "i_e_data": csv2array('switch_switching_eon_2.5Ohm_800V_25deg_15V.csv', False, False, False)}  # insert csv here
     e_off_25_600 = {"dataset_type": "graph_i_e",
                    "t_j": 25,
                    'v_g': -4,
                    'v_supply': 600,
                    'r_g': 2.5,
-                   "i_e_data": csv2array('switch_switching_eoff_2.5Ohm_600V_25deg_-4V.csv', False, False)}  # insert csv here
+                   "i_e_data": csv2array('switch_switching_eoff_2.5Ohm_600V_25deg_-4V.csv', False, False, False)}  # insert csv here
     e_off_25_800 = {"dataset_type": "graph_i_e",
                     "t_j": 25,
                     'v_g': -4,
                     'v_supply': 800,
                     'r_g': 2.5,
-                    "i_e_data": csv2array('switch_switching_eoff_2.5Ohm_800V_25deg_-4V.csv', False, False)}  # insert csv here
+                    "i_e_data": csv2array('switch_switching_eoff_2.5Ohm_800V_25deg_-4V.csv', False, False, False)}  # insert csv here
 
     ### switch foster parameters
     #
@@ -165,13 +156,13 @@ def Template():
     technology = 'technology diode'
 
     #### Channel parameters
-    channel_25_0 = {"t_j": 25, 'v_g': 0, "v_i_data": csv2array('diode_channel_25_0vgs.csv', True, True)}  # insert csv here
-    channel_25_neg2 = {"t_j": 25, 'v_g': -2, "v_i_data": csv2array('diode_channel_25_-2vgs.csv', True, True)}  # insert csv here
-    channel_25_neg4 = {"t_j": 25, 'v_g': -4, "v_i_data": csv2array('diode_channel_25_-4vgs.csv', True, True)}  # insert csv here
+    channel_25_0 = {"t_j": 25, 'v_g': 0, "v_i_data": csv2array('diode_channel_25_0vgs.csv', True, True, False)}  # insert csv here
+    channel_25_neg2 = {"t_j": 25, 'v_g': -2, "v_i_data": csv2array('diode_channel_25_-2vgs.csv', True, True, False)}  # insert csv here
+    channel_25_neg4 = {"t_j": 25, 'v_g': -4, "v_i_data": csv2array('diode_channel_25_-4vgs.csv', True, True, False)}  # insert csv here
 
-    channel_175_0 = {"t_j": 25, 'v_g': 0, "v_i_data": csv2array('diode_channel_175_0vgs.csv', True, True)}  # insert csv here
-    channel_175_neg2 = {"t_j": 25, 'v_g': -2, "v_i_data": csv2array('diode_channel_175_-2vgs.csv', True, True)}  # insert csv here
-    channel_175_neg4 = {"t_j": 25, 'v_g': -4, "v_i_data": csv2array('diode_channel_175_-4vgs.csv', True, True)}  # insert csv here
+    channel_175_0 = {"t_j": 25, 'v_g': 0, "v_i_data": csv2array('diode_channel_175_0vgs.csv', True, True, False)}  # insert csv here
+    channel_175_neg2 = {"t_j": 25, 'v_g': -2, "v_i_data": csv2array('diode_channel_175_-2vgs.csv', True, True, False)}  # insert csv here
+    channel_175_neg4 = {"t_j": 25, 'v_g': -4, "v_i_data": csv2array('diode_channel_175_-4vgs.csv', True, True, False)}  # insert csv here
 
     ### diode foster parameters
     diode_foster_args = None
@@ -243,6 +234,11 @@ if __name__ == '__main__':
     print(transistor.diode.manufacturer)
     print(transistor.diode.comment)
     print(transistor.diode.technology)
+
+    print(transistor.c_iss.t_j)
+    print(transistor.c_iss.graph_v_c)
+    print(transistor.c_oss)
+    print(transistor.c_rss)
 
     # transistor.switch.plot_energy_data()
     # transistor.diode.plot_energy_data()
