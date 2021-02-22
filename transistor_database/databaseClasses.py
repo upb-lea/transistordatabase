@@ -41,6 +41,9 @@ class Transistor():
     i_max: [float, int]  # Unit: A  # Mandatory
     # Rated operation region
     i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom # Mandatory
+    c_oss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
+    c_iss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
+    c_rss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
 
     def __init__(self, transistor_args, switch_args, diode_args):
         if self.isvalid_dict(transistor_args, 'Transistor'):
@@ -76,6 +79,14 @@ class Transistor():
             self.v_max = transistor_args.get('v_max')
             self.i_max = transistor_args.get('i_max')
             self.i_cont = transistor_args.get('i_cont')
+            if self.isvalid_dict(transistor_args.get('c_oss'), 'Transistor_v_c'):
+                # generate class object
+                self.c_oss = self.Transistor_v_c(transistor_args.get('c_oss'))
+            if self.isvalid_dict(transistor_args.get('c_iss'), 'Transistor_v_c'):
+                self.c_iss = self.Transistor_v_c(transistor_args.get('c_iss'))
+            if self.isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
+                self.c_rss = self.Transistor_v_c(transistor_args.get('c_rss'))
+            self.e_coss = transistor_args.get('e_coss')
         else:
             # ToDo: Is this a value or a type error?
             # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
@@ -306,6 +317,42 @@ class Transistor():
             if all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
                 # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
                 return True
+
+        elif dict_type == 'Transistor_v_c':
+            # Determine mandatory keys.
+            mandatory_keys = {'t_j', 'graph_v_c'}
+            # Determine types of mandatory and optional keys.
+            numeric_keys = {'t_j'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys
+                            if numeric_key in list(dataset_dict.keys())}  # actual keys
+            array_keys = {'graph_v_c'}  # possible keys
+            array_keys = {array_key for array_key in array_keys
+                          if array_key in list(dataset_dict.keys())}  # actual keys
+            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+            if not dataset_dict.keys() >= mandatory_keys or \
+                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
+                raise KeyError("Dictionary 'Transistor_v_c' does not contain all keys necessary for Transistor object "
+                               "creation. Mandatory keys: 't_j', 'graph_v_c")
+            else:
+                # Check if all values have appropriate types.
+                if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                        all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
+                        # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
+                    return True
+
+
+        # elif dict_type == 'Transistor_c_v':
+        #     # Determine necessary keys.
+        #     check_keys = {'t_j', 'graph_v_c'}
+        #     numeric_keys = {'t_j'}
+        #     # Check if all necessary keys are contained in the dict.
+        #     if not dataset_dict.keys() >= check_keys:
+        #         raise KeyError("Dictionary does not contain all keys necessary for Transistor Transistor_c_v object "
+        #                        "creation. Mandatory keys: 't_j', 'graph_v_c'")
+        #     # Check if all values have appropriate types.
+        #     elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]):
+        #         # TypeError is raised in 'check_realnum()' if check fails.
+        #         return True
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal model. This model describes the transient
@@ -730,6 +777,22 @@ class Transistor():
                     d[att_key] = d[att_key].tolist()
             return d
 
+    class Transistor_v_c:
+        """Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
+        For different temperatures: Create additional Transistor_v_c-objects and store them as a list in the transistor-object.
+        """
+
+        # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
+        t_j: [int, float]  # Mandatory
+        # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the capacitance.
+        graph_v_c: "np.ndarray[np.float64]"  # Units: Row 1: V; Row 2: A  # Mandatory
+
+        def __init__(self, args):
+            # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
+            # checked again here.
+            self.t_j = args.get('t_j')
+            self.graph_v_c = args.get('graph_v_c')
+
     class SwitchEnergyData:
         """Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
         already implicitly specified by how the respective objects of this class are used in a Diode- or Switch-object.
@@ -898,7 +961,7 @@ def check_str(x):
     raise TypeError('{0} is not a string.'.format(x))
 
 
-def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero):
+def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero, set_first_x_value_to_zero):
     """Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
     https://apps.automeris.io/wpd/
@@ -911,6 +974,9 @@ def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero)
     set_second_y_value_to_zero: boolean True/False. Set 'True' to set the second y-value to zero. This is interesting in
         case of diode / igbt forward channel characteristic, if you want to make sure to set the point where the ui-graph
         leaves the u axis on the u-point to zero. Otherwise there might be a very small (and negative) value of u.
+
+    set_first_x_value_to_zero: boolean True/False. Set 'True' to set the first x-value to zero. This is interesting in
+        case of nonlinear input/output capacitances, e.g. c_oss, c_iss, c_rss
     """
     array = np.genfromtxt(csv_filename, delimiter=";",
                           converters={0: lambda s: float(s.decode("UTF-8").replace(",", ".")),
@@ -922,5 +988,8 @@ def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero)
 
     if set_second_y_value_to_zero == True:
         array[1][1] = 0    # y value
+
+    if set_first_x_value_to_zero == True:
+        array[0][0] = 0    # x value
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
