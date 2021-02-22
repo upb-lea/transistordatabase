@@ -68,7 +68,6 @@ class Transistor():
             # add housing types to the working direction
             housing_types_file = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
             with open(housing_types_file, "r") as housing_types_txt:
-            #with open("housing_types.txt", "r") as housing_types_txt:
                 housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
             # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
             alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
@@ -249,7 +248,6 @@ class Transistor():
                 # Import list of valid housing types from "housing_types.txt"
                 housing_types_file =  os.path.join(os.path.dirname(__file__), 'housing_types.txt')
                 with open(housing_types_file, "r") as housing_types_txt:
-                #with open("housing_types.txt", "r") as housing_types_txt:
                     housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
                 # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
                 alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
