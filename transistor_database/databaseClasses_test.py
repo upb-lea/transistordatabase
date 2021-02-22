@@ -36,6 +36,7 @@ class MyTestCase(unittest.TestCase):
     tau_total = 14
     transient_data = np.array([[1, 2], [3, 4]])
     technology = 'IGBT3'
+    r_g_int = 10
     c_oss = 1
     c_iss = 1
     c_rss = 1
@@ -54,7 +55,7 @@ class MyTestCase(unittest.TestCase):
                        'cooling_area': cooling_area, 'housing_type': housing_type, 'v_max': v_max,
                        'i_max': i_max, 'i_cont': i_cont}
     switch_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
-                   'c_oss': c_oss, 'c_iss': c_iss, 'c_rss': c_rss, 'channel': channel,
+                   'c_oss': c_oss, 'c_iss': c_iss, 'c_rss': c_rss, 'r_g_int': r_g_int, 'channel': channel,
                    'e_on': switchenergy, 'e_off': switchenergy, 'foster': foster_args}
     diode_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                   'channel': channel, 'e_rr': switchenergy, 'foster': foster_args}
@@ -108,6 +109,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.switch.c_oss, self.c_oss)
         self.assertEqual(transistor.switch.c_iss, self.c_iss)
         self.assertEqual(transistor.switch.c_rss, self.c_rss)
+        self.assertEqual(transistor.switch.r_g_int, self.r_g_int)
         # Test Switch channel attributes
         self.assertEqual(transistor.switch.channel[0].t_j, self.t_j)
         np.testing.assert_array_equal(transistor.switch.channel[0].v_i_data, self.v_i_data)
