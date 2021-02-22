@@ -55,7 +55,8 @@ def Template():
                        'i_cont': 115,
                        'c_iss':  {"t_j": 25, "graph_v_c": csv2array('transistor_c_iss.csv', False, False, True)},  # insert csv here
                        'c_oss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_oss.csv', False, False, True)},  # insert csv here
-                       'c_rss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_rss.csv', False, False, True)}  # insert csv here
+                       'c_rss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_rss.csv', False, False, True)},  # insert csv here
+                       'e_coss': csv2array('transistor_V_Eoss.csv', False, False, False)
                        }
 
 
@@ -235,8 +236,10 @@ if __name__ == '__main__':
     print(transistor.diode.comment)
     print(transistor.diode.technology)
 
-    print(transistor.c_iss.t_j)
-    print(transistor.c_iss.graph_v_c)
+    #print(transistor.c_iss.t_j)
+    #print(transistor.c_iss.graph_v_c)
+
+    #print(transistor.e_coss)
 
     # transistor.switch.plot_energy_data()
     # transistor.diode.plot_energy_data()

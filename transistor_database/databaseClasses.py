@@ -88,6 +88,7 @@ class Transistor(persistent.Persistent):
                 self.c_iss = self.Transistor_v_c(transistor_args.get('c_iss'))
             if self.isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
                 self.c_rss = self.Transistor_v_c(transistor_args.get('c_rss'))
+            self.e_coss = transistor_args.get('e_coss')
         else:
             # ToDo: Is this a value or a type error?
             # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
