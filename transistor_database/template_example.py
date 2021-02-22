@@ -237,8 +237,6 @@ if __name__ == '__main__':
 
     print(transistor.c_iss.t_j)
     print(transistor.c_iss.graph_v_c)
-    print(transistor.c_oss)
-    print(transistor.c_rss)
 
     # transistor.switch.plot_energy_data()
     # transistor.diode.plot_energy_data()

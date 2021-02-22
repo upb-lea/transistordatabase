@@ -81,13 +81,13 @@ class Transistor(persistent.Persistent):
             self.v_max = transistor_args.get('v_max')
             self.i_max = transistor_args.get('i_max')
             self.i_cont = transistor_args.get('i_cont')
-            #if isvalid_dict(transistor_args.get('c_oss'), 'Transistor_v_c'):
-            # generate clas object
-            self.c_oss = self.Transistor_v_c(transistor_args.get('c_oss'))
-            #if isvalid_dict(transistor_args.get('c_iss'), 'Transistor_v_c'):
-            self.c_iss = self.Transistor_v_c(transistor_args.get('c_iss'))
-            #if isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
-            self.c_rss = self.Transistor_v_c(transistor_args.get('c_rss'))
+            if self.isvalid_dict(transistor_args.get('c_oss'), 'Transistor_v_c'):
+                # generate class object
+                self.c_oss = self.Transistor_v_c(transistor_args.get('c_oss'))
+            if self.isvalid_dict(transistor_args.get('c_iss'), 'Transistor_v_c'):
+                self.c_iss = self.Transistor_v_c(transistor_args.get('c_iss'))
+            if self.isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
+                self.c_rss = self.Transistor_v_c(transistor_args.get('c_rss'))
         else:
             # ToDo: Is this a value or a type error?
             # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
@@ -312,6 +312,29 @@ class Transistor(persistent.Persistent):
             if all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
                 # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
                 return True
+
+        elif dict_type == 'Transistor_v_c':
+            # Determine mandatory keys.
+            mandatory_keys = {'t_j', 'graph_v_c'}
+            # Determine types of mandatory and optional keys.
+            numeric_keys = {'t_j'}  # possible keys
+            numeric_keys = {numeric_key for numeric_key in numeric_keys
+                            if numeric_key in list(dataset_dict.keys())}  # actual keys
+            array_keys = {'graph_v_c'}  # possible keys
+            array_keys = {array_key for array_key in array_keys
+                          if array_key in list(dataset_dict.keys())}  # actual keys
+            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+            if not dataset_dict.keys() >= mandatory_keys or \
+                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
+                raise KeyError("Dictionary 'Transistor_v_c' does not contain all keys necessary for Transistor object "
+                               "creation. Mandatory keys: 't_j', 'graph_v_c")
+            else:
+                # Check if all values have appropriate types.
+                if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                        all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
+                        # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
+                    return True
+
 
         # elif dict_type == 'Transistor_c_v':
         #     # Determine necessary keys.
