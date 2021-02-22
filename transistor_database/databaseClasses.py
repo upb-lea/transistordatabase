@@ -223,7 +223,7 @@ class Transistor(persistent.Persistent):
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'author', 'manufacturer', "
                                "'housing_area', 'cooling_area', 'housing_type', 'v_max', 'i_max', 'i_cont'")
-            elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT', 'SiC-MOSFET']:
+            elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']:
                 raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT' or 'SiC-MOSFET'")
             # Check if all values have appropriate types.
             else:
@@ -747,40 +747,42 @@ class Transistor(persistent.Persistent):
         # ToDo: check if this function works for all types of transistors
         # ToDo: Error handling
         # ToDo: Unittest for this method
-
-        # ToDo: This method may not be able to be called from inside an inner class, since it needs a transistor object
-        #  to work.
         # in case of failure, return None
         v_channel = None
         r_channel = None
 
         if switch_or_diode == 'switch':
-            # sweep trough channel array
-            for channel_idx in np.array(range(0, len(self.switch.channel))):
-                # check if input parameters match to stored data. Only 'v_i_data'-data is used
-                if self.switch.channel[channel_idx].t_j == t_j and self.switch.channel[channel_idx].v_g == v_g:
-                # ToDo: Is this right? Calculation is done for every object that fits the input arguments but only the
-                #  last iteration is returned
-                    # interpolate data
-                    voltage_interpolated = np.interp(i_channel, self.switch.channel[channel_idx].v_i_data[1],
-                                                     self.switch.channel[channel_idx].v_i_data[0])
+            candidate_datasets = [channel for channel in self.switch.channel
+                                  if (channel.t_j == t_j and channel.v_g == v_g)]
+            if len(candidate_datasets) == 0:
+                available_datasets = [(channel.t_j, channel.v_g) for channel in self.switch.channel]
+                print("Available operating points: (t_j, v_g)")
+                print(available_datasets)
+                raise ValueError("No data available for linearization at the given operating point. "
+                                 "A list of available operating points is printed above.")
+            elif len(candidate_datasets) > 1:
+                print("During linearization, multiple datasets were found that are consistent with the chosen "
+                      "operating point. The first of these sets is automatically chosen because selection of a "
+                      "different dataset is not yet implemented.")
 
-                    # check kind of transistor type due to forward voltage value
-                    if self.transistor_type == 'MOSFET' or self.transistor_type == 'SiC-MOSFET':
-                        # transistor has no forward voltage
-
-                        # return values
-                        v_channel = 0  # no forward voltage du to resistance behaviour
-                        r_channel = voltage_interpolated / i_channel
-                    else:
-                        # transistor has forward voltage. Other interpolating point will be with 10% more current
-                        # ToDo: Test this function if IGBT is available
-                        voltage_interpolated_2 = np.interp(i_channel * 1.1, self.switch.channel[channel_idx].v_i_data[1],
-                                                           self.switch.channel[channel_idx].v_i_data[0])
-                        r_channel = (voltage_interpolated_2 - voltage_interpolated)/(0.1 * i_channel)
-                        v_channel = voltage_interpolated - r_channel * i_channel
+            # interpolate data
+            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].v_i_data[1],
+                                             candidate_datasets[0].v_i_data[0])
+            # check kind of transistor type due to forward voltage value
+            if self.transistor_type in ['MOSFET', 'SiC-MOSFET']:
+                # transistor has no forward voltage
+                # return values
+                v_channel = 0  # no forward voltage du to resistance behaviour
+                r_channel = voltage_interpolated / i_channel
+            else:
+                # transistor has forward voltage. Other interpolating point will be with 10% more current
+                # ToDo: Test this function if IGBT is available
+                voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].v_i_data[1],
+                                                   candidate_datasets[0].v_i_data[0])
+                r_channel = (voltage_interpolated_2 - voltage_interpolated)/(0.1 * i_channel)
+                v_channel = voltage_interpolated - r_channel * i_channel
         elif switch_or_diode == 'diode':
-            if self.transistor_type == 'SiC-MOSFET':  # ToDo: Add GaNs
+            if self.transistor_type in ['SiC-MOSFET', 'GaN-Transistor']:
                 candidate_datasets = [channel for channel in self.diode.channel
                                       if (channel.t_j == t_j and channel.v_g == v_g)]
                 if len(candidate_datasets) == 0:
@@ -789,6 +791,10 @@ class Transistor(persistent.Persistent):
                     print(available_datasets)
                     raise ValueError("No data available for linearization at the given operating point. "
                                      "A list of available operating points is printed above.")
+                elif len(candidate_datasets) > 1:
+                    print("During linearization, multiple datasets were found that are consistent with the chosen "
+                          "operating point. The first of these sets is automatically chosen because selection of a "
+                          "different dataset is not yet implemented.")
             else:
                 candidate_datasets = [channel for channel in self.diode.channel
                                       if channel.t_j == t_j]
@@ -798,20 +804,20 @@ class Transistor(persistent.Persistent):
                     print(available_datasets)
                     raise ValueError("No data available for linearization at the given operating point. "
                                      "A list of available operating points is printed above.")
+                elif len(candidate_datasets) > 1:
+                    print("During linearization, multiple datasets were found that are consistent with the chosen "
+                          "operating point. The first of these sets is automatically chosen because selection of a "
+                          "different dataset is not yet implemented.")
             # interpolate data
-            # ToDo: Only first entry of candidate_datasets is used. Add case where multiple datasets fit the operating
-            #  point? => Add Warning ("Selection of 2nd dataset not yet implemented"), not Error.
             voltage_interpolated = np.interp(i_channel, candidate_datasets[0].v_i_data[1],
                                              candidate_datasets[0].v_i_data[0])
             voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].v_i_data[1],
                                                candidate_datasets[0].v_i_data[0])
             r_channel = (voltage_interpolated_2 - voltage_interpolated) / (0.1 * i_channel)
             v_channel = voltage_interpolated - r_channel * i_channel
-
         else:
             raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
                              "linearization.")
-        # ToDo: Directly return LinearizedModel object instead of these two values?
         return round(v_channel, 2), round(r_channel, 4)
 
 
