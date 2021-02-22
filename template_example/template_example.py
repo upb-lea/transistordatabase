@@ -3,6 +3,7 @@ from databaseClasses import Transistor
 from databaseClasses import csv2array
 import numpy as np
 import datetime
+import os
 
 # Template to generate a transistor
 def Template():
@@ -55,10 +56,24 @@ def Template():
                        'i_cont': 115,
                        'c_iss':  {"t_j": 25, "graph_v_c": csv2array('transistor_c_iss.csv', False, False, True)},  # insert csv here
                        'c_oss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_oss.csv', False, False, True)},  # insert csv here
-                       'c_rss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_rss.csv', False, False, True)},  # insert csv here
-                       'e_coss': csv2array('transistor_V_Eoss.csv', False, False, False)
+                       'c_rss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_rss.csv', False, False, True)}  # insert csv here
+                       #'e_coss': csv2array('transistor_V_Eoss.csv', False, False, False)
                        }
 
+    print('initial direction')
+    print(os.getcwd())
+
+    # change direction
+    os.chdir('..')
+    os.chdir('template_example')
+
+    print('new direction')
+    print(os.getcwd())
+
+    transistor_args['e_coss'] =  'test'#csv2array('transistor_V_Eoss.csv', False, False, False)
+
+    os.chdir('..')
+    os.chdir('transistor_database')
 
     ####################################
     # switch parameters
@@ -247,3 +262,5 @@ if __name__ == '__main__':
     #store_transistor(transistor)
     #load_transistor()
     # ToDo: store transistor in database
+
+    print(transistor.e_coss)
