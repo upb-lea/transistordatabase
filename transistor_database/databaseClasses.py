@@ -1,4 +1,3 @@
-import persistent
 import datetime
 import numpy as np
 import re
@@ -6,7 +5,7 @@ from typing import List
 from matplotlib import pyplot as plt
 
 
-class Transistor(persistent.Persistent):
+class Transistor():
     """Groups data of all other classes for a single transistor. Methods are specified in such a way that only
     user-interaction with this class is necessary (ToDo!)
     Documentation on how to add or extract a transistor-object to/from the database can be found in (ToDo!)
@@ -33,7 +32,6 @@ class Transistor(persistent.Persistent):
     # These are documented in their respective class definitions
     switch: "Switch"
     diode: "Diode"
-    meta: "Metadata"
     # Thermal data. See git for equivalent thermal circuit diagram.
     r_th_cs: [float, int, None]  # Unit: K/W  # Optional
     r_th_switch_cs: [float, int, None]  # Unit: K/W  # Optional
@@ -87,6 +85,12 @@ class Transistor(persistent.Persistent):
 
         self.diode = self.Diode(diode_args)
         self.switch = self.Switch(switch_args)
+
+    def convert_to_dict(self):
+        d = vars(self)
+        d['diode'] = self.diode.convert_to_dict()
+        d['switch'] = self.switch.convert_to_dict()
+        return d
 
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
@@ -344,6 +348,13 @@ class Transistor(persistent.Persistent):
                 self.tau_vector = None
                 self.transient_data = None
 
+        def convert_to_dict(self):
+            d = vars(self)
+            for att_key in d:
+                if isinstance(d[att_key], np.ndarray):
+                    d[att_key] = d[att_key].tolist()
+            return d
+
     class Switch:
         """Contains data associated with the switchting-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
         channel-, e_on- and e_off-datasets. """
@@ -466,6 +477,15 @@ class Transistor(persistent.Persistent):
                 self.e_on = []
                 self.e_off = []
                 self.linearized_switch = []
+
+        def convert_to_dict(self):
+            d = vars(self)
+            d['thermal'] = self.thermal.convert_to_dict()
+            d['channel'] = [c.convert_to_dict() for c in self.channel]
+            d['e_on'] = [e.convert_to_dict() for e in self.e_on]
+            d['e_off'] = [e.convert_to_dict() for e in self.e_off]
+            d['linearized_switch'] = [lsw.convert_to_dict() for lsw in self.linearized_switch]
+            return d
 
         def plot_all_channel_data(self):
             """ Plot all channel data """
@@ -625,6 +645,14 @@ class Transistor(persistent.Persistent):
                 self.e_rr = []
                 self.linearized_diode = []
 
+        def convert_to_dict(self):
+            d = vars(self)
+            d['thermal'] = self.thermal.convert_to_dict()
+            d['channel'] = [c.convert_to_dict() for c in self.channel]
+            d['e_rr'] = [e.convert_to_dict() for e in self.e_rr]
+            d['linearized_diode'] = [ld.convert_to_dict() for ld in self.linearized_diode]
+            return d
+
         def plot_energy_data(self):
             """ Plot all switching data """
 
@@ -641,7 +669,7 @@ class Transistor(persistent.Persistent):
                             self.e_rr[i_energy_data].r_g) + " Ohm"
                         # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
                         # if ture, add gate-voltage to label
-                        if isinstance(e_rr[i_energy_data].v_g, (int, float)):
+                        if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
                             labelplot = labelplot + ", vg = " + str(
                             self.e_rr[i_energy_data].v_g) + " V"
 
@@ -672,6 +700,10 @@ class Transistor(persistent.Persistent):
             self.r_channel = args.get('r_channel')
             self.v0_channel = args.get('v0_channel')
 
+        def convert_to_dict(self):
+            d = vars(self)
+            return d
+
     class ChannelData:
         """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
         For different temperatures: Create additional ChannelData-objects and store them as a list in the respective
@@ -690,6 +722,13 @@ class Transistor(persistent.Persistent):
             self.t_j = args.get('t_j')
             self.v_i_data = args.get('v_i_data')
             self.v_g = args.get('v_g')
+
+        def convert_to_dict(self):
+            d = vars(self)
+            for att_key in d:
+                if isinstance(d[att_key], np.ndarray):
+                    d[att_key] = d[att_key].tolist()
+            return d
 
     class SwitchEnergyData:
         """Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
@@ -739,6 +778,13 @@ class Transistor(persistent.Persistent):
             self.i_x = args.get('i_x')
             self.i_e_data = args.get('i_e_data')
             self.r_e_data = args.get('r_e_data')
+
+        def convert_to_dict(self):
+            d = vars(self)
+            for att_key in d:
+                if isinstance(d[att_key], np.ndarray):
+                    d[att_key] = d[att_key].tolist()
+            return d
 
     def linearize_channel_ui_graph(self, t_j, v_g, i_channel, switch_or_diode):
         """Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
