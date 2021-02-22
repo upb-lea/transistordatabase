@@ -235,6 +235,9 @@ class Transistor():
             numeric_keys = {'housing_area', 'cooling_area', 'v_max', 'i_max', 'i_cont'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
+            array_keys = {'e_coss'}  # possible keys
+            array_keys = {array_key for array_key in array_keys
+                          if array_key in list(dataset_dict.keys())}  # actual keys
             # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
             if not dataset_dict.keys() >= mandatory_keys or \
                     any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
@@ -257,8 +260,9 @@ class Transistor():
                                      "'housing_types.txt' for a list of supported types.")
                 # Check if all attributes have valid type.
                 elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                        all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
-                    # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
+                        all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]) and \
+                        all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
+                    # TypeError is raised in 'check_realnum()' or 'check_str()' or 'check_2d_dataset()' if check fails.
                     return True
 
         elif dict_type == 'FosterThermalModel':
@@ -343,20 +347,6 @@ class Transistor():
                         all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
                         # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
                     return True
-
-
-        # elif dict_type == 'Transistor_c_v':
-        #     # Determine necessary keys.
-        #     check_keys = {'t_j', 'graph_v_c'}
-        #     numeric_keys = {'t_j'}
-        #     # Check if all necessary keys are contained in the dict.
-        #     if not dataset_dict.keys() >= check_keys:
-        #         raise KeyError("Dictionary does not contain all keys necessary for Transistor Transistor_c_v object "
-        #                        "creation. Mandatory keys: 't_j', 'graph_v_c'")
-        #     # Check if all values have appropriate types.
-        #     elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]):
-        #         # TypeError is raised in 'check_realnum()' if check fails.
-        #         return True
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal model. This model describes the transient

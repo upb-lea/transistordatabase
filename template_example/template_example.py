@@ -62,11 +62,6 @@ def Template():
                        'e_coss': csv2array('transistor_V_Eoss.csv', False, False, False)
                        }
 
-    transistor_args['e_coss'] =  'test'#csv2array('transistor_V_Eoss.csv', False, False, False)
-
-    #os.chdir('..')
-    #os.chdir('transistor_database')
-
     ####################################
     # switch parameters
     ####################################
@@ -74,13 +69,12 @@ def Template():
     comment = "SiC switch"  # Optional
     manufacturer = "CREE"  # Optional
     technology = "unknown"  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
-    # mandatory
-    r_g_int = 2.6
+    r_g_int = 2.6  # mandatory
 
     # Constant Capacitances
-    c_oss = 5   # Unit: pF  # Optional
-    c_iss = 3  # Unit: pF  # Optional
-    c_rss = 4    # Unit: pF  # Optional
+    c_oss = 5   # Unit: F  # Optional
+    c_iss = 3  # Unit: F  # Optional
+    c_rss = 4    # Unit: F  # Optional
 
     #### Channel parameters
     # channel data minus 40 degree
