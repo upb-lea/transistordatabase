@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - transistor method: linearize_switch_ui_graph
 - transistor.switch methods: print_all_channel_data, print_channel_data_vge, print_channel_data_temp
 - New class LinearizedModel: Contains data for a linearized Switch/Diode depending on given operating point.
+- New class to store c_iss, c_oss, c_rss in Transistor. 
+- New Transistor attribute: e_coss
+- Add documentation drawing
 ### Removed
 - Removed Metadata class. Added its attributes to Transistor class instead
 ### Changed
