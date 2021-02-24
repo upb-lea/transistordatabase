@@ -3,4 +3,4 @@ transistor_database/Test-Transistor_S1.mat
 transistor_database/__pycache__/
 gpgit/
 *.pyc
-
+*.pdf
