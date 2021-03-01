@@ -162,9 +162,9 @@ def Template():
     channel_25_neg2 = {"t_j": 25, 'v_g': -2, "graph_v_i": csv2array('diode_channel_25_-2vgs.csv', True, True, False)}  # insert csv here
     channel_25_neg4 = {"t_j": 25, 'v_g': -4, "graph_v_i": csv2array('diode_channel_25_-4vgs.csv', True, True, False)}  # insert csv here
 
-    channel_175_0 = {"t_j": 25, 'v_g': 0, "graph_v_i": csv2array('diode_channel_175_0vgs.csv', True, True, False)}  # insert csv here
-    channel_175_neg2 = {"t_j": 25, 'v_g': -2, "graph_v_i": csv2array('diode_channel_175_-2vgs.csv', True, True, False)}  # insert csv here
-    channel_175_neg4 = {"t_j": 25, 'v_g': -4, "graph_v_i": csv2array('diode_channel_175_-4vgs.csv', True, True, False)}  # insert csv here
+    channel_175_0 = {"t_j": 175, 'v_g': 0, "graph_v_i": csv2array('diode_channel_175_0vgs.csv', True, True, False)}  # insert csv here
+    channel_175_neg2 = {"t_j": 175, 'v_g': -2, "graph_v_i": csv2array('diode_channel_175_-2vgs.csv', True, True, False)}  # insert csv here
+    channel_175_neg4 = {"t_j": 175, 'v_g': -4, "graph_v_i": csv2array('diode_channel_175_-4vgs.csv', True, True, False)}  # insert csv here
 
     ### diode foster parameters
     diode_foster_args = None
@@ -196,6 +196,7 @@ if __name__ == '__main__':
     os.chdir(current_path)
     from databaseClasses import Transistor
     from databaseClasses import csv2array
+    from exportFunctions import export_geckocircuits
 
     transistor = Template()
 
@@ -232,7 +233,7 @@ if __name__ == '__main__':
 
     # transistor.switch.plot_all_channel_data()
     # transistor.switch.plot_channel_data_vge(15)
-    transistor.switch.plot_channel_data_temp(175)
+    #transistor.switch.plot_channel_data_temp(175)
 
     v_channel, r_channel = transistor.linearize_channel_ui_graph(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
     print("v_channel_linearized = {} V".format(v_channel))
@@ -257,4 +258,9 @@ if __name__ == '__main__':
     #load_transistor()
     # ToDo: store transistor in database
 
-    print(transistor.e_coss)
+    print("err_diode")
+    print(len(transistor.diode.e_rr))
+    print(transistor.diode.e_rr[0].v_g)
+
+    #print(transistor.e_coss)
+    export_geckocircuits(transistor, 600, 15, -2, 2.5)
