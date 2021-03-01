@@ -101,6 +101,16 @@ class Transistor():
         self.diode = self.Diode(diode_args)
         self.switch = self.Switch(switch_args)
 
+    def __eq__(self, other):
+        if not isinstance(other, Transistor):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+        my_dict = self.convert_to_dict()
+        my_dict.pop('_id', None)
+        other_dict = other.convert_to_dict()
+        other_dict.pop('_id', None)
+        return my_dict == other_dict
+
     def convert_to_dict(self):  # ToDo: Convert 'datetime.date' objects before saving
         d = vars(self)
         d['diode'] = self.diode.convert_to_dict()
