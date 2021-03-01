@@ -258,5 +258,9 @@ if __name__ == '__main__':
     #load_transistor()
     # ToDo: store transistor in database
 
+    print("err_diode")
+    print(len(transistor.diode.e_rr))
+    print(transistor.diode.e_rr[0].v_g)
+
     #print(transistor.e_coss)
     export_geckocircuits(transistor, 600, 15, -2, 2.5)
