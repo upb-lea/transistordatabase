@@ -438,8 +438,8 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
     for i_channel in np.array(range(0, len(Transistor.switch.channel))):
         if Transistor.switch.channel[i_channel].v_g == v_g_on:
 
-            current = Transistor.switch.channel[i_channel].v_i_data[0]
-            voltage = Transistor.switch.channel[i_channel].v_i_data[1]
+            current = Transistor.switch.channel[i_channel].graph_v_i[0]
+            voltage = Transistor.switch.channel[i_channel].graph_v_i[1]
 
             print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.2f" % x})
             print_current = print_current[1:-1]
@@ -465,11 +465,11 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
         if Transistor.switch.e_on[i_channel].v_g == v_g_on and Transistor.switch.e_on[i_channel].r_g == r_g_switch and\
             Transistor.switch.e_on[i_channel].v_supply == v_supply:
 
-            on_current = Transistor.switch.e_on[i_channel].i_e_data[0]
-            on_energy = Transistor.switch.e_on[i_channel].i_e_data[1]
+            on_current = Transistor.switch.e_on[i_channel].graph_i_e[0]
+            on_energy = Transistor.switch.e_on[i_channel].graph_i_e[1]
 
-            off_current = Transistor.switch.e_off[i_channel].i_e_data[0]
-            off_energy = Transistor.switch.e_off[i_channel].i_e_data[1]
+            off_current = Transistor.switch.e_off[i_channel].graph_i_e[0]
+            off_energy = Transistor.switch.e_off[i_channel].graph_i_e[1]
 
             interp_current = np.linspace(0, on_current[-1], 10)
             interp_on_energy = np.interp(interp_current, on_current, on_energy)
@@ -508,8 +508,8 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
         # if v_g_diode is given, search for it. Else, use all data in Transistor.diode.channel
         if v_g_off and Transistor.diode.channel[i_channel].v_g == v_g_off:
 
-            current = np.abs(Transistor.diode.channel[i_channel].v_i_data[0])
-            voltage = np.abs(Transistor.diode.channel[i_channel].v_i_data[1])
+            current = np.abs(Transistor.diode.channel[i_channel].graph_v_i[0])
+            voltage = np.abs(Transistor.diode.channel[i_channel].graph_v_i[1])
 
             print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.2f" % x})
             print_current = print_current[1:-1]
@@ -522,8 +522,8 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
             file_diode.write("\ntj "+ str(Transistor.diode.channel[i_channel].t_j) +"\n")
             file_diode.write("<\LeitverlusteMesskurve>\n")
         else:
-            current = np.abs(Transistor.diode.channel[i_channel].v_i_data[0])
-            voltage = np.abs(Transistor.diode.channel[i_channel].v_i_data[1])
+            current = np.abs(Transistor.diode.channel[i_channel].graph_v_i[0])
+            voltage = np.abs(Transistor.diode.channel[i_channel].graph_v_i[1])
 
             print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.2f" % x})
             print_current = print_current[1:-1]
