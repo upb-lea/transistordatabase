@@ -407,20 +407,23 @@ def export_matlab_v1(transistorName):
 
 def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
     """
+    Export transistor data to GeckoCIRCUITS
 
     :param Transistor: choose the transistor to export
-    :param v_g_switch:
+    :param v_supply: supply voltage for turn-on/off losses
+    :param v_g_on: gate turn-on voltage
+    :param v_g_off: gate turn-off voltage
+    :param r_g_switch: gate resistor
     :return: two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl for geckoCIRCUITS import
     """
-
 
     amount_v_g_switch_cond = 0
     amount_v_g_switch_sw = 0
     amount_v_g_diode_cond  = 0
+    amount_v_g_diode_sw = 0
 
     # set numpy print options to inf, due to geckocircuits requests the data in one single line
     np.set_printoptions(linewidth=np.inf)
-
 
     ########################
     # export file for switch
@@ -506,7 +509,7 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
     #
     for i_channel in np.array(range(0, len(Transistor.diode.channel))):
         # if v_g_diode is given, search for it. Else, use all data in Transistor.diode.channel
-        if v_g_off and Transistor.diode.channel[i_channel].v_g == v_g_off:
+        if Transistor.diode.channel[i_channel].v_g == v_g_off:
 
             current = np.abs(Transistor.diode.channel[i_channel].graph_v_i[0])
             voltage = np.abs(Transistor.diode.channel[i_channel].graph_v_i[1])
@@ -518,22 +521,40 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
 
             # for every loss curve, write
             file_diode.write("<LeitverlusteMesskurve>\n")
-            file_diode.write("data[][] 2 " + str(len(current)) + " " + print_current + " " + print_voltage)
-            file_diode.write("\ntj "+ str(Transistor.diode.channel[i_channel].t_j) +"\n")
+            file_diode.write(f"data[][] 2 {len(current)} {print_current} {print_voltage}")
+            file_diode.write(f"\ntj {Transistor.diode.channel[i_channel].t_j}\n")
             file_diode.write("<\LeitverlusteMesskurve>\n")
-        else:
-            current = np.abs(Transistor.diode.channel[i_channel].graph_v_i[0])
-            voltage = np.abs(Transistor.diode.channel[i_channel].graph_v_i[1])
 
-            print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.2f" % x})
+
+    # check for availability of switching loss curves
+    # count number of arrays with gate v_g == v_g_export
+    for i_channel in np.array(range(0, len(Transistor.diode.e_rr))):
+        if Transistor.diode.e_rr[i_channel].v_g == v_g_on and Transistor.diode.e_rr[i_channel].r_g == r_g_switch and\
+            Transistor.diode.e_rr[i_channel].v_supply == v_supply:
+            amount_v_g_diode_sw +=1
+
+    file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
+
+    for i_channel in np.array(range(0, len(Transistor.diode.e_rr))):
+        if Transistor.diode.e_rr[i_channel].v_g == v_g_on and Transistor.diode.e_rr[i_channel].r_g == r_g_switch and\
+            Transistor.diode.e_rr[i_channel].v_supply == v_supply:
+
+            rr_current = Transistor.diode.e_rr[i_channel].graph_i_e[0]
+            rr_energy = Transistor.diode.e_rr[i_channel].graph_i_e[1]
+
+            print_current = np.array2string(rr_current, formatter={'float_kind':lambda x: "%.2f" % x})
             print_current = print_current[1:-1]
-            print_voltage = np.array2string(voltage, formatter={'float_kind':lambda x: "%.2f" % x})
-            print_voltage = print_voltage[1:-1]
+            print_rr_energy = np.array2string(rr_energy, formatter={'float_kind':lambda x: "%.8f" % x})
+            print_rr_energy = print_rr_energy[1:-1]
 
             # for every loss curve, write
-            file_diode.write("<LeitverlusteMesskurve>\n")
-            file_diode.write("data[][] 2 " + str(len(current)) + " " + print_current + " " + print_voltage)
-            file_diode.write("\ntj "+ str(Transistor.diode.channel[i_channel].t_j) +"\n")
-            file_diode.write("<\LeitverlusteMesskurve>\n")
+            file_diode.write("<SchaltverlusteMesskurve>\n")
+            file_diode.write(f"data[][] 2 {len(rr_current)} {print_current} {print_rr_energy}")
+            file_diode.write(f"\ntj {Transistor.diode.e_rr[i_channel].t_j}\n")
+            file_diode.write(f"uBlock {Transistor.diode.e_rr[i_channel].v_supply}\n")
+            file_diode.write("<\SchaltverlusteMesskurve>\n")
 
     file_diode.close()
+
+    #set print options back to default
+    np.set_printoptions(linewidth=75)

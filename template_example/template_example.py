@@ -162,9 +162,9 @@ def Template():
     channel_25_neg2 = {"t_j": 25, 'v_g': -2, "graph_v_i": csv2array('diode_channel_25_-2vgs.csv', True, True, False)}  # insert csv here
     channel_25_neg4 = {"t_j": 25, 'v_g': -4, "graph_v_i": csv2array('diode_channel_25_-4vgs.csv', True, True, False)}  # insert csv here
 
-    channel_175_0 = {"t_j": 25, 'v_g': 0, "graph_v_i": csv2array('diode_channel_175_0vgs.csv', True, True, False)}  # insert csv here
-    channel_175_neg2 = {"t_j": 25, 'v_g': -2, "graph_v_i": csv2array('diode_channel_175_-2vgs.csv', True, True, False)}  # insert csv here
-    channel_175_neg4 = {"t_j": 25, 'v_g': -4, "graph_v_i": csv2array('diode_channel_175_-4vgs.csv', True, True, False)}  # insert csv here
+    channel_175_0 = {"t_j": 175, 'v_g': 0, "graph_v_i": csv2array('diode_channel_175_0vgs.csv', True, True, False)}  # insert csv here
+    channel_175_neg2 = {"t_j": 175, 'v_g': -2, "graph_v_i": csv2array('diode_channel_175_-2vgs.csv', True, True, False)}  # insert csv here
+    channel_175_neg4 = {"t_j": 175, 'v_g': -4, "graph_v_i": csv2array('diode_channel_175_-4vgs.csv', True, True, False)}  # insert csv here
 
     ### diode foster parameters
     diode_foster_args = None
