@@ -40,6 +40,10 @@ class MyTestCase(unittest.TestCase):
     c_oss = 1
     c_iss = 1
     c_rss = 1
+    c_oss_v_c = {'t_j': t_j, 'graph_v_c': np.array([[1, 2], [3, 4]])}
+    c_iss_v_c = {'t_j': t_j, 'graph_v_c': np.array([[1, 2], [3, 4]])}
+    c_rss_v_c = {'t_j': t_j, 'graph_v_c': np.array([[1, 2], [3, 4]])}
+    e_coss = np.array([[1, 2], [3, 4]])
     # Create dataset dictionaries
     channel = {'t_j': t_j, 'graph_v_i': graph_v_i}
     switchenergy = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
@@ -53,7 +57,8 @@ class MyTestCase(unittest.TestCase):
                        'datasheet_date': datasheet_date,
                        'datasheet_version': datasheet_version, 'housing_area': housing_area,
                        'cooling_area': cooling_area, 'housing_type': housing_type, 'v_max': v_max,
-                       'i_max': i_max, 'i_cont': i_cont}
+                       'i_max': i_max, 'i_cont': i_cont, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
+                       'e_coss': e_coss}
     switch_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'c_oss': c_oss, 'c_iss': c_iss, 'c_rss': c_rss, 'r_g_int': r_g_int, 'channel': channel,
                    'e_on': switchenergy, 'e_off': switchenergy, 'thermal_foster': foster_args}
@@ -79,6 +84,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.v_max, self.v_max)
         self.assertEqual(transistor.i_max, self.i_max)
         self.assertEqual(transistor.i_cont, self.i_cont)
+        self.assertEqual(transistor.c_oss[0].t_j, self.c_oss_v_c['t_j'])
+        self.assertEqual(transistor.c_iss[0].t_j, self.c_iss_v_c['t_j'])
+        self.assertEqual(transistor.c_rss[0].t_j, self.c_rss_v_c['t_j'])
+        np.testing.assert_array_equal(transistor.c_oss[0].graph_v_c, self.c_oss_v_c['graph_v_c'])
+        np.testing.assert_array_equal(transistor.c_iss[0].graph_v_c, self.c_iss_v_c['graph_v_c'])
+        np.testing.assert_array_equal(transistor.c_rss[0].graph_v_c, self.c_rss_v_c['graph_v_c'])
+        np.testing.assert_array_equal(transistor.e_coss, self.e_coss)
         # Test Diode attributes
         self.assertEqual(transistor.diode.comment, self.comment)
         self.assertEqual(transistor.diode.manufacturer, self.manufacturer)
