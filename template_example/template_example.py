@@ -3,6 +3,7 @@ import numpy as np
 import datetime
 import sys
 import os
+from pymongo import MongoClient
 
 
 # Template to generate a transistor
@@ -260,7 +261,19 @@ if __name__ == '__main__':
 
     print("err_diode")
     print(len(transistor.diode.e_rr))
-    print(transistor.diode.e_rr[0].v_g)
 
     #print(transistor.e_coss)
     export_geckocircuits(transistor, 600, 15, -2, 2.5)
+
+    # init mongodb
+    myclient = MongoClient("mongodb://localhost:27017/")  # Wenn Server auf lokaler Maschine
+    my_db = myclient.transistor_database  # Datenbank
+    data = my_db.data  # Collection
+
+    # store transistor
+    transistor_dict = transistor.convert_to_dict()  # 'transistor' ist das zu speichernde Objekt
+    data.insert_one(transistor_dict)
+
+    # load transistor
+    #retrieved_transistor = data.find_one({'name': 'Test-Transistor'})  # Such-Kriterium quasi beliebig wählbar(?)
+    #transistor_loaded = Transistor.load_from_db(retrieved_transistor)
