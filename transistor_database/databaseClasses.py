@@ -83,13 +83,65 @@ class Transistor():
             self.v_max = transistor_args.get('v_max')
             self.i_max = transistor_args.get('i_max')
             self.i_cont = transistor_args.get('i_cont')
-            if self.isvalid_dict(transistor_args.get('c_oss'), 'Transistor_v_c'):
-                # generate class object
-                self.c_oss = self.Transistor_v_c(transistor_args.get('c_oss'))
-            if self.isvalid_dict(transistor_args.get('c_iss'), 'Transistor_v_c'):
-                self.c_iss = self.Transistor_v_c(transistor_args.get('c_iss'))
-            if self.isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
-                self.c_rss = self.Transistor_v_c(transistor_args.get('c_rss'))
+            self.c_oss = []  # Default case: Empty list
+            if isinstance(transistor_args.get('c_oss'), list):
+                # Loop through list and check each dict for validity. Only create Transistor_v_c objects from
+                # valid dicts. 'None' and empty dicts are ignored.
+                for dataset in transistor_args.get('c_oss'):
+                    try:
+                        if Transistor.isvalid_dict(dataset, 'Transistor_v_c'):
+                            self.c_oss.append(Transistor.Transistor_v_c(dataset))
+                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                    except KeyError as error:
+                        dict_list = transistor_args.get('c_oss')
+                        if not error.args:
+                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                        error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                      'of c_oss dictionaries: ',) + error.args
+                        raise
+            elif Transistor.isvalid_dict(transistor_args.get('c_oss'), 'Transistor_v_c'):
+                # Only create Transistor_v_c objects from valid dicts
+                self.c_oss.append(Transistor.Transistor_v_c(transistor_args.get('c_oss')))
+
+            self.c_iss = []  # Default case: Empty list
+            if isinstance(transistor_args.get('c_iss'), list):
+                # Loop through list and check each dict for validity. Only create Transistor_v_c objects from
+                # valid dicts. 'None' and empty dicts are ignored.
+                for dataset in transistor_args.get('c_iss'):
+                    try:
+                        if Transistor.isvalid_dict(dataset, 'Transistor_v_c'):
+                            self.c_iss.append(Transistor.Transistor_v_c(dataset))
+                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                    except KeyError as error:
+                        dict_list = transistor_args.get('c_iss')
+                        if not error.args:
+                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                        error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                      'of c_iss dictionaries: ',) + error.args
+                        raise
+            elif Transistor.isvalid_dict(transistor_args.get('c_iss'), 'Transistor_v_c'):
+                # Only create Transistor_v_c objects from valid dicts
+                self.c_iss.append(Transistor.Transistor_v_c(transistor_args.get('c_iss')))
+
+            self.c_rss = []  # Default case: Empty list
+            if isinstance(transistor_args.get('c_rss'), list):
+                # Loop through list and check each dict for validity. Only create Transistor_v_c objects from
+                # valid dicts. 'None' and empty dicts are ignored.
+                for dataset in transistor_args.get('c_rss'):
+                    try:
+                        if Transistor.isvalid_dict(dataset, 'Transistor_v_c'):
+                            self.c_rss.append(Transistor.Transistor_v_c(dataset))
+                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                    except KeyError as error:
+                        dict_list = transistor_args.get('c_rss')
+                        if not error.args:
+                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                        error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
+                                      'of c_rss dictionaries: ',) + error.args
+                        raise
+            elif Transistor.isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
+                # Only create Transistor_v_c objects from valid dicts
+                self.c_rss.append(Transistor.Transistor_v_c(transistor_args.get('c_rss')))
             self.e_coss = transistor_args.get('e_coss')
         else:
             # ToDo: Is this a value or a type error?
@@ -118,6 +170,8 @@ class Transistor():
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
         d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
         d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
+        if isinstance(self.e_coss, np.ndarray):
+            d['e_coss'] = self.e_coss.tolist()
         return d
 
     @staticmethod
@@ -133,11 +187,12 @@ class Transistor():
         if 'c_rss' in transistor_args:
             for i in range(len(transistor_args['c_rss'])):
                 transistor_args['c_rss'][i]['graph_v_c'] = np.array(transistor_args['c_rss'][i]['graph_v_c'])
+        if 'e_coss' in transistor_args:
+            transistor_args['e_coss'] = np.array(transistor_args['e_coss'])
         # Convert switch_args
         switch_args = db_dict['switch']
-        for att_key in switch_args['thermal_foster']:
-            if att_key in ['r_th_vector', 'c_th_vector', 'tau_vector', 'transient_data']:
-                switch_args['thermal_foster'][att_key] = np.array(switch_args['thermal_foster'][att_key])
+        if switch_args['thermal_foster']['transient_data'] is not None:
+            switch_args['thermal_foster']['transient_data'] = np.array(switch_args['thermal_foster']['transient_data'])
         for i in range(len(switch_args['channel'])):
             switch_args['channel'][i]['graph_v_i'] = np.array(switch_args['channel'][i]['graph_v_i'])
         for i in range(len(switch_args['e_on'])):
@@ -152,9 +207,8 @@ class Transistor():
                 switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
         # Convert diode_args
         diode_args = db_dict['diode']
-        for att_key in diode_args['thermal_foster']:
-            if att_key in ['r_th_vector', 'c_th_vector', 'tau_vector', 'transient_data']:
-                diode_args['thermal_foster'][att_key] = np.array(diode_args['thermal_foster'][att_key])
+        if diode_args['thermal_foster']['transient_data'] is not None:
+            diode_args['thermal_foster']['transient_data'] = np.array(diode_args['thermal_foster']['transient_data'])
         for i in range(len(diode_args['channel'])):
             diode_args['channel'][i]['graph_v_i'] = np.array(diode_args['channel'][i]['graph_v_i'])
         for i in range(len(diode_args['e_rr'])):
@@ -389,19 +443,24 @@ class Transistor():
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
             list_keys = {'r_th_vector', 'c_th_vector', 'tau_vector'}  # possible keys
             list_keys = {list_key for list_key in list_keys
-                         if list_key in list(dataset_dict.keys())}  # actual keys
+                         if list_key in list(dataset_dict.keys()) and dataset_dict[list_key] is not None}  # actual keys
             array_keys = {'transient_data'}  # possible keys
             array_keys = {array_key for array_key in array_keys
                           if array_key in list(dataset_dict.keys())}  # actual keys
-            # Check if all elements in 'r_th_vector', 'c_th_vector', 'tau_vector' are real numeric (float, int)
-            bool_list_numeric = all([all([check_realnum(single_value) for single_value in dataset_dict.get(list_key)])
-                                    for list_key in list_keys])
-            # Check if 'r_th_vector', 'c_th_vector', 'tau_vector' have same length
-            # ToDo: Check if at least 2/3 of C, R, tau are given.
-            list_sizes = [len(dataset_dict.get(list_key)) for list_key in list_keys]
-            if not list_sizes.count(list_sizes[0]) == len(list_sizes):
-                raise TypeError("The lists 'r_th_vector', 'c_th_vector', 'tau_vector' (if given) must be the same "
-                                "size.")
+            # Check if any lists are given. Otherwise some of these next checks may cause trouble
+            # ToDo: This may not be the right way to handle the "empty lists" case.
+            if len(list_keys) != 0:
+                # Check if all elements in 'r_th_vector', 'c_th_vector', 'tau_vector' are real numeric (float, int)
+                bool_list_numeric = all([all([check_realnum(single_value) for single_value in dataset_dict.get(list_key)])
+                                        for list_key in list_keys])
+                # Check if 'r_th_vector', 'c_th_vector', 'tau_vector' have same length
+                # ToDo: Check if at least 2/3 of C, R, tau are given.
+                list_sizes = [len(dataset_dict.get(list_key)) for list_key in list_keys]
+                if not list_sizes.count(list_sizes[0]) == len(list_sizes):
+                    raise TypeError("The lists 'r_th_vector', 'c_th_vector', 'tau_vector' (if given) must be the same "
+                                    "size.")
+            else:
+                bool_list_numeric = True  # ToDo: This may not be the right way to handle the "empty lists" case.
             # Check if all values have appropriate types.
             if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
                     all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]) and \
@@ -472,15 +531,15 @@ class Transistor():
         # ToDo: Add function to automatically calculate missing parameters from given ones.
         # ToDo: Do these need to be numpy array or should they be lists instead?
         # Thermal resistances of RC-network (array).
-        r_th_vector: ["np.ndarray[np.float64]", None]  # Unit: K/W  # Optional
+        r_th_vector: [List[float], None]  # Unit: K/W  # Optional
         # Sum of thermal_foster resistances of n-pole RC-network (scalar).
         r_th_total: [float, int, None]  # Unit: K/W  # Optional
         # Thermal capacitances of n-pole RC-network (array).
-        c_th_vector: ["np.ndarray[np.float64]", None]  # Unit: J/K  # Optional
+        c_th_vector: [List[float], None]  # Unit: J/K  # Optional
         # Sum of thermal_foster capacitances of n-pole low pass as (scalar).
         c_th_total: [float, int, None]  # Unit: J/K  # Optional
         # Thermal time constants of n-pole RC-network (array).
-        tau_vector: ["np.ndarray[np.float64]", None]  # Unit: s  # Optional
+        tau_vector: [List[float], None]  # Unit: s  # Optional
         # Sum of thermal_foster time constants of n-pole RC-network (scalar).
         tau_total: [float, int, None]  # Unit: s  # Optional
         # Transient data for extraction of the thermal_foster parameters specified above.
