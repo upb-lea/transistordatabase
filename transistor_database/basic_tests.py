@@ -12,7 +12,7 @@ channel2 = {"t_j": 2.0,
                                   [3, 4]])}
 
 switchenergy1 = {'dataset_type': 'single', 't_j': 1, 'v_supply': 1, 'v_g': 1, 'e_x': 1, 'r_g': 1, 'i_x': 1}
-switchenergy2 = {'dataset_type': 'graph_r_e', 't_j': 1, 'v_supply': 1, 'v_g': 1, 'r_e_data': np.array([[1, 2], [3, 4]]),
+switchenergy2 = {'dataset_type': 'graph_r_e', 't_j': 1, 'v_supply': 1, 'v_g': 1, 'graph_r_e': np.array([[1, 2], [3, 4]]),
                  'i_x': 1}
 switchenergies = [switchenergy1, switchenergy2]
 channels = [channel1, channel2]

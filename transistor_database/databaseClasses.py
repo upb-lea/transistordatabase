@@ -11,6 +11,7 @@ class Transistor():
     user-interaction with this class is necessary (ToDo!)
     Documentation on how to add or extract a transistor-object to/from the database can be found in (ToDo!)
     """
+    # ToDo: Add database _id as attribute
     name: str  # Name of the transistor. Choose as specific as possible. # Mandatory
     transistor_type: str  # Mandatory
     # User-specific data
@@ -100,11 +101,55 @@ class Transistor():
         self.diode = self.Diode(diode_args)
         self.switch = self.Switch(switch_args)
 
-    def convert_to_dict(self):
+    def convert_to_dict(self):  # ToDo: Convert 'datetime.date' objects before saving
         d = vars(self)
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
         return d
+
+    @staticmethod
+    def load_from_db(db_dict):
+        # Convert transistor_args
+        transistor_args = db_dict
+        if 'c_oss' in transistor_args:
+            for i in range(len(transistor_args['c_oss'])):
+                transistor_args['c_oss'][i]['graph_v_c'] = np.array(transistor_args['c_oss'][i]['graph_v_c'])
+        if 'c_iss' in transistor_args:
+            for i in range(len(transistor_args['c_iss'])):
+                transistor_args['c_iss'][i]['graph_v_c'] = np.array(transistor_args['c_iss'][i]['graph_v_c'])
+        if 'c_rss' in transistor_args:
+            for i in range(len(transistor_args['c_rss'])):
+                transistor_args['c_rss'][i]['graph_v_c'] = np.array(transistor_args['c_rss'][i]['graph_v_c'])
+        # Convert switch_args
+        switch_args = db_dict['switch']
+        for att_key in switch_args['thermal_foster']:
+            if att_key in ['r_th_vector', 'c_th_vector', 'tau_vector', 'transient_data']:
+                switch_args['thermal_foster'][att_key] = np.array(switch_args['thermal_foster'][att_key])
+        for i in range(len(switch_args['channel'])):
+            switch_args['channel'][i]['graph_v_i'] = np.array(switch_args['channel'][i]['graph_v_i'])
+        for i in range(len(switch_args['e_on'])):
+            if switch_args['e_on'][i]['dataset_type'] == 'graph_r_e':
+                switch_args['e_on'][i]['graph_r_e'] = np.array(switch_args['e_on'][i]['graph_r_e'])
+            elif switch_args['e_on'][i]['dataset_type'] == 'graph_i_e':
+                switch_args['e_on'][i]['graph_i_e'] = np.array(switch_args['e_on'][i]['graph_i_e'])
+        for i in range(len(switch_args['e_off'])):
+            if switch_args['e_off'][i]['dataset_type'] == 'graph_r_e':
+                switch_args['e_off'][i]['graph_r_e'] = np.array(switch_args['e_off'][i]['graph_r_e'])
+            elif switch_args['e_off'][i]['dataset_type'] == 'graph_i_e':
+                switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
+        # Convert diode_args
+        diode_args = db_dict['diode']
+        for att_key in diode_args['thermal_foster']:
+            if att_key in ['r_th_vector', 'c_th_vector', 'tau_vector', 'transient_data']:
+                diode_args['thermal_foster'][att_key] = np.array(diode_args['thermal_foster'][att_key])
+        for i in range(len(diode_args['channel'])):
+            diode_args['channel'][i]['graph_v_i'] = np.array(diode_args['channel'][i]['graph_v_i'])
+        for i in range(len(diode_args['e_rr'])):
+            if diode_args['e_rr'][i]['dataset_type'] == 'graph_r_e':
+                diode_args['e_rr'][i]['graph_r_e'] = np.array(diode_args['e_rr'][i]['graph_r_e'])
+            elif diode_args['e_rr'][i]['dataset_type'] == 'graph_i_e':
+                diode_args['e_rr'][i]['graph_i_e'] = np.array(diode_args['e_rr'][i]['graph_i_e'])
+        return Transistor(transistor_args, switch_args, diode_args)
 
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
@@ -159,21 +204,21 @@ class Transistor():
                                 if numeric_key in list(dataset_dict.keys())}  # actual keys
                 array_keys = {}
             elif dataset_dict.get('dataset_type') == 'graph_r_e':
-                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'r_e_data', 'i_x'}
+                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'graph_r_e', 'i_x'}
                 # Determine types of mandatory and optional keys.
                 numeric_keys = {'t_j', 'v_supply', 'v_g', 'i_x'}  # possible keys
                 numeric_keys = {numeric_key for numeric_key in numeric_keys
                                 if numeric_key in list(dataset_dict.keys())}  # actual keys
-                array_keys = {'r_e_data'}  # possible keys
+                array_keys = {'graph_r_e'}  # possible keys
                 array_keys = {array_key for array_key in array_keys
                               if array_key in list(dataset_dict.keys())}  # actual keys
             elif dataset_dict.get('dataset_type') == 'graph_i_e':
-                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'i_e_data', 'r_g'}
+                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'graph_i_e', 'r_g'}
                 # Determine types of mandatory and optional keys.
                 numeric_keys = {'t_j', 'v_supply', 'v_g', 'r_g'}  # possible keys
                 numeric_keys = {numeric_key for numeric_key in numeric_keys
                                 if numeric_key in list(dataset_dict.keys())}  # actual keys
-                array_keys = {'i_e_data'}
+                array_keys = {'graph_i_e'}
                 array_keys = {array_key for array_key in array_keys
                               if array_key in list(dataset_dict.keys())}  # actual keys
             else:
@@ -355,18 +400,19 @@ class Transistor():
          parameters R, C, and tau."""
         # ToDo: Add function to estimate parameters from transient data.
         # ToDo: Add function to automatically calculate missing parameters from given ones.
+        # ToDo: Do these need to be numpy array or should they be lists instead?
         # Thermal resistances of RC-network (array).
         r_th_vector: ["np.ndarray[np.float64]", None]  # Unit: K/W  # Optional
         # Sum of thermal_foster resistances of n-pole RC-network (scalar).
-        r_th_total: ["np.ndarray[np.float64]", None]  # Unit: K/W  # Optional
+        r_th_total: [float, int, None]  # Unit: K/W  # Optional
         # Thermal capacitances of n-pole RC-network (array).
         c_th_vector: ["np.ndarray[np.float64]", None]  # Unit: J/K  # Optional
         # Sum of thermal_foster capacitances of n-pole low pass as (scalar).
-        c_th_total: ["np.ndarray[np.float64]", None]  # Unit: J/K  # Optional
+        c_th_total: [float, int, None]  # Unit: J/K  # Optional
         # Thermal time constants of n-pole RC-network (array).
         tau_vector: ["np.ndarray[np.float64]", None]  # Unit: s  # Optional
         # Sum of thermal_foster time constants of n-pole RC-network (scalar).
-        tau_total: ["np.ndarray[np.float64]", None]  # Unit: s  # Optional
+        tau_total: [float, int, None]  # Unit: s  # Optional
         # Transient data for extraction of the thermal_foster parameters specified above.
         # Represented as a 2xm Matrix where row 1 is the time and row 2 the temperature.
         transient_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: s; Row 2: K/W  # Optional
@@ -530,10 +576,11 @@ class Transistor():
 
         def plot_all_channel_data(self):
             """ Plot all channel data """
+            # ToDo: only 12(?) colors available. Change linestyle for more curves.
             plt.figure()
             for i_channel in np.array(range(0,len(self.channel))):
                 labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
-                plt.plot(self.channel[i_channel].v_i_data[0], self.channel[i_channel].v_i_data[1], label=labelplot)
+                plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
             plt.legend()
             plt.xlabel('Voltage in V')
@@ -547,7 +594,7 @@ class Transistor():
             for i_channel in np.array(range(0,len(self.channel))):
                 if self.channel[i_channel].v_g == gatevoltage:
                     labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
-                    plt.plot(self.channel[i_channel].v_i_data[0], self.channel[i_channel].v_i_data[1], label=labelplot)
+                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
             plt.legend()
             plt.xlabel('Voltage in V')
@@ -561,7 +608,7 @@ class Transistor():
             for i_channel in np.array(range(0,len(self.channel))):
                 if self.channel[i_channel].t_j == temperature:
                     labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
-                    plt.plot(self.channel[i_channel].v_i_data[0], self.channel[i_channel].v_i_data[1], label=labelplot)
+                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
             plt.legend()
             plt.xlabel('Voltage in V')
@@ -576,7 +623,7 @@ class Transistor():
             for i_energy_data in np.array(range(0,len(self.e_on))):
                 if self.e_on[i_energy_data].dataset_type == 'graph_i_e':
                     labelplot = "e_on: v_supply = " + str(self.e_on[i_energy_data].v_supply) + "V, vg = " + str(self.e_on[i_energy_data].v_g) + " V, T_J = " + str(self.e_on[i_energy_data].t_j) + " °C, R_g = " + str(self.e_on[i_energy_data].r_g) + " Ohm"
-                    plt.plot(self.e_on[i_energy_data].i_e_data[0], self.e_on[i_energy_data].i_e_data[1], label=labelplot)
+                    plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1], label=labelplot)
 
             # look for e_off losses
             for i_energy_data in np.array(range(0, len(self.e_off))):
@@ -585,7 +632,7 @@ class Transistor():
                         self.e_off[i_energy_data].v_g) + " V, T_J = " + str(
                         self.e_off[i_energy_data].t_j) + " °C, R_g = " + str(
                         self.e_off[i_energy_data].r_g) + " Ohm"
-                    plt.plot(self.e_off[i_energy_data].i_e_data[0], self.e_off[i_energy_data].i_e_data[1],
+                    plt.plot(self.e_off[i_energy_data].graph_i_e[0], self.e_off[i_energy_data].graph_i_e[1],
                              label=labelplot)
 
             plt.legend()
@@ -715,7 +762,7 @@ class Transistor():
                             self.e_rr[i_energy_data].v_g) + " V"
 
                         # plot
-                        plt.plot(self.e_rr[i_energy_data].i_e_data[0], self.e_rr[i_energy_data].i_e_data[1],
+                        plt.plot(self.e_rr[i_energy_data].graph_i_e[0], self.e_rr[i_energy_data].graph_i_e[1],
                                  label=labelplot)
                 plt.legend()
                 plt.xlabel('Current in A')
@@ -793,7 +840,7 @@ class Transistor():
         For each set (e.g. every curve in the datasheet) of switching energy data a separate object should be created.
         This also includes the reference values in a datasheet given without a graph. (Those are considered as data sets
         with just a single data point.)
-        Data sets with more than one point are given as i_e_data with an r_g parameter or as r_e_data with an i_x
+        Data sets with more than one point are given as graph_i_e with an r_g parameter or as graph_r_e with an i_x
         parameter.
         Unused parameters or datasets should be left empty.
         Which of these cases (single point, E vs I dataset, E vs R dataset) is valid for the current object also needs
@@ -813,8 +860,8 @@ class Transistor():
         r_g: [int, float, None]  # Unit: Ohm
         i_x: [int, float, None]  # Unit: A
         # Dataset. Only one of these is allowed. The other should be 'None'.
-        i_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
-        r_e_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: Ohm; Row 2: J
+        graph_i_e: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
+        graph_r_e: ["np.ndarray[np.float64]", None]  # Units: Row 1: Ohm; Row 2: J
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
         # ToDo: Add additional class for linearized switching loss model with capacitances. (See infineon application
         #  note.)
@@ -833,8 +880,8 @@ class Transistor():
             self.e_x = args.get('e_x')
             self.r_g = args.get('r_g')
             self.i_x = args.get('i_x')
-            self.i_e_data = args.get('i_e_data')
-            self.r_e_data = args.get('r_e_data')
+            self.graph_i_e = args.get('graph_i_e')
+            self.graph_r_e = args.get('graph_r_e')
 
         def convert_to_dict(self):
             d = vars(self)
@@ -927,7 +974,8 @@ class Transistor():
 def check_realnum(x):
     """Check if argument is real numeric scalar. Raise TypeError if not. None is also accepted because it is valid for
     optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand."""
-    if not any([isinstance(x, int), isinstance(x, float), x is None]):
+    if not any([isinstance(x, int), isinstance(x, float), x is None, isinstance(x, np.integer),
+                isinstance(x, np.floating)]):
         raise TypeError('{0} is not numeric.'.format(x))
     else:
         return True
