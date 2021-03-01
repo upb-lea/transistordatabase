@@ -115,6 +115,9 @@ class Transistor():
         d = vars(self)
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
+        d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
+        d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
+        d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
         return d
 
     @staticmethod
@@ -169,6 +172,63 @@ class Transistor():
         Raises appropriate errors if dictionary invalid in other ways."""
         # ToDo: Add structure for Errors. e.g.: xx has wrong type, xx has wrong type, etc.
         # ToDo: Error if given key is not allowed?
+        instructions = {
+            'Transistor': {
+                'mandatory_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
+                                   'housing_type', 'v_max', 'i_max', 'i_cont'},
+                'str_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'},
+                'numeric_keys': {'housing_area', 'cooling_area', 'v_max', 'i_max', 'i_cont'},
+                'array_keys': {'e_coss'},
+                'numeric_list_keys': {}},
+            'Switch': {
+                'mandatory_keys': {'r_g_int'},
+                'str_keys': {'comment', 'manufacturer', 'technology'},
+                'numeric_keys': {'c_oss', 'c_iss', 'c_rss', 'r_g_int'},
+                'array_keys': {},
+                'numeric_list_keys': {}},
+            'Diode': {
+                'mandatory_keys': {},
+                'str_keys': {'comment', 'manufacturer', 'technology'},
+                'numeric_keys': {},
+                'array_keys': {},
+                'numeric_list_keys': {}},
+            'Switch_LinearizedModel': {
+                'mandatory_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
+                'str_keys': {},
+                'numeric_keys' : {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
+                'array_keys': {},
+                'numeric_list_keys': {}},
+            'Diode_LinearizedModel': {
+                'mandatory_keys': {'t_j', 'v_g', 'i_channel', 'r_channel'},
+                'str_keys': {},
+                'numeric_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
+                'array_keys': {},
+                'numeric_list_keys': {}},
+            'ChannelData': {  # ToDo: v_g mandatory for switch, but not for diode
+                'mandatory_keys': {'t_j', 'graph_v_i'},
+                'numeric_keys': {'t_j'},
+                'str_keys': {},
+                'array_keys': {'graph_v_i'},
+                'numeric_list_keys': {}},
+            'SwitchEnergyData_single': {
+                'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'},
+                'str_keys': {},
+                'numeric_keys': {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'},
+                'array_keys': {},
+                'numeric_list_keys': {}},
+            'SwitchEnergyData_graph_r_e': {
+                'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'graph_r_e', 'i_x'},
+                'str_keys': {},
+                'numeric_keys': {'t_j', 'v_supply', 'v_g', 'i_x'},
+                'array_keys': {'graph_r_e'},
+                'numeric_list_keys': {}},
+            'SwitchEnergyData_graph_i_e': {
+                'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'graph_i_e', 'r_g'},
+                'str_keys': {},
+                'numeric_keys': {'t_j', 'v_supply', 'v_g', 'r_g'},
+                'array_keys': {'graph_i_e'},
+                'numeric_list_keys': {}},
+        }
         if dataset_dict is None:
             return False  # None represents an empty dataset. Can be valid depending on circumstances, hence no error.
         elif not isinstance(dataset_dict, dict):
@@ -843,6 +903,13 @@ class Transistor():
             # checked again here.
             self.t_j = args.get('t_j')
             self.graph_v_c = args.get('graph_v_c')
+
+        def convert_to_dict(self):
+            d = vars(self)
+            for att_key in d:
+                if isinstance(d[att_key], np.ndarray):
+                    d[att_key] = d[att_key].tolist()
+            return d
 
     class SwitchEnergyData:
         """Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
