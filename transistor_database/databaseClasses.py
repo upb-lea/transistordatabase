@@ -101,6 +101,16 @@ class Transistor():
         self.diode = self.Diode(diode_args)
         self.switch = self.Switch(switch_args)
 
+    def __eq__(self, other):
+        if not isinstance(other, Transistor):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+        my_dict = self.convert_to_dict()
+        my_dict.pop('_id', None)
+        other_dict = other.convert_to_dict()
+        other_dict.pop('_id', None)
+        return my_dict == other_dict
+
     def convert_to_dict(self):  # ToDo: Convert 'datetime.date' objects before saving
         d = vars(self)
         d['diode'] = self.diode.convert_to_dict()
@@ -872,16 +882,29 @@ class Transistor():
         def __init__(self, args):
             # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
             # checked again here.
-            # ToDo: Always check dataset_type and determine which arguments should be ignored.
+            # ToDo: Add warning if data is ignored because of dataset_type?
             self.dataset_type = args.get('dataset_type')
             self.v_supply = args.get('v_supply')
             self.v_g = args.get('v_g')
             self.t_j = args.get('t_j')
-            self.e_x = args.get('e_x')
-            self.r_g = args.get('r_g')
-            self.i_x = args.get('i_x')
-            self.graph_i_e = args.get('graph_i_e')
-            self.graph_r_e = args.get('graph_r_e')
+            if self.dataset_type == 'single':
+                self.e_x = args.get('e_x')
+                self.r_g = args.get('r_g')
+                self.i_x = args.get('i_x')
+                self.graph_i_e = None
+                self.graph_r_e = None
+            elif self.dataset_type == 'graph_i_e':
+                self.e_x = None
+                self.r_g = args.get('r_g')
+                self.i_x = None
+                self.graph_i_e = args.get('graph_i_e')
+                self.graph_r_e = None
+            elif self.dataset_type == 'graph_r_e':
+                self.e_x = None
+                self.r_g = None
+                self.i_x = args.get('i_x')
+                self.graph_i_e = None
+                self.graph_r_e = args.get('graph_r_e')
 
         def convert_to_dict(self):
             d = vars(self)
