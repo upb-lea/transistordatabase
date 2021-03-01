@@ -33,7 +33,7 @@ class Transistor():
     # These are documented in their respective class definitions
     switch: "Switch"
     diode: "Diode"
-    # Thermal data. See git for equivalent thermal circuit diagram.
+    # Thermal data. See git for equivalent thermal_foster circuit diagram.
     r_th_cs: [float, int, None]  # Unit: K/W  # Optional
     r_th_switch_cs: [float, int, None]  # Unit: K/W  # Optional
     r_th_diode_cs: [float, int, None]  # Unit: K/W  # Optional
@@ -51,7 +51,7 @@ class Transistor():
             self.name = transistor_args.get('name')
             self.transistor_type = transistor_args.get('transistor_type')
             self.author = transistor_args.get('author')
-            self.technology = transistor_args.get('meta_type')
+            self.technology = transistor_args.get('technology')
             self.template_version = transistor_args.get('template_version')
             self.template_date = transistor_args.get('template_date')
             self.creation_date = transistor_args.get('creation_date')
@@ -125,12 +125,12 @@ class Transistor():
         elif dict_type == 'ChannelData':
             # ToDo: v_g mandatory for switch, but nut for diode
             # Determine mandatory keys.
-            mandatory_keys = {'t_j', 'v_i_data'}
+            mandatory_keys = {'t_j', 'graph_v_i'}
             # Determine types of mandatory and optional keys.
             numeric_keys = {'t_j'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
-            array_keys = {'v_i_data'}  # possible keys
+            array_keys = {'graph_v_i'}  # possible keys
             array_keys = {array_key for array_key in array_keys
                           if array_key in list(dataset_dict.keys())}  # actual keys
             # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
@@ -138,7 +138,7 @@ class Transistor():
             if not dataset_dict.keys() >= mandatory_keys or \
                     any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary does not contain all keys necessary for ChannelData object "
-                               "creation. Mandatory keys: 't_j', 'v_i_data'")
+                               "creation. Mandatory keys: 't_j', 'graph_v_i'")
             # Check if all values have appropriate types.
             elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
                     all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
@@ -349,25 +349,25 @@ class Transistor():
                     return True
 
     class FosterThermalModel:
-        """Contains data to specify parameters of the Foster thermal model. This model describes the transient
-        temperature behavior as a thermal RC-network. The necessary parameters can be estimated by curve-fitting
+        """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
+        temperature behavior as a thermal_foster RC-network. The necessary parameters can be estimated by curve-fitting
         transient temperature data supplied in transient_data or by manually specifying the individual 2 out of 3 of the
          parameters R, C, and tau."""
         # ToDo: Add function to estimate parameters from transient data.
         # ToDo: Add function to automatically calculate missing parameters from given ones.
         # Thermal resistances of RC-network (array).
         r_th_vector: ["np.ndarray[np.float64]", None]  # Unit: K/W  # Optional
-        # Sum of thermal resistances of n-pole RC-network (scalar).
+        # Sum of thermal_foster resistances of n-pole RC-network (scalar).
         r_th_total: ["np.ndarray[np.float64]", None]  # Unit: K/W  # Optional
         # Thermal capacitances of n-pole RC-network (array).
         c_th_vector: ["np.ndarray[np.float64]", None]  # Unit: J/K  # Optional
-        # Sum of thermal capacitances of n-pole low pass as (scalar).
+        # Sum of thermal_foster capacitances of n-pole low pass as (scalar).
         c_th_total: ["np.ndarray[np.float64]", None]  # Unit: J/K  # Optional
         # Thermal time constants of n-pole RC-network (array).
         tau_vector: ["np.ndarray[np.float64]", None]  # Unit: s  # Optional
-        # Sum of thermal time constants of n-pole RC-network (scalar).
+        # Sum of thermal_foster time constants of n-pole RC-network (scalar).
         tau_total: ["np.ndarray[np.float64]", None]  # Unit: s  # Optional
-        # Transient data for extraction of the thermal parameters specified above.
+        # Transient data for extraction of the thermal_foster parameters specified above.
         # Represented as a 2xm Matrix where row 1 is the time and row 2 the temperature.
         transient_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: s; Row 2: K/W  # Optional
 
@@ -404,22 +404,22 @@ class Transistor():
         manufacturer: [str, None]  # Optional
         technology: [str, None]  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
         # These are documented in their respective class definitions.
-        thermal: "FosterThermalModel"  # Transient thermal model.  # Optional
+        thermal_foster: "FosterThermalModel"  # Transient thermal_foster model.  # Optional
         channel: List["ChannelData"]  # Switch channel voltage and current data.
         e_on: List["SwitchEnergyData"]  # Switch on energy data.
         e_off: List["SwitchEnergyData"]  # Switch of energy data.
         linearized_switch: List["LinearizedModel"]  # Static data valid for a specific operating point.
         # Constant Capacitances
-        c_oss: [float, int, None]  # Unit: pF  # Optional
-        c_iss: [float, int, None]  # Unit: pF  # Optional
-        c_rss: [float, int, None]  # Unit: pF  # Optional
+        c_oss: [float, int, None]  # Unit: F  # Optional
+        c_iss: [float, int, None]  # Unit: F  # Optional
+        c_rss: [float, int, None]  # Unit: F  # Optional
         #
         r_g_int: [float, int]  # Unit: Ohm # Mandatory
 
         def __init__(self, switch_args):
-            # Current behavior on empty 'foster' dictionary: thermal object is still created but with empty attributes.
-            # ToDo: Is this the right behavior or should the 'thermal' attribute be left empty istead?
-            self.thermal = Transistor.FosterThermalModel(switch_args.get('foster'))
+            # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty attributes.
+            # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
+            self.thermal_foster = Transistor.FosterThermalModel(switch_args.get('thermal_foster'))
             if Transistor.isvalid_dict(switch_args, 'Switch'):
                 self.c_oss = switch_args.get('c_oss')
                 self.c_iss = switch_args.get('c_iss')
@@ -521,7 +521,7 @@ class Transistor():
 
         def convert_to_dict(self):
             d = vars(self)
-            d['thermal'] = self.thermal.convert_to_dict()
+            d['thermal_foster'] = self.thermal_foster.convert_to_dict()
             d['channel'] = [c.convert_to_dict() for c in self.channel]
             d['e_on'] = [e.convert_to_dict() for e in self.e_on]
             d['e_off'] = [e.convert_to_dict() for e in self.e_off]
@@ -569,7 +569,6 @@ class Transistor():
             plt.grid()
             plt.show()
 
-
         def plot_energy_data(self):
             """ Plot all switching data """
             plt.figure()
@@ -596,22 +595,23 @@ class Transistor():
             plt.show()
 
     class Diode:
-        """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
-        channel- and e_rr- datasets."""
+        """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
+         multiple channel- and e_rr- datasets."""
         # Metadata
         comment: [str, None]  # Optional
         manufacturer: [str, None]  # Optional
         technology: [str, None]  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
         # These are documented in their respective class definitions.
-        thermal: ["FosterThermalModel", None]  # Transient thermal model.
+        thermal_foster: ["FosterThermalModel", None]  # Transient thermal_foster model.
         channel: List["ChannelData"]  # Diode forward voltage and forward current data.
         e_rr: List["SwitchEnergyData"]  # Reverse recovery energy data.
         linearized_diode: List["LinearizedModel"]  # Static data. Valid for a specific operating point.
 
         def __init__(self, diode_args):
-            # Current behavior on empty 'foster' dictionary: thermal object is still created but with empty attributes.
-            # ToDo: Is this the right behavior or should the 'thermal' attribute be left empty istead?
-            self.thermal = Transistor.FosterThermalModel(diode_args.get('foster'))
+            # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty
+            # attributes.
+            # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
+            self.thermal_foster = Transistor.FosterThermalModel(diode_args.get('thermal_foster'))
             if Transistor.isvalid_dict(diode_args, 'Diode'):
                 self.comment = diode_args.get('comment')
                 self.manufacturer = diode_args.get('manufacturer')
@@ -688,7 +688,7 @@ class Transistor():
 
         def convert_to_dict(self):
             d = vars(self)
-            d['thermal'] = self.thermal.convert_to_dict()
+            d['thermal_foster'] = self.thermal_foster.convert_to_dict()
             d['channel'] = [c.convert_to_dict() for c in self.channel]
             d['e_rr'] = [e.convert_to_dict() for e in self.e_rr]
             d['linearized_diode'] = [ld.convert_to_dict() for ld in self.linearized_diode]
@@ -727,7 +727,7 @@ class Transistor():
 
     class LinearizedModel:
         """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
-        t_j, i_channel and v_g (not for all diode types)."""
+        t_j, i_channel and (not for all diode types) v_g."""
         t_j: [int, float]  # Unit: K # Mandatory
         v_g: [int, float, None]  # Unit: V # Mandatory for Switch, Optional for some Diode types
         i_channel: [int, float]  # Unit: A # Mandatory
@@ -755,13 +755,13 @@ class Transistor():
         t_j: [int, float]  # Mandatory
         v_g: [int, float]  # Switch: Mandatory, Diode: optional (standard diode useless, for GaN 'diode' necessary
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
-        v_i_data: "np.ndarray[np.float64]"  # Units: Row 1: V; Row 2: A  # Mandatory
+        graph_v_i: "np.ndarray[np.float64]"  # Units: Row 1: V; Row 2: A  # Mandatory
 
         def __init__(self, args):
             # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
             # checked again here.
             self.t_j = args.get('t_j')
-            self.v_i_data = args.get('v_i_data')
+            self.graph_v_i = args.get('graph_v_i')
             self.v_g = args.get('v_g')
 
         def convert_to_dict(self):
@@ -869,8 +869,8 @@ class Transistor():
                       "different dataset is not yet implemented.")
 
             # interpolate data
-            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].v_i_data[1],
-                                             candidate_datasets[0].v_i_data[0])
+            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
+                                             candidate_datasets[0].graph_v_i[0])
             # check kind of transistor type due to forward voltage value
             if self.transistor_type in ['MOSFET', 'SiC-MOSFET']:
                 # transistor has no forward voltage
@@ -880,8 +880,8 @@ class Transistor():
             else:
                 # transistor has forward voltage. Other interpolating point will be with 10% more current
                 # ToDo: Test this function if IGBT is available
-                voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].v_i_data[1],
-                                                   candidate_datasets[0].v_i_data[0])
+                voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].graph_v_i[1],
+                                                   candidate_datasets[0].graph_v_i[0])
                 r_channel = (voltage_interpolated_2 - voltage_interpolated)/(0.1 * i_channel)
                 v_channel = voltage_interpolated - r_channel * i_channel
         elif switch_or_diode == 'diode':
@@ -912,10 +912,10 @@ class Transistor():
                           "operating point. The first of these sets is automatically chosen because selection of a "
                           "different dataset is not yet implemented.")
             # interpolate data
-            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].v_i_data[1],
-                                             candidate_datasets[0].v_i_data[0])
-            voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].v_i_data[1],
-                                               candidate_datasets[0].v_i_data[0])
+            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
+                                             candidate_datasets[0].graph_v_i[0])
+            voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].graph_v_i[1],
+                                               candidate_datasets[0].graph_v_i[0])
             r_channel = (voltage_interpolated_2 - voltage_interpolated) / (0.1 * i_channel)
             v_channel = voltage_interpolated - r_channel * i_channel
         else:

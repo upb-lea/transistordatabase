@@ -148,8 +148,8 @@ def export_simulink_v1(transistorName):
     # TODO Set max points via variables (Given to the exporter function?)
     Temp_Switch_I_channel_max = 1200
     Temp_Switch_V_channel_max = 3.5
-    Switch_I_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'I_max')
-    Switch_V_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'V_max')
+    Switch_I_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I_max')
+    Switch_V_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'V_max')
 
     # Junction temperatures for channel losses and switching losses
     # TODO Set temperature via variables (Given to the exporter function?)
@@ -161,8 +161,8 @@ def export_simulink_v1(transistorName):
     Switch_V0_channel = np.nan
 
     Switch_I_channel = np.linspace(0, Temp_Switch_I_channel_max, Temp_Switch_I_channel_max + 1)
-    Switch_I_channel_T_J = [[findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'I')],
-                            [findChannelData(Transistor, 'Transistor.switch.channel', 125, 'v_i_data', 'I')]]
+    Switch_I_channel_T_J = [[findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I')],
+                            [findChannelData(Transistor, 'Transistor.switch.channel', 125, 'graph_v_i', 'I')]]
 
     # TODO V_Channel endpoint change to variable?
     Switch_V_channel = np.linspace(0, Temp_Switch_V_channel_max, 20)
@@ -211,8 +211,8 @@ def export_simulink_v1(transistorName):
                    'I_channel': Switch_I_channel,
                    'V_channel_vec': Switch_V_channel_vec,
                    'V_channel': Switch_V_channel,
-                   'I_channel_25': findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'I'),
-                   'I_channel_125': findChannelData(Transistor, 'Transistor.switch.channel', 125, 'v_i_data', 'I'),
+                   'I_channel_25': findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I'),
+                   'I_channel_125': findChannelData(Transistor, 'Transistor.switch.channel', 125, 'graph_v_i', 'I'),
                    'I_channel_T_J': Switch_I_channel_T_J,
                    'T_J_ref': Switch_T_J_ref,
                    'E_on_ref': Switch_E_on_ref,
@@ -233,20 +233,20 @@ def export_simulink_v1(transistorName):
                    'C_oss': compatibilityTest(Transistor, 'Transistor.switch.c_oss'),
                    'C_iss': compatibilityTest(Transistor, 'Transistor.switch.c_iss'),
                    'C_rss': compatibilityTest(Transistor, 'Transistor.switch.c_rss'),
-                   'R_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.t_th_total'),
-                   'R_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.r_th_vector'),
-                   'tau_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.tau_total'),
-                   'tau_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.tau_vector'),
-                   'C_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.c_th_total'),
-                   'C_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.c_th_vector')}
+                   'R_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.t_th_total'),
+                   'R_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.r_th_vector'),
+                   'tau_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.tau_total'),
+                   'tau_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.tau_vector'),
+                   'C_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.c_th_total'),
+                   'C_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.c_th_vector')}
 
 
     # maximum data for plots and for non-linear data, given by data sheet plots
     # TODO Set max points via Variable (Given to the exporter function)
     Temp_Diode_I_channel_max = 1200
     Temp_Diode_V_channel_max = 3.5
-    Diode_I_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'I_max')
-    Diode_V_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'v_i_data', 'V_max')
+    Diode_I_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I_max')
+    Diode_V_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'V_max')
 
     # Junction temperatures for channel losses and switching losses
     # TODO Set temperature via Variable (Given to the exporter function?)
@@ -258,8 +258,8 @@ def export_simulink_v1(transistorName):
     Diode_V0_channel = np.nan
 
     Diode_I_channel = np.linspace(0, Temp_Diode_I_channel_max, Temp_Diode_I_channel_max + 1)
-    Diode_I_channel_T_J = [[findChannelData(Transistor, 'Transistor.diode.channel', 25, 'v_i_data', 'I')],
-                           [findChannelData(Transistor, 'Transistor.diode.channel', 125, 'v_i_data', 'I')]]
+    Diode_I_channel_T_J = [[findChannelData(Transistor, 'Transistor.diode.channel', 25, 'graph_v_i', 'I')],
+                           [findChannelData(Transistor, 'Transistor.diode.channel', 125, 'graph_v_i', 'I')]]
 
     # TODO V_Channel Endpoint change to variable?
     Diode_V_channel = np.linspace(0, Temp_Diode_V_channel_max, 20)
@@ -294,8 +294,8 @@ def export_simulink_v1(transistorName):
                   'I_channel': Diode_I_channel,
                   'V_channel_vec': Diode_V_channel_vec,
                   'V_channel': Diode_V_channel,
-                  'I_channel_25': findChannelData(Transistor, 'Transistor.diode.channel', 25, 'v_i_data', 'I'),
-                  'I_channel_125': findChannelData(Transistor, 'Transistor.diode.channel', 125, 'v_i_data', 'I'),
+                  'I_channel_25': findChannelData(Transistor, 'Transistor.diode.channel', 25, 'graph_v_i', 'I'),
+                  'I_channel_125': findChannelData(Transistor, 'Transistor.diode.channel', 125, 'graph_v_i', 'I'),
                   'I_channel_T_J':  Diode_I_channel_T_J,
                   'T_J_ref': Diode_T_J_ref,
                   'E_rr_ref': Diode_E_rr_ref,
@@ -307,12 +307,12 @@ def export_simulink_v1(transistorName):
                   'E_rr_125': Diode_E_rr_125,
                   'E_rr_150': Diode_E_rr_150,
                   'E_rr_T_J': Diode_E_rr_T_J,
-                  'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.t_th_total'),
-                  'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_vector'),
-                  'tau_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_total'),
-                  'tau_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_vector'),
-                  'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_total'),
-                  'C_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_vector')}
+                  'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.t_th_total'),
+                  'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.r_th_vector'),
+                  'tau_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.tau_total'),
+                  'tau_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.tau_vector'),
+                  'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.c_th_total'),
+                  'C_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.c_th_vector')}
 
     # TODO add after linearization function was implemented
     Transistor_I_linearize_UI_charts = np.nan
@@ -345,21 +345,21 @@ def export_simulink_v1(transistorName):
 def export_matlab_v1(transistorName):
     Transistor = transistorName
 
-    Diode_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_total'),
-                         'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.r_th_vector'),
-                         'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_total'),
-                         'C_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.c_th_vector'),
-                         'Tau_total': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_total'),
-                         'Tau_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal.tau_vector'),
-                         'Transient_data': compatibilityTest(Transistor, 'Transistor.diode.thermal.transient_data')}
+    Diode_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.r_th_total'),
+                         'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.r_th_vector'),
+                         'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.c_th_total'),
+                         'C_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.c_th_vector'),
+                         'Tau_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.tau_total'),
+                         'Tau_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.tau_vector'),
+                         'Transient_data': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.transient_data')}
 
-    Switch_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.r_th_total'),
-                          'R_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.r_th_vector'),
-                          'C_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.c_th_total'),
-                          'C_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.c_th_vector'),
-                          'Tau_total': compatibilityTest(Transistor, 'Transistor.switch.thermal.tau_total'),
-                          'Tau_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal.tau_vector'),
-                          'Transient_data': compatibilityTest(Transistor, 'Transistor.switch.thermal.transient_data')}
+    Switch_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.r_th_total'),
+                          'R_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.r_th_vector'),
+                          'C_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.c_th_total'),
+                          'C_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.c_th_vector'),
+                          'Tau_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.tau_total'),
+                          'Tau_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.tau_vector'),
+                          'Transient_data': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.transient_data')}
 
     Switch_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.comment'),
                    'Manufacturer': compatibilityTest(Transistor, 'Transistor.manufacturer'),

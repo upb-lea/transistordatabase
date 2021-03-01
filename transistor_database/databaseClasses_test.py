@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
     cooling_area = 200
     housing_type = 'TO220'
     t_j = 1.0
-    v_i_data = np.array([[1, 2], [3, 4]])
+    graph_v_i = np.array([[1, 2], [3, 4]])
     dataset_type = 'single'
     v_supply = 1
     v_g = 1
@@ -41,7 +41,7 @@ class MyTestCase(unittest.TestCase):
     c_iss = 1
     c_rss = 1
     # Create dataset dictionaries
-    channel = {'t_j': t_j, 'v_i_data': v_i_data}
+    channel = {'t_j': t_j, 'graph_v_i': graph_v_i}
     switchenergy = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
                     'e_x': e_x, 'r_g': r_g, 'i_x': i_x}
     foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
@@ -56,9 +56,9 @@ class MyTestCase(unittest.TestCase):
                        'i_max': i_max, 'i_cont': i_cont}
     switch_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'c_oss': c_oss, 'c_iss': c_iss, 'c_rss': c_rss, 'r_g_int': r_g_int, 'channel': channel,
-                   'e_on': switchenergy, 'e_off': switchenergy, 'foster': foster_args}
+                   'e_on': switchenergy, 'e_off': switchenergy, 'thermal_foster': foster_args}
     diode_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
-                  'channel': channel, 'e_rr': switchenergy, 'foster': foster_args}
+                  'channel': channel, 'e_rr': switchenergy, 'thermal_foster': foster_args}
 
     def test_basic(self):
         # Create transistor object
@@ -85,7 +85,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.diode.technology, self.technology)
         # Test Diode channel attributes
         self.assertEqual(transistor.diode.channel[0].t_j, self.t_j)
-        np.testing.assert_array_equal(transistor.diode.channel[0].v_i_data, self.v_i_data)
+        np.testing.assert_array_equal(transistor.diode.channel[0].graph_v_i, self.graph_v_i)
         # Test Diode e_rr attributes
         self.assertEqual(transistor.diode.e_rr[0].dataset_type, self.dataset_type)
         self.assertEqual(transistor.diode.e_rr[0].t_j, self.t_j)
@@ -94,14 +94,14 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.diode.e_rr[0].e_x, self.e_x)
         self.assertEqual(transistor.diode.e_rr[0].r_g, self.r_g)
         self.assertEqual(transistor.diode.e_rr[0].i_x, self.i_x)
-        # Test Diode thermal attributes
-        self.assertEqual(transistor.diode.thermal.r_th_vector, self.r_th_vector)
-        self.assertEqual(transistor.diode.thermal.r_th_total, self.r_th_total)
-        self.assertEqual(transistor.diode.thermal.c_th_vector, self.c_th_vector)
-        self.assertEqual(transistor.diode.thermal.c_th_total, self.c_th_total)
-        self.assertEqual(transistor.diode.thermal.tau_vector, self.tau_vector)
-        self.assertEqual(transistor.diode.thermal.tau_total, self.tau_total)
-        np.testing.assert_array_equal(transistor.diode.thermal.transient_data, self.transient_data)
+        # Test Diode thermal_foster attributes
+        self.assertEqual(transistor.diode.thermal_foster.r_th_vector, self.r_th_vector)
+        self.assertEqual(transistor.diode.thermal_foster.r_th_total, self.r_th_total)
+        self.assertEqual(transistor.diode.thermal_foster.c_th_vector, self.c_th_vector)
+        self.assertEqual(transistor.diode.thermal_foster.c_th_total, self.c_th_total)
+        self.assertEqual(transistor.diode.thermal_foster.tau_vector, self.tau_vector)
+        self.assertEqual(transistor.diode.thermal_foster.tau_total, self.tau_total)
+        np.testing.assert_array_equal(transistor.diode.thermal_foster.transient_data, self.transient_data)
         # Test Switch attributes
         self.assertEqual(transistor.switch.comment, self.comment)
         self.assertEqual(transistor.switch.manufacturer, self.manufacturer)
@@ -112,7 +112,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.switch.r_g_int, self.r_g_int)
         # Test Switch channel attributes
         self.assertEqual(transistor.switch.channel[0].t_j, self.t_j)
-        np.testing.assert_array_equal(transistor.switch.channel[0].v_i_data, self.v_i_data)
+        np.testing.assert_array_equal(transistor.switch.channel[0].graph_v_i, self.graph_v_i)
         # Test Switch e_on attributes
         self.assertEqual(transistor.switch.e_on[0].dataset_type, self.dataset_type)
         self.assertEqual(transistor.switch.e_on[0].t_j, self.t_j)
@@ -129,14 +129,14 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.switch.e_off[0].e_x, self.e_x)
         self.assertEqual(transistor.switch.e_off[0].r_g, self.r_g)
         self.assertEqual(transistor.switch.e_off[0].i_x, self.i_x)
-        # Test Switch thermal attributes
-        self.assertEqual(transistor.switch.thermal.r_th_vector, self.r_th_vector)
-        self.assertEqual(transistor.switch.thermal.r_th_total, self.r_th_total)
-        self.assertEqual(transistor.switch.thermal.c_th_vector, self.c_th_vector)
-        self.assertEqual(transistor.switch.thermal.c_th_total, self.c_th_total)
-        self.assertEqual(transistor.switch.thermal.tau_vector, self.tau_vector)
-        self.assertEqual(transistor.switch.thermal.tau_total, self.tau_total)
-        np.testing.assert_array_equal(transistor.switch.thermal.transient_data, self.transient_data)
+        # Test Switch thermal_foster attributes
+        self.assertEqual(transistor.switch.thermal_foster.r_th_vector, self.r_th_vector)
+        self.assertEqual(transistor.switch.thermal_foster.r_th_total, self.r_th_total)
+        self.assertEqual(transistor.switch.thermal_foster.c_th_vector, self.c_th_vector)
+        self.assertEqual(transistor.switch.thermal_foster.c_th_total, self.c_th_total)
+        self.assertEqual(transistor.switch.thermal_foster.tau_vector, self.tau_vector)
+        self.assertEqual(transistor.switch.thermal_foster.tau_total, self.tau_total)
+        np.testing.assert_array_equal(transistor.switch.thermal_foster.transient_data, self.transient_data)
 
 
 if __name__ == '__main__':
