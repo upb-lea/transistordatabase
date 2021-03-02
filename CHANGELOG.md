@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New class to store c_iss, c_oss, c_rss in Transistor. 
 - New Transistor attribute: e_coss
 - Add documentation drawing
+- Exporter: GeckoCIRCUITS
 ### Removed
 - Removed Metadata class. Added its attributes to Transistor class instead
 ### Changed
