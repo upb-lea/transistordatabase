@@ -137,6 +137,7 @@ def Template():
         'manufacturer': manufacturer,
         'technology': technology,
         'r_g_int': r_g_int,
+        't_j_max': 175,
         'c_oss': c_oss,
         'c_iss': c_iss,
         'c_rss': c_rss,
@@ -169,6 +170,7 @@ def Template():
     diode_args = {'comment': comment,
                   'manufacturer': manufacturer,
                   'technology': technology,
+                  't_j_max': 175,
                   'channel': [channel_25_0, channel_25_neg2, channel_25_neg4, channel_175_0, channel_175_neg2, channel_175_neg4],
                   'e_rr': [],
                   'thermal_foster': diode_foster_args}
@@ -214,13 +216,14 @@ if __name__ == '__main__':
     print(transistor.switch.manufacturer)
     print(transistor.switch.comment)
     print(transistor.switch.technology)
+    print(transistor.switch.t_j_max)
     print('---------------------')
     print("diode metadata")
     print('---------------------')
     print(transistor.diode.manufacturer)
     print(transistor.diode.comment)
     print(transistor.diode.technology)
-
+    print(transistor.diode.t_j_max)
     ####################################
     # Method examples
     ####################################

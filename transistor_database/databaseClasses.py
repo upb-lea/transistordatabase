@@ -46,6 +46,7 @@ class Transistor():
     c_oss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
     c_iss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
     c_rss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
+    t_c_max: [float, int]  # Unit °C # Optional
 
     def __init__(self, transistor_args, switch_args, diode_args):
         if self.isvalid_dict(transistor_args, 'Transistor'):
@@ -64,6 +65,7 @@ class Transistor():
             self.datasheet_version = transistor_args.get('datasheet_version')
             self.housing_area = transistor_args.get('housing_area')
             self.cooling_area = transistor_args.get('cooling_area')
+            self.t_c_max = transistor_args.get('t_c_max')
             # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
             # Import list of valid housing types from "housing_types.txt"
             # add housing types to the working direction
@@ -231,19 +233,19 @@ class Transistor():
                 'mandatory_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
                                    'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'},
                 'str_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'},
-                'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont'},
+                'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max'},
                 'array_keys': {'e_coss'},
                 'numeric_list_keys': {}},
             'Switch': {
-                'mandatory_keys': {'r_g_int'},
+                'mandatory_keys': {'r_g_int', 't_j_max'},
                 'str_keys': {'comment', 'manufacturer', 'technology'},
-                'numeric_keys': {'c_oss', 'c_iss', 'c_rss', 'r_g_int'},
+                'numeric_keys': {'c_oss', 'c_iss', 'c_rss', 'r_g_int', 't_j_max'},
                 'array_keys': {},
                 'numeric_list_keys': {}},
             'Diode': {
-                'mandatory_keys': {},
+                'mandatory_keys': {'t_j_max'},
                 'str_keys': {'comment', 'manufacturer', 'technology'},
-                'numeric_keys': {},
+                'numeric_keys': {'t_j_max'},
                 'array_keys': {},
                 'numeric_list_keys': {}},
             'Switch_LinearizedModel': {
@@ -401,7 +403,7 @@ class Transistor():
             # Determine types of mandatory and optional keys.
             str_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
-            numeric_keys = {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont'}  # possible keys
+            numeric_keys = {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
             array_keys = {'e_coss'}  # possible keys
@@ -470,18 +472,18 @@ class Transistor():
 
         elif dict_type == 'Switch':
             # Determine mandatory keys.
-            mandatory_keys = {'r_g_int'}
+            mandatory_keys = {'r_g_int', 't_j_max'}
             # Determine types of mandatory and optional keys.
             str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
-            numeric_keys = {'c_oss', 'c_iss', 'c_rss', 'r_g_int'}  # possible keys
+            numeric_keys = {'c_oss', 'c_iss', 'c_rss', 'r_g_int', 't_j_max'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
             # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
             if not dataset_dict.keys() >= mandatory_keys or \
                     any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary 'switch_args' does not contain all keys necessary for Transistor object "
-                               "creation. Mandatory keys: 'r_g_int'")
+                               "creation. Mandatory keys: 'r_g_int', 't_j_max'")
             else:
                 # Check if all values have appropriate types.
                 if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
@@ -490,8 +492,10 @@ class Transistor():
                     return True
 
         elif dict_type == 'Diode':
+            # ToDo: check for mandatory keys
+            # ToDo: check for numeric keys
             # Determine mandatory keys.
-            # mandatory_keys = {}  # Diode does not have mandatory keys (yet).
+            mandatory_keys = {'t_j_max'}  # Diode does not have mandatory keys (yet).
             # Determine types of mandatory and optional keys.
             str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
@@ -590,6 +594,7 @@ class Transistor():
         c_rss: [float, int, None]  # Unit: F  # Optional
         #
         r_g_int: [float, int]  # Unit: Ohm # Mandatory
+        t_j_max: [float, int]  # Unit: °C # Mandatory
 
         def __init__(self, switch_args):
             # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty attributes.
@@ -600,6 +605,7 @@ class Transistor():
                 self.c_iss = switch_args.get('c_iss')
                 self.c_rss = switch_args.get('c_rss')
                 self.r_g_int = switch_args.get('r_g_int')
+                self.t_j_max = switch_args.get('t_j_max')
                 self.comment = switch_args.get('comment')
                 self.manufacturer = switch_args.get('manufacturer')
                 self.technology = switch_args.get('technology')
@@ -779,6 +785,7 @@ class Transistor():
         channel: List["ChannelData"]  # Diode forward voltage and forward current data.
         e_rr: List["SwitchEnergyData"]  # Reverse recovery energy data.
         linearized_diode: List["LinearizedModel"]  # Static data. Valid for a specific operating point.
+        t_j_max: [float, int]  # Unit: °C # Mandatory
 
         def __init__(self, diode_args):
             # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty
@@ -789,6 +796,7 @@ class Transistor():
                 self.comment = diode_args.get('comment')
                 self.manufacturer = diode_args.get('manufacturer')
                 self.technology = diode_args.get('technology')
+                self.t_j_max = diode_args.get('t_j_max')
                 # This currently accepts dictionaries and lists of dictionaries.
                 self.channel = []  # Default case: Empty list
                 if isinstance(diode_args.get('channel'), list):
