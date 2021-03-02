@@ -239,7 +239,7 @@ if __name__ == '__main__':
 
     # diode methods
     # transistor.diode.plot_energy_data()
-    # transistor.diode.plot_all_channel_data()
+    transistor.diode.plot_all_channel_data()
 
     ####################################
     # exporter example

@@ -708,7 +708,7 @@ class Transistor():
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
             plt.figure()
             for i_channel in np.array(range(0,len(self.channel))):
-                labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
+                labelplot = f"vg {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                 plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
             plt.legend()
@@ -722,7 +722,7 @@ class Transistor():
             plt.figure()
             for i_channel in np.array(range(0,len(self.channel))):
                 if self.channel[i_channel].v_g == gatevoltage:
-                    labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
+                    labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                     plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
             plt.legend()
@@ -736,7 +736,7 @@ class Transistor():
             plt.figure()
             for i_channel in np.array(range(0,len(self.channel))):
                 if self.channel[i_channel].t_j == temperature:
-                    labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
+                    labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                     plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
             plt.legend()
@@ -751,16 +751,13 @@ class Transistor():
             # look for e_on losses
             for i_energy_data in np.array(range(0,len(self.e_on))):
                 if self.e_on[i_energy_data].dataset_type == 'graph_i_e':
-                    labelplot = "e_on: v_supply = " + str(self.e_on[i_energy_data].v_supply) + "V, vg = " + str(self.e_on[i_energy_data].v_g) + " V, T_J = " + str(self.e_on[i_energy_data].t_j) + " °C, R_g = " + str(self.e_on[i_energy_data].r_g) + " Ohm"
+                    labelplot = f"e_on: v_supply = {self.e_on[i_energy_data].v_supply} V, vg = {self.e_on[i_energy_data].v_g} V, T_J = {self.e_on[i_energy_data].t_j} °C, R_g = {self.e_on[i_energy_data].r_g} Ohm"
                     plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1], label=labelplot)
 
             # look for e_off losses
             for i_energy_data in np.array(range(0, len(self.e_off))):
                 if self.e_off[i_energy_data].dataset_type == 'graph_i_e':
-                    labelplot = "e_off: v_supply = " + str(self.e_off[i_energy_data].v_supply) + "V, vg = " + str(
-                        self.e_off[i_energy_data].v_g) + " V, T_J = " + str(
-                        self.e_off[i_energy_data].t_j) + " °C, R_g = " + str(
-                        self.e_off[i_energy_data].r_g) + " Ohm"
+                    labelplot = f"e_off: v_supply = {self.e_off[i_energy_data].v_supply} V, vg = {self.e_off[i_energy_data].v_g} V, T_J = {self.e_off[i_energy_data].t_j} °C, R_g = {self.e_off[i_energy_data].r_g} Ohm"
                     plt.plot(self.e_off[i_energy_data].graph_i_e[0], self.e_off[i_energy_data].graph_i_e[1],
                              label=labelplot)
 
@@ -875,7 +872,7 @@ class Transistor():
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
             plt.figure()
             for i_channel in np.array(range(0,len(self.channel))):
-                labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
+                labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                 plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
             plt.legend()
@@ -894,15 +891,11 @@ class Transistor():
                     # check if data is available as 'graph_i_e'
                     if self.e_rr[i_energy_data].dataset_type == 'graph_i_e':
                         # add label plot
-                        labelplot = "e_rr: v_supply = " + str(
-                            self.e_rr[i_energy_data].v_supply) + "V, T_J = " + str(
-                            self.e_rr[i_energy_data].t_j) + " °C, R_g = " + str(
-                            self.e_rr[i_energy_data].r_g) + " Ohm"
+                        labelplot = f"e_rr: v_supply = {self.e_rr[i_energy_data].v_supply} V, T_J = {self.e_rr[i_energy_data].t_j} °C, R_g = {self.e_rr[i_energy_data].r_g} Ohm"
                         # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
                         # if ture, add gate-voltage to label
                         if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
-                            labelplot = labelplot + ", vg = " + str(
-                            self.e_rr[i_energy_data].v_g) + " V"
+                            labelplot = labelplot + f", vg = {self.e_rr[i_energy_data].v_g} V"
 
                         # plot
                         plt.plot(self.e_rr[i_energy_data].graph_i_e[0], self.e_rr[i_energy_data].graph_i_e[1],
