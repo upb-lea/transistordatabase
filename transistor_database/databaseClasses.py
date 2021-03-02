@@ -191,8 +191,8 @@ class Transistor():
             transistor_args['e_coss'] = np.array(transistor_args['e_coss'])
         # Convert switch_args
         switch_args = db_dict['switch']
-        if switch_args['thermal_foster']['transient_data'] is not None:
-            switch_args['thermal_foster']['transient_data'] = np.array(switch_args['thermal_foster']['transient_data'])
+        if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
+            switch_args['thermal_foster']['graph_t_rthjc'] = np.array(switch_args['thermal_foster']['graph_t_rthjc'])
         for i in range(len(switch_args['channel'])):
             switch_args['channel'][i]['graph_v_i'] = np.array(switch_args['channel'][i]['graph_v_i'])
         for i in range(len(switch_args['e_on'])):
@@ -207,8 +207,8 @@ class Transistor():
                 switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
         # Convert diode_args
         diode_args = db_dict['diode']
-        if diode_args['thermal_foster']['transient_data'] is not None:
-            diode_args['thermal_foster']['transient_data'] = np.array(diode_args['thermal_foster']['transient_data'])
+        if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
+            diode_args['thermal_foster']['graph_t_rthjc'] = np.array(diode_args['thermal_foster']['graph_t_rthjc'])
         for i in range(len(diode_args['channel'])):
             diode_args['channel'][i]['graph_v_i'] = np.array(diode_args['channel'][i]['graph_v_i'])
         for i in range(len(diode_args['e_rr'])):
@@ -444,7 +444,7 @@ class Transistor():
             list_keys = {'r_th_vector', 'c_th_vector', 'tau_vector'}  # possible keys
             list_keys = {list_key for list_key in list_keys
                          if list_key in list(dataset_dict.keys()) and dataset_dict[list_key] is not None}  # actual keys
-            array_keys = {'transient_data'}  # possible keys
+            array_keys = {'graph_t_rthjc'}  # possible keys
             array_keys = {array_key for array_key in array_keys
                           if array_key in list(dataset_dict.keys())}  # actual keys
             # Check if any lists are given. Otherwise some of these next checks may cause trouble
@@ -525,7 +525,7 @@ class Transistor():
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
         temperature behavior as a thermal_foster RC-network. The necessary parameters can be estimated by curve-fitting
-        transient temperature data supplied in transient_data or by manually specifying the individual 2 out of 3 of the
+        transient temperature data supplied in graph_t_rthjc or by manually specifying the individual 2 out of 3 of the
          parameters R, C, and tau."""
         # ToDo: Add function to estimate parameters from transient data.
         # ToDo: Add function to automatically calculate missing parameters from given ones.
@@ -544,7 +544,7 @@ class Transistor():
         tau_total: [float, int, None]  # Unit: s  # Optional
         # Transient data for extraction of the thermal_foster parameters specified above.
         # Represented as a 2xm Matrix where row 1 is the time and row 2 the temperature.
-        transient_data: ["np.ndarray[np.float64]", None]  # Units: Row 1: s; Row 2: K/W  # Optional
+        graph_t_rthjc: ["np.ndarray[np.float64]", None]  # Units: Row 1: s; Row 2: K/W  # Optional
 
         def __init__(self, args):
             if Transistor.isvalid_dict(args, 'FosterThermalModel'):
@@ -554,7 +554,7 @@ class Transistor():
                 self.c_th_vector = args.get('c_th_vector')
                 self.tau_total = args.get('tau_total')
                 self.tau_vector = args.get('tau_vector')
-                self.transient_data = args.get('transient_data')
+                self.graph_t_rthjc = args.get('graph_t_rthjc')
             else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
                 self.r_th_total = None
                 self.r_th_vector = None
@@ -562,7 +562,7 @@ class Transistor():
                 self.c_th_vector = None
                 self.tau_total = None
                 self.tau_vector = None
-                self.transient_data = None
+                self.graph_t_rthjc = None
 
         def convert_to_dict(self):
             d = vars(self)

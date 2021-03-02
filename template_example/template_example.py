@@ -97,10 +97,6 @@ def Template():
     channel_175_9 = {"t_j": 175, 'v_g': 9, "graph_v_i": csv2array('switch_channel_175_9V.csv', True, False, False)}  # insert csv here
     channel_175_7 = {"t_j": 175, 'v_g': 7, "graph_v_i": csv2array('switch_channel_175_7V.csv', True, False, False)}  # insert csv here
 
-
-   # print(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False))
-    print(np.shape(csv2array('switch_switching_eon_2.5Ohm_600V_25deg_15V.csv', False, False, False)))
-
     #### switching parameters
     e_on_25_600 = {"dataset_type": "graph_i_e",
                    "t_j": 25,
@@ -131,7 +127,7 @@ def Template():
     #
     # switch_foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
     #                'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
-    #                'transient_data': transient_data}
+    #                'graph_t_rthjc': graph_t_rthjc}
     switch_foster_args = None
 
 
@@ -177,16 +173,9 @@ def Template():
                   'e_rr': [],
                   'thermal_foster': diode_foster_args}
 
-
-    ####################################
-
-    ####################################
-    # ToDo:
-
     ####################################
     # create transistor object
     ####################################
-    # Create transistor object
     return Transistor(transistor_args, switch_args, diode_args)
 
 if __name__ == '__main__':
@@ -200,6 +189,10 @@ if __name__ == '__main__':
     from exportFunctions import export_geckocircuits
 
     transistor = Template()
+
+    ####################################
+    # Metadata
+    ####################################
 
     print('---------------------')
     print("transistor metadata")
@@ -215,31 +208,12 @@ if __name__ == '__main__':
     print(transistor.housing_area)
     print(transistor.cooling_area)
     print(transistor.housing_type)
-
-
     print('---------------------')
     print("switch metadata")
     print('---------------------')
     print(transistor.switch.manufacturer)
     print(transistor.switch.comment)
     print(transistor.switch.technology)
-
-
-
-    print('---------------------')
-    print("switch data")
-    print('---------------------')
-    print(transistor.switch.channel[0].graph_v_i)
-    print(transistor.switch.channel[0].t_j)
-
-    # transistor.switch.plot_all_channel_data()
-    # transistor.switch.plot_channel_data_vge(15)
-    #transistor.switch.plot_channel_data_temp(175)
-
-    v_channel, r_channel = transistor.linearize_channel_ui_graph(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
-    print("v_channel_linearized = {} V".format(v_channel))
-    print("r_channel_linearized = {} Ohm".format(r_channel))
-
     print('---------------------')
     print("diode metadata")
     print('---------------------')
@@ -247,24 +221,39 @@ if __name__ == '__main__':
     print(transistor.diode.comment)
     print(transistor.diode.technology)
 
-    #print(transistor.c_iss.t_j)
-    #print(transistor.c_iss.graph_v_c)
+    ####################################
+    # Method examples
+    ####################################
 
-    #print(transistor.e_coss)
+    # transistor methods
+    v_channel, r_channel = transistor.linearize_channel_ui_graph(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    print("v_channel_linearized = {} V".format(v_channel))
+    print("r_channel_linearized = {} Ohm".format(r_channel))
 
+    # switch methods
     # switch.plot_energy_data()
+    # transistor.switch.plot_all_channel_data()
+    # transistor.switch.plot_channel_data_vge(15)
+    # transistor.switch.plot_channel_data_temp(175)
+
+
+    # diode methods
     # transistor.diode.plot_energy_data()
 
-    #store_transistor(transistor)
-    #load_transistor()
-    # ToDo: store transistor in database
+    ####################################
+    # exporter example
+    ####################################
 
-    print("err_diode")
-    print(len(transistor.diode.e_rr))
+    # Export to MATLAB
 
-    #print(transistor.e_coss)
+    # Export to SIMULINK
+
+    # Export to geckoCIRCUITS
     export_geckocircuits(transistor, 600, 15, -2, 2.5)
 
+    ####################################
+    # Database example
+    ####################################
     # init mongodb
     myclient = MongoClient("mongodb://localhost:27017/")  # Wenn Server auf lokaler Maschine
     my_db = myclient.transistor_database  # Datenbank
