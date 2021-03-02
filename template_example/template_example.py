@@ -231,7 +231,7 @@ if __name__ == '__main__':
     print("r_channel_linearized = {} Ohm".format(r_channel))
 
     # switch methods
-    # switch.plot_energy_data()
+    # transistor.switch.plot_energy_data()
     # transistor.switch.plot_all_channel_data()
     # transistor.switch.plot_channel_data_vge(15)
     # transistor.switch.plot_channel_data_temp(175)
@@ -239,6 +239,7 @@ if __name__ == '__main__':
 
     # diode methods
     # transistor.diode.plot_energy_data()
+    # transistor.diode.plot_all_channel_data()
 
     ####################################
     # exporter example

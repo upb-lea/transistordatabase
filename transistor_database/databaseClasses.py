@@ -870,6 +870,20 @@ class Transistor():
             d['linearized_diode'] = [ld.convert_to_dict() for ld in self.linearized_diode]
             return d
 
+        def plot_all_channel_data(self):
+            """ Plot all channel data """
+            # ToDo: only 12(?) colors available. Change linestyle for more curves.
+            plt.figure()
+            for i_channel in np.array(range(0,len(self.channel))):
+                labelplot = "vg = " + str(self.channel[i_channel].v_g) + " V, T_J = " + str(self.channel[i_channel].t_j) + " °C"
+                plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
+
+            plt.legend()
+            plt.xlabel('Voltage in V')
+            plt.ylabel('Current in A')
+            plt.grid()
+            plt.show()
+
         def plot_energy_data(self):
             """ Plot all switching data """
 
