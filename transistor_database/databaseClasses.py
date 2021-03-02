@@ -39,8 +39,8 @@ class Transistor():
     r_th_switch_cs: [float, int, None]  # Unit: K/W  # Optional
     r_th_diode_cs: [float, int, None]  # Unit: K/W  # Optional
     # Absolute maximum ratings
-    v_max: [float, int]  # Unit: V  # Mandatory
-    i_max: [float, int]  # Unit: A  # Mandatory
+    v_abs_max: [float, int]  # Unit: V  # Mandatory
+    i_abs_max: [float, int]  # Unit: A  # Mandatory
     # Rated operation region
     i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom # Mandatory
     c_oss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
@@ -80,8 +80,8 @@ class Transistor():
             self.r_th_cs = transistor_args.get('r_th_cs')
             self.r_th_switch_cs = transistor_args.get('r_th_switch')
             self.r_th_diode_cs = transistor_args.get('r_th_diode_cs')
-            self.v_max = transistor_args.get('v_max')
-            self.i_max = transistor_args.get('i_max')
+            self.v_abs_max = transistor_args.get('v_abs_max')
+            self.i_abs_max = transistor_args.get('i_abs_max')
             self.i_cont = transistor_args.get('i_cont')
             self.c_oss = []  # Default case: Empty list
             if isinstance(transistor_args.get('c_oss'), list):
@@ -148,7 +148,7 @@ class Transistor():
             # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
             raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
                             "are mandatory: 'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', "
-                            "'cooling_area', 'housing_type', 'v_max', 'i_max', 'i_cont'")
+                            "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
 
         self.diode = self.Diode(diode_args)
         self.switch = self.Switch(switch_args)
@@ -229,9 +229,9 @@ class Transistor():
         instructions = {
             'Transistor': {
                 'mandatory_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                                   'housing_type', 'v_max', 'i_max', 'i_cont'},
+                                   'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'},
                 'str_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'},
-                'numeric_keys': {'housing_area', 'cooling_area', 'v_max', 'i_max', 'i_cont'},
+                'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont'},
                 'array_keys': {'e_coss'},
                 'numeric_list_keys': {}},
             'Switch': {
@@ -397,11 +397,11 @@ class Transistor():
         elif dict_type == 'Transistor':
             # Determine mandatory keys.
             mandatory_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                          'housing_type', 'v_max', 'i_max', 'i_cont'}
+                          'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'}
             # Determine types of mandatory and optional keys.
             str_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
-            numeric_keys = {'housing_area', 'cooling_area', 'v_max', 'i_max', 'i_cont'}  # possible keys
+            numeric_keys = {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
             array_keys = {'e_coss'}  # possible keys
@@ -412,7 +412,7 @@ class Transistor():
                     any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'author', 'manufacturer', "
-                               "'housing_area', 'cooling_area', 'housing_type', 'v_max', 'i_max', 'i_cont'")
+                               "'housing_area', 'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
             elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']:
                 raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT' or 'SiC-MOSFET'")
             # Check if all values have appropriate types.

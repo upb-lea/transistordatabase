@@ -54,8 +54,8 @@ def Template():
                        'housing_area': 367e-6,
                        'cooling_area': 160e-6,
                        'housing_type': 'TO247',
-                       'v_max': 1200,
-                       'i_max': 250,
+                       'v_abs_max': 1200,
+                       'i_abs_max': 250,
                        'i_cont': 115,
                        'c_iss':  {"t_j": 25, "graph_v_c": csv2array('transistor_c_iss.csv', False, False, True)},  # insert csv here
                        'c_oss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_oss.csv', False, False, True)},  # insert csv here
@@ -239,7 +239,7 @@ if __name__ == '__main__':
 
     # diode methods
     # transistor.diode.plot_energy_data()
-    transistor.diode.plot_all_channel_data()
+    # transistor.diode.plot_all_channel_data()
 
     ####################################
     # exporter example
