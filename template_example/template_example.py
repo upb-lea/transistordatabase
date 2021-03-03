@@ -4,6 +4,7 @@ import datetime
 import sys
 import os
 from pymongo import MongoClient
+from matplotlib import pyplot as plt
 
 
 # Template to generate a transistor
@@ -228,19 +229,21 @@ if __name__ == '__main__':
     # Method examples
     ####################################
 
-    # transistor methods
+    #### transistor methods ####
     v_channel, r_channel = transistor.linearize_channel_ui_graph(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
     print("v_channel_linearized = {} V".format(v_channel))
     print("r_channel_linearized = {} Ohm".format(r_channel))
+    # print(transistor.calc_v_eoss())
+    # transistor.plot_v_eoss()
 
-    # switch methods
+    #### switch methods ####
     # transistor.switch.plot_energy_data()
     # transistor.switch.plot_all_channel_data()
     # transistor.switch.plot_channel_data_vge(15)
     # transistor.switch.plot_channel_data_temp(175)
 
 
-    # diode methods
+    #### diode methods ####
     # transistor.diode.plot_energy_data()
     # transistor.diode.plot_all_channel_data()
 
@@ -258,15 +261,20 @@ if __name__ == '__main__':
     ####################################
     # Database example
     ####################################
+    # before init mongo, you need to install mongodb and start the database via the command line by using 'mongo' command
     # init mongodb
-    myclient = MongoClient("mongodb://localhost:27017/")  # Wenn Server auf lokaler Maschine
-    my_db = myclient.transistor_database  # Datenbank
-    data = my_db.data  # Collection
+    # myclient = MongoClient("mongodb://localhost:27017/")  # Wenn Server auf lokaler Maschine
+    # my_db = myclient.transistor_database  # Datenbank
+    # data = my_db.data  # Collection
+
+    # reset the mongodb database
+    # data.drop()
 
     # store transistor
-    transistor_dict = transistor.convert_to_dict()  # 'transistor' ist das zu speichernde Objekt
-    data.insert_one(transistor_dict)
+    # transistor_dict = transistor.convert_to_dict()  # 'transistor' ist das zu speichernde Objekt
+    # data.insert_one(transistor_dict)
 
     # load transistor
-    #retrieved_transistor = data.find_one({'name': 'Test-Transistor'})  # Such-Kriterium quasi beliebig wählbar(?)
-    #transistor_loaded = Transistor.load_from_db(retrieved_transistor)
+    # retrieved_transistor = data.find_one({'name': 'CREE_C3M0016120K'})  # Such-Kriterium quasi beliebig wählbar(?)
+    # transistor_loaded = Transistor.load_from_db(retrieved_transistor)
+    # print(transistor_loaded.switch.t_j_max)

@@ -4,6 +4,7 @@ import re
 import os
 from typing import List
 from matplotlib import pyplot as plt
+from scipy import integrate
 
 
 class Transistor():
@@ -525,6 +526,29 @@ class Transistor():
                         all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
                         # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
                     return True
+
+
+    def calc_v_eoss(self):
+        """
+        Calculates e_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
+        :return:
+        """
+        # energy_cumtrapz = np.zeros_like(self.c_oss[0].graph_v_c[1], dtype=np.float32)
+        energy_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[0] * self.c_oss[0].graph_v_c[1], self.c_oss[0].graph_v_c[0], initial=0)
+        return np.array([self.c_oss[0].graph_v_c[0], energy_cumtrapz])
+
+    def plot_v_eoss(self):
+        """
+        Plots v_eoss with method calc_v_eoss
+        :return:
+        """
+        v_eoss = self.calc_v_eoss()
+        plt.figure()
+        plt.plot(v_eoss[0], v_eoss[1])
+        plt.xlabel('Voltage in V')
+        plt.ylabel('Energy in J')
+        plt.grid()
+        plt.show()
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
