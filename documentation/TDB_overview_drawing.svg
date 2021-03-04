@@ -976,8 +976,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="388.706"
-     inkscape:cy="445.22577"
+     inkscape:cx="255.80478"
+     inkscape:cy="270.02808"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -1667,7 +1667,12 @@
          x="-24.822004"
          y="95.064087"
          style="stroke-width:0.264583"
-         id="tspan30295" /></text>
+         id="tspan30295">t_c_max</tspan><tspan
+         sodipodi:role="line"
+         x="-24.822004"
+         y="98.591881"
+         style="stroke-width:0.264583"
+         id="tspan1449">r_g_int</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
@@ -2060,29 +2065,34 @@
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;fill:#c01c28;stroke-width:0.264583"
-       x="-16.450453"
-       y="-44.866173"
+       x="-13.455988"
+       y="-65.150902"
        id="text17095"><tspan
          sodipodi:role="line"
          id="tspan17093"
-         x="-16.450453"
-         y="-44.866173"
+         x="-13.455988"
+         y="-65.150902"
          style="fill:#c01c28;stroke-width:0.264583">Änderungswünsche</tspan><tspan
          sodipodi:role="line"
-         x="-16.450453"
-         y="-41.338387"
+         x="-13.455988"
+         y="-61.623116"
          style="fill:#c01c28;stroke-width:0.264583"
          id="tspan17097"> - c_oss, c_iss, c_rss: Einheit [F]. Umziehen zu Transistor data</tspan><tspan
          sodipodi:role="line"
-         x="-16.450453"
-         y="-37.810596"
+         x="-13.455988"
+         y="-58.095325"
          style="fill:#c01c28;stroke-width:0.264583"
          id="tspan1234"> - Einheitliche benennung von graphen/daten: vorschlag: graph_x_y</tspan><tspan
          sodipodi:role="line"
-         x="-16.450453"
-         y="-34.28281"
+         x="-13.455988"
+         y="-54.567539"
          style="fill:#c01c28;stroke-width:0.264583"
-         id="tspan1557"> - Einheitliche Benennung der Klassen</tspan></text>
+         id="tspan1557"> - Einheitliche Benennung der Klassen</tspan><tspan
+         sodipodi:role="line"
+         x="-13.455988"
+         y="-51.039753"
+         style="fill:#c01c28;stroke-width:0.264583"
+         id="tspan1447"> - Error handling in case of no data: None or failure?</tspan></text>
     <rect
        style="fill:#ffffff;stroke:#2ec27e;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.53, 0.53000000000000003;stroke-dashoffset:0"
        id="rect10040-0"
@@ -3771,7 +3781,12 @@
          x="36.249882"
          y="11.263412"
          style="stroke-width:0.264583"
-         id="tspan30495">q_g #opt</tspan></text>
+         id="tspan30495">q_g #opt</tspan><tspan
+         sodipodi:role="line"
+         x="36.249882"
+         y="14.7912"
+         style="stroke-width:0.264583"
+         id="tspan1451">t_j_max</tspan></text>
     <rect
        style="fill:#ffffff;stroke:#2ec27e;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.53, 0.53000000000000003;stroke-dashoffset:0"
        id="rect10040-4-7-9"
@@ -3920,9 +3935,14 @@
          id="tspan30511">manufacturer #opt</tspan><tspan
          sodipodi:role="line"
          x="129.31714"
-         y="6.8929586"
+         y="6.8929591"
          style="stroke-width:0.264583"
-         id="tspan30513">technology #opt</tspan></text>
+         id="tspan30513">technology #opt</tspan><tspan
+         sodipodi:role="line"
+         x="129.31714"
+         y="10.420747"
+         style="stroke-width:0.264583"
+         id="tspan1453">t_j_max</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
@@ -7778,5 +7798,31 @@
        d="m 35.71875,295.01042 c 2.186955,-3.14342 2.774075,-2.43525 5.291667,-2.64584"
        style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="242.62286"
+       y="0.778579"
+       id="text1439"><tspan
+         sodipodi:role="line"
+         id="tspan1437"
+         x="242.62286"
+         y="0.778579"
+         style="stroke-width:0.264583">three kinds of methods:</tspan><tspan
+         sodipodi:role="line"
+         x="242.62286"
+         y="4.3063664"
+         style="stroke-width:0.264583"
+         id="tspan1441"> - plot</tspan><tspan
+         sodipodi:role="line"
+         x="242.62286"
+         y="7.8341537"
+         style="stroke-width:0.264583"
+         id="tspan1443"> - calc</tspan><tspan
+         sodipodi:role="line"
+         x="242.62286"
+         y="11.361942"
+         style="stroke-width:0.264583"
+         id="tspan1445"> - get</tspan></text>
   </g>
 </svg>

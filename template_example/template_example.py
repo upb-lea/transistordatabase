@@ -61,7 +61,8 @@ def Template():
                        'c_iss':  {"t_j": 25, "graph_v_c": csv2array('transistor_c_iss.csv', False, False, True)},  # insert csv here
                        'c_oss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_oss.csv', False, False, True)},  # insert csv here
                        'c_rss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_rss.csv', False, False, True)},  # insert csv here
-                       'e_coss': csv2array('transistor_V_Eoss.csv', False, False, False)
+                       'e_coss': csv2array('transistor_V_Eoss.csv', False, False, False),
+                       'r_g_int': 2.6,
                        }
 
     ####################################
@@ -71,7 +72,6 @@ def Template():
     comment = "SiC switch"  # Optional
     manufacturer = "CREE"  # Optional
     technology = "unknown"  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
-    r_g_int = 2.6  # mandatory
 
     # Constant Capacitances
     c_oss = 5   # Unit: F  # Optional
@@ -137,7 +137,6 @@ def Template():
         'comment': comment,
         'manufacturer': manufacturer,
         'technology': technology,
-        'r_g_int': r_g_int,
         't_j_max': 175,
         'c_oss': c_oss,
         'c_iss': c_iss,
@@ -200,41 +199,43 @@ if __name__ == '__main__':
     print('---------------------')
     print("transistor metadata")
     print('---------------------')
-    print(transistor.name)
-    print(transistor.transistor_type)
-    print(transistor.author)
-    print(transistor.comment)
-    print(transistor.manufacturer)
-    print(transistor.datasheet_hyperlink)
-    print(transistor.datasheet_date)
-    print(transistor.datasheet_version)
-    print(transistor.housing_area)
-    print(transistor.cooling_area)
-    print(transistor.housing_type)
+    print(f"transistor.name: {transistor.name}")
+    print(f"transistor.transistor_type: {transistor.transistor_type}")
+    print(f"transistor.author: {transistor.author}")
+    print(f"transistor.comment: {transistor.comment}")
+    print(f"transistor.manufacturer: {transistor.manufacturer}")
+    print(f"transistor.datasheet_hyperlink: {transistor.datasheet_hyperlink}")
+    print(f"transistor.datasheet_date: {transistor.datasheet_date}")
+    print(f"transistor.datasheet_version: {transistor.datasheet_version}")
+    print(f"transistor.housing_area: {transistor.housing_area}")
+    print(f"transistor.cooling_area: {transistor.cooling_area}")
+    print(f"transistor.housing_type: {transistor.housing_type}")
+    print(f"transistor.r_g_int: {transistor.r_g_int}")
     print('---------------------')
     print("switch metadata")
     print('---------------------')
-    print(transistor.switch.manufacturer)
-    print(transistor.switch.comment)
-    print(transistor.switch.technology)
-    print(transistor.switch.t_j_max)
+    print(f"transistor.switch.manufacturer: {transistor.switch.manufacturer}")
+    print(f"transistor.switch.comment: {transistor.switch.comment}")
+    print(f"transistor.switch.technology: {transistor.switch.technology}")
+    print(f"transistor.switch.t_j_max: {transistor.switch.t_j_max}")
     print('---------------------')
     print("diode metadata")
     print('---------------------')
-    print(transistor.diode.manufacturer)
-    print(transistor.diode.comment)
-    print(transistor.diode.technology)
-    print(transistor.diode.t_j_max)
+    print(f"transistor.diode.manufacturer: {transistor.diode.manufacturer}")
+    print(f"transistor.diode.comment: {transistor.diode.comment}")
+    print(f"transistor.diode.technology: {transistor.diode.technology}")
+    print(f"transistor.diode.t_j_max: {transistor.diode.t_j_max}")
     ####################################
     # Method examples
     ####################################
 
     #### transistor methods ####
     v_channel, r_channel = transistor.linearize_channel_ui_graph(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
-    print("v_channel_linearized = {} V".format(v_channel))
-    print("r_channel_linearized = {} Ohm".format(r_channel))
+    print(f"v_channel_linearized = {v_channel} V")
+    print(f"r_channel_linearized = {r_channel} Ohm")
     # print(transistor.calc_v_eoss())
     # transistor.plot_v_eoss()
+    #print(transistor.get_graph_v_i('switch', 25, 15))
 
     #### switch methods ####
     # transistor.switch.plot_energy_data()
@@ -278,3 +279,4 @@ if __name__ == '__main__':
     # retrieved_transistor = data.find_one({'name': 'CREE_C3M0016120K'})  # Such-Kriterium quasi beliebig wählbar(?)
     # transistor_loaded = Transistor.load_from_db(retrieved_transistor)
     # print(transistor_loaded.switch.t_j_max)
+

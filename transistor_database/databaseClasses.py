@@ -48,6 +48,7 @@ class Transistor():
     c_iss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
     c_rss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
     t_c_max: [float, int]  # Unit °C # Optional
+    r_g_int: [float, int]  # Unit: Ohm # Mandatory
 
     def __init__(self, transistor_args, switch_args, diode_args):
         if self.isvalid_dict(transistor_args, 'Transistor'):
@@ -67,6 +68,7 @@ class Transistor():
             self.housing_area = transistor_args.get('housing_area')
             self.cooling_area = transistor_args.get('cooling_area')
             self.t_c_max = transistor_args.get('t_c_max')
+            self.r_g_int = transistor_args.get('r_g_int')
             # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
             # Import list of valid housing types from "housing_types.txt"
             # add housing types to the working direction
@@ -232,15 +234,15 @@ class Transistor():
         instructions = {
             'Transistor': {
                 'mandatory_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                                   'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'},
+                                   'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont','r_g_int'},
                 'str_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'},
-                'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max'},
+                'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max','r_g_int'},
                 'array_keys': {'e_coss'},
                 'numeric_list_keys': {}},
             'Switch': {
-                'mandatory_keys': {'r_g_int', 't_j_max'},
+                'mandatory_keys': {'t_j_max'},
                 'str_keys': {'comment', 'manufacturer', 'technology'},
-                'numeric_keys': {'c_oss', 'c_iss', 'c_rss', 'r_g_int', 't_j_max'},
+                'numeric_keys': {'c_oss', 'c_iss', 'c_rss', 't_j_max'},
                 'array_keys': {},
                 'numeric_list_keys': {}},
             'Diode': {
@@ -400,11 +402,11 @@ class Transistor():
         elif dict_type == 'Transistor':
             # Determine mandatory keys.
             mandatory_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                          'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'}
+                          'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont','r_g_int'}
             # Determine types of mandatory and optional keys.
             str_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
-            numeric_keys = {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max'}  # possible keys
+            numeric_keys = {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max','r_g_int'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
             array_keys = {'e_coss'}  # possible keys
@@ -415,7 +417,7 @@ class Transistor():
                     any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'author', 'manufacturer', "
-                               "'housing_area', 'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
+                               "'housing_area', 'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont','r_g_int")
             elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']:
                 raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT' or 'SiC-MOSFET'")
             # Check if all values have appropriate types.
@@ -473,18 +475,18 @@ class Transistor():
 
         elif dict_type == 'Switch':
             # Determine mandatory keys.
-            mandatory_keys = {'r_g_int', 't_j_max'}
+            mandatory_keys = {'t_j_max'}
             # Determine types of mandatory and optional keys.
             str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
-            numeric_keys = {'c_oss', 'c_iss', 'c_rss', 'r_g_int', 't_j_max'}  # possible keys
+            numeric_keys = {'c_oss', 'c_iss', 'c_rss', 't_j_max'}  # possible keys
             numeric_keys = {numeric_key for numeric_key in numeric_keys
                             if numeric_key in list(dataset_dict.keys())}  # actual keys
             # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
             if not dataset_dict.keys() >= mandatory_keys or \
                     any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary 'switch_args' does not contain all keys necessary for Transistor object "
-                               "creation. Mandatory keys: 'r_g_int', 't_j_max'")
+                               "creation. Mandatory keys: 't_j_max'")
             else:
                 # Check if all values have appropriate types.
                 if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
@@ -549,6 +551,52 @@ class Transistor():
         plt.ylabel('Energy in J')
         plt.grid()
         plt.show()
+
+    def get_graph_v_i(self, switch_or_diode, t_j, v_g):
+        if switch_or_diode == 'switch':
+            candidate_datasets = [channel for channel in self.switch.channel if (channel.t_j == t_j and channel.v_g == v_g)]
+            if len(candidate_datasets) == 0:
+                available_datasets = [(channel.t_j, channel.v_g) for channel in self.switch.channel]
+                print("Available operating points: (t_j, v_g)")
+                print(available_datasets)
+                raise ValueError("No data available for linearization at the given operating point. "
+                                 "A list of available operating points is printed above.")
+            elif len(candidate_datasets) > 1:
+                print("multiple datasets were found that are consistent with the chosen "
+                      "operating point. The first of these sets is automatically chosen because selection of a "
+                      "different dataset is not yet implemented.")
+            dataset = candidate_datasets[0].graph_v_i
+
+        elif switch_or_diode == 'diode':
+            if self.transistor_type in ['SiC-MOSFET', 'GaN-Transistor']:
+                candidate_datasets = [channel for channel in self.diode.channel if (channel.t_j == t_j and channel.v_g == v_g)]
+                if len(candidate_datasets) == 0:
+                    available_datasets = [(channel.t_j, channel.v_g) for channel in self.diode.channel]
+                    print("Available operating points: (t_j, v_g)")
+                    print(available_datasets)
+                    raise ValueError("No data available for linearization at the given operating point. "
+                                     "A list of available operating points is printed above.")
+                elif len(candidate_datasets) > 1:
+                    print("Multiple datasets were found that are consistent with the chosen "
+                          "operating point. The first of these sets is automatically chosen because selection of a "
+                          "different dataset is not yet implemented.")
+                dataset = candidate_datasets[0].graph_v_i
+            else:
+                candidate_datasets = [channel for channel in self.diode.channel
+                                      if channel.t_j == t_j]
+                if len(candidate_datasets) == 0:
+                    available_datasets = [channel.t_j for channel in self.diode.channel]
+                    print("Available operating points: (t_j)")
+                    print(available_datasets)
+                    raise ValueError("No data available for linearization at the given operating point. "
+                                     "A list of available operating points is printed above.")
+                elif len(candidate_datasets) > 1:
+                    print("Multiple datasets were found that are consistent with the chosen "
+                          "operating point. The first of these sets is automatically chosen because selection of a "
+                          "different dataset is not yet implemented.")
+                dataset = candidate_datasets[0].graph_v_i
+
+        return dataset
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
@@ -617,7 +665,6 @@ class Transistor():
         c_iss: [float, int, None]  # Unit: F  # Optional
         c_rss: [float, int, None]  # Unit: F  # Optional
         #
-        r_g_int: [float, int]  # Unit: Ohm # Mandatory
         t_j_max: [float, int]  # Unit: °C # Mandatory
 
         def __init__(self, switch_args):
@@ -628,7 +675,6 @@ class Transistor():
                 self.c_oss = switch_args.get('c_oss')
                 self.c_iss = switch_args.get('c_iss')
                 self.c_rss = switch_args.get('c_rss')
-                self.r_g_int = switch_args.get('r_g_int')
                 self.t_j_max = switch_args.get('t_j_max')
                 self.comment = switch_args.get('comment')
                 self.manufacturer = switch_args.get('manufacturer')
