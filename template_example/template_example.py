@@ -237,6 +237,10 @@ if __name__ == '__main__':
     # transistor.plot_v_eoss()
     #print(transistor.get_graph_v_i('switch', 25, 15))
 
+    # print(transistor.get_graph_i_e('e_on', 25, 15, 600, 2.5))
+    # print(transistor.get_graph_i_e('e_off', 25, -4, 600, 2.5))
+    # print(transistor.get_graph_i_e('e_rr', 25, 15, 600, 2.5))  # not working in this example because of no e_rr for SiC-MOSFETs
+
     #### switch methods ####
     # transistor.switch.plot_energy_data()
     # transistor.switch.plot_all_channel_data()

@@ -598,6 +598,60 @@ class Transistor():
 
         return dataset
 
+    def get_graph_i_e(self, e_on_off_rr, t_j, v_g, v_supply, r_g):
+        """
+        Function to get the loss graphs out of the transistor class
+        :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
+        :param t_j: junction temperature
+        :param v_g: gate voltage at turn-on / turn-off
+        :param v_supply: dc link voltage
+        :param r_g: gate resistor
+        :return: e_on.graph_i_e or e_off.graph_i_e or e_rr.graph_i_e
+        """
+        if e_on_off_rr == 'e_on':
+            candidate_datasets = [e_on for e_on in self.switch.e_on if (e_on.t_j == t_j and e_on.v_g == v_g and e_on.v_supply == v_supply and e_on.r_g == r_g)]
+            if len(candidate_datasets) == 0:
+                available_datasets = [(e_on.t_j, e_on.v_g, e_on.v_supply, e_on.r_g) for e_on in self.switch.e_on]
+                print("Available operating points: (t_j, v_g, v_supply, r_g)")
+                print(available_datasets)
+                raise ValueError("No data available for get_graph_i_e at the given operating point. "
+                                 "A list of available operating points is printed above.")
+            elif len(candidate_datasets) > 1:
+                print("multiple datasets were found that are consistent with the chosen "
+                      "operating point. The first of these sets is automatically chosen because selection of a "
+                      "different dataset is not yet implemented.")
+            dataset = candidate_datasets[0].graph_i_e
+
+        if e_on_off_rr == 'e_off':
+            candidate_datasets = [e_off for e_off in self.switch.e_off if (e_off.t_j == t_j and e_off.v_g == v_g and e_off.v_supply == v_supply and e_off.r_g == r_g)]
+            if len(candidate_datasets) == 0:
+                available_datasets = [(e_off.t_j, e_off.v_g, e_off.v_supply, e_off.r_g) for e_off in self.switch.e_off]
+                print("Available operating points: (t_j, v_g, v_supply, r_g)")
+                print(available_datasets)
+                raise ValueError("No data available for get_graph_i_e at the given operating point. "
+                                 "A list of available operating points is printed above.")
+            elif len(candidate_datasets) > 1:
+                print("multiple datasets were found that are consistent with the chosen "
+                      "operating point. The first of these sets is automatically chosen because selection of a "
+                      "different dataset is not yet implemented.")
+            dataset = candidate_datasets[0].graph_i_e
+
+        if e_on_off_rr == 'e_rr':
+            candidate_datasets = [e_rr for e_rr in self.diode.e_rr if (e_rr.t_j == t_j and e_rr.v_g == v_g and e_rr.v_supply == v_supply and e_rr.r_g == r_g)]
+            if len(candidate_datasets) == 0:
+                available_datasets = [(e_rr.t_j, e_rr.v_g, e_rr.v_supply, e_rr.r_g) for e_rr in self.diode.e_rr]
+                print("Available operating points: (t_j, v_g, v_supply, r_g)")
+                print(available_datasets)
+                raise ValueError("No data available for get_graph_i_e at the given operating point. "
+                                 "A list of available operating points is printed above.")
+            elif len(candidate_datasets) > 1:
+                print("multiple datasets were found that are consistent with the chosen "
+                      "operating point. The first of these sets is automatically chosen because selection of a "
+                      "different dataset is not yet implemented.")
+            dataset = candidate_datasets[0].graph_i_e
+
+        return dataset
+
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
         temperature behavior as a thermal_foster RC-network. The necessary parameters can be estimated by curve-fitting
