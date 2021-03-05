@@ -4,3 +4,6 @@ transistor_database/__pycache__/
 gpgit/
 *.pyc
 *.pdf
+build/
+dist/
+transistor_database.egg-info/
