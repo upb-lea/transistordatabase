@@ -10,8 +10,8 @@ with open('README.md') as readme_file:
 with open('CHANGELOG.md') as history_file:
     history = history_file.read()
 
-with open('requirements.txt', 'r') as f:
-    requirements = f.read().splitlines()
+#with open('requirements.txt', 'r') as f:
+#    requirements = f.read().splitlines()
 
 setup_requirements = []
 
@@ -35,7 +35,12 @@ setup(
         'Environment :: MacOS X'
     ],
     description="Transistor Database",
-    install_requires=requirements,
+    install_requires=['numpy>=1.19.5',
+					  'persistent>=4.6.4',
+                      'scipy>=1.6.0',
+					  'setuptools>=49.2.1',
+					  'pymongo>=3.11.3',
+					  'matplotlib>=3.3.4'],
     license="GNU General Public License v3",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
@@ -53,4 +58,5 @@ setup(
     },
     version='0.1.0',
     zip_safe=False,
+    data_files=[('', ['CHANGELOG.md'])]
 )
