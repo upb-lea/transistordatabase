@@ -101,8 +101,8 @@ class Transistor():
                         dict_list = transistor_args.get('c_oss')
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                        error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                        'of c_oss dictionaries: ',) + error.args
+                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_oss "
+                                      f"dictionaries: ",) + error.args
                         raise
             elif Transistor.isvalid_dict(transistor_args.get('c_oss'), 'Transistor_v_c'):
                 # Only create Transistor_v_c objects from valid dicts
@@ -121,8 +121,8 @@ class Transistor():
                         dict_list = transistor_args.get('c_iss')
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                        error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                        'of c_iss dictionaries: ',) + error.args
+                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_iss "
+                                      f"dictionaries: ",) + error.args
                         raise
             elif Transistor.isvalid_dict(transistor_args.get('c_iss'), 'Transistor_v_c'):
                 # Only create Transistor_v_c objects from valid dicts
@@ -141,8 +141,8 @@ class Transistor():
                         dict_list = transistor_args.get('c_rss')
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                        error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                        'of c_rss dictionaries: ',) + error.args
+                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_rss "
+                                      f"dictionaries: ",) + error.args
                         raise
             elif Transistor.isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
                 # Only create Transistor_v_c objects from valid dicts
@@ -151,6 +151,7 @@ class Transistor():
         else:
             # ToDo: Is this a value or a type error?
             # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
+            # ToDo: Use info in isvalid_dict() to print the list of mandatory values automatically
             raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
                             "are mandatory: 'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', "
                             "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
@@ -400,7 +401,7 @@ class Transistor():
                 raise ValueError("No data available for linearization at the given operating point. "
                                  "A list of available operating points is printed above.")
             elif len(candidate_datasets) > 1:
-                print("multiple datasets were found that are consistent with the chosen "
+                print("Multiple datasets were found that are consistent with the chosen "
                       "operating point. The first of these sets is automatically chosen because selection of a "
                       "different dataset is not yet implemented.")
             dataset = candidate_datasets[0].graph_v_i
@@ -590,8 +591,8 @@ class Transistor():
                             dict_list = switch_args.get('channel')
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                            'of Switch_ChannelData dictionaries: ',) + error.args
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch_ChannelData dictionaries: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('channel'), 'Switch_ChannelData'):
                     # Only create ChannelData objects from valid dicts
@@ -610,8 +611,8 @@ class Transistor():
                             dict_list = switch_args.get('e_on')
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                            'of Switch-SwitchEnergyData dictionaries for e_on: ',) + error.args
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-SwitchEnergyData dictionaries for e_on: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('e_on'), 'SwitchEnergyData'):
                     # Only create SwitchEnergyData objects from valid dicts
@@ -628,8 +629,8 @@ class Transistor():
                             dict_list = switch_args.get('e_off')
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                            'of Switch-SwitchEnergyData dictionaries for e_off: ',) + error.args
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-SwitchEnergyData dictionaries for e_off: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
                     self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off')))
@@ -647,8 +648,8 @@ class Transistor():
                             dict_list = switch_args.get('linearized_switch')
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                            'of Switch-LinearizedModel dictionaries: ',) + error.args
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-LinearizedModel dictionaries for e_on: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('linearized_switch'), 'Switch_LinearizedModel'):
                     # Only create LinearizedModel objects from valid dicts
@@ -780,8 +781,8 @@ class Transistor():
                             dict_list = diode_args.get('channel')
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                            'of Diode_ChannelData dictionaries: ',) + error.args
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Diode_ChannelData dictionaries: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(diode_args.get('channel'), 'Diode_ChannelData'):
                     # Only create ChannelData objects from valid dicts
@@ -800,9 +801,8 @@ class Transistor():
                             dict_list = diode_args.get('e_rr')
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = ('KeyError occurred for index [' + str(
-                                dict_list.index(dataset)) + '] in list '
-                                                            'of Diode-SwitchEnergyData dictionaries for e_rr: ',) + error.args
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Diode-SwitchEnergyData dictionaries for e_rr: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(diode_args.get('e_rr'), 'SwitchEnergyData'):
                     # Only create SwitchEnergyData objects from valid dicts
@@ -821,8 +821,8 @@ class Transistor():
                             dict_list = diode_args.get('linearized_diode')
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                                                                                            'of Diode-LinearizedModel dictionaries: ',) + error.args
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Diode-LinearizedModel dictionaries: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(diode_args.get('linearized_diode'), 'Diode_LinearizedModel'):
                     # Only create LinearizedModel objects from valid dicts
