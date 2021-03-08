@@ -21,13 +21,13 @@ class Transistor():
     # Date and template data. Should not be changed manually.
     # ToDo: Add methods to automatically determine dates and template_version on construction or update.
     template_version: str  # Mandatory/Automatic
-    template_date: "datetime.date"  # Mandatory/Automatic
-    creation_date: "datetime.date"  # Mandatory/Automatic
-    last_modified: "datetime.date"  # Mandatory/Automatic
+    template_date: "datetime.datetime"  # Mandatory/Automatic
+    creation_date: "datetime.datetime"  # Mandatory/Automatic
+    last_modified: "datetime.datetime"  # Mandatory/Automatic
     # Manufacturer- and part-specific data
     manufacturer: str  # Mandatory
     datasheet_hyperlink: [str, None]  # Make sure this link is valid.  # Optional
-    datasheet_date: ["datetime.date", None]  # Optional
+    datasheet_date: ["datetime.datetime", None]  # Optional, pymongo cannot encode date => always save as datetime
     datasheet_version: [str, None]  # Optional
     housing_area: float  # Unit: m^2  # Mandatory
     cooling_area: float  # Unit: m^2  # Mandatory
@@ -102,7 +102,7 @@ class Transistor():
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                      'of c_oss dictionaries: ',) + error.args
+                                                                                                        'of c_oss dictionaries: ',) + error.args
                         raise
             elif Transistor.isvalid_dict(transistor_args.get('c_oss'), 'Transistor_v_c'):
                 # Only create Transistor_v_c objects from valid dicts
@@ -122,7 +122,7 @@ class Transistor():
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                      'of c_iss dictionaries: ',) + error.args
+                                                                                                        'of c_iss dictionaries: ',) + error.args
                         raise
             elif Transistor.isvalid_dict(transistor_args.get('c_iss'), 'Transistor_v_c'):
                 # Only create Transistor_v_c objects from valid dicts
@@ -142,7 +142,7 @@ class Transistor():
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                      'of c_rss dictionaries: ',) + error.args
+                                                                                                        'of c_rss dictionaries: ',) + error.args
                         raise
             elif Transistor.isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
                 # Only create Transistor_v_c objects from valid dicts
@@ -168,7 +168,7 @@ class Transistor():
         other_dict.pop('_id', None)
         return my_dict == other_dict
 
-    def convert_to_dict(self):  # ToDo: Convert 'datetime.date' objects before saving
+    def convert_to_dict(self):
         d = vars(self)
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
@@ -230,8 +230,9 @@ class Transistor():
         are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'transistor_type').
         Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
         Raises appropriate errors if dictionary invalid in other ways."""
-        # ToDo: Add structure for Errors. e.g.: xx has wrong type, xx has wrong type, etc.
-        # ToDo: Error if given key is not allowed?
+        # ToDo: Error if given key is not used?
+        supported_transistor_types = ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']
+        housing_types_filename = 'housing_types.txt'
         instructions = {
             'Transistor': {
                 'mandatory_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
@@ -239,299 +240,131 @@ class Transistor():
                 'str_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'},
                 'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
                                  'r_g_int'},
-                'array_keys': {'e_coss'},
-                'numeric_list_keys': {}},
+                'array_keys': {'e_coss'}},
             'Switch': {
                 'mandatory_keys': {'t_j_max'},
                 'str_keys': {'comment', 'manufacturer', 'technology'},
                 'numeric_keys': {'c_oss', 'c_iss', 'c_rss', 't_j_max'},
-                'array_keys': {},
-                'numeric_list_keys': {}},
+                'array_keys': {}},
             'Diode': {
                 'mandatory_keys': {'t_j_max'},
                 'str_keys': {'comment', 'manufacturer', 'technology'},
                 'numeric_keys': {'t_j_max'},
-                'array_keys': {},
-                'numeric_list_keys': {}},
+                'array_keys': {}},
             'Switch_LinearizedModel': {
                 'mandatory_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
                 'str_keys': {},
-                'numeric_keys' : {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
-                'array_keys': {},
-                'numeric_list_keys': {}},
+                'numeric_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
+                'array_keys': {}},
             'Diode_LinearizedModel': {
                 'mandatory_keys': {'t_j', 'v_g', 'i_channel', 'r_channel'},
                 'str_keys': {},
                 'numeric_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
-                'array_keys': {},
-                'numeric_list_keys': {}},
-            'ChannelData': {  # ToDo: v_g mandatory for switch, but not for diode
+                'array_keys': {}},
+            'Diode_ChannelData': {
                 'mandatory_keys': {'t_j', 'graph_v_i'},
-                'numeric_keys': {'t_j'},
+                'numeric_keys': {'t_j', 'v_g'},
                 'str_keys': {},
-                'array_keys': {'graph_v_i'},
-                'numeric_list_keys': {}},
+                'array_keys': {'graph_v_i'}},
+            'Switch_ChannelData': {
+                'mandatory_keys': {'t_j', 'graph_v_i', 'v_g'},
+                'numeric_keys': {'t_j', 'v_g'},
+                'str_keys': {},
+                'array_keys': {'graph_v_i'}},
             'SwitchEnergyData_single': {
                 'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'},
                 'str_keys': {},
                 'numeric_keys': {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'},
-                'array_keys': {},
-                'numeric_list_keys': {}},
+                'array_keys': {}},
             'SwitchEnergyData_graph_r_e': {
                 'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'graph_r_e', 'i_x'},
                 'str_keys': {},
                 'numeric_keys': {'t_j', 'v_supply', 'v_g', 'i_x'},
-                'array_keys': {'graph_r_e'},
-                'numeric_list_keys': {}},
+                'array_keys': {'graph_r_e'}},
             'SwitchEnergyData_graph_i_e': {
                 'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'graph_i_e', 'r_g'},
                 'str_keys': {},
                 'numeric_keys': {'t_j', 'v_supply', 'v_g', 'r_g'},
-                'array_keys': {'graph_i_e'},
-                'numeric_list_keys': {}},
+                'array_keys': {'graph_i_e'}},
+            'Transistor_v_c': {
+                'mandatory_keys': {'t_j', 'graph_v_c'},
+                'str_keys': {},
+                'numeric_keys': {'t_j'},
+                'array_keys': {'graph_v_c'}},
+            'FosterThermalModel': {
+                'mandatory_keys': {},
+                'str_keys': {},
+                'numeric_keys': {'r_th_total', 'c_th_total', 'tau_total'},
+                'array_keys': {'graph_t_rthjc'}}
         }
-        if dataset_dict is None:
-            return False  # None represents an empty dataset. Can be valid depending on circumstances, hence no error.
-        elif not isinstance(dataset_dict, dict):
-            raise TypeError("Expected dictionary with " + str(dict_type) + " arguments but got "
-                            + str(type(dataset_dict)) + " instead.")
-        elif not bool(dataset_dict):
-            return False  # Empty dictionary. Can be valid depending on circumstances, hence no error.
+        if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
+            return False  # Empty dataset. Can be valid depending on circumstances, hence no error.
+        if not isinstance(dataset_dict, dict):
+            raise TypeError(f"Expected dictionary with {str(dict_type)} arguments but got {str(type(dataset_dict))} "
+                            f"instead.")
 
-        elif dict_type == 'ChannelData':
-            # ToDo: v_g mandatory for switch, but nut for diode
-            # Determine mandatory keys.
-            mandatory_keys = {'t_j', 'graph_v_i'}
-            # Determine types of mandatory and optional keys.
-            numeric_keys = {'t_j'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys
-                            if numeric_key in list(dataset_dict.keys())}  # actual keys
-            array_keys = {'graph_v_i'}  # possible keys
-            array_keys = {array_key for array_key in array_keys
-                          if array_key in list(dataset_dict.keys())}  # actual keys
-            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
-            # ToDo: First check might not even be necessary since missing keys return value 'None'?
-            if not dataset_dict.keys() >= mandatory_keys or \
-                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
-                raise KeyError("Dictionary does not contain all keys necessary for ChannelData object "
-                               "creation. Mandatory keys: 't_j', 'graph_v_i'")
-            # Check if all values have appropriate types.
-            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                    all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
-                # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
-                return True
+        if dict_type == 'Transistor':
+            if dataset_dict.get('transistor_type') not in supported_transistor_types:
+                raise ValueError(f"Transistor type currently not supported. 'transistor_type' must be in "
+                                 f"{supported_transistor_types}")
+            housing_types_file = os.path.join(os.path.dirname(__file__), housing_types_filename)
+            with open(housing_types_file, "r") as housing_types_txt:
+                housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
+            # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
+            alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
+            housing_type = dataset_dict.get('housing_type')
+            if re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower() not in alphanum_housing_types:
+                raise ValueError(f"Housing type {housing_type} is not allowed. See file {housing_types_filename} for a "
+                                 f"list of supported types.")
 
-        elif dict_type == 'SwitchEnergyData':
-            if 'dataset_type' not in dataset_dict:
+        if dict_type == 'SwitchEnergyData':
+            if dataset_dict.get('dataset_type') not in ['single', 'graph_r_e', 'graph_i_e']:
                 raise KeyError("Dictionary does not contain 'dataset_type' key necessary for SwitchEnergyData object "
-                               "creation. 'dataset_type' must be 'single', 'r_e' or 'i_e'. Check SwitchEnergyData class"
-                               " for further information.")
-            # Determine mandatory keys.
-            elif dataset_dict.get('dataset_type') == 'single':
-                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}
-                # Determine types of mandatory and optional keys.
-                numeric_keys = {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'}  # possible keys
-                numeric_keys = {numeric_key for numeric_key in numeric_keys
-                                if numeric_key in list(dataset_dict.keys())}  # actual keys
-                array_keys = {}
-            elif dataset_dict.get('dataset_type') == 'graph_r_e':
-                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'graph_r_e', 'i_x'}
-                # Determine types of mandatory and optional keys.
-                numeric_keys = {'t_j', 'v_supply', 'v_g', 'i_x'}  # possible keys
-                numeric_keys = {numeric_key for numeric_key in numeric_keys
-                                if numeric_key in list(dataset_dict.keys())}  # actual keys
-                array_keys = {'graph_r_e'}  # possible keys
-                array_keys = {array_key for array_key in array_keys
-                              if array_key in list(dataset_dict.keys())}  # actual keys
-            elif dataset_dict.get('dataset_type') == 'graph_i_e':
-                mandatory_keys = {'t_j', 'v_supply', 'v_g', 'graph_i_e', 'r_g'}
-                # Determine types of mandatory and optional keys.
-                numeric_keys = {'t_j', 'v_supply', 'v_g', 'r_g'}  # possible keys
-                numeric_keys = {numeric_key for numeric_key in numeric_keys
-                                if numeric_key in list(dataset_dict.keys())}  # actual keys
-                array_keys = {'graph_i_e'}
-                array_keys = {array_key for array_key in array_keys
-                              if array_key in list(dataset_dict.keys())}  # actual keys
-            else:
-                raise ValueError("Wrong dataset_type for creation of SwitchEnergyData object. Must be 'single', "
-                                 "'graph_r_e' or 'graph_i_e'. Check SwitchEnergyData class for further "
-                                 "information.")
-            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
-            if not dataset_dict.keys() >= mandatory_keys or \
-                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
-                raise KeyError("Dictionary does not contain all keys necessary for SwitchEnergyData object "
-                               "creation. Mandatory keys are documented in the SwitchEnergyData class.")
-            # Check if all values have appropriate types.
-            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                    all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
-                # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
-                return True
+                               "creation. 'dataset_type' must be 'single', 'graph_r_e' or 'graph_i_e'. "
+                               "Check SwitchEnergyData class for further information.")
+            if dataset_dict['dataset_type'] == 'single':
+                dict_type = 'SwitchEnergyData_single'
+            if dataset_dict['dataset_type'] == 'graph_r_e':
+                dict_type = 'SwitchEnergyData_graph_r_e'
+            if dataset_dict['dataset_type'] == 'graph_i_e':
+                dict_type = 'SwitchEnergyData_graph_i_e'
 
-        elif dict_type == 'Switch_LinearizedModel':
-            # Determine necessary keys.
-            mandatory_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}
-            # Determine types of mandatory and optional keys.
-            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys
-                            if numeric_key in list(dataset_dict.keys())}  # actual keys
-            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
-            if not dataset_dict.keys() >= mandatory_keys or \
-                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
-                raise KeyError("Dictionary does not contain all keys necessary for Switch LinearizedModel object "
-                               "creation. Mandatory keys: 't_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'")
-            # Check if all values have appropriate types.
-            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]):
-                # TypeError is raised in 'check_realnum()' if check fails.
-                return True
-
-        elif dict_type == 'Diode_LinearizedModel':
-            # Determine mandatory keys.
-            mandatory_keys = {'t_j', 'v_g', 'i_channel', 'r_channel'}
-            # Determine types of mandatory and optional keys.
-            numeric_keys = {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys
-                            if numeric_key in list(dataset_dict.keys())}  # actual keys
-            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
-            if not dataset_dict.keys() >= mandatory_keys or \
-                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
-                raise KeyError("Dictionary does not contain all keys necessary for Diode LinearizedModel object "
-                               "creation. Mandatory keys: 't_j', 'v_g', 'i_channel', 'r_channel'")
-            # Check if all values have appropriate types.
-            elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]):
-                # TypeError is raised in 'check_realnum()' if check fails.
-                return True
-
-        elif dict_type == 'Transistor':
-            # Determine mandatory keys.
-            mandatory_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                              'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int'}
-            # Determine types of mandatory and optional keys.
-            str_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'}  # possible keys
-            str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
-            numeric_keys = {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max','r_g_int'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys
-                            if numeric_key in list(dataset_dict.keys())}  # actual keys
-            array_keys = {'e_coss'}  # possible keys
-            array_keys = {array_key for array_key in array_keys
-                          if array_key in list(dataset_dict.keys())}  # actual keys
-            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
-            if not dataset_dict.keys() >= mandatory_keys or \
-                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
-                raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
-                               "creation. Mandatory keys: 'name', 'transistor_type', 'author', 'manufacturer', "
-                               "'housing_area', 'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', "
-                               "'r_g_int")
-            elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']:
-                raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT' or 'SiC-MOSFET'")
-            # Check if all values have appropriate types.
-            else:
-                # Import list of valid housing types from "housing_types.txt"
-                housing_types_file =  os.path.join(os.path.dirname(__file__), 'housing_types.txt')
-                with open(housing_types_file, "r") as housing_types_txt:
-                    housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
-                # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
-                alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
-                housing_type = dataset_dict.get('housing_type')
-                if re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower() not in alphanum_housing_types:
-                    raise ValueError("Housing type " + str(housing_type) + " is not allowed. See file "
-                                     "'housing_types.txt' for a list of supported types.")
-                # Check if all attributes have valid type.
-                elif all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                        all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]) and \
-                        all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
-                    # TypeError is raised in 'check_realnum()' or 'check_str()' or 'check_2d_dataset()' if check fails.
-                    return True
-
-        elif dict_type == 'FosterThermalModel':
-            # Determine mandatory keys.
-            # mandatory_keys = {}  # FosterThermalModel does not have mandatory keys.
-            # Determine types of mandatory and optional keys.
-            numeric_keys = {'r_th_total', 'c_th_total', 'tau_total'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys
-                            if numeric_key in list(dataset_dict.keys())}  # actual keys
-            list_keys = {'r_th_vector', 'c_th_vector', 'tau_vector'}  # possible keys
-            list_keys = {list_key for list_key in list_keys
-                         if list_key in list(dataset_dict.keys()) and dataset_dict[list_key] is not None}  # actual keys
-            array_keys = {'graph_t_rthjc'}  # possible keys
-            array_keys = {array_key for array_key in array_keys
-                          if array_key in list(dataset_dict.keys())}  # actual keys
-            # Check if any lists are given. Otherwise some of these next checks may cause trouble
-            # ToDo: This may not be the right way to handle the "empty lists" case.
-            if len(list_keys) != 0:
-                # Check if all elements in 'r_th_vector', 'c_th_vector', 'tau_vector' are real numeric (float, int)
-                bool_list_numeric = all([all([check_realnum(single_value) for single_value in dataset_dict.get(list_key)])
-                                        for list_key in list_keys])
-                # Check if 'r_th_vector', 'c_th_vector', 'tau_vector' have same length
-                # ToDo: Check if at least 2/3 of C, R, tau are given.
-                list_sizes = [len(dataset_dict.get(list_key)) for list_key in list_keys]
+        if dict_type == 'FosterThermalModel':
+            given_parameters = [p for p in ['r_th_vector', 'c_th_vector', 'tau_vector']
+                                if dataset_dict.get(p) is not None]
+            if len(given_parameters) != 0:
+                for p in given_parameters:
+                    if not isinstance(dataset_dict[p], list):
+                        dataset_dict[p] = [dataset_dict[p]]
+                list_sizes = [len(dataset_dict[p]) for p in given_parameters]
                 if not list_sizes.count(list_sizes[0]) == len(list_sizes):
                     raise TypeError("The lists 'r_th_vector', 'c_th_vector', 'tau_vector' (if given) must be the same "
-                                    "size.")
-            else:
-                bool_list_numeric = True  # ToDo: This may not be the right way to handle the "empty lists" case.
-            # Check if all values have appropriate types.
-            if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                    all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]) and \
-                    bool_list_numeric:
-                # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
-                return True
+                                    "length.")
+                bool_list_numeric = all([all([check_realnum(single_value)
+                                              for single_value in dataset_dict.get(p)])
+                                         for p in given_parameters])
+            if len(given_parameters) == 1:
+                raise ValueError(f"Only 1 value out of {['r_th_vector', 'c_th_vector', 'tau_vector']} is given."
+                                 f"Either specify 2, 3 (fitting) or none of these.")
+            # ToDo: Add check, if all 3 are given whether they fit to each other?
 
-        elif dict_type == 'Switch':
-            # Determine mandatory keys.
-            mandatory_keys = {'t_j_max'}
-            # Determine types of mandatory and optional keys.
-            str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
-            str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
-            numeric_keys = {'c_oss', 'c_iss', 'c_rss', 't_j_max'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys
-                            if numeric_key in list(dataset_dict.keys())}  # actual keys
-            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
-            if not dataset_dict.keys() >= mandatory_keys or \
-                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
-                raise KeyError("Dictionary 'switch_args' does not contain all keys necessary for Transistor object "
-                               "creation. Mandatory keys: 't_j_max'")
-            else:
-                # Check if all values have appropriate types.
-                if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                        all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
-                    # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
-                    return True
+        if dict_type not in instructions:
+            raise KeyError(f"No instructions available for validity check of argument dictionary with dict_type "
+                           f"{dict_type}.")
+        mandatory_keys = instructions[dict_type]['mandatory_keys']
+        str_keys = instructions[dict_type]['str_keys']
+        numeric_keys = instructions[dict_type]['numeric_keys']
+        array_keys = instructions[dict_type]['array_keys']
 
-        elif dict_type == 'Diode':
-            # ToDo: check for mandatory keys
-            # ToDo: check for numeric keys
-            # Determine mandatory keys.
-            mandatory_keys = {'t_j_max'}  # Diode does not have mandatory keys (yet).
-            # Determine types of mandatory and optional keys.
-            str_keys = {'comment', 'manufacturer', 'technology'}  # possible keys
-            str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
-            # Check if all values have appropriate types.
-            if all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]):
-                # TypeError is raised in 'check_realnum()' or 'check_str()' if check fails.
-                return True
-
-        elif dict_type == 'Transistor_v_c':
-            # Determine mandatory keys.
-            mandatory_keys = {'t_j', 'graph_v_c'}
-            # Determine types of mandatory and optional keys.
-            numeric_keys = {'t_j'}  # possible keys
-            numeric_keys = {numeric_key for numeric_key in numeric_keys
-                            if numeric_key in list(dataset_dict.keys())}  # actual keys
-            array_keys = {'graph_v_c'}  # possible keys
-            array_keys = {array_key for array_key in array_keys
-                          if array_key in list(dataset_dict.keys())}  # actual keys
-            # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
-            if not dataset_dict.keys() >= mandatory_keys or \
-                    any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
-                raise KeyError("Dictionary 'Transistor_v_c' does not contain all keys necessary for Transistor object "
-                               "creation. Mandatory keys: 't_j', 'graph_v_c")
-            else:
-                # Check if all values have appropriate types.
-                if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                        all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
-                        # TypeError is raised in 'check_realnum()' or 'check_2d_dataset()' if check fails.
-                    return True
-
+        # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+        if any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
+            raise KeyError(f"Argument dictionary does not contain all keys necessary for {dict_type} object creation. "
+                           f"Mandatory keys: {mandatory_keys}")
+        # Check if all values have appropriate types.
+        if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+                all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]) and \
+                all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
+            return True
 
     def calc_v_eoss(self):
         """
@@ -539,7 +372,8 @@ class Transistor():
         :return:
         """
         # energy_cumtrapz = np.zeros_like(self.c_oss[0].graph_v_c[1], dtype=np.float32)
-        energy_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[0] * self.c_oss[0].graph_v_c[1], self.c_oss[0].graph_v_c[0], initial=0)
+        energy_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[0] * self.c_oss[0].graph_v_c[1],
+                                                         self.c_oss[0].graph_v_c[0], initial=0)
         return np.array([self.c_oss[0].graph_v_c[0], energy_cumtrapz])
 
     def plot_v_eoss(self):
@@ -557,7 +391,8 @@ class Transistor():
 
     def get_graph_v_i(self, switch_or_diode, t_j, v_g):
         if switch_or_diode == 'switch':
-            candidate_datasets = [channel for channel in self.switch.channel if (channel.t_j == t_j and channel.v_g == v_g)]
+            candidate_datasets = [channel for channel in self.switch.channel if
+                                  (channel.t_j == t_j and channel.v_g == v_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(channel.t_j, channel.v_g) for channel in self.switch.channel]
                 print("Available operating points: (t_j, v_g)")
@@ -572,7 +407,8 @@ class Transistor():
 
         elif switch_or_diode == 'diode':
             if self.transistor_type in ['SiC-MOSFET', 'GaN-Transistor']:
-                candidate_datasets = [channel for channel in self.diode.channel if (channel.t_j == t_j and channel.v_g == v_g)]
+                candidate_datasets = [channel for channel in self.diode.channel if
+                                      (channel.t_j == t_j and channel.v_g == v_g)]
                 if len(candidate_datasets) == 0:
                     available_datasets = [(channel.t_j, channel.v_g) for channel in self.diode.channel]
                     print("Available operating points: (t_j, v_g)")
@@ -612,7 +448,8 @@ class Transistor():
         :return: e_on.graph_i_e or e_off.graph_i_e or e_rr.graph_i_e
         """
         if e_on_off_rr == 'e_on':
-            candidate_datasets = [e_on for e_on in self.switch.e_on if (e_on.t_j == t_j and e_on.v_g == v_g and e_on.v_supply == v_supply and e_on.r_g == r_g)]
+            candidate_datasets = [e_on for e_on in self.switch.e_on if (
+                    e_on.t_j == t_j and e_on.v_g == v_g and e_on.v_supply == v_supply and e_on.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_on.t_j, e_on.v_g, e_on.v_supply, e_on.r_g) for e_on in self.switch.e_on]
                 print("Available operating points: (t_j, v_g, v_supply, r_g)")
@@ -626,7 +463,8 @@ class Transistor():
             dataset = candidate_datasets[0].graph_i_e
 
         if e_on_off_rr == 'e_off':
-            candidate_datasets = [e_off for e_off in self.switch.e_off if (e_off.t_j == t_j and e_off.v_g == v_g and e_off.v_supply == v_supply and e_off.r_g == r_g)]
+            candidate_datasets = [e_off for e_off in self.switch.e_off if (
+                    e_off.t_j == t_j and e_off.v_g == v_g and e_off.v_supply == v_supply and e_off.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_off.t_j, e_off.v_g, e_off.v_supply, e_off.r_g) for e_off in self.switch.e_off]
                 print("Available operating points: (t_j, v_g, v_supply, r_g)")
@@ -640,7 +478,8 @@ class Transistor():
             dataset = candidate_datasets[0].graph_i_e
 
         if e_on_off_rr == 'e_rr':
-            candidate_datasets = [e_rr for e_rr in self.diode.e_rr if (e_rr.t_j == t_j and e_rr.v_g == v_g and e_rr.v_supply == v_supply and e_rr.r_g == r_g)]
+            candidate_datasets = [e_rr for e_rr in self.diode.e_rr if (
+                    e_rr.t_j == t_j and e_rr.v_g == v_g and e_rr.v_supply == v_supply and e_rr.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_rr.t_j, e_rr.v_g, e_rr.v_supply, e_rr.r_g) for e_rr in self.diode.e_rr]
                 print("Available operating points: (t_j, v_g, v_supply, r_g)")
@@ -744,7 +583,7 @@ class Transistor():
                     # dicts. 'None' and empty dicts are ignored.
                     for dataset in switch_args.get('channel'):
                         try:
-                            if Transistor.isvalid_dict(dataset, 'ChannelData'):
+                            if Transistor.isvalid_dict(dataset, 'Switch_ChannelData'):
                                 self.channel.append(Transistor.ChannelData(dataset))
                         # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                         except KeyError as error:
@@ -752,9 +591,9 @@ class Transistor():
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
                             error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                          'of Switch-ChannelData dictionaries: ',) + error.args
+                                                                                                            'of Switch_ChannelData dictionaries: ',) + error.args
                             raise
-                elif Transistor.isvalid_dict(switch_args.get('channel'), 'ChannelData'):
+                elif Transistor.isvalid_dict(switch_args.get('channel'), 'Switch_ChannelData'):
                     # Only create ChannelData objects from valid dicts
                     self.channel.append(Transistor.ChannelData(switch_args.get('channel')))
 
@@ -772,7 +611,7 @@ class Transistor():
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
                             error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                          'of Switch-SwitchEnergyData dictionaries for e_on: ',) + error.args
+                                                                                                            'of Switch-SwitchEnergyData dictionaries for e_on: ',) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('e_on'), 'SwitchEnergyData'):
                     # Only create SwitchEnergyData objects from valid dicts
@@ -790,7 +629,7 @@ class Transistor():
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
                             error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                          'of Switch-SwitchEnergyData dictionaries for e_off: ',) + error.args
+                                                                                                            'of Switch-SwitchEnergyData dictionaries for e_off: ',) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
                     self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off')))
@@ -809,7 +648,7 @@ class Transistor():
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
                             error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                          'of Switch-LinearizedModel dictionaries: ',) + error.args
+                                                                                                            'of Switch-LinearizedModel dictionaries: ',) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('linearized_switch'), 'Switch_LinearizedModel'):
                     # Only create LinearizedModel objects from valid dicts
@@ -840,7 +679,7 @@ class Transistor():
             """ Plot all channel data """
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
             plt.figure()
-            for i_channel in np.array(range(0,len(self.channel))):
+            for i_channel in np.array(range(0, len(self.channel))):
                 labelplot = f"vg {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                 plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
@@ -853,10 +692,11 @@ class Transistor():
         def plot_channel_data_vge(self, gatevoltage):
             """ Plot channel data with a chosen gate-voltage"""
             plt.figure()
-            for i_channel in np.array(range(0,len(self.channel))):
+            for i_channel in np.array(range(0, len(self.channel))):
                 if self.channel[i_channel].v_g == gatevoltage:
                     labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
-                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
+                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1],
+                             label=labelplot)
 
             plt.legend()
             plt.xlabel('Voltage in V')
@@ -867,10 +707,11 @@ class Transistor():
         def plot_channel_data_temp(self, temperature):
             """ Plot channel data with chosen temperature"""
             plt.figure()
-            for i_channel in np.array(range(0,len(self.channel))):
+            for i_channel in np.array(range(0, len(self.channel))):
                 if self.channel[i_channel].t_j == temperature:
                     labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
-                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
+                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1],
+                             label=labelplot)
 
             plt.legend()
             plt.xlabel('Voltage in V')
@@ -882,10 +723,11 @@ class Transistor():
             """ Plot all switching data """
             plt.figure()
             # look for e_on losses
-            for i_energy_data in np.array(range(0,len(self.e_on))):
+            for i_energy_data in np.array(range(0, len(self.e_on))):
                 if self.e_on[i_energy_data].dataset_type == 'graph_i_e':
                     labelplot = f"e_on: v_supply = {self.e_on[i_energy_data].v_supply} V, vg = {self.e_on[i_energy_data].v_g} V, T_J = {self.e_on[i_energy_data].t_j} °C, R_g = {self.e_on[i_energy_data].r_g} Ohm"
-                    plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1], label=labelplot)
+                    plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1],
+                             label=labelplot)
 
             # look for e_off losses
             for i_energy_data in np.array(range(0, len(self.e_off))):
@@ -931,7 +773,7 @@ class Transistor():
                     # dicts. 'None' and empty dicts are ignored.
                     for dataset in diode_args.get('channel'):
                         try:
-                            if Transistor.isvalid_dict(dataset, 'ChannelData'):
+                            if Transistor.isvalid_dict(dataset, 'Diode_ChannelData'):
                                 self.channel.append(Transistor.ChannelData(dataset))
                         # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                         except KeyError as error:
@@ -939,9 +781,9 @@ class Transistor():
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
                             error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                          'of Diode-ChannelData dictionaries: ',) + error.args
+                                                                                                            'of Diode_ChannelData dictionaries: ',) + error.args
                             raise
-                elif Transistor.isvalid_dict(diode_args.get('channel'), 'ChannelData'):
+                elif Transistor.isvalid_dict(diode_args.get('channel'), 'Diode_ChannelData'):
                     # Only create ChannelData objects from valid dicts
                     self.channel.append(Transistor.ChannelData(diode_args.get('channel')))
 
@@ -980,7 +822,7 @@ class Transistor():
                             if not error.args:
                                 error.args = ('',)  # This syntax is necessary because error.args is a tuple
                             error.args = ('KeyError occurred for index [' + str(dict_list.index(dataset)) + '] in list '
-                                          'of Diode-LinearizedModel dictionaries: ',) + error.args
+                                                                                                            'of Diode-LinearizedModel dictionaries: ',) + error.args
                             raise
                 elif Transistor.isvalid_dict(diode_args.get('linearized_diode'), 'Diode_LinearizedModel'):
                     # Only create LinearizedModel objects from valid dicts
@@ -1006,7 +848,7 @@ class Transistor():
             """ Plot all channel data """
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
             plt.figure()
-            for i_channel in np.array(range(0,len(self.channel))):
+            for i_channel in np.array(range(0, len(self.channel))):
                 labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                 plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
@@ -1140,6 +982,7 @@ class Transistor():
         # Dataset. Only one of these is allowed. The other should be 'None'.
         graph_i_e: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
         graph_r_e: ["np.ndarray[np.float64]", None]  # Units: Row 1: Ohm; Row 2: J
+
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
         # ToDo: Add additional class for linearized switching loss model with capacitances. (See infineon application
         #  note.)
@@ -1220,7 +1063,7 @@ class Transistor():
                 # ToDo: Test this function if IGBT is available
                 voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].graph_v_i[1],
                                                    candidate_datasets[0].graph_v_i[0])
-                r_channel = (voltage_interpolated_2 - voltage_interpolated)/(0.1 * i_channel)
+                r_channel = (voltage_interpolated_2 - voltage_interpolated) / (0.1 * i_channel)
                 v_channel = voltage_interpolated - r_channel * i_channel
         elif switch_or_diode == 'diode':
             if self.transistor_type in ['SiC-MOSFET', 'GaN-Transistor']:
@@ -1265,23 +1108,21 @@ class Transistor():
 def check_realnum(x):
     """Check if argument is real numeric scalar. Raise TypeError if not. None is also accepted because it is valid for
     optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand."""
-    if not any([isinstance(x, int), isinstance(x, float), x is None, isinstance(x, np.integer),
-                isinstance(x, np.floating)]):
-        raise TypeError('{0} is not numeric.'.format(x))
-    else:
+    if isinstance(x, (int, float, np.integer, np.floating)) or x is None:
         return True
+    raise TypeError(f"{x} is not numeric.")
 
 
 def check_2d_dataset(x):
     """Check if argument is real 2D-dataset of right shape. Raise TypeError if not. None is also accepted because it is
     valid for optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand."""
+    if x is None:
+        return True
     if isinstance(x, np.ndarray):
         if np.all(np.isreal(x)):
             if x.ndim == 2:
                 if x.shape[0] == 2:
                     return True
-    elif x is None:
-        return True
     raise TypeError("Invalid dataset. Must be 2D-numpy array with shape (2,x) and real numeric values.")
 
 
@@ -1291,7 +1132,7 @@ def check_str(x):
     must not contain None are checked somewhere else beforehand."""
     if isinstance(x, str) or x is None:
         return True
-    raise TypeError('{0} is not a string.'.format(x))
+    raise TypeError(f"{x} is not a string.")
 
 
 def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero, set_first_x_value_to_zero):
@@ -1316,13 +1157,13 @@ def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero,
                                       1: lambda s: float(s.decode("UTF-8").replace(",", "."))})
 
     if set_first_value_to_zero == True:
-        array[0][0] = 0    # x value
-        array[0][1] = 0    # y value
+        array[0][0] = 0  # x value
+        array[0][1] = 0  # y value
 
     if set_second_y_value_to_zero == True:
-        array[1][1] = 0    # y value
+        array[1][1] = 0  # y value
 
     if set_first_x_value_to_zero == True:
-        array[0][0] = 0    # x value
+        array[0][0] = 0  # x value
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
