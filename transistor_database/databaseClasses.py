@@ -193,7 +193,8 @@ class Transistor():
             for i in range(len(transistor_args['c_rss'])):
                 transistor_args['c_rss'][i]['graph_v_c'] = np.array(transistor_args['c_rss'][i]['graph_v_c'])
         if 'e_coss' in transistor_args:
-            transistor_args['e_coss'] = np.array(transistor_args['e_coss'])
+            if transistor_args['e_coss'] is not None:
+                transistor_args['e_coss'] = np.array(transistor_args['e_coss'])
         # Convert switch_args
         switch_args = db_dict['switch']
         if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
@@ -234,9 +235,10 @@ class Transistor():
         instructions = {
             'Transistor': {
                 'mandatory_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                                   'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont','r_g_int'},
+                                   'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int'},
                 'str_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'},
-                'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max','r_g_int'},
+                'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
+                                 'r_g_int'},
                 'array_keys': {'e_coss'},
                 'numeric_list_keys': {}},
             'Switch': {
@@ -402,7 +404,7 @@ class Transistor():
         elif dict_type == 'Transistor':
             # Determine mandatory keys.
             mandatory_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                          'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont','r_g_int'}
+                              'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int'}
             # Determine types of mandatory and optional keys.
             str_keys = {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'}  # possible keys
             str_keys = {str_key for str_key in str_keys if str_key in list(dataset_dict.keys())}  # actual keys
@@ -417,7 +419,8 @@ class Transistor():
                     any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
                 raise KeyError("Dictionary 'transistor_args' does not contain all keys necessary for Transistor object "
                                "creation. Mandatory keys: 'name', 'transistor_type', 'author', 'manufacturer', "
-                               "'housing_area', 'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont','r_g_int")
+                               "'housing_area', 'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', "
+                               "'r_g_int")
             elif dataset_dict.get('transistor_type') not in ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']:
                 raise ValueError("'transistor_type' must be either 'MOSFET' or 'IGBT' or 'SiC-MOSFET'")
             # Check if all values have appropriate types.
