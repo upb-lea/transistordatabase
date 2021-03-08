@@ -4,15 +4,17 @@ import re
 import os
 from typing import List
 from matplotlib import pyplot as plt
+from bson.objectid import ObjectId
 from scipy import integrate
 
 
-class Transistor():
+class Transistor:
     """Groups data of all other classes for a single transistor. Methods are specified in such a way that only
     user-interaction with this class is necessary (ToDo!)
     Documentation on how to add or extract a transistor-object to/from the database can be found in (ToDo!)
     """
     # ToDo: Add database _id as attribute
+    _id: "bson.objectid.ObjectId"
     name: str  # Name of the transistor. Choose as specific as possible. # Mandatory
     transistor_type: str  # Mandatory
     # User-specific data
@@ -170,7 +172,7 @@ class Transistor():
         return my_dict == other_dict
 
     def convert_to_dict(self):
-        d = vars(self)
+        d = dict(vars(self))
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
@@ -538,7 +540,7 @@ class Transistor():
                 self.graph_t_rthjc = None
 
         def convert_to_dict(self):
-            d = vars(self)
+            d = dict(vars(self))
             for att_key in d:
                 if isinstance(d[att_key], np.ndarray):
                     d[att_key] = d[att_key].tolist()
@@ -668,7 +670,7 @@ class Transistor():
                 self.linearized_switch = []
 
         def convert_to_dict(self):
-            d = vars(self)
+            d = dict(vars(self))
             d['thermal_foster'] = self.thermal_foster.convert_to_dict()
             d['channel'] = [c.convert_to_dict() for c in self.channel]
             d['e_on'] = [e.convert_to_dict() for e in self.e_on]
@@ -837,7 +839,7 @@ class Transistor():
                 self.linearized_diode = []
 
         def convert_to_dict(self):
-            d = vars(self)
+            d = dict(vars(self))
             d['thermal_foster'] = self.thermal_foster.convert_to_dict()
             d['channel'] = [c.convert_to_dict() for c in self.channel]
             d['e_rr'] = [e.convert_to_dict() for e in self.e_rr]
@@ -902,7 +904,7 @@ class Transistor():
             self.v0_channel = args.get('v0_channel')
 
         def convert_to_dict(self):
-            d = vars(self)
+            d = dict(vars(self))
             return d
 
     class ChannelData:
@@ -925,7 +927,7 @@ class Transistor():
             self.v_g = args.get('v_g')
 
         def convert_to_dict(self):
-            d = vars(self)
+            d = dict(vars(self))
             for att_key in d:
                 if isinstance(d[att_key], np.ndarray):
                     d[att_key] = d[att_key].tolist()
@@ -948,7 +950,7 @@ class Transistor():
             self.graph_v_c = args.get('graph_v_c')
 
         def convert_to_dict(self):
-            d = vars(self)
+            d = dict(vars(self))
             for att_key in d:
                 if isinstance(d[att_key], np.ndarray):
                     d[att_key] = d[att_key].tolist()
@@ -1018,7 +1020,7 @@ class Transistor():
                 self.graph_r_e = args.get('graph_r_e')
 
         def convert_to_dict(self):
-            d = vars(self)
+            d = dict(vars(self))
             for att_key in d:
                 if isinstance(d[att_key], np.ndarray):
                     d[att_key] = d[att_key].tolist()
