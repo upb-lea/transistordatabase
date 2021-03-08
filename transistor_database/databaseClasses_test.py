@@ -8,8 +8,8 @@ class MyTestCase(unittest.TestCase):
     # Values for basic example
     name = 'Test-Transistor'
     transistor_type = 'IGBT'
-    v_max = 200
-    i_max = 200
+    v_abs_max = 200
+    i_abs_max = 200
     i_cont = 200
     author = 'Manuel Klaedtke'
     comment = 'test_comment'
@@ -21,6 +21,7 @@ class MyTestCase(unittest.TestCase):
     cooling_area = 200
     housing_type = 'TO220'
     t_j = 1.0
+    t_j_max = 10
     graph_v_i = np.array([[1, 2], [3, 4]])
     dataset_type = 'single'
     v_supply = 1
@@ -34,7 +35,7 @@ class MyTestCase(unittest.TestCase):
     c_th_total = 6
     tau_vector = [1, 4, 9]
     tau_total = 14
-    transient_data = np.array([[1, 2], [3, 4]])
+    graph_t_rthjc = np.array([[1, 2], [3, 4]])
     technology = 'IGBT3'
     r_g_int = 10
     c_oss = 1
@@ -50,25 +51,24 @@ class MyTestCase(unittest.TestCase):
                     'e_x': e_x, 'r_g': r_g, 'i_x': i_x}
     foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
                    'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
-                   'transient_data': transient_data}
+                   'graph_t_rthjc': graph_t_rthjc}
     # Create argument dictionaries
     transistor_args = {'name': name, 'transistor_type': transistor_type, 'author': author, 'comment': comment,
                        'manufacturer': manufacturer, 'datasheet_hyperlink': datasheet_hyperlink,
                        'datasheet_date': datasheet_date,
                        'datasheet_version': datasheet_version, 'housing_area': housing_area,
-                       'cooling_area': cooling_area, 'housing_type': housing_type, 'v_max': v_max,
-                       'i_max': i_max, 'i_cont': i_cont, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
-                       'e_coss': e_coss}
-    switch_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
-                   'c_oss': c_oss, 'c_iss': c_iss, 'c_rss': c_rss, 'r_g_int': r_g_int, 'channel': channel,
+                       'cooling_area': cooling_area, 'housing_type': housing_type, 'v_abs_max': v_abs_max,
+                       'i_abs_max': i_abs_max, 'i_cont': i_cont, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c,
+                       'c_rss': c_rss_v_c, 'e_coss': e_coss, 'r_g_int': r_g_int}
+    switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
+                   'c_oss': c_oss, 'c_iss': c_iss, 'c_rss': c_rss, 'channel': channel,
                    'e_on': switchenergy, 'e_off': switchenergy, 'thermal_foster': foster_args}
     diode_args = {'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                   'channel': channel, 'e_rr': switchenergy, 'thermal_foster': foster_args}
 
     def test_basic(self):
         # Create transistor object
-        transistor = Transistor(self.transistor_args, self.switch_args,
-                                self.diode_args)
+        transistor = Transistor(self.transistor_args, self.switch_args, self.diode_args)
         # Test transistor attributes
         self.assertEqual(transistor.name, self.name)
         self.assertEqual(transistor.transistor_type, self.transistor_type)
@@ -81,12 +81,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.housing_area, self.housing_area)
         self.assertEqual(transistor.cooling_area, self.cooling_area)
         self.assertEqual(transistor.housing_type, self.housing_type)
-        self.assertEqual(transistor.v_max, self.v_max)
-        self.assertEqual(transistor.i_max, self.i_max)
+        self.assertEqual(transistor.v_abs_max, self.v_abs_max)
+        self.assertEqual(transistor.i_abs_max, self.i_abs_max)
         self.assertEqual(transistor.i_cont, self.i_cont)
         self.assertEqual(transistor.c_oss[0].t_j, self.c_oss_v_c['t_j'])
         self.assertEqual(transistor.c_iss[0].t_j, self.c_iss_v_c['t_j'])
         self.assertEqual(transistor.c_rss[0].t_j, self.c_rss_v_c['t_j'])
+        self.assertEqual(transistor.r_g_int, self.r_g_int)
         np.testing.assert_array_equal(transistor.c_oss[0].graph_v_c, self.c_oss_v_c['graph_v_c'])
         np.testing.assert_array_equal(transistor.c_iss[0].graph_v_c, self.c_iss_v_c['graph_v_c'])
         np.testing.assert_array_equal(transistor.c_rss[0].graph_v_c, self.c_rss_v_c['graph_v_c'])
@@ -113,15 +114,15 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.diode.thermal_foster.c_th_total, self.c_th_total)
         self.assertEqual(transistor.diode.thermal_foster.tau_vector, self.tau_vector)
         self.assertEqual(transistor.diode.thermal_foster.tau_total, self.tau_total)
-        np.testing.assert_array_equal(transistor.diode.thermal_foster.transient_data, self.transient_data)
+        np.testing.assert_array_equal(transistor.diode.thermal_foster.graph_t_rthjc, self.graph_t_rthjc)
         # Test Switch attributes
+        self.assertEqual(transistor.switch.t_j_max, self.t_j_max)
         self.assertEqual(transistor.switch.comment, self.comment)
         self.assertEqual(transistor.switch.manufacturer, self.manufacturer)
         self.assertEqual(transistor.switch.technology, self.technology)
         self.assertEqual(transistor.switch.c_oss, self.c_oss)
         self.assertEqual(transistor.switch.c_iss, self.c_iss)
         self.assertEqual(transistor.switch.c_rss, self.c_rss)
-        self.assertEqual(transistor.switch.r_g_int, self.r_g_int)
         # Test Switch channel attributes
         self.assertEqual(transistor.switch.channel[0].t_j, self.t_j)
         np.testing.assert_array_equal(transistor.switch.channel[0].graph_v_i, self.graph_v_i)
@@ -148,7 +149,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.switch.thermal_foster.c_th_total, self.c_th_total)
         self.assertEqual(transistor.switch.thermal_foster.tau_vector, self.tau_vector)
         self.assertEqual(transistor.switch.thermal_foster.tau_total, self.tau_total)
-        np.testing.assert_array_equal(transistor.switch.thermal_foster.transient_data, self.transient_data)
+        np.testing.assert_array_equal(transistor.switch.thermal_foster.graph_t_rthjc, self.graph_t_rthjc)
 
 
 if __name__ == '__main__':
