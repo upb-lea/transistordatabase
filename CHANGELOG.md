@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed Metadata class. Added its attributes to Transistor class instead
 ### Changed
 - Restructured foster thermal model argument handover
+- Rename package to transistordatabase (instead of transistor_database) due to pip package rules
 
 ## [0.1.0] - 2021-02-04
 ### Added

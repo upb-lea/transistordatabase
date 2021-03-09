@@ -182,7 +182,7 @@ def Template():
 
 if __name__ == '__main__':
     current_path = os.getcwd()
-    os.chdir('../transistor_database')
+    os.chdir('../transistordatabase')
     new_path = os.getcwd()
     sys.path.append(new_path)
     os.chdir(current_path)
