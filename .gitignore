@@ -1,6 +1,6 @@
-transistor_database/.idea/
-transistor_database/Test-Transistor_S1.mat
-transistor_database/__pycache__/
+transistordatabase/.idea/
+transistordatabase/Test-Transistor_S1.mat
+transistordatabase/__pycache__/
 gpgit/
 *.pyc
 *.pdf
