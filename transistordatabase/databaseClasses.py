@@ -379,6 +379,15 @@ class Transistor:
                                                          self.c_oss[0].graph_v_c[0], initial=0)
         return np.array([self.c_oss[0].graph_v_c[0], energy_cumtrapz])
 
+    def calc_v_qoss(self):
+        """
+        Calculates q_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
+        :return:
+        """
+        charge_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[1], self.c_oss[0].graph_v_c[0], initial=0)
+
+        return np.array([self.c_oss[0].graph_v_c[0], charge_cumtrapz])
+
     def plot_v_eoss(self):
         """
         Plots v_eoss with method calc_v_eoss
@@ -389,6 +398,15 @@ class Transistor:
         plt.plot(v_eoss[0], v_eoss[1])
         plt.xlabel('Voltage in V')
         plt.ylabel('Energy in J')
+        plt.grid()
+        plt.show()
+
+    def plot_v_qoss(self):
+        v_qoss = self.calc_v_qoss()
+        plt.figure()
+        plt.plot(v_qoss[0], v_qoss[1])
+        plt.xlabel('Voltage in V')
+        plt.ylabel('Charge in C')
         plt.grid()
         plt.show()
 

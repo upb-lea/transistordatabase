@@ -235,6 +235,7 @@ if __name__ == '__main__':
     print(f"r_channel_linearized = {r_channel} Ohm")
     # print(transistor.calc_v_eoss())
     # transistor.plot_v_eoss()
+    # transistor.plot_v_qoss()
     #print(transistor.get_graph_v_i('switch', 25, 15))
 
     # print(transistor.get_graph_i_e('e_on', 25, 15, 600, 2.5))
