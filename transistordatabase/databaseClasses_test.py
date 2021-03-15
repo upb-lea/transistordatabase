@@ -38,9 +38,9 @@ class MyTestCase(unittest.TestCase):
     graph_t_rthjc = np.array([[1, 2], [3, 4]])
     technology = 'IGBT3'
     r_g_int = 10
-    c_oss = 1
-    c_iss = 1
-    c_rss = 1
+    c_oss_fix = 1
+    c_iss_fix = 1
+    c_rss_fix = 1
     c_oss_v_c = {'t_j': t_j, 'graph_v_c': np.array([[1, 2], [3, 4]])}
     c_iss_v_c = {'t_j': t_j, 'graph_v_c': np.array([[1, 2], [3, 4]])}
     c_rss_v_c = {'t_j': t_j, 'graph_v_c': np.array([[1, 2], [3, 4]])}
@@ -59,10 +59,11 @@ class MyTestCase(unittest.TestCase):
                        'datasheet_date': datasheet_date,
                        'datasheet_version': datasheet_version, 'housing_area': housing_area,
                        'cooling_area': cooling_area, 'housing_type': housing_type, 'v_abs_max': v_abs_max,
-                       'i_abs_max': i_abs_max, 'i_cont': i_cont, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c,
-                       'c_rss': c_rss_v_c, 'e_coss': e_coss, 'r_g_int': r_g_int}
+                       'i_abs_max': i_abs_max, 'i_cont': i_cont, 'c_oss_fix': c_oss_fix, 'c_iss': c_iss_fix,
+                       'c_rss': c_rss_fix, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
+                       'graph_v_ecoss': e_coss, 'r_g_int': r_g_int}
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
-                   'c_oss': c_oss, 'c_iss': c_iss, 'c_rss': c_rss, 'channel': switch_channel,
+                   'channel': switch_channel,
                    'e_on': switchenergy, 'e_off': switchenergy, 'thermal_foster': foster_args}
     diode_args = {'t_j_max': t_j_max,'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                   'channel': diode_channel, 'e_rr': switchenergy, 'thermal_foster': foster_args}
@@ -85,6 +86,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.v_abs_max, self.v_abs_max)
         self.assertEqual(transistor.i_abs_max, self.i_abs_max)
         self.assertEqual(transistor.i_cont, self.i_cont)
+        self.assertEqual(transistor.c_oss_fix, self.c_oss_fix)
+        self.assertEqual(transistor.c_oss_fix, self.c_oss_fix)
+        self.assertEqual(transistor.c_oss_fix, self.c_oss_fix)
         self.assertEqual(transistor.c_oss[0].t_j, self.c_oss_v_c['t_j'])
         self.assertEqual(transistor.c_iss[0].t_j, self.c_iss_v_c['t_j'])
         self.assertEqual(transistor.c_rss[0].t_j, self.c_rss_v_c['t_j'])
@@ -92,7 +96,7 @@ class MyTestCase(unittest.TestCase):
         np.testing.assert_array_equal(transistor.c_oss[0].graph_v_c, self.c_oss_v_c['graph_v_c'])
         np.testing.assert_array_equal(transistor.c_iss[0].graph_v_c, self.c_iss_v_c['graph_v_c'])
         np.testing.assert_array_equal(transistor.c_rss[0].graph_v_c, self.c_rss_v_c['graph_v_c'])
-        np.testing.assert_array_equal(transistor.e_coss, self.e_coss)
+        np.testing.assert_array_equal(transistor.graph_v_ecoss, self.e_coss)
         # Test Diode attributes
         self.assertEqual(transistor.diode.comment, self.comment)
         self.assertEqual(transistor.diode.manufacturer, self.manufacturer)
@@ -122,9 +126,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(transistor.switch.comment, self.comment)
         self.assertEqual(transistor.switch.manufacturer, self.manufacturer)
         self.assertEqual(transistor.switch.technology, self.technology)
-        self.assertEqual(transistor.switch.c_oss, self.c_oss)
-        self.assertEqual(transistor.switch.c_iss, self.c_iss)
-        self.assertEqual(transistor.switch.c_rss, self.c_rss)
         # Test Switch channel attributes
         self.assertEqual(transistor.switch.channel[0].t_j, self.t_j)
         np.testing.assert_array_equal(transistor.switch.channel[0].graph_v_i, self.graph_v_i)
