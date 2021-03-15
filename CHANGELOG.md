@@ -12,13 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New class LinearizedModel: Contains data for a linearized Switch/Diode depending on given operating point.
 - New class to store c_iss, c_oss, c_rss in Transistor. 
 - New Transistor attribute: e_coss
-- Add documentation drawing
+- Documentation drawing
 - Exporter: GeckoCIRCUITS
+- calc_object_i_e to calculate loss loss curves for other gate resistors/voltage levels
 ### Removed
 - Removed Metadata class. Added its attributes to Transistor class instead
 ### Changed
 - Restructured foster thermal model argument handover
 - Rename package to transistordatabase (instead of transistor_database) due to pip package rules
+- csv2array callable with options
 
 ## [0.1.0] - 2021-02-04
 ### Added
