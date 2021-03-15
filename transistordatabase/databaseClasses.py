@@ -420,7 +420,7 @@ class Transistor:
         plt.grid()
         plt.show()
 
-    def get_graph_v_i(self, switch_or_diode, t_j, v_g):
+    def get_object_v_i(self, switch_or_diode, t_j, v_g):
         if switch_or_diode == 'switch':
             candidate_datasets = [channel for channel in self.switch.channel if
                                   (channel.t_j == t_j and channel.v_g == v_g)]
@@ -434,7 +434,7 @@ class Transistor:
                 print("Multiple datasets were found that are consistent with the chosen "
                       "operating point. The first of these sets is automatically chosen because selection of a "
                       "different dataset is not yet implemented.")
-            dataset = candidate_datasets[0].graph_v_i
+            dataset = candidate_datasets[0]
 
         elif switch_or_diode == 'diode':
             if self.transistor_type in ['SiC-MOSFET', 'GaN-Transistor']:
@@ -450,7 +450,7 @@ class Transistor:
                     print("Multiple datasets were found that are consistent with the chosen "
                           "operating point. The first of these sets is automatically chosen because selection of a "
                           "different dataset is not yet implemented.")
-                dataset = candidate_datasets[0].graph_v_i
+                dataset = candidate_datasets[0]
             else:
                 candidate_datasets = [channel for channel in self.diode.channel
                                       if channel.t_j == t_j]
@@ -464,11 +464,11 @@ class Transistor:
                     print("Multiple datasets were found that are consistent with the chosen "
                           "operating point. The first of these sets is automatically chosen because selection of a "
                           "different dataset is not yet implemented.")
-                dataset = candidate_datasets[0].graph_v_i
+                dataset = candidate_datasets[0]
 
         return dataset
 
-    def get_graph_i_e(self, e_on_off_rr, t_j, v_g, v_supply, r_g):
+    def get_object_i_e(self, e_on_off_rr, t_j, v_g, v_supply, r_g):
         """
         Function to get the loss graphs out of the transistor class
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
@@ -491,7 +491,7 @@ class Transistor:
                 print("multiple datasets were found that are consistent with the chosen "
                       "operating point. The first of these sets is automatically chosen because selection of a "
                       "different dataset is not yet implemented.")
-            dataset = candidate_datasets[0].graph_i_e
+            dataset = candidate_datasets[0]
 
         if e_on_off_rr == 'e_off':
             candidate_datasets = [e_off for e_off in self.switch.e_off if (
@@ -506,7 +506,7 @@ class Transistor:
                 print("multiple datasets were found that are consistent with the chosen "
                       "operating point. The first of these sets is automatically chosen because selection of a "
                       "different dataset is not yet implemented.")
-            dataset = candidate_datasets[0].graph_i_e
+            dataset = candidate_datasets[0]
 
         if e_on_off_rr == 'e_rr':
             candidate_datasets = [e_rr for e_rr in self.diode.e_rr if (
@@ -521,7 +521,7 @@ class Transistor:
                 print("multiple datasets were found that are consistent with the chosen "
                       "operating point. The first of these sets is automatically chosen because selection of a "
                       "different dataset is not yet implemented.")
-            dataset = candidate_datasets[0].graph_i_e
+            dataset = candidate_datasets[0]
 
         return dataset
 
@@ -1072,6 +1072,16 @@ class Transistor:
                 if isinstance(d[att_key], np.ndarray):
                     d[att_key] = d[att_key].tolist()
             return d
+
+        def plot_graph(self):
+            plt.figure()
+            label = f"v_g = {self.v_g} V, t_j = {self.t_j} °C"
+            plt.plot(self.graph_v_i[0], self.graph_v_i[1], label=label)
+            plt.legend()
+            plt.grid()
+            plt.xlabel('Voltage in V')
+            plt.ylabel('Current in A')
+            plt.show()
 
     class VoltageDependentCapacitance:
         """Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
