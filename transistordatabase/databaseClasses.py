@@ -8,6 +8,8 @@ from bson.objectid import ObjectId
 from scipy import integrate
 from pymongo import MongoClient
 from pymongo import errors
+import json
+import pathlib
 
 
 
@@ -199,7 +201,9 @@ class Transistor:
         myclient = MongoClient(host)
         return myclient.transistor_database.data
 
-    def save(self, collection, overwrite=None):
+    def save(self, collection="local", overwrite=None):
+        if collection == "local":
+            collection = Transistor.connect_local_TBD()
         transistor_dict = self.convert_to_dict()
         if transistor_dict.get("_id") is not None:
             _id = transistor_dict["_id"]
@@ -219,8 +223,33 @@ class Transistor:
             collection.insert_one(transistor_dict)
 
     @staticmethod
-    def load(collection, dict_filter):
+    def load(dict_filter, collection="local"):
+        if collection == "local":
+            collection = Transistor.connect_local_TBD()
+        # ToDo: Implement case where different transistors fit the filter criterium.
         return Transistor.load_from_db(collection.find_one(dict_filter))
+
+    def export_json(self, path=None):
+        transistor_dict = self.convert_to_dict()
+        if path is None:
+            with open(transistor_dict['name']+'.json', 'w') as fp:
+                json.dump(transistor_dict, fp, default=json_serial)
+            print(f"Saved json-file {transistor_dict['name']+'.json'} to {pathlib.Path(__file__).parent.absolute()}")
+        elif isinstance(path, str):
+            with open(os.path.join(path, transistor_dict['name'] + '.json'), 'w') as fp:
+                json.dump(transistor_dict, fp, default=json_serial)
+            print(f"Saved json-file {transistor_dict['name']+'.json'} to {path}")
+        else:
+            TypeError(f"{path = } ist not a string.")
+
+    @staticmethod
+    def import_json(path):
+        if isinstance(path, str):
+            with open(path, 'r') as myfile:
+                data = myfile.read()
+            return Transistor.load_from_db(json.loads(data))
+        else:
+            TypeError(f"{path = } ist not a string.")
 
     @staticmethod
     def load_from_db(db_dict):
@@ -1384,7 +1413,13 @@ def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero,
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
 
-
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+    # From https://stackoverflow.com/questions/11875770/how-to-overcome-datetime-datetime-not-json-serializable/
+    # This is a good way to overcome serialization errors for different types of objects.
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    raise TypeError ("Type %s not serializable" % type(obj))
 
 
 
