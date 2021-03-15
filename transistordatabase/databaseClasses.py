@@ -1380,7 +1380,7 @@ def check_str(x):
     raise TypeError(f"{x} is not a string.")
 
 
-def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero, set_first_x_value_to_zero):
+def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_to_0=False):
     """Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
     https://apps.automeris.io/wpd/
@@ -1401,14 +1401,14 @@ def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero,
                           converters={0: lambda s: float(s.decode("UTF-8").replace(",", ".")),
                                       1: lambda s: float(s.decode("UTF-8").replace(",", "."))})
 
-    if set_first_value_to_zero == True:
+    if first_xy_to_00 == True:
         array[0][0] = 0  # x value
         array[0][1] = 0  # y value
 
-    if set_second_y_value_to_zero == True:
+    if second_y_to_0 == True:
         array[1][1] = 0  # y value
 
-    if set_first_x_value_to_zero == True:
+    if first_x_to_0 == True:
         array[0][0] = 0  # x value
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
