@@ -6,6 +6,9 @@ from typing import List
 from matplotlib import pyplot as plt
 from bson.objectid import ObjectId
 from scipy import integrate
+from pymongo import MongoClient
+from pymongo import errors
+
 
 
 class Transistor:
@@ -61,6 +64,8 @@ class Transistor:
 
     def __init__(self, transistor_args, switch_args, diode_args):
         if self.isvalid_dict(transistor_args, 'Transistor'):
+            if transistor_args.get('_id') is not None:
+                self._id = transistor_args.get('_id')
             self.name = transistor_args.get('name')
             self.transistor_type = transistor_args.get('transistor_type')
             self.author = transistor_args.get('author')
@@ -181,16 +186,41 @@ class Transistor:
         other_dict.pop('_id', None)
         return my_dict == other_dict
 
-    def convert_to_dict(self):
-        d = dict(vars(self))
-        d['diode'] = self.diode.convert_to_dict()
-        d['switch'] = self.switch.convert_to_dict()
-        d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
-        d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
-        d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
-        if isinstance(self.graph_v_ecoss, np.ndarray):
-            d['graph_v_ecoss'] = self.graph_v_ecoss.tolist()
-        return d
+    @staticmethod
+    def connect_TBD(host):
+        if host == "local":
+            host = "mongodb://localhost:27017/"
+        myclient = MongoClient(host)
+        return myclient.transistor_database.data
+
+    @staticmethod
+    def connect_local_TBD():
+        host = "mongodb://localhost:27017/"
+        myclient = MongoClient(host)
+        return myclient.transistor_database.data
+
+    def save(self, collection, overwrite=None):
+        transistor_dict = self.convert_to_dict()
+        if transistor_dict.get("_id") is not None:
+            _id = transistor_dict["_id"]
+            if collection.find_one({"_id": _id}) is not None:
+                if not isinstance(overwrite, bool):
+                    raise errors.DuplicateKeyError(
+                        f"A transistor object with {_id = } is already present in the TBD. Please specify, "
+                        f"whether the newly saved Transistor should replace the old one or whether it should "
+                        f"be saved as a copy. This can be done by setting the optional argument 'overwrite' "
+                        f" to either True or False.")
+                if not overwrite:
+                    del transistor_dict["_id"]
+                    collection.insert_one(transistor_dict)
+                if overwrite:
+                    collection.replace_one({"_id": _id}, transistor_dict)
+        else:
+            collection.insert_one(transistor_dict)
+
+    @staticmethod
+    def load(collection, dict_filter):
+        return Transistor.load_from_db(collection.find_one(dict_filter))
 
     @staticmethod
     def load_from_db(db_dict):
@@ -236,6 +266,17 @@ class Transistor:
             elif diode_args['e_rr'][i]['dataset_type'] == 'graph_i_e':
                 diode_args['e_rr'][i]['graph_i_e'] = np.array(diode_args['e_rr'][i]['graph_i_e'])
         return Transistor(transistor_args, switch_args, diode_args)
+
+    def convert_to_dict(self):
+        d = dict(vars(self))
+        d['diode'] = self.diode.convert_to_dict()
+        d['switch'] = self.switch.convert_to_dict()
+        d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
+        d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
+        d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
+        if isinstance(self.graph_v_ecoss, np.ndarray):
+            d['graph_v_ecoss'] = self.graph_v_ecoss.tolist()
+        return d
 
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
@@ -317,6 +358,11 @@ class Transistor:
                             f"instead.")
 
         if dict_type == 'Transistor':
+            if dataset_dict.get("_id") is not None:
+                _id = dataset_dict["_id"]
+                if not isinstance(_id, ObjectId):
+                    raise TypeError(f"{_id} is not a valid ObjectId.")
+
             if dataset_dict.get('transistor_type') not in supported_transistor_types:
                 raise ValueError(f"Transistor type currently not supported. 'transistor_type' must be in "
                                  f"{supported_transistor_types}")
@@ -1337,3 +1383,12 @@ def csv2array(csv_filename, set_first_value_to_zero, set_second_y_value_to_zero,
         array[0][0] = 0  # x value
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
+
+
+
+
+
+
+
+
+
