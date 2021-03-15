@@ -62,7 +62,7 @@ def Template():
                        'c_iss':  {"t_j": 25, "graph_v_c": csv2array('transistor_c_iss.csv', False, False, True)},  # insert csv here
                        'c_oss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_oss.csv', False, False, True)},  # insert csv here
                        'c_rss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_rss.csv', False, False, True)},  # insert csv here
-                       'e_coss': csv2array('transistor_V_Eoss.csv', False, False, False),
+                       'graph_v_ecoss': csv2array('transistor_V_Eoss.csv', False, False, False),
                        'r_g_int': 2.6,
                        }
 

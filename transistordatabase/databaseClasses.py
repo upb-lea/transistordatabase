@@ -44,11 +44,18 @@ class Transistor:
     # Absolute maximum ratings
     v_abs_max: [float, int]  # Unit: V  # Mandatory
     i_abs_max: [float, int]  # Unit: A  # Mandatory
+    # Constant Capacitances
+    c_oss_fix: [float, int, None]  # Unit: F  # Optional
+    c_iss_fix: [float, int, None]  # Unit: F  # Optional
+    c_rss_fix: [float, int, None]  # Unit: F  # Optional
+    # Voltage dependent capacitances
+    c_oss: List["VoltageDependentCapacitance"]  # VoltageDependentCapacitance. # Optional
+    c_iss: List["VoltageDependentCapacitance"]  # VoltageDependentCapacitance. # Optional
+    c_rss: List["VoltageDependentCapacitance"]  # VoltageDependentCapacitance. # Optional
+    # Energy stored in c_oss
+    graph_v_ecoss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: J  # Optional
     # Rated operation region
     i_cont: [float, int, None]  # Unit: A  # e.g. Fuji: I_c, Semikron: I_c,nom # Mandatory
-    c_oss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
-    c_iss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
-    c_rss: List["Transistor_v_c"]  # Transistor_v_c. # Optional
     t_c_max: [float, int]  # Unit °C # Optional
     r_g_int: [float, int]  # Unit: Ohm # Mandatory
 
@@ -71,6 +78,9 @@ class Transistor:
             self.cooling_area = transistor_args.get('cooling_area')
             self.t_c_max = transistor_args.get('t_c_max')
             self.r_g_int = transistor_args.get('r_g_int')
+            self.c_oss_fix = transistor_args.get('c_oss_fix')
+            self.c_iss_fix = transistor_args.get('c_iss_fix')
+            self.c_rss_fix = transistor_args.get('c_rss_fix')
             # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
             # Import list of valid housing types from "housing_types.txt"
             # add housing types to the working direction
@@ -92,12 +102,12 @@ class Transistor:
             self.i_cont = transistor_args.get('i_cont')
             self.c_oss = []  # Default case: Empty list
             if isinstance(transistor_args.get('c_oss'), list):
-                # Loop through list and check each dict for validity. Only create Transistor_v_c objects from
+                # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in transistor_args.get('c_oss'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'Transistor_v_c'):
-                            self.c_oss.append(Transistor.Transistor_v_c(dataset))
+                        if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                            self.c_oss.append(Transistor.VoltageDependentCapacitance(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = transistor_args.get('c_oss')
@@ -106,18 +116,18 @@ class Transistor:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_oss "
                                       f"dictionaries: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(transistor_args.get('c_oss'), 'Transistor_v_c'):
-                # Only create Transistor_v_c objects from valid dicts
-                self.c_oss.append(Transistor.Transistor_v_c(transistor_args.get('c_oss')))
+            elif Transistor.isvalid_dict(transistor_args.get('c_oss'), 'VoltageDependentCapacitance'):
+                # Only create VoltageDependentCapacitance objects from valid dicts
+                self.c_oss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_oss')))
 
             self.c_iss = []  # Default case: Empty list
             if isinstance(transistor_args.get('c_iss'), list):
-                # Loop through list and check each dict for validity. Only create Transistor_v_c objects from
+                # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in transistor_args.get('c_iss'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'Transistor_v_c'):
-                            self.c_iss.append(Transistor.Transistor_v_c(dataset))
+                        if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                            self.c_iss.append(Transistor.VoltageDependentCapacitance(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = transistor_args.get('c_iss')
@@ -126,18 +136,18 @@ class Transistor:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_iss "
                                       f"dictionaries: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(transistor_args.get('c_iss'), 'Transistor_v_c'):
-                # Only create Transistor_v_c objects from valid dicts
-                self.c_iss.append(Transistor.Transistor_v_c(transistor_args.get('c_iss')))
+            elif Transistor.isvalid_dict(transistor_args.get('c_iss'), 'VoltageDependentCapacitance'):
+                # Only create VoltageDependentCapacitance objects from valid dicts
+                self.c_iss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_iss')))
 
             self.c_rss = []  # Default case: Empty list
             if isinstance(transistor_args.get('c_rss'), list):
-                # Loop through list and check each dict for validity. Only create Transistor_v_c objects from
+                # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in transistor_args.get('c_rss'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'Transistor_v_c'):
-                            self.c_rss.append(Transistor.Transistor_v_c(dataset))
+                        if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                            self.c_rss.append(Transistor.VoltageDependentCapacitance(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = transistor_args.get('c_rss')
@@ -146,10 +156,10 @@ class Transistor:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_rss "
                                       f"dictionaries: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(transistor_args.get('c_rss'), 'Transistor_v_c'):
-                # Only create Transistor_v_c objects from valid dicts
-                self.c_rss.append(Transistor.Transistor_v_c(transistor_args.get('c_rss')))
-            self.e_coss = transistor_args.get('e_coss')
+            elif Transistor.isvalid_dict(transistor_args.get('c_rss'), 'VoltageDependentCapacitance'):
+                # Only create VoltageDependentCapacitance objects from valid dicts
+                self.c_rss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_rss')))
+            self.graph_v_ecoss = transistor_args.get('graph_v_ecoss')
         else:
             # ToDo: Is this a value or a type error?
             # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
@@ -178,8 +188,8 @@ class Transistor:
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
         d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
         d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
-        if isinstance(self.e_coss, np.ndarray):
-            d['e_coss'] = self.e_coss.tolist()
+        if isinstance(self.graph_v_ecoss, np.ndarray):
+            d['graph_v_ecoss'] = self.graph_v_ecoss.tolist()
         return d
 
     @staticmethod
@@ -195,9 +205,9 @@ class Transistor:
         if 'c_rss' in transistor_args:
             for i in range(len(transistor_args['c_rss'])):
                 transistor_args['c_rss'][i]['graph_v_c'] = np.array(transistor_args['c_rss'][i]['graph_v_c'])
-        if 'e_coss' in transistor_args:
-            if transistor_args['e_coss'] is not None:
-                transistor_args['e_coss'] = np.array(transistor_args['e_coss'])
+        if 'graph_v_ecoss' in transistor_args:
+            if transistor_args['graph_v_ecoss'] is not None:
+                transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
         # Convert switch_args
         switch_args = db_dict['switch']
         if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
@@ -242,12 +252,12 @@ class Transistor:
                                    'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int'},
                 'str_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'},
                 'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
-                                 'r_g_int'},
-                'array_keys': {'e_coss'}},
+                                 'r_g_int', 'c_oss_fix', 'c_iss_fix', 'c_rss_fix'},
+                'array_keys': {'graph_v_ecoss'}},
             'Switch': {
                 'mandatory_keys': {'t_j_max'},
                 'str_keys': {'comment', 'manufacturer', 'technology'},
-                'numeric_keys': {'c_oss', 'c_iss', 'c_rss', 't_j_max'},
+                'numeric_keys': {'t_j_max'},
                 'array_keys': {}},
             'Diode': {
                 'mandatory_keys': {'t_j_max'},
@@ -289,7 +299,7 @@ class Transistor:
                 'str_keys': {},
                 'numeric_keys': {'t_j', 'v_supply', 'v_g', 'r_g'},
                 'array_keys': {'graph_i_e'}},
-            'Transistor_v_c': {
+            'VoltageDependentCapacitance': {
                 'mandatory_keys': {'t_j', 'graph_v_c'},
                 'str_keys': {},
                 'numeric_keys': {'t_j'},
@@ -698,10 +708,6 @@ class Transistor:
         e_on: List["SwitchEnergyData"]  # Switch on energy data.
         e_off: List["SwitchEnergyData"]  # Switch of energy data.
         linearized_switch: List["LinearizedModel"]  # Static data valid for a specific operating point.
-        # Constant Capacitances
-        c_oss: [float, int, None]  # Unit: F  # Optional
-        c_iss: [float, int, None]  # Unit: F  # Optional
-        c_rss: [float, int, None]  # Unit: F  # Optional
         #
         t_j_max: [float, int]  # Unit: °C # Mandatory
 
@@ -710,9 +716,7 @@ class Transistor:
             # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
             self.thermal_foster = Transistor.FosterThermalModel(switch_args.get('thermal_foster'))
             if Transistor.isvalid_dict(switch_args, 'Switch'):
-                self.c_oss = switch_args.get('c_oss')
-                self.c_iss = switch_args.get('c_iss')
-                self.c_rss = switch_args.get('c_rss')
+
                 self.t_j_max = switch_args.get('t_j_max')
                 self.comment = switch_args.get('comment')
                 self.manufacturer = switch_args.get('manufacturer')
@@ -797,9 +801,6 @@ class Transistor:
                     self.linearized_switch.append(Transistor.LinearizedModel(switch_args.get('linearized_switch')))
 
             else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
-                self.c_oss = None
-                self.c_iss = None
-                self.c_rss = None
                 self.comment = None
                 self.manufacturer = None
                 self.technology = None
@@ -1072,9 +1073,9 @@ class Transistor:
                     d[att_key] = d[att_key].tolist()
             return d
 
-    class Transistor_v_c:
+    class VoltageDependentCapacitance:
         """Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
-        For different temperatures: Create additional Transistor_v_c-objects and store them as a list in the transistor-object.
+        For different temperatures: Create additional VoltageDependentCapacitance-objects and store them as a list in the transistor-object.
         """
 
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
