@@ -19,6 +19,8 @@ coming soon.
 
 ## Usage
 ### Generate a new transistor, use the template
+ * Fuji housing overview https://www.fujielectric.com/products/semiconductor/model/igbt/2pack.html
+
 #### transistor object working
 Transistor      
  |     
