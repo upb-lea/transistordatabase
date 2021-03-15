@@ -267,35 +267,31 @@ if __name__ == '__main__':
     ####################################
     # before init mongo, you need to install mongodb and start the database via the command line by using 'mongo' command
     # init mongodb
-    # myclient = MongoClient("mongodb://localhost:27017/")  # Wenn Server auf lokaler Maschine
-    # my_db = myclient.transistor_database  # Datenbank
-    # data = my_db.data  # Collection
+    # collection = Transistor.connect_local_TBD()  # Collection
 
     # reset the mongodb database
-    # data.drop()
+    # collection.drop()
 
     # store transistor
-    # transistor_dict = transistor.convert_to_dict()  # 'transistor' ist das zu speichernde Objekt
-    # data.insert_one(transistor_dict)
+    # optional argument: collection. If no collection is specified, it connects to local TBD
+    # transistor.save()
 
     # load transistor
-    # retrieved_transistor = data.find_one({'name': 'CREE_C3M0016120K'})  # Such-Kriterium quasi beliebig wählbar(?)
-    # transistor_loaded = Transistor.load_from_db(retrieved_transistor)
+    # optional argument: collection. If no collection is specified, it connects to local TBD
+    # transistor_loaded = Transistor.load({'name': 'CREE_C3M0016120K'})
     # print(transistor_loaded.switch.t_j_max)
 
     # export to json
-    # transistor_dict = transistor.convert_to_dict()  # 'transistor' ist das zu speichernde Objekt
-    # with open('test.json', 'w') as fp:
-    #     json.dump(transistor_dict, fp)
+    # optional argument: path. If no path is specified, saves exports to local folder
+    # transistor.export_json()
 
     # import from json
-    # read file
-    # with open('test.json', 'r') as myfile:
-    #     data = myfile.read()
-    # # parse file
-    # retrieved_transistor = json.loads(data)
-    # transistor_loaded = Transistor.load_from_db(retrieved_transistor)
-    # print(transistor_loaded.switch.t_j_max)
+    # optional argument: path. If no path is specified, it loads from to local folder
+    # transistor_imported = Transistor.import_json('CREE_C3M0016120K.json')
+    # print(transistor_imported.switch.t_j_max)
+
+
+
 
 
 
