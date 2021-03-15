@@ -74,11 +74,6 @@ def Template():
     manufacturer = "CREE"  # Optional
     technology = "unknown"  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
 
-    # Constant Capacitances
-    c_oss = 5   # Unit: F  # Optional
-    c_iss = 3  # Unit: F  # Optional
-    c_rss = 4    # Unit: F  # Optional
-
     #### Channel parameters
     # channel data minus 40 degree
     channel_m40_15 = {"t_j": -40, 'v_g': 15,"graph_v_i": csv2array('switch_channel_m40_15V.csv', True, False, False)}  # insert csv here
@@ -126,11 +121,16 @@ def Template():
                     "graph_i_e": csv2array('switch_switching_eoff_2.5Ohm_800V_25deg_-4V.csv', False, False, False)}  # insert csv here
 
     ### switch foster parameters
-    #
-    # switch_foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
-    #                'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
-    #                'graph_t_rthjc': graph_t_rthjc}
-    switch_foster_args = None
+    switch_foster_args = {
+        #'r_th_vector': r_th_vector,
+        'r_th_total': 0.27,
+        #'c_th_vector': c_th_vector,
+        #'c_th_total': c_th_total,
+        #'tau_vector': tau_vector,
+        #'tau_total': tau_total,
+        #'graph_t_rthjc': graph_t_rthjc
+        }
+    # switch_foster_args = None
 
 
     #### Bring the switch_args together
@@ -139,9 +139,6 @@ def Template():
         'manufacturer': manufacturer,
         'technology': technology,
         't_j_max': 175,
-        'c_oss': c_oss,
-        'c_iss': c_iss,
-        'c_rss': c_rss,
         'channel': [channel_m40_7, channel_m40_9, channel_m4_11, channel_m40_13, channel_m40_15, channel_25_15, channel_25_13, channel_25_11, channel_25_9, channel_25_7, channel_175_15, channel_175_13, channel_175_11, channel_175_9, channel_175_7],
         'e_on': [e_on_25_600, e_on_25_800],
         'e_off': [e_off_25_600, e_off_25_800],
