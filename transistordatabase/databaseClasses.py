@@ -193,13 +193,13 @@ class Transistor:
         if host == "local":
             host = "mongodb://localhost:27017/"
         myclient = MongoClient(host)
-        return myclient.transistor_database.data
+        return myclient.transistor_database.collection
 
     @staticmethod
     def connect_local_TBD():
         host = "mongodb://localhost:27017/"
         myclient = MongoClient(host)
-        return myclient.transistor_database.data
+        return myclient.transistor_database.collection
 
     def save(self, collection="local", overwrite=None):
         if collection == "local":
