@@ -515,6 +515,127 @@ class Transistor:
 
         return dataset
 
+    def get_object_i_e_simplified(self, e_on_off_rr, t_j):
+        """
+        Function to get the loss graphs out of the transistor class, simplified version
+        :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
+        :param t_j: junction temperature
+        :return: e_on.graph_i_e or e_off.graph_i_e or e_rr.graph_i_e
+        """
+        # Note: this is necessary due to e_on/e_off and e_rr are stored to switch and diode
+        if e_on_off_rr == 'e_on' or e_on_off_rr == 'e_off':
+            # s_d stands for 'switch or diode'
+            s_d = 'switch'
+        else:
+            s_d = 'diode'
+
+        # use eval function to choose variable e_on/e_off/e_rr
+        # compile is necessary due to using eval combined with if-statement
+        # https://realpython.com/python-eval-function/
+        code = compile(f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_i_e')]", "<string>", "eval")
+        candidate_datasets = eval(code)
+        if len(candidate_datasets) == 0:
+            code = compile(f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]", "<string>", "eval")
+            available_datasets = eval(code)
+            print("Available operating points: (t_j, v_g, v_supply, r_g)")
+            print(available_datasets)
+            raise ValueError("No data available for get_graph_i_e at the given operating point. "
+                             "A list of available operating points is printed above.")
+        elif len(candidate_datasets) > 1:
+            print("multiple datasets were found that are consistent with the chosen "
+                  "operating point. The first of these sets is automatically chosen because selection of a "
+                  "different dataset is not yet implemented.")
+        dataset = candidate_datasets[0]
+
+        return dataset
+
+
+    def get_object_r_e_simplified(self, e_on_off_rr, t_j, v_supply):
+        """
+        Function to get the loss graphs out of the transistor class, simplified version
+        :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
+        :param t_j: junction temperature
+        :return: e_on.graph_i_e or e_off.graph_i_e or e_rr.graph_i_e
+        """
+        # Note: this is necessary due to e_on/e_off and e_rr are stored to switch and diode
+        if e_on_off_rr == 'e_on' or e_on_off_rr == 'e_off':
+            # s_d stands for 'switch or diode'
+            s_d = 'switch'
+        else:
+            s_d = 'diode'
+
+        # use eval function to choose variable e_on/e_off/e_rr
+        # compile is necessary due to using eval combined with if-statement
+        # https://realpython.com/python-eval-function/
+        code = compile(f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_r_e' and {e_on_off_rr}.v_supply == {v_supply})]", "<string>", "eval")
+        candidate_datasets = eval(code)
+        if len(candidate_datasets) == 0:
+            code = compile(f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]", "<string>", "eval")
+            available_datasets = eval(code)
+            print("Available operating points: (t_j, v_g, v_supply, r_g)")
+            print(available_datasets)
+            raise ValueError("No data available for get_graph_r_e at the given operating point. "
+                             "A list of available operating points is printed above.")
+        elif len(candidate_datasets) > 1:
+            print("multiple datasets were found that are consistent with the chosen "
+                  "operating point. The first of these sets is automatically chosen because selection of a "
+                  "different dataset is not yet implemented.")
+        dataset = candidate_datasets[0]
+
+        return dataset
+
+
+    def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply):
+        """
+        Calculate loss curves for other gate resistor than the standard one.
+        This function uses i_e loss curve in combination with r_e loss curve, to calculate a new i_e loss curve for
+        a choosen gate restistor. Also voltage correction is implemented (e.g. half voltage compared to datasheet means half losses)
+        Note: r_e_object may has not same voltage as i_e_object. #ToDo:  r_e_object may has not same voltage as i_e_object.
+        :param e_on_off_rr: 'e_on', 'e_off', 'e_rr'
+        :param r_g: gate resistor of interest
+        :param t_j: juncntion temperature of interest
+        :param v_supply: supply voltage of interest
+        :return: object with corrected i_e curves due to r_g and v_supply at given t_j
+
+
+        """
+
+        # search for graph_i_e, simplified version
+        i_e_object = self.get_object_i_e_simplified(e_on_off_rr, t_j)
+        r_e_object = self.get_object_r_e_simplified(e_on_off_rr, t_j, i_e_object.v_supply)
+
+        # generate copy
+        object_i_e_calc = i_e_object.graph_i_e.copy()
+
+        # calculate factor for new gate resistor to nominal gate resistor
+        loss_at_rg = np.interp(r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
+        loss_at_rgnom = np.interp(i_e_object.r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
+        factor_current = loss_at_rg / loss_at_rgnom
+
+        # current correction with factor
+        object_i_e_calc[1] =  factor_current * object_i_e_calc[1]
+
+        # voltage correction, linear
+        object_i_e_calc[1] = v_supply / i_e_object.v_supply * object_i_e_calc[1]
+        # generate dictionary for class SwitchEnergyData
+        args = {
+            'dataset_type':'graph_i_e',
+            'r_g': r_g,
+            'v_supply': v_supply,
+            'graph_i_e': object_i_e_calc,
+            't_j': t_j,
+            'v_g': i_e_object.v_g,
+        }
+
+        # check dictionary
+        self.isvalid_dict(args, 'SwitchEnergyData')
+        # pack to object
+        object_i_e_calc = self.SwitchEnergyData(args)
+
+        return object_i_e_calc
+
+
+
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
         temperature behavior as a thermal_foster RC-network. The necessary parameters can be estimated by curve-fitting
@@ -1043,6 +1164,24 @@ class Transistor:
                 if isinstance(d[att_key], np.ndarray):
                     d[att_key] = d[att_key].tolist()
             return d
+
+        def plot_graph(self):
+            plt.figure()
+            if self.dataset_type == 'graph_i_e':
+                label = f"v_g = {self.v_g} V, v_supply = {self.v_supply} V, r_g = {self.r_g} Ohm, t_j = {self.t_j} °C"
+                plt.plot(self.graph_i_e[0], self.graph_i_e[1], label=label)
+                plt.xlabel('current in A')
+            elif self.dataset_type == 'graph_r_e':
+                label = f"v_g = {self.v_g} V, v_supply = {self.v_supply} V, i_x = {self.i_x} Ohm, t_j = {self.t_j} °C"
+                plt.plot(self.graph_r_e[0], self.graph_r_e[1], label=label)
+                plt.xlabel('r_g in Ohm')
+
+            plt.legend()
+            plt.grid()
+            plt.ylabel('Energy in J')
+            plt.show()
+
+
 
     def linearize_channel_ui_graph(self, t_j, v_g, i_channel, switch_or_diode):
         """Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
