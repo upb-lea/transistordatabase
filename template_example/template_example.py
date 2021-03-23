@@ -234,14 +234,17 @@ if __name__ == '__main__':
     # print(transistor.calc_v_eoss())
     # transistor.plot_v_eoss()
     # transistor.plot_v_qoss()
-    #print(transistor.get_graph_v_i('switch', 25, 15))
+    # print(transistor.get_graph_v_i('switch', 25, 15))
 
     # print(transistor.get_graph_i_e('e_on', 25, 15, 600, 2.5))
     # print(transistor.get_graph_i_e('e_off', 25, -4, 600, 2.5))
     # print(transistor.get_graph_i_e('e_rr', 25, 15, 600, 2.5))  # not working in this example because of no e_rr for SiC-MOSFETs
 
+    # export virtual datasheet as PDF
+    # transistor.virtual_datasheet()
+
     #### switch methods ####
-    # transistor.switch.plot_energy_data()
+    transistor.switch.plot_energy_data()
     # transistor.switch.plot_all_channel_data()
     # transistor.switch.plot_channel_data_vge(15)
     # transistor.switch.plot_channel_data_temp(175)
@@ -274,7 +277,7 @@ if __name__ == '__main__':
 
     # store transistor
     # optional argument: collection. If no collection is specified, it connects to local TBD
-    # transistor.save()
+    transistor.save()
 
     # load transistor
     # optional argument: collection. If no collection is specified, it connects to local TBD
@@ -283,12 +286,14 @@ if __name__ == '__main__':
 
     # export to json
     # optional argument: path. If no path is specified, saves exports to local folder
-    transistor.export_json()
+    # transistor.export_json()
 
     # import from json
     # optional argument: path. If no path is specified, it loads from to local folder
     # transistor_imported = Transistor.import_json('CREE_C3M0016120K.json')
     # print(transistor_imported.switch.t_j_max)
+
+
 
 
 

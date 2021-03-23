@@ -10,6 +10,9 @@ from pymongo import MongoClient
 from pymongo import errors
 import json
 import pathlib
+import inspect
+import re
+from fpdf import FPDF
 
 
 
@@ -719,6 +722,57 @@ class Transistor:
 
         return object_i_e_calc
 
+    def virtual_datasheet(self):
+        pdf = PDF()
+        pdf.set_title(f"Virtual datasheet {self.name}")
+        pdf.set_author('LEA - Transistor Database File generator')
+        pdf.add_page()
+        pdf.chapter_title(1, 'Transistor data')
+        pdf.print_value(self.name)
+        pdf.print_value(self.transistor_type)
+        pdf.print_value(self.author)
+        pdf.print_value(self.technology)
+        pdf.print_value(self.template_version)
+        pdf.print_value(self.template_date)
+        pdf.print_value(self.creation_date)
+        pdf.print_value(self.last_modified)
+        pdf.print_value(self.comment)
+        pdf.print_value(self.manufacturer)
+        pdf.print_value(self.datasheet_hyperlink)
+        pdf.print_value(self.datasheet_date)
+        pdf.print_value(self.datasheet_version)
+        pdf.print_value(self.housing_area)
+        pdf.print_value(self.cooling_area)
+        pdf.print_value(self.t_c_max)
+        pdf.print_value(self.r_g_int)
+        pdf.print_value(self.c_oss_fix)
+        pdf.print_value(self.c_iss_fix)
+        pdf.print_value(self.c_rss_fix)
+        pdf.print_value(self.housing_type)
+        pdf.print_value(self.r_th_cs)
+        pdf.print_value(self.r_th_switch_cs)
+        pdf.print_value(self.r_th_diode_cs)
+        pdf.print_value(self.v_abs_max)
+        pdf.print_value(self.i_abs_max)
+        pdf.print_value(self.i_cont)
+        pdf.add_page()
+        pdf.chapter_title(2, 'Switch data')
+        pdf.print_value(self.switch.comment)
+        pdf.print_value(self.switch.manufacturer)
+        pdf.print_value(self.switch.technology)
+        pdf.print_value(self.switch.t_j_max)
+        pdf.add_page()
+        pdf.chapter_title(3, 'Diode data')
+        pdf.print_value(self.diode.comment)
+        pdf.print_value(self.diode.manufacturer)
+        pdf.print_value(self.diode.technology)
+        pdf.print_value(self.diode.t_j_max)
+        #pdf.figure_left(memfile)
+        #pdf.figure_right(memfile)
+        #memfile.close()
+
+        pdf.output(self.name+'.pdf')
+
 
 
     class FosterThermalModel:
@@ -1424,6 +1478,96 @@ def json_serial(obj):
 
 
 
+class PDF(FPDF):
+    # notes for A4 pages
+    # DIN A4 is 210x297mm
 
+
+
+    def header(self):
+        title = 'virtual datasheet'
+        # helvetica bold 15
+        self.set_font('helvetica', 'B', 15)
+        # Calculate width of title and position
+        w = self.get_string_width(title) + 6
+        self.set_x((210 - w) / 2)
+        # Colors of frame, background and text
+        self.set_draw_color(0, 80, 180)
+        self.set_fill_color(230, 230, 0)
+        self.set_text_color(220, 50, 50)
+        # Thickness of frame (1 mm)
+        self.set_line_width(1)
+        # Title
+        self.cell(w, 9, title, 1, 1, 'C', True)
+        # Line break
+        self.ln(10)
+
+    def footer(self):
+        # Position at 1.5 cm from bottom
+        self.set_y(-15)
+        # helvetica italic 8
+        self.set_font('helvetica', 'I', 8)
+        # Text color in gray
+        self.set_text_color(128)
+        # Page number
+        self.cell(0, 10, 'Page ' + str(self.page_no()), 0, 0, 'C')
+
+    def chapter_title(self, num, label):
+        # helvetica 12
+        self.set_font('helvetica', '', 12)
+        # Background color
+        self.set_fill_color(200, 220, 255)
+        # Title
+        self.cell(0, 6, f'Section {num} : {label}', 0, 1, 'L', True)
+        # Line break
+        self.ln(4)
+
+    def chapter_body(self, name):
+        # Read text file
+        with open(name, 'rb') as fh:
+            txt = fh.read().decode('latin-1')
+        # Times 12
+        self.set_font('Times', '', 12)
+        # Output justified text
+        self.multi_cell(0, 5, txt)
+        # Line break
+        self.ln()
+        # Mention in italics
+        self.set_font('', 'I')
+        self.cell(0, 5, '(end of excerpt)')
+
+    def print_chapter(self, num, title, name):
+        self.add_page()
+        self.chapter_title(num, title)
+        self.chapter_body(name)
+
+    def figure_left(self, memfile):
+        space_fig_left_right = 10
+        space_fig_middle = 10
+        pagewidth = 210
+        figwidth = pagewidth/2 - space_fig_middle/2 - space_fig_left_right
+        self.image(memfile, x=space_fig_left_right, y=100, w=figwidth)
+
+    def figure_right(self, memfile):
+        space_fig_left_right = 10
+        space_fig_middle = 10
+        pagewidth = 210
+        figwidth = pagewidth/2 - space_fig_middle/2 - space_fig_left_right
+        figright_origin = pagewidth/2 + space_fig_middle/2
+        self.image(memfile, x=figright_origin, y=100, w=figwidth)
+
+    def print_value(self, variable):
+        # get the intial name of the value
+        # copied here: https://stackoverflow.com/questions/32000934/python-print-a-variables-name-and-value
+        frame = inspect.currentframe().f_back
+        s = inspect.getframeinfo(frame).code_context[0]
+        r = re.search(r"\((.*)\)", s).group(1)
+        vnames = r.split(", ")
+        #
+        self.set_font('Times', '', 12)
+        # Output justified text
+        self.multi_cell(0, 3, f'{vnames} = {variable}')
+        # Line break
+        self.ln()
 
 
