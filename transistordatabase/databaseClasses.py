@@ -1360,9 +1360,9 @@ class Transistor:
             else:
                 # transistor has forward voltage. Other interpolating point will be with 10% more current
                 # ToDo: Test this function if IGBT is available
-                voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].graph_v_i[1],
+                voltage_interpolated_2 = np.interp(i_channel * 0.9, candidate_datasets[0].graph_v_i[1],
                                                    candidate_datasets[0].graph_v_i[0])
-                r_channel = (voltage_interpolated_2 - voltage_interpolated) / (0.1 * i_channel)
+                r_channel = (voltage_interpolated - voltage_interpolated_2) / (0.1 * i_channel)
                 v_channel = voltage_interpolated - r_channel * i_channel
         elif switch_or_diode == 'diode':
             if self.transistor_type in ['SiC-MOSFET', 'GaN-Transistor']:
@@ -1394,9 +1394,9 @@ class Transistor:
             # interpolate data
             voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
                                              candidate_datasets[0].graph_v_i[0])
-            voltage_interpolated_2 = np.interp(i_channel * 1.1, candidate_datasets[0].graph_v_i[1],
+            voltage_interpolated_2 = np.interp(i_channel * 0.9, candidate_datasets[0].graph_v_i[1],
                                                candidate_datasets[0].graph_v_i[0])
-            r_channel = (voltage_interpolated_2 - voltage_interpolated) / (0.1 * i_channel)
+            r_channel = (voltage_interpolated - voltage_interpolated_2) / (0.1 * i_channel)
             v_channel = voltage_interpolated - r_channel * i_channel
         else:
             raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
