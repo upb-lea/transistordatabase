@@ -409,13 +409,22 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
     """
     Export transistor data to GeckoCIRCUITS
 
+
+
     :param Transistor: choose the transistor to export
     :param v_supply: supply voltage for turn-on/off losses
     :param v_g_on: gate turn-on voltage
     :param v_g_off: gate turn-off voltage
-    :param r_g_on: gate resistor
+    :param r_g_on: gate resistor for turn-on
+    :param r_g_off: gate resistor for turn-off
     :return: two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl for geckoCIRCUITS import
     """
+
+    # programming notes
+    # exporting the diode:
+    # diode off losses:
+    # diode on losses: these on losses must be generated, even if they are zero
+    # diode channel: channel characteristics can include more than one time a zero value
 
     amount_v_g_switch_cond = 0
     amount_v_g_switch_sw = 0
@@ -542,12 +551,13 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
     if len(Transistor.diode.e_rr) == 0:
         file_diode.write(f"anzMesskurvenPvSWITCH 1\n")
         file_diode.write("<SchaltverlusteMesskurve>\n")
-        file_diode.write(f"data[][] 2 2 0 10 0 0")
+        file_diode.write(f"data[][] 3 2 0 10 0 0 0 0")
         file_diode.write(f"\ntj 125\n")
         file_diode.write(f"uBlock 400\n")
         file_diode.write("<\SchaltverlusteMesskurve>\n")
 
     # in case of available data
+    #
     else:
         # check for curves with the gate voltage
         # count number of arrays with gate v_g == v_g_export
@@ -558,20 +568,24 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
 
         # in case of no given v_g for diode (e.g. for igbts)
         if amount_v_g_diode_sw == 0:
-            for i in np.array(range(0, len(Transistor.diode.e_rr))):
-                if len(Transistor.diode.e_rr[n_rr].v_g) == 0 and Transistor.diode.e_rr[
-                    i].r_g == r_g_on and \
+            for n_rr in np.array(range(0, len(Transistor.diode.e_rr))):
+                if len(Transistor.diode.e_rr[n_rr].v_g) == 0 and Transistor.diode.e_rr[n_rr].r_g == r_g_on and \
                         Transistor.diode.e_rr[n_rr].v_supply == v_supply:
                     amount_v_g_diode_sw += 1
 
             file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
 
             for n_rr in np.array(range(0, len(Transistor.diode.e_rr))):
-                if len(Transistor.diode.e_rr[n_rr].v_g) == 0 and Transistor.diode.e_rr[
-                    n_rr].r_g == r_g_on and \
+                if len(Transistor.diode.e_rr[n_rr].v_g) == 0 and Transistor.diode.e_rr[n_rr].r_g == r_g_on and \
                         Transistor.diode.e_rr[n_rr].v_supply == v_supply:
                     rr_current = Transistor.diode.e_rr[n_rr].graph_i_e[0]
                     rr_energy = Transistor.diode.e_rr[n_rr].graph_i_e[1]
+
+                    # forward recovery losses set to zero
+                    fr_energy = np.zeros(len(rr_current))
+
+                    print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                    print_fr_energy = print_fr_energy[1:-1]
 
                     print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
                     print_current = print_current[1:-1]
@@ -580,10 +594,12 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
 
                     # for every loss curve, write
                     file_diode.write("<SchaltverlusteMesskurve>\n")
-                    file_diode.write(f"data[][] 2 {len(rr_current)} {print_current} {print_rr_energy}")
+                    file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
                     file_diode.write(f"\ntj {Transistor.diode.e_rr[n_rr].t_j}\n")
                     file_diode.write(f"uBlock {Transistor.diode.e_rr[n_rr].v_supply}\n")
                     file_diode.write("<\SchaltverlusteMesskurve>\n")
+
+        # in case of devices wich include a gate voltage (e.g. GaN-transistors)
         else:
 
             file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
@@ -594,7 +610,10 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
 
                     rr_current = Transistor.diode.e_rr[n_rr].graph_i_e[0]
                     rr_energy = Transistor.diode.e_rr[n_rr].graph_i_e[1]
-
+                    # forward recovery losses set to zero
+                    fr_energy = np.zeros(len(rr_current))
+                    print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                    print_fr_energy = print_fr_energy[1:-1]
                     print_current = np.array2string(rr_current, formatter={'float_kind':lambda x: "%.2f" % x})
                     print_current = print_current[1:-1]
                     print_rr_energy = np.array2string(rr_energy, formatter={'float_kind':lambda x: "%.8f" % x})
@@ -602,7 +621,7 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
 
                     # for every loss curve, write
                     file_diode.write("<SchaltverlusteMesskurve>\n")
-                    file_diode.write(f"data[][] 2 {len(rr_current)} {print_current} {print_rr_energy}")
+                    file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
                     file_diode.write(f"\ntj {Transistor.diode.e_rr[n_rr].t_j}\n")
                     file_diode.write(f"uBlock {Transistor.diode.e_rr[n_rr].v_supply}\n")
                     file_diode.write("<\SchaltverlusteMesskurve>\n")
