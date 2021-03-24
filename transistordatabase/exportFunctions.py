@@ -506,16 +506,20 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
 
     file_diode = open(Transistor.name + "_Diode.scl","w")
     #### diode channel data
-    # count number of arrays with gate v_g == v_g_export
-    for i in np.array(range(0, len(Transistor.diode.channel))):
-        if Transistor.diode.channel[n_channel].v_g == v_g_off:
+    # count number of arrays for conducting behaviour
+    # in case of gan-transistor, search for v_g_off
+    # in case of mosfet or igbt use all available data
+    for n_channel in np.array(range(0, len(Transistor.diode.channel))):
+        if (Transistor.diode.channel[n_channel].v_g == v_g_off and Transistor.transistor_type.lower() == 'gan-transistor') or Transistor.transistor_type == 'MOSFET' or Transistor.transistor_type == 'IGBT':
             amount_v_g_diode_cond +=1
 
     file_diode.write("anzMesskurvenPvCOND " + str(amount_v_g_diode_cond) + "\n")
     # export conducting behaviour
-    for i in np.array(range(0, len(Transistor.diode.channel))):
+    for n_channel in np.array(range(0, len(Transistor.diode.channel))):
         # if v_g_diode is given, search for it. Else, use all data in Transistor.diode.channel
-        if Transistor.diode.channel[n_channel].v_g == v_g_off:
+        # in case of gan-transistor, search for v_g_off
+        # in case of mosfet or igbt use all available data
+        if (Transistor.diode.channel[n_channel].v_g == v_g_off and Transistor.transistor_type.lower() == 'gan-transistor') or Transistor.transistor_type == 'MOSFET' or Transistor.transistor_type == 'IGBT':
 
             current = np.abs(Transistor.diode.channel[n_channel].graph_v_i[0])
             voltage = np.abs(Transistor.diode.channel[n_channel].graph_v_i[1])
