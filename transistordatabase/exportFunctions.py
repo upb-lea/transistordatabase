@@ -146,9 +146,9 @@ def export_simulink_v1(transistorName):
 
     # maximum data for plots and for non-linear data, given by data sheet plots
     # TODO Set max points via variables (Given to the exporter function?)
-    Temp_Switch_I_channel_max = 1200
+    Temp_Switch_i_max = 1200
     Temp_Switch_V_channel_max = 3.5
-    Switch_I_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I_max')
+    Switch_i_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I_max')
     Switch_V_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'V_max')
 
     # Junction temperatures for channel losses and switching losses
@@ -160,8 +160,8 @@ def export_simulink_v1(transistorName):
     Switch_r_channel = np.nan
     Switch_V0_channel = np.nan
 
-    Switch_I_channel = np.linspace(0, Temp_Switch_I_channel_max, Temp_Switch_I_channel_max + 1)
-    Switch_I_channel_T_J = [[findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I')],
+    Switch_i = np.linspace(0, Temp_Switch_i_max, Temp_Switch_i_max + 1)
+    Switch_i_T_J = [[findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I')],
                             [findChannelData(Transistor, 'Transistor.switch.channel', 125, 'graph_v_i', 'I')]]
 
     # TODO V_Channel endpoint change to variable?
@@ -202,18 +202,18 @@ def export_simulink_v1(transistorName):
     Switch_G_i = compatibilityTest(Transistor, 'Transistor.switch.switchEnergy.g_i')
 
     Switch_dict = {'Manufacturer': compatibilityTest(Transistor, 'Transistor.switch.manufacturer'),
-                   'I_channel_max': Switch_I_channel_max,
+                   'i_max': Switch_i_max,
                    'V_channel_max': Switch_V_channel_max,
                    'T_J_channel': Switch_T_J_channel,
                    'T_J_switching': Switch_T_J_switching,
                    'r_channel': Switch_r_channel,
                    'V0_channel': Switch_V0_channel,
-                   'I_channel': Switch_I_channel,
+                   'i': Switch_i,
                    'V_channel_vec': Switch_V_channel_vec,
                    'V_channel': Switch_V_channel,
-                   'I_channel_25': findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I'),
-                   'I_channel_125': findChannelData(Transistor, 'Transistor.switch.channel', 125, 'graph_v_i', 'I'),
-                   'I_channel_T_J': Switch_I_channel_T_J,
+                   'i_25': findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I'),
+                   'i_125': findChannelData(Transistor, 'Transistor.switch.channel', 125, 'graph_v_i', 'I'),
+                   'i_T_J': Switch_i_T_J,
                    'T_J_ref': Switch_T_J_ref,
                    'E_on_ref': Switch_E_on_ref,
                    'E_off_ref': Switch_E_off_ref,
@@ -243,9 +243,9 @@ def export_simulink_v1(transistorName):
 
     # maximum data for plots and for non-linear data, given by data sheet plots
     # TODO Set max points via Variable (Given to the exporter function)
-    Temp_Diode_I_channel_max = 1200
+    Temp_Diode_i_max = 1200
     Temp_Diode_V_channel_max = 3.5
-    Diode_I_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I_max')
+    Diode_i_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'I_max')
     Diode_V_channel_max = findChannelData(Transistor, 'Transistor.switch.channel', 25, 'graph_v_i', 'V_max')
 
     # Junction temperatures for channel losses and switching losses
@@ -257,8 +257,8 @@ def export_simulink_v1(transistorName):
     Diode_r_channel = np.nan
     Diode_V0_channel = np.nan
 
-    Diode_I_channel = np.linspace(0, Temp_Diode_I_channel_max, Temp_Diode_I_channel_max + 1)
-    Diode_I_channel_T_J = [[findChannelData(Transistor, 'Transistor.diode.channel', 25, 'graph_v_i', 'I')],
+    Diode_i = np.linspace(0, Temp_Diode_i_max, Temp_Diode_i_max + 1)
+    Diode_i_T_J = [[findChannelData(Transistor, 'Transistor.diode.channel', 25, 'graph_v_i', 'I')],
                            [findChannelData(Transistor, 'Transistor.diode.channel', 125, 'graph_v_i', 'I')]]
 
     # TODO V_Channel Endpoint change to variable?
@@ -291,12 +291,12 @@ def export_simulink_v1(transistorName):
                   'T_J_switching': Diode_T_J_switching,
                   'r_channel': Diode_r_channel,
                   'V0_channel': Diode_V0_channel,
-                  'I_channel': Diode_I_channel,
+                  'i': Diode_i,
                   'V_channel_vec': Diode_V_channel_vec,
                   'V_channel': Diode_V_channel,
-                  'I_channel_25': findChannelData(Transistor, 'Transistor.diode.channel', 25, 'graph_v_i', 'I'),
-                  'I_channel_125': findChannelData(Transistor, 'Transistor.diode.channel', 125, 'graph_v_i', 'I'),
-                  'I_channel_T_J':  Diode_I_channel_T_J,
+                  'i_25': findChannelData(Transistor, 'Transistor.diode.channel', 25, 'graph_v_i', 'I'),
+                  'i_125': findChannelData(Transistor, 'Transistor.diode.channel', 125, 'graph_v_i', 'I'),
+                  'i_T_J':  Diode_i_T_J,
                   'T_J_ref': Diode_T_J_ref,
                   'E_rr_ref': Diode_E_rr_ref,
                   'I_ref': Diode_I_ref,
@@ -405,7 +405,7 @@ def export_matlab_v1(transistorName):
 
     sio.savemat(Transistor.name + '_M1.mat', {Transistor.name: Transistor_dict})
 
-def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
+def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off):
     """
     Export transistor data to GeckoCIRCUITS
 
@@ -413,7 +413,7 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
     :param v_supply: supply voltage for turn-on/off losses
     :param v_g_on: gate turn-on voltage
     :param v_g_off: gate turn-off voltage
-    :param r_g_switch: gate resistor
+    :param r_g_on: gate resistor
     :return: two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl for geckoCIRCUITS import
     """
 
@@ -430,19 +430,18 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
     ########################
     file_switch = open(Transistor.name + "_Switch.scl","w")
 
-
+    #### switch channel data
     # count number of arrays with gate v_g == v_g_export
-    for i_channel in np.array(range(0, len(Transistor.switch.channel))):
-        if Transistor.switch.channel[i_channel].v_g == v_g_on:
+    for n_channel in np.array(range(0, len(Transistor.switch.channel))):
+        if Transistor.switch.channel[n_channel].v_g == v_g_on:
             amount_v_g_switch_cond +=1
 
     file_switch.write("anzMesskurvenPvCOND " + str(amount_v_g_switch_cond) + "\n")
-    #
-    for i_channel in np.array(range(0, len(Transistor.switch.channel))):
-        if Transistor.switch.channel[i_channel].v_g == v_g_on:
+    for n_channel in np.array(range(0, len(Transistor.switch.channel))):
+        if Transistor.switch.channel[n_channel].v_g == v_g_on:
 
-            current = Transistor.switch.channel[i_channel].graph_v_i[0]
-            voltage = Transistor.switch.channel[i_channel].graph_v_i[1]
+            current = Transistor.switch.channel[n_channel].graph_v_i[0]
+            voltage = Transistor.switch.channel[n_channel].graph_v_i[1]
 
             print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.2f" % x})
             print_current = print_current[1:-1]
@@ -452,27 +451,33 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
             # for every loss curve, write
             file_switch.write("<LeitverlusteMesskurve>\n")
             file_switch.write("data[][] 2 " + str(len(current)) + " " + print_current + " " + print_voltage)
-            file_switch.write("\ntj "+ str(Transistor.switch.channel[i_channel].t_j) +"\n")
+            file_switch.write("\ntj "+ str(Transistor.switch.channel[n_channel].t_j) +"\n")
             file_switch.write("<\LeitverlusteMesskurve>\n")
 
+    #### switch switching loss
     # check for availability of switching loss curves
     # count number of arrays with gate v_g == v_g_export
-    for i_channel in np.array(range(0, len(Transistor.switch.e_on))):
-        if Transistor.switch.e_on[i_channel].v_g == v_g_on and Transistor.switch.e_on[i_channel].r_g == r_g_switch and\
-            Transistor.switch.e_on[i_channel].v_supply == v_supply:
+    for n_on in np.array(range(0, len(Transistor.switch.e_on))):
+        if Transistor.switch.e_on[n_on].v_g == v_g_on and Transistor.switch.e_on[n_on].r_g == r_g_on and\
+            Transistor.switch.e_on[n_on].v_supply == v_supply:
             amount_v_g_switch_sw +=1
 
     file_switch.write(f"anzMesskurvenPvSWITCH {amount_v_g_switch_sw}\n")
 
-    for i_channel in np.array(range(0, len(Transistor.switch.e_on))):
-        if Transistor.switch.e_on[i_channel].v_g == v_g_on and Transistor.switch.e_on[i_channel].r_g == r_g_switch and\
-            Transistor.switch.e_on[i_channel].v_supply == v_supply:
+    for n_on in np.array(range(0, len(Transistor.switch.e_on))):
+        if Transistor.switch.e_on[n_on].v_g == v_g_on and Transistor.switch.e_on[n_on].r_g == r_g_on and\
+            Transistor.switch.e_on[n_on].v_supply == v_supply:
 
-            on_current = Transistor.switch.e_on[i_channel].graph_i_e[0]
-            on_energy = Transistor.switch.e_on[i_channel].graph_i_e[1]
+            on_current = Transistor.switch.e_on[n_on].graph_i_e[0]
+            on_energy = Transistor.switch.e_on[n_on].graph_i_e[1]
 
-            off_current = Transistor.switch.e_off[i_channel].graph_i_e[0]
-            off_energy = Transistor.switch.e_off[i_channel].graph_i_e[1]
+            # search for off loss curves
+            for n_off in np.array(range(0, len(Transistor.switch.e_off))):
+                if Transistor.switch.e_off[n_off].v_g == v_g_off and Transistor.switch.e_off[n_off].r_g == r_g_off and \
+                        Transistor.switch.e_off[n_off].v_supply == v_supply:
+                    # set off current and off energy
+                    off_current = Transistor.switch.e_off[n_off].graph_i_e[0]
+                    off_energy = Transistor.switch.e_off[n_off].graph_i_e[1]
 
             interp_current = np.linspace(0, on_current[-1], 10)
             interp_on_energy = np.interp(interp_current, on_current, on_energy)
@@ -489,8 +494,8 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
             # for every loss curve, write
             file_switch.write("<SchaltverlusteMesskurve>\n")
             file_switch.write("data[][] 3 " + str(len(interp_current)) + " " + print_current + " " + print_on_energy + " " + print_off_energy)
-            file_switch.write(f"\ntj {Transistor.switch.e_on[i_channel].t_j}\n")
-            file_switch.write(f"uBlock {Transistor.switch.e_on[i_channel].v_supply}\n")
+            file_switch.write(f"\ntj {Transistor.switch.e_on[n_on].t_j}\n")
+            file_switch.write(f"uBlock {Transistor.switch.e_on[n_on].v_supply}\n")
             file_switch.write("<\SchaltverlusteMesskurve>\n")
 
     file_switch.close()
@@ -500,19 +505,20 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
     ########################
 
     file_diode = open(Transistor.name + "_Diode.scl","w")
+    #### diode channel data
     # count number of arrays with gate v_g == v_g_export
-    for i_channel in np.array(range(0, len(Transistor.diode.channel))):
-        if Transistor.diode.channel[i_channel].v_g == v_g_off:
+    for i in np.array(range(0, len(Transistor.diode.channel))):
+        if Transistor.diode.channel[n_channel].v_g == v_g_off:
             amount_v_g_diode_cond +=1
 
     file_diode.write("anzMesskurvenPvCOND " + str(amount_v_g_diode_cond) + "\n")
     # export conducting behaviour
-    for i_channel in np.array(range(0, len(Transistor.diode.channel))):
+    for i in np.array(range(0, len(Transistor.diode.channel))):
         # if v_g_diode is given, search for it. Else, use all data in Transistor.diode.channel
-        if Transistor.diode.channel[i_channel].v_g == v_g_off:
+        if Transistor.diode.channel[n_channel].v_g == v_g_off:
 
-            current = np.abs(Transistor.diode.channel[i_channel].graph_v_i[0])
-            voltage = np.abs(Transistor.diode.channel[i_channel].graph_v_i[1])
+            current = np.abs(Transistor.diode.channel[n_channel].graph_v_i[0])
+            voltage = np.abs(Transistor.diode.channel[n_channel].graph_v_i[1])
 
             print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.2f" % x})
             print_current = print_current[1:-1]
@@ -522,10 +528,10 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
             # for every loss curve, write
             file_diode.write("<LeitverlusteMesskurve>\n")
             file_diode.write(f"data[][] 2 {len(current)} {print_current} {print_voltage}")
-            file_diode.write(f"\ntj {Transistor.diode.channel[i_channel].t_j}\n")
+            file_diode.write(f"\ntj {Transistor.diode.channel[n_channel].t_j}\n")
             file_diode.write("<\LeitverlusteMesskurve>\n")
 
-
+    #### diode err loss
     # check for availability of switching loss curves
     # in case of no switching losses available, set curves to zero.
     # if switching losses will not set to zero, geckoCIRCUITS will use inital values
@@ -541,27 +547,27 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
     else:
         # check for curves with the gate voltage
         # count number of arrays with gate v_g == v_g_export
-        for i_channel in np.array(range(0, len(Transistor.diode.e_rr))):
-            if Transistor.diode.e_rr[i_channel].v_g == v_g_on and Transistor.diode.e_rr[i_channel].r_g == r_g_switch and\
-                Transistor.diode.e_rr[i_channel].v_supply == v_supply:
+        for n_rr in np.array(range(0, len(Transistor.diode.e_rr))):
+            if Transistor.diode.e_rr[n_rr].v_g == v_g_on and Transistor.diode.e_rr[n_rr].r_g == r_g_on and\
+                Transistor.diode.e_rr[n_rr].v_supply == v_supply:
                 amount_v_g_diode_sw +=1
 
         # in case of no given v_g for diode (e.g. for igbts)
         if amount_v_g_diode_sw == 0:
-            for i_channel in np.array(range(0, len(Transistor.diode.e_rr))):
-                if len(Transistor.diode.e_rr[i_channel].v_g) == 0 and Transistor.diode.e_rr[
-                    i_channel].r_g == r_g_switch and \
-                        Transistor.diode.e_rr[i_channel].v_supply == v_supply:
+            for i in np.array(range(0, len(Transistor.diode.e_rr))):
+                if len(Transistor.diode.e_rr[n_rr].v_g) == 0 and Transistor.diode.e_rr[
+                    i].r_g == r_g_on and \
+                        Transistor.diode.e_rr[n_rr].v_supply == v_supply:
                     amount_v_g_diode_sw += 1
 
             file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
 
-            for i_channel in np.array(range(0, len(Transistor.diode.e_rr))):
-                if len(Transistor.diode.e_rr[i_channel].v_g) == 0 and Transistor.diode.e_rr[
-                    i_channel].r_g == r_g_switch and \
-                        Transistor.diode.e_rr[i_channel].v_supply == v_supply:
-                    rr_current = Transistor.diode.e_rr[i_channel].graph_i_e[0]
-                    rr_energy = Transistor.diode.e_rr[i_channel].graph_i_e[1]
+            for n_rr in np.array(range(0, len(Transistor.diode.e_rr))):
+                if len(Transistor.diode.e_rr[n_rr].v_g) == 0 and Transistor.diode.e_rr[
+                    n_rr].r_g == r_g_on and \
+                        Transistor.diode.e_rr[n_rr].v_supply == v_supply:
+                    rr_current = Transistor.diode.e_rr[n_rr].graph_i_e[0]
+                    rr_energy = Transistor.diode.e_rr[n_rr].graph_i_e[1]
 
                     print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
                     print_current = print_current[1:-1]
@@ -571,19 +577,19 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
                     # for every loss curve, write
                     file_diode.write("<SchaltverlusteMesskurve>\n")
                     file_diode.write(f"data[][] 2 {len(rr_current)} {print_current} {print_rr_energy}")
-                    file_diode.write(f"\ntj {Transistor.diode.e_rr[i_channel].t_j}\n")
-                    file_diode.write(f"uBlock {Transistor.diode.e_rr[i_channel].v_supply}\n")
+                    file_diode.write(f"\ntj {Transistor.diode.e_rr[n_rr].t_j}\n")
+                    file_diode.write(f"uBlock {Transistor.diode.e_rr[n_rr].v_supply}\n")
                     file_diode.write("<\SchaltverlusteMesskurve>\n")
         else:
 
             file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
 
-            for i_channel in np.array(range(0, len(Transistor.diode.e_rr))):
-                if Transistor.diode.e_rr[i_channel].v_g == v_g_on and Transistor.diode.e_rr[i_channel].r_g == r_g_switch and\
-                    Transistor.diode.e_rr[i_channel].v_supply == v_supply:
+            for n_rr in np.array(range(0, len(Transistor.diode.e_rr))):
+                if Transistor.diode.e_rr[n_rr].v_g == v_g_on and Transistor.diode.e_rr[n_rr].r_g == r_g_on and\
+                    Transistor.diode.e_rr[n_rr].v_supply == v_supply:
 
-                    rr_current = Transistor.diode.e_rr[i_channel].graph_i_e[0]
-                    rr_energy = Transistor.diode.e_rr[i_channel].graph_i_e[1]
+                    rr_current = Transistor.diode.e_rr[n_rr].graph_i_e[0]
+                    rr_energy = Transistor.diode.e_rr[n_rr].graph_i_e[1]
 
                     print_current = np.array2string(rr_current, formatter={'float_kind':lambda x: "%.2f" % x})
                     print_current = print_current[1:-1]
@@ -593,8 +599,8 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_switch):
                     # for every loss curve, write
                     file_diode.write("<SchaltverlusteMesskurve>\n")
                     file_diode.write(f"data[][] 2 {len(rr_current)} {print_current} {print_rr_energy}")
-                    file_diode.write(f"\ntj {Transistor.diode.e_rr[i_channel].t_j}\n")
-                    file_diode.write(f"uBlock {Transistor.diode.e_rr[i_channel].v_supply}\n")
+                    file_diode.write(f"\ntj {Transistor.diode.e_rr[n_rr].t_j}\n")
+                    file_diode.write(f"uBlock {Transistor.diode.e_rr[n_rr].v_supply}\n")
                     file_diode.write("<\SchaltverlusteMesskurve>\n")
 
     file_diode.close()
