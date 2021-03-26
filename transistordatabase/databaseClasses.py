@@ -1334,6 +1334,9 @@ class Transistor:
         v_channel = None
         r_channel = None
 
+        if i_channel > self.i_abs_max:
+            raise ValueError(f"In linearize_channel_ui_graph: linearizing current ({i_channel} A) higher than i_absmax ({self.i_abs_max} A)")
+
         if switch_or_diode == 'switch':
             candidate_datasets = [channel for channel in self.switch.channel
                                   if (channel.t_j == t_j and channel.v_g == v_g)]
@@ -1401,7 +1404,7 @@ class Transistor:
         else:
             raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
                              "linearization.")
-        return round(v_channel, 2), round(r_channel, 4)
+        return round(v_channel, 6), round(r_channel, 9)
 
 
 def check_realnum(x):
