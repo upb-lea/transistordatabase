@@ -244,7 +244,7 @@ if __name__ == '__main__':
     # transistor.virtual_datasheet()
 
     #### switch methods ####
-    transistor.switch.plot_energy_data()
+    # transistor.switch.plot_energy_data()
     # transistor.switch.plot_all_channel_data()
     # transistor.switch.plot_channel_data_vge(15)
     # transistor.switch.plot_channel_data_temp(175)
@@ -263,7 +263,7 @@ if __name__ == '__main__':
     # Export to SIMULINK
 
     # Export to geckoCIRCUITS
-    export_geckocircuits(transistor, 600, 15, -2, 2.5)
+    export_geckocircuits(transistor, 600, 15, -4, 2.5, 2.5)
 
     ####################################
     # Database example

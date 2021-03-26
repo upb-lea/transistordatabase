@@ -424,7 +424,7 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
     # exporting the diode:
     # diode off losses:
     # diode on losses: these on losses must be generated, even if they are zero
-    # diode channel: channel characteristics can include more than one time a zero value
+    # diode channel: it is not allowed to use more than one current that is zero (otherwise geckocircuits can not calculate the losses)
 
     amount_v_g_switch_cond = 0
     amount_v_g_switch_sw = 0
@@ -449,18 +449,24 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
     for n_channel in np.array(range(0, len(Transistor.switch.channel))):
         if Transistor.switch.channel[n_channel].v_g == v_g_on:
 
-            current = Transistor.switch.channel[n_channel].graph_v_i[0]
-            voltage = Transistor.switch.channel[n_channel].graph_v_i[1]
+            voltage = Transistor.switch.channel[n_channel].graph_v_i[0]
+            current = Transistor.switch.channel[n_channel].graph_v_i[1]
 
-            print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.2f" % x})
+            # gecko can not work in case of to currents are zero
+            # so find the second current that is zero and replace it by a very small current
+            for i in range(len(current)):
+                if i > 0 and current[i] == 0:
+                    current[i] = 0.001
+
+            print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.3f" % x})
             print_current = print_current[1:-1]
-            print_voltage = np.array2string(voltage, formatter={'float_kind':lambda x: "%.2f" % x})
+            print_voltage = np.array2string(voltage, formatter={'float_kind':lambda x: "%.3f" % x})
             print_voltage = print_voltage[1:-1]
 
             # for every loss curve, write
             file_switch.write("<LeitverlusteMesskurve>\n")
-            file_switch.write("data[][] 2 " + str(len(current)) + " " + print_current + " " + print_voltage)
-            file_switch.write("\ntj "+ str(Transistor.switch.channel[n_channel].t_j) +"\n")
+            file_switch.write(f"data[][] 2 {len(current)} {print_voltage} {print_current}")
+            file_switch.write(f"\ntj {Transistor.switch.channel[n_channel].t_j}\n")
             file_switch.write("<\LeitverlusteMesskurve>\n")
 
     #### switch switching loss
@@ -502,7 +508,7 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
 
             # for every loss curve, write
             file_switch.write("<SchaltverlusteMesskurve>\n")
-            file_switch.write("data[][] 3 " + str(len(interp_current)) + " " + print_current + " " + print_on_energy + " " + print_off_energy)
+            file_switch.write(f"data[][] 3 {len(interp_current)} {print_current} {print_on_energy} {print_off_energy}")
             file_switch.write(f"\ntj {Transistor.switch.e_on[n_on].t_j}\n")
             file_switch.write(f"uBlock {Transistor.switch.e_on[n_on].v_supply}\n")
             file_switch.write("<\SchaltverlusteMesskurve>\n")
@@ -530,17 +536,23 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
         # in case of mosfet or igbt use all available data
         if (Transistor.diode.channel[n_channel].v_g == v_g_off and Transistor.transistor_type.lower() == 'gan-transistor') or Transistor.transistor_type == 'MOSFET' or Transistor.transistor_type == 'IGBT':
 
-            current = np.abs(Transistor.diode.channel[n_channel].graph_v_i[0])
-            voltage = np.abs(Transistor.diode.channel[n_channel].graph_v_i[1])
+            voltage = np.abs(Transistor.diode.channel[n_channel].graph_v_i[0])
+            current = np.abs(Transistor.diode.channel[n_channel].graph_v_i[1])
 
-            print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.2f" % x})
+            # gecko can not work in case of to currents are zero
+            # so find the second current that is zero and replace it by a very small current
+            for i in range(len(current)):
+                if i > 0 and current[i] == 0:
+                    current[i] = 0.001
+
+            print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.3f" % x})
             print_current = print_current[1:-1]
-            print_voltage = np.array2string(voltage, formatter={'float_kind':lambda x: "%.2f" % x})
+            print_voltage = np.array2string(voltage, formatter={'float_kind':lambda x: "%.3f" % x})
             print_voltage = print_voltage[1:-1]
 
             # for every loss curve, write
             file_diode.write("<LeitverlusteMesskurve>\n")
-            file_diode.write(f"data[][] 2 {len(current)} {print_current} {print_voltage}")
+            file_diode.write(f"data[][] 2 {len(current)} {print_voltage} {print_current}")
             file_diode.write(f"\ntj {Transistor.diode.channel[n_channel].t_j}\n")
             file_diode.write("<\LeitverlusteMesskurve>\n")
 
