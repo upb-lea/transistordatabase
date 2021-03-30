@@ -1,0 +1,7 @@
+anzMesskurvenPvCOND 0
+anzMesskurvenPvSWITCH 1
+<SchaltverlusteMesskurve>
+data[][] 3 2 0 10 0 0 0 0
+tj 125
+uBlock 400
+<\SchaltverlusteMesskurve>
