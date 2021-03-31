@@ -7,7 +7,7 @@ from databaseClasses import Transistor
 class MyTestCase(unittest.TestCase):
     # Values for basic example
     name = 'Test-Transistor'
-    transistor_type = 'IGBT'
+    type = 'IGBT'
     v_abs_max = 200
     i_abs_max = 200
     i_cont = 200
@@ -54,7 +54,7 @@ class MyTestCase(unittest.TestCase):
                    'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
                    'graph_t_rthjc': graph_t_rthjc}
     # Create argument dictionaries
-    transistor_args = {'name': name, 'transistor_type': transistor_type, 'author': author, 'comment': comment,
+    transistor_args = {'name': name, 'type': type, 'author': author, 'comment': comment,
                        'manufacturer': manufacturer, 'datasheet_hyperlink': datasheet_hyperlink,
                        'datasheet_date': datasheet_date,
                        'datasheet_version': datasheet_version, 'housing_area': housing_area,
@@ -73,7 +73,7 @@ class MyTestCase(unittest.TestCase):
         transistor = Transistor(self.transistor_args, self.switch_args, self.diode_args)
         # Test transistor attributes
         self.assertEqual(transistor.name, self.name)
-        self.assertEqual(transistor.transistor_type, self.transistor_type)
+        self.assertEqual(transistor.type, self.type)
         self.assertEqual(transistor.author, self.author)
         self.assertEqual(transistor.comment, self.comment)
         self.assertEqual(transistor.manufacturer, self.manufacturer)

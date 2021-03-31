@@ -1,7 +1,7 @@
 import numpy as np
 from databaseClasses import Transistor
 
-transistor_args = {"name": "Test-Transistor", "transistor_type": 'MOSFET', "v_max": 200, "i_max": 200, 'i_cont': 200}
+transistor_args = {"name": "Test-Transistor", "type": 'MOSFET', "v_max": 200, "i_max": 200, 'i_cont': 200}
 metadata_args = {"author": "Manuel Klaedtke", "manufacturer": "Fuji", "housing_area": 200, "cooling_area": 200,
                  "housing_type": "TO-220"}
 channel1 = {"t_j": 1.0,

@@ -13,6 +13,9 @@ import pathlib
 import inspect
 import re
 from fpdf import FPDF
+from git import Repo
+import shutil
+import stat
 
 
 
@@ -24,7 +27,7 @@ class Transistor:
     # ToDo: Add database _id as attribute
     _id: "bson.objectid.ObjectId"
     name: str  # Name of the transistor. Choose as specific as possible. # Mandatory
-    transistor_type: str  # Mandatory
+    type: str  # Mandatory
     # User-specific data
     author: str  # Mandatory
     comment: [str, None]  # Optional
@@ -72,7 +75,7 @@ class Transistor:
             if transistor_args.get('_id') is not None:
                 self._id = transistor_args.get('_id')
             self.name = transistor_args.get('name')
-            self.transistor_type = transistor_args.get('transistor_type')
+            self.type = transistor_args.get('type')
             self.author = transistor_args.get('author')
             self.technology = transistor_args.get('technology')
             self.template_version = transistor_args.get('template_version')
@@ -175,7 +178,7 @@ class Transistor:
             # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
             # ToDo: Use info in isvalid_dict() to print the list of mandatory values automatically
             raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
-                            "are mandatory: 'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', "
+                            "are mandatory: 'name', 'type', 'author', 'manufacturer', 'housing_area', "
                             "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
 
         self.diode = self.Diode(diode_args)
@@ -255,6 +258,29 @@ class Transistor:
             TypeError(f"{path = } ist not a string.")
 
     @staticmethod
+    def update_from_fileexchange(access_token, collection="local", overwrite=True):
+        if collection == "local":
+            collection = Transistor.connect_local_TBD()
+        repo_url = f"https://{access_token}:x-oauth-basic@github.com/upb-lea/Transistor_Database_File_Exchange"
+        local_dir = "./cloned_repo"
+        Repo.clone_from(repo_url, local_dir)
+        for subdir, dirs, files in os.walk(local_dir):
+            for file in files:
+                # print os.path.join(subdir, file)
+                filepath = subdir + os.sep + file
+
+                if filepath.endswith(".json"):
+                    transistor = Transistor.import_json(filepath)
+                    transistor.save(collection, overwrite)
+
+        for root, dirs, files in os.walk(local_dir):
+            for dir in dirs:
+                os.chmod(os.path.join(root, dir), stat.S_IRWXU)
+            for file in files:
+                os.chmod(os.path.join(root, file), stat.S_IRWXU)
+        shutil.rmtree('./cloned_repo')
+
+    @staticmethod
     def load_from_db(db_dict):
         # Convert transistor_args
         transistor_args = db_dict
@@ -313,17 +339,17 @@ class Transistor:
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
         """This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
-        are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'transistor_type').
+        are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'type').
         Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
         Raises appropriate errors if dictionary invalid in other ways."""
         # ToDo: Error if given key is not used?
-        supported_transistor_types = ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']
+        supported_types = ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']
         housing_types_filename = 'housing_types.txt'
         instructions = {
             'Transistor': {
-                'mandatory_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
+                'mandatory_keys': {'name', 'type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
                                    'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int'},
-                'str_keys': {'name', 'transistor_type', 'author', 'manufacturer', 'housing_type'},
+                'str_keys': {'name', 'type', 'author', 'manufacturer', 'housing_type'},
                 'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
                                  'r_g_int', 'c_oss_fix', 'c_iss_fix', 'c_rss_fix'},
                 'array_keys': {'graph_v_ecoss'}},
@@ -395,9 +421,9 @@ class Transistor:
                 if not isinstance(_id, ObjectId):
                     raise TypeError(f"{_id} is not a valid ObjectId.")
 
-            if dataset_dict.get('transistor_type') not in supported_transistor_types:
-                raise ValueError(f"Transistor type currently not supported. 'transistor_type' must be in "
-                                 f"{supported_transistor_types}")
+            if dataset_dict.get('type') not in supported_types:
+                raise ValueError(f"Transistor type currently not supported. 'type' must be in "
+                                 f"{supported_types}")
             housing_types_file = os.path.join(os.path.dirname(__file__), housing_types_filename)
             with open(housing_types_file, "r") as housing_types_txt:
                 housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
@@ -515,7 +541,7 @@ class Transistor:
             dataset = candidate_datasets[0]
 
         elif switch_or_diode == 'diode':
-            if self.transistor_type in ['SiC-MOSFET', 'GaN-Transistor']:
+            if self.type in ['SiC-MOSFET', 'GaN-Transistor']:
                 candidate_datasets = [channel for channel in self.diode.channel if
                                       (channel.t_j == t_j and channel.v_g == v_g)]
                 if len(candidate_datasets) == 0:
@@ -729,7 +755,7 @@ class Transistor:
         pdf.add_page()
         pdf.chapter_title(1, 'Transistor data')
         pdf.print_value(self.name)
-        pdf.print_value(self.transistor_type)
+        pdf.print_value(self.type)
         pdf.print_value(self.author)
         pdf.print_value(self.technology)
         pdf.print_value(self.template_version)
@@ -1323,7 +1349,7 @@ class Transistor:
 
 
 
-    def linearize_channel_ui_graph(self, t_j, v_g, i_channel, switch_or_diode):
+    def calc_lin_channel(self, t_j, v_g, i_channel, switch_or_diode):
         """Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
         the desired current, the equivalent parameters for u_channel and r_channel are returned"""
         # ToDo: rethink method name. May include switch or diode as a parameter and use one global function
@@ -1335,7 +1361,7 @@ class Transistor:
         r_channel = None
 
         if i_channel > self.i_abs_max:
-            raise ValueError(f"In linearize_channel_ui_graph: linearizing current ({i_channel} A) higher than i_absmax ({self.i_abs_max} A)")
+            raise ValueError(f"In calc_lin_channel: linearizing current ({i_channel} A) higher than i_absmax ({self.i_abs_max} A)")
 
         if switch_or_diode == 'switch':
             candidate_datasets = [channel for channel in self.switch.channel
@@ -1355,7 +1381,7 @@ class Transistor:
             voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
                                              candidate_datasets[0].graph_v_i[0])
             # check kind of transistor type due to forward voltage value
-            if self.transistor_type in ['MOSFET', 'SiC-MOSFET']:
+            if self.type in ['MOSFET', 'SiC-MOSFET']:
                 # transistor has no forward voltage
                 # return values
                 v_channel = 0  # no forward voltage du to resistance behaviour
@@ -1368,7 +1394,7 @@ class Transistor:
                 r_channel = (voltage_interpolated - voltage_interpolated_2) / (0.1 * i_channel)
                 v_channel = voltage_interpolated - r_channel * i_channel
         elif switch_or_diode == 'diode':
-            if self.transistor_type in ['SiC-MOSFET', 'GaN-Transistor']:
+            if self.type in ['SiC-MOSFET', 'GaN-Transistor']:
                 candidate_datasets = [channel for channel in self.diode.channel
                                       if (channel.t_j == t_j and channel.v_g == v_g)]
                 if len(candidate_datasets) == 0:
