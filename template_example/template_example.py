@@ -277,7 +277,7 @@ if __name__ == '__main__':
 
     # store transistor
     # optional argument: collection. If no collection is specified, it connects to local TBD
-    transistor.save()
+    # transistor.save()
 
     # load transistor
     # optional argument: collection. If no collection is specified, it connects to local TBD
@@ -286,7 +286,7 @@ if __name__ == '__main__':
 
     # export to json
     # optional argument: path. If no path is specified, saves exports to local folder
-    # transistor.export_json()
+    transistor.export_json()
 
     # import from json
     # optional argument: path. If no path is specified, it loads from to local folder
