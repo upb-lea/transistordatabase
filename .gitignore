@@ -6,4 +6,4 @@ gpgit/
 *.pdf
 build/
 dist/
-transistor_database.egg-info/
+transistordatabase.egg-info/
