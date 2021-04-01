@@ -46,7 +46,7 @@ def Template():
     ####################################
     # Create argument dictionaries
     transistor_args = {'name': 'CREE_C3M0016120K',
-                       'transistor_type': 'SiC-MOSFET',
+                       'type': 'SiC-MOSFET',
                        'author': 'Nikolas Förster',
                        'comment': '',
                        'manufacturer': 'Wolfspeed',
@@ -198,7 +198,7 @@ if __name__ == '__main__':
     print("transistor metadata")
     print('---------------------')
     print(f"{transistor.name = }")
-    print(f"{transistor.transistor_type = }")
+    print(f"{transistor.type = }")
     print(f"{transistor.author = }")
     print(f"{transistor.comment = }")
     print(f"{transistor.manufacturer = }")
@@ -228,7 +228,7 @@ if __name__ == '__main__':
     ####################################
 
     #### transistor methods ####
-    v_channel, r_channel = transistor.linearize_channel_ui_graph(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    v_channel, r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
     print(f"v_channel_linearized = {v_channel} V")
     print(f"r_channel_linearized = {r_channel} Ohm")
     # print(transistor.calc_v_eoss())

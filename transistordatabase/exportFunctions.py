@@ -322,7 +322,7 @@ def export_simulink_v1(transistorName):
                        'R_th_Switch_CS': compatibilityTest(Transistor, 'Transistor.r_th_switch_cs'),
                        'R_th_Diode_CS': compatibilityTest(Transistor, 'Transistor.r_th_diode_cs'),
                        'Manufacturer_Housing': compatibilityTest(Transistor, 'Transistor.housing_type'),
-                       'Type': compatibilityTest(Transistor, 'Transistor.transistor_type'),
+                       'Type': compatibilityTest(Transistor, 'Transistor.type'),
                        'Template_Version': compatibilityTest(Transistor, 'Transistor.template_version'),
                        'Template_Date': compatibilityTest(Transistor, 'Transistor.template_date'),
                        'Author': compatibilityTest(Transistor, 'Transistor.author'),
@@ -525,7 +525,7 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
     # in case of gan-transistor, search for v_g_off
     # in case of mosfet or igbt use all available data
     for n_channel in np.array(range(0, len(Transistor.diode.channel))):
-        if (Transistor.diode.channel[n_channel].v_g == v_g_off and Transistor.transistor_type.lower() == 'gan-transistor') or Transistor.transistor_type == 'MOSFET' or Transistor.transistor_type == 'IGBT':
+        if (Transistor.diode.channel[n_channel].v_g == v_g_off and Transistor.type.lower() == 'gan-transistor') or Transistor.type == 'MOSFET' or Transistor.type == 'IGBT':
             amount_v_g_diode_cond +=1
 
     file_diode.write("anzMesskurvenPvCOND " + str(amount_v_g_diode_cond) + "\n")
@@ -534,7 +534,7 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
         # if v_g_diode is given, search for it. Else, use all data in Transistor.diode.channel
         # in case of gan-transistor, search for v_g_off
         # in case of mosfet or igbt use all available data
-        if (Transistor.diode.channel[n_channel].v_g == v_g_off and Transistor.transistor_type.lower() == 'gan-transistor') or Transistor.transistor_type == 'MOSFET' or Transistor.transistor_type == 'IGBT':
+        if (Transistor.diode.channel[n_channel].v_g == v_g_off and Transistor.type.lower() == 'gan-transistor') or Transistor.type == 'MOSFET' or Transistor.type == 'IGBT':
 
             voltage = np.abs(Transistor.diode.channel[n_channel].graph_v_i[0])
             current = np.abs(Transistor.diode.channel[n_channel].graph_v_i[1])
