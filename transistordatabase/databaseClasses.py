@@ -6,6 +6,7 @@ from typing import List
 from matplotlib import pyplot as plt
 from bson.objectid import ObjectId
 from scipy import integrate
+from scipy.spatial import distance
 from pymongo import MongoClient
 from pymongo import errors
 import json
@@ -16,7 +17,6 @@ from fpdf import FPDF
 from git import Repo
 import shutil
 import stat
-
 
 
 class Transistor:
@@ -238,13 +238,13 @@ class Transistor:
     def export_json(self, path=None):
         transistor_dict = self.convert_to_dict()
         if path is None:
-            with open(transistor_dict['name']+'.json', 'w') as fp:
+            with open(transistor_dict['name'] + '.json', 'w') as fp:
                 json.dump(transistor_dict, fp, default=json_serial)
-            print(f"Saved json-file {transistor_dict['name']+'.json'} to {pathlib.Path(__file__).parent.absolute()}")
+            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {pathlib.Path(__file__).parent.absolute()}")
         elif isinstance(path, str):
             with open(os.path.join(path, transistor_dict['name'] + '.json'), 'w') as fp:
                 json.dump(transistor_dict, fp, default=json_serial)
-            print(f"Saved json-file {transistor_dict['name']+'.json'} to {path}")
+            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {path}")
         else:
             TypeError(f"{path = } ist not a string.")
 
@@ -279,6 +279,25 @@ class Transistor:
             for file in files:
                 os.chmod(os.path.join(root, file), stat.S_IRWXU)
         shutil.rmtree('./cloned_repo')
+
+    @staticmethod
+    def print_TDB(filters=[], collection="local"):
+        if collection == "local":
+            collection = Transistor.connect_local_TBD()
+        if not isinstance(filters, list):
+            if isinstance(filters, str):
+                filters = [filters]
+            else:
+                raise TypeError(
+                    "The 'filters' argument must be specified as a list of strings or a single string but is"
+                    f" {type(filters)} instead.")
+        if "name" not in filters:
+            filters.append("name")
+        """Filters must be specified according to the respective objects they're associated with. 
+        e.g. 'type' for type of Transistor or 'diode.technology' for technology of Diode."""
+        returned_cursor = collection.find({}, filters)
+        for tran in returned_cursor:
+            print(tran)
 
     @staticmethod
     def load_from_db(db_dict):
@@ -498,7 +517,8 @@ class Transistor:
         Calculates q_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
         :return:
         """
-        charge_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[1], self.c_oss[0].graph_v_c[0], initial=0)
+        charge_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[1], self.c_oss[0].graph_v_c[0],
+                                                         initial=0)
 
         return np.array([self.c_oss[0].graph_v_c[0], charge_cumtrapz])
 
@@ -646,10 +666,14 @@ class Transistor:
         # use eval function to choose variable e_on/e_off/e_rr
         # compile is necessary due to using eval combined with if-statement
         # https://realpython.com/python-eval-function/
-        code = compile(f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_i_e')]", "<string>", "eval")
+        code = compile(
+            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_i_e')]",
+            "<string>", "eval")
         candidate_datasets = eval(code)
         if len(candidate_datasets) == 0:
-            code = compile(f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]", "<string>", "eval")
+            code = compile(
+                f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]",
+                "<string>", "eval")
             available_datasets = eval(code)
             print("Available operating points: (t_j, v_g, v_supply, r_g)")
             print(available_datasets)
@@ -662,7 +686,6 @@ class Transistor:
         dataset = candidate_datasets[0]
 
         return dataset
-
 
     def get_object_r_e_simplified(self, e_on_off_rr, t_j, v_supply):
         """
@@ -681,10 +704,14 @@ class Transistor:
         # use eval function to choose variable e_on/e_off/e_rr
         # compile is necessary due to using eval combined with if-statement
         # https://realpython.com/python-eval-function/
-        code = compile(f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_r_e' and {e_on_off_rr}.v_supply == {v_supply})]", "<string>", "eval")
+        code = compile(
+            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_r_e' and {e_on_off_rr}.v_supply == {v_supply})]",
+            "<string>", "eval")
         candidate_datasets = eval(code)
         if len(candidate_datasets) == 0:
-            code = compile(f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]", "<string>", "eval")
+            code = compile(
+                f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]",
+                "<string>", "eval")
             available_datasets = eval(code)
             print("Available operating points: (t_j, v_g, v_supply, r_g)")
             print(available_datasets)
@@ -697,7 +724,6 @@ class Transistor:
         dataset = candidate_datasets[0]
 
         return dataset
-
 
     def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply):
         """
@@ -727,13 +753,13 @@ class Transistor:
         factor_current = loss_at_rg / loss_at_rgnom
 
         # current correction with factor
-        object_i_e_calc[1] =  factor_current * object_i_e_calc[1]
+        object_i_e_calc[1] = factor_current * object_i_e_calc[1]
 
         # voltage correction, linear
         object_i_e_calc[1] = v_supply / i_e_object.v_supply * object_i_e_calc[1]
         # generate dictionary for class SwitchEnergyData
         args = {
-            'dataset_type':'graph_i_e',
+            'dataset_type': 'graph_i_e',
             'r_g': r_g,
             'v_supply': v_supply,
             'graph_i_e': object_i_e_calc,
@@ -793,13 +819,11 @@ class Transistor:
         pdf.print_value(self.diode.manufacturer)
         pdf.print_value(self.diode.technology)
         pdf.print_value(self.diode.t_j_max)
-        #pdf.figure_left(memfile)
-        #pdf.figure_right(memfile)
-        #memfile.close()
+        # pdf.figure_left(memfile)
+        # pdf.figure_right(memfile)
+        # memfile.close()
 
-        pdf.output(self.name+'.pdf')
-
-
+        pdf.output(self.name + '.pdf')
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
@@ -1347,8 +1371,6 @@ class Transistor:
             plt.ylabel('Energy in J')
             plt.show()
 
-
-
     def calc_lin_channel(self, t_j, v_g, i_channel, switch_or_diode):
         """Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
         the desired current, the equivalent parameters for u_channel and r_channel are returned"""
@@ -1361,7 +1383,8 @@ class Transistor:
         r_channel = None
 
         if i_channel > self.i_abs_max:
-            raise ValueError(f"In calc_lin_channel: linearizing current ({i_channel} A) higher than i_absmax ({self.i_abs_max} A)")
+            raise ValueError(
+                f"In calc_lin_channel: linearizing current ({i_channel} A) higher than i_absmax ({self.i_abs_max} A)")
 
         if switch_or_diode == 'switch':
             candidate_datasets = [channel for channel in self.switch.channel
@@ -1496,22 +1519,20 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
 
+
+
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
     # From https://stackoverflow.com/questions/11875770/how-to-overcome-datetime-datetime-not-json-serializable/
     # This is a good way to overcome serialization errors for different types of objects.
     if isinstance(obj, (datetime.datetime, datetime.date)):
         return obj.isoformat()
-    raise TypeError ("Type %s not serializable" % type(obj))
-
-
+    raise TypeError("Type %s not serializable" % type(obj))
 
 
 class PDF(FPDF):
     # notes for A4 pages
     # DIN A4 is 210x297mm
-
-
 
     def header(self):
         title = 'virtual datasheet'
@@ -1574,15 +1595,15 @@ class PDF(FPDF):
         space_fig_left_right = 10
         space_fig_middle = 10
         pagewidth = 210
-        figwidth = pagewidth/2 - space_fig_middle/2 - space_fig_left_right
+        figwidth = pagewidth / 2 - space_fig_middle / 2 - space_fig_left_right
         self.image(memfile, x=space_fig_left_right, y=100, w=figwidth)
 
     def figure_right(self, memfile):
         space_fig_left_right = 10
         space_fig_middle = 10
         pagewidth = 210
-        figwidth = pagewidth/2 - space_fig_middle/2 - space_fig_left_right
-        figright_origin = pagewidth/2 + space_fig_middle/2
+        figwidth = pagewidth / 2 - space_fig_middle / 2 - space_fig_left_right
+        figright_origin = pagewidth / 2 + space_fig_middle / 2
         self.image(memfile, x=figright_origin, y=100, w=figwidth)
 
     def print_value(self, variable):
@@ -1598,5 +1619,3 @@ class PDF(FPDF):
         self.multi_cell(0, 3, f'{vnames} = {variable}')
         # Line break
         self.ln()
-
-
