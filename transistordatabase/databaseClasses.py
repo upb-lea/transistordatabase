@@ -367,10 +367,13 @@ class Transistor:
         instructions = {
             'Transistor': {
                 'mandatory_keys': {'name', 'type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                                   'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int'},
-                'str_keys': {'name', 'type', 'author', 'manufacturer', 'housing_type'},
+                                   'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int', 'r_th_cs',
+                                   'r_th_switch_cs', 'r_th_diode_cs'},
+                'str_keys': {'name', 'type', 'author', 'manufacturer', 'housing_type', 'comment', 'datasheet_hyperlink',
+                             'datasheet_version'},
                 'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
-                                 'r_g_int', 'c_oss_fix', 'c_iss_fix', 'c_rss_fix'},
+                                 'r_g_int', 'c_oss_fix', 'c_iss_fix', 'c_rss_fix', 'r_th_cs', 'r_th_switch_cs',
+                                 'r_th_diode_cs', 't_c_max'},
                 'array_keys': {'graph_v_ecoss'}},
             'Switch': {
                 'mandatory_keys': {'t_j_max'},
@@ -423,7 +426,7 @@ class Transistor:
                 'numeric_keys': {'t_j'},
                 'array_keys': {'graph_v_c'}},
             'FosterThermalModel': {
-                'mandatory_keys': {},
+                'mandatory_keys': {'r_th_total'},
                 'str_keys': {},
                 'numeric_keys': {'r_th_total', 'c_th_total', 'tau_total'},
                 'array_keys': {'graph_t_rthjc'}}
