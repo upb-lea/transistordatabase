@@ -108,7 +108,7 @@ class Transistor:
             # Don't use the name in transistor_args but the matching name in "housing_types.txt"
             self.housing_type = housing_types[idx]
             self.r_th_cs = transistor_args.get('r_th_cs')
-            self.r_th_switch_cs = transistor_args.get('r_th_switch')
+            self.r_th_switch_cs = transistor_args.get('r_th_switch_cs')
             self.r_th_diode_cs = transistor_args.get('r_th_diode_cs')
             self.v_abs_max = transistor_args.get('v_abs_max')
             self.i_abs_max = transistor_args.get('i_abs_max')
@@ -1000,6 +1000,26 @@ class Transistor:
             d['linearized_switch'] = [lsw.convert_to_dict() for lsw in self.linearized_switch]
             return d
 
+        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10):
+            # Normalize t_j to v_g for distance metric
+            node = np.array([t_j / normalize_t_to_v, v_g])
+            # Find closest channeldata
+            channeldata_t_js = np.array([chan.t_j for chan in self.channel])
+            channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
+            nodes = np.array([channeldata_t_js/normalize_t_to_v, channeldata_v_gs]).transpose()
+            index_channeldata = distance.cdist([node], nodes).argmin()
+            # Find closest e_on
+            e_on_t_js = np.array([e.t_j for e in self.e_on])
+            e_on_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_on])
+            nodes = np.array([e_on_t_js / normalize_t_to_v, e_on_v_gs]).transpose()
+            index_e_on = distance.cdist([node], nodes).argmin()
+            # Find closest e_off
+            e_off_t_js = np.array([e.t_j for e in self.e_off])
+            e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_off])
+            nodes = np.array([e_off_t_js / normalize_t_to_v, e_off_v_gs]).transpose()
+            index_e_off = distance.cdist([node], nodes).argmin()
+            return self.channel[index_channeldata], self.e_on[index_e_on], self.e_off[index_e_off]
+
         def plot_all_channel_data(self):
             """ Plot all channel data """
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
@@ -1167,6 +1187,21 @@ class Transistor:
             d['e_rr'] = [e.convert_to_dict() for e in self.e_rr]
             d['linearized_diode'] = [ld.convert_to_dict() for ld in self.linearized_diode]
             return d
+
+        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10):
+            # Normalize t_j to v_g for distance metric
+            node = np.array([t_j / normalize_t_to_v, v_g])
+            # Find closest channeldata
+            channeldata_t_js = np.array([chan.t_j for chan in self.channel])
+            channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
+            nodes = np.array([channeldata_t_js/normalize_t_to_v, channeldata_v_gs]).transpose()
+            index_channeldata = distance.cdist([node], nodes).argmin()
+            # Find closest e_rr
+            e_rr_t_js = np.array([e.t_j for e in self.e_rr])
+            e_rr_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_rr])
+            nodes = np.array([e_rr_t_js / normalize_t_to_v, e_rr_v_gs]).transpose()
+            index_e_rr = distance.cdist([node], nodes).argmin()
+            return self.channel[index_channeldata], self.e_rr[index_e_rr]
 
         def plot_all_channel_data(self):
             """ Plot all channel data """
@@ -1523,7 +1558,6 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
 
 
-
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
     # From https://stackoverflow.com/questions/11875770/how-to-overcome-datetime-datetime-not-json-serializable/
@@ -1622,3 +1656,5 @@ class PDF(FPDF):
         self.multi_cell(0, 3, f'{vnames} = {variable}')
         # Line break
         self.ln()
+
+
