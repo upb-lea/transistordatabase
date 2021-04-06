@@ -1,4 +1,4 @@
-# Transistor_Database (TDB)
+# transistordatabase (TDB)
 Import/export and manage transistor data in the transistor database.
 
 Functionality examples
@@ -9,13 +9,7 @@ Functionality examples
 
 
 ## Installation
-### install the sources
-```
-cd /Documents/Folder/of/Interest   
-git clone git@github.com:upb-lea/Transistor_Database.git
-```
-### installing TBD using pip
-coming soon.
+We recommend to use pycharm. Navigate to file -> settings -> Project -> Python Interpreter -> add: transistordatabase
 
 ## Usage
 ### Generate a new transistor, use the template
@@ -81,4 +75,4 @@ Find the changelog [here](CHANGELOG.md)
 ## History and project status
 This project started in 2020 as a side project and was initially written in matlab. It quickly became clear that the project was no longer a side project. The project should be completely rewritten, because many new complex levels have been added. To place the project in the open source world, the programming language python is used.      
 
-In january 2020 a very early alpha status is reached.
+In january 2021 a very early alpha status is reached. First pip package is provided in april 2021.

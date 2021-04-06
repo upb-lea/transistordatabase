@@ -261,7 +261,7 @@ class Transistor:
     def update_from_fileexchange(access_token, collection="local", overwrite=True):
         if collection == "local":
             collection = Transistor.connect_local_TBD()
-        repo_url = f"https://{access_token}:x-oauth-basic@github.com/upb-lea/Transistor_Database_File_Exchange"
+        repo_url = f"https://{access_token}:x-oauth-basic@github.com/upb-lea/transistordatabase_File_Exchange"
         local_dir = "./cloned_repo"
         Repo.clone_from(repo_url, local_dir)
         for subdir, dirs, files in os.walk(local_dir):
