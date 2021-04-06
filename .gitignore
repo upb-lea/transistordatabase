@@ -7,3 +7,4 @@ gpgit/
 build/
 dist/
 transistordatabase.egg-info/
+.eggs/
