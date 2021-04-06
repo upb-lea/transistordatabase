@@ -64,6 +64,9 @@ def Template():
                        'c_rss': {"t_j": 25, "graph_v_c": csv2array('transistor_c_rss.csv', first_x_to_0=True)},  # insert csv here
                        'graph_v_ecoss': csv2array('transistor_V_Eoss.csv'),
                        'r_g_int': 2.6,
+                       'r_th_cs': 0,
+                       'r_th_diode_cs': 0,
+                       'r_th_switch_cs': 0,
                        }
 
     ####################################
@@ -292,6 +295,8 @@ if __name__ == '__main__':
     # optional argument: path. If no path is specified, it loads from to local folder
     # transistor_imported = Transistor.import_json('CREE_C3M0016120K.json')
     # print(transistor_imported.switch.t_j_max)
+
+    # Transistor.connect_local_TBD().update_many({}, {"$rename": {"transistor_type": "type"}})
 
 
 
