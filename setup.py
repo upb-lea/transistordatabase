@@ -13,7 +13,7 @@ with open('CHANGELOG.md') as history_file:
 #with open('requirements.txt', 'r') as f:
 #    requirements = f.read().splitlines()
 
-setup_requirements = []
+setup_requirements = ['setuptools_scm']
 
 test_requirements = []
 
