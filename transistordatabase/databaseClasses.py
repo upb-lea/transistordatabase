@@ -5,6 +5,7 @@ import os
 from typing import List
 from matplotlib import pyplot as plt
 from bson.objectid import ObjectId
+from bson import json_util
 from scipy import integrate
 from scipy.spatial import distance
 from pymongo import MongoClient
@@ -239,11 +240,11 @@ class Transistor:
         transistor_dict = self.convert_to_dict()
         if path is None:
             with open(transistor_dict['name'] + '.json', 'w') as fp:
-                json.dump(transistor_dict, fp, default=json_serial)
+                json.dump(transistor_dict, fp, default=json_util.default)
             print(f"Saved json-file {transistor_dict['name'] + '.json'} to {pathlib.Path(__file__).parent.absolute()}")
         elif isinstance(path, str):
             with open(os.path.join(path, transistor_dict['name'] + '.json'), 'w') as fp:
-                json.dump(transistor_dict, fp, default=json_serial)
+                json.dump(transistor_dict, fp, default=json_util.default)
             print(f"Saved json-file {transistor_dict['name'] + '.json'} to {path}")
         else:
             TypeError(f"{path = } ist not a string.")
@@ -253,7 +254,7 @@ class Transistor:
         if isinstance(path, str):
             with open(path, 'r') as myfile:
                 data = myfile.read()
-            return Transistor.load_from_db(json.loads(data))
+            return Transistor.load_from_db(json_util.loads(data))
         else:
             TypeError(f"{path = } ist not a string.")
 
@@ -1002,6 +1003,13 @@ class Transistor:
             return d
 
         def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10):
+            """
+
+            :param t_j:
+            :param v_g:
+            :param normalize_t_to_v:
+            :return:
+            """
             # Normalize t_j to v_g for distance metric
             node = np.array([t_j / normalize_t_to_v, v_g])
             # Find closest channeldata
@@ -1557,15 +1565,6 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
         array[0][0] = 0  # x value
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
-
-
-def json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
-    # From https://stackoverflow.com/questions/11875770/how-to-overcome-datetime-datetime-not-json-serializable/
-    # This is a good way to overcome serialization errors for different types of objects.
-    if isinstance(obj, (datetime.datetime, datetime.date)):
-        return obj.isoformat()
-    raise TypeError("Type %s not serializable" % type(obj))
 
 
 class PDF(FPDF):
