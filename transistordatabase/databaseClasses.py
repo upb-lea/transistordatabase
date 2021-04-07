@@ -184,6 +184,7 @@ class Transistor:
 
         self.diode = self.Diode(diode_args)
         self.switch = self.Switch(switch_args)
+        self.wp = self.WP()
 
     def __eq__(self, other):
         if not isinstance(other, Transistor):
@@ -348,6 +349,7 @@ class Transistor:
 
     def convert_to_dict(self):
         d = dict(vars(self))
+        d.pop('wp', None)  # remove wp from convertig. wp will not be stored to .json files
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
@@ -1501,6 +1503,27 @@ class Transistor:
             raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
                              "linearization.")
         return round(v_channel, 6), round(r_channel, 9)
+
+    class WP:
+        """
+        Class WP is for user calculations in python. The user is able to linearize the channel and store the result in
+        transistor.wp . Doing so, it will be easy to handle transistor objects in later calculating code.
+        Always initialized as None. Always exported as None to .json or to database.
+        This is a temporary workspace.
+        """
+        # type hints
+        v_channel: [float, int, None]
+        r_channel: [float, int, None]
+        e_on: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
+        e_off: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
+        e_rr: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
+
+        def __init__(self):
+            self.v_channel = None
+            self.r_channel = None
+            self.e_on = None
+            self.e_off = None
+            self.e_rr = None
 
 
 def check_realnum(x):
