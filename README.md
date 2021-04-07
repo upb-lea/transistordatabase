@@ -10,6 +10,10 @@ Functionality examples
 
 ## Installation
 We recommend to use pycharm. Navigate to file -> settings -> Project -> Python Interpreter -> add: transistordatabase
+To use in your program, type
+```
+import transistordatabase as tdb
+```
 
 ## Usage
 ### Generate a new transistor, use the template
