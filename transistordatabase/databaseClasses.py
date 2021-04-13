@@ -1517,13 +1517,20 @@ class Transistor:
         e_on: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
         e_off: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
         e_rr: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
+        e_oss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: J
+        q_oss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: C
 
         def __init__(self):
-            self.v_channel = None
-            self.r_channel = None
+            self.switch_v_channel = None
+            self.switch_r_channel = None
+            self.diode_v_channel = None
+            self.diode_r_channel = None
             self.e_on = None
             self.e_off = None
             self.e_rr = None
+            self.v_switching_ref = None
+            self.e_oss = None
+            self.q_oss = None
 
 
 def check_realnum(x):
