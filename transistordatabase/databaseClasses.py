@@ -1517,6 +1517,7 @@ class Transistor:
         e_on: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
         e_off: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
         e_rr: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
+        v_switching_ref: [float, int, None]  
         e_oss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: J
         q_oss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: C
 
