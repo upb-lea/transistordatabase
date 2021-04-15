@@ -53,10 +53,10 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     extras_require={},
-    url='https://github.com/upb-lea/Transistor_Database',
+    url='https://github.com/upb-lea/transistordatabase',
     project_urls={
-        "Documentation": "https://github.com/upb-lea/Transistor_Database",
-        "Source Code": "https://github.com/upb-lea/Transistor_Database",
+        "Documentation": "https://github.com/upb-lea/transistordatabase",
+        "Source Code": "https://github.com/upb-lea/transistordatabase",
     },
     version='0.1.0',
     zip_safe=False,
