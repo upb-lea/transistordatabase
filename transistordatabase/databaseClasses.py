@@ -227,6 +227,8 @@ class Transistor:
                     collection.insert_one(transistor_dict)
                 if overwrite:
                     collection.replace_one({"_id": _id}, transistor_dict)
+            else:
+                collection.insert_one(transistor_dict)
         else:
             collection.insert_one(transistor_dict)
 
