@@ -240,9 +240,9 @@ if __name__ == '__main__':
     ####################################
 
     #### transistor methods ####
-    v_channel, r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
-    print(f"v_channel_linearized = {v_channel} V")
-    print(f"r_channel_linearized = {r_channel} Ohm")
+    transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    print(f"{transistor.wp.switch_v_channel = } V")
+    print(f"{transistor.wp.switch_r_channel = } Ohm")
     # print(transistor.calc_v_eoss())
     # transistor.plot_v_eoss()
     # transistor.plot_v_qoss()
@@ -282,7 +282,7 @@ if __name__ == '__main__':
     ####################################
     # before init mongo, you need to install mongodb and start the database via the command line by using 'mongo' command
     # init mongodb
-    # collection = Transistor.connect_local_TBD()  # Collection
+    # collection = tdb.Transistor.connect_local_TBD()  # Collection
 
     # reset the mongodb database
     # collection.drop()
@@ -293,12 +293,12 @@ if __name__ == '__main__':
 
     # load transistor
     # optional argument: collection. If no collection is specified, it connects to local TBD
-    # transistor_loaded = Transistor.load({'name': 'CREE_C3M0016120K'})
+    transistor_loaded = tdb.Transistor.load({'name': 'CREE_C3M0016120K'})
     # print(transistor_loaded.switch.t_j_max)
 
     # export to json
     # optional argument: path. If no path is specified, saves exports to local folder
-    # transistor.export_json()
+    # transistor_loaded.export_json()
 
     # import from json
     # optional argument: path. If no path is specified, it loads from to local folder
