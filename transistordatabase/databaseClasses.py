@@ -261,6 +261,9 @@ class Transistor:
 
     @staticmethod
     def update_from_fileexchange(collection="local", overwrite=True):
+        # Remove repo if it is already available to avoid clone error handling.
+        if os.path.isdir("./cloned_repo"):
+            shutil.rmtree('./cloned_repo')
         if collection == "local":
             collection = Transistor.connect_local_TBD()
         repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
@@ -1517,7 +1520,7 @@ class Transistor:
         e_on: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
         e_off: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
         e_rr: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
-        v_switching_ref: [float, int, None]  
+        v_switching_ref: [float, int, None]
         e_oss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: J
         q_oss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: C
 
