@@ -234,12 +234,25 @@ class Transistor:
 
     @staticmethod
     def load(dict_filter, collection="local"):
+        """
+        load a transistor from your local mongodb-database
+        example: 
+        transistor_imported = Transistor.import_json('CREE_C3M0016120K.json')
+        :param dict_filter: element filter, see example
+        :param collection: mongodb connection, predefined value
+        :return: transistor object
+        """
         if collection == "local":
             collection = Transistor.connect_local_TBD()
         # ToDo: Implement case where different transistors fit the filter criterium.
         return Transistor.load_from_db(collection.find_one(dict_filter))
 
     def export_json(self, path=None):
+        """
+        export a transistor to .json file, e.g. to share this file on fileexchange on github
+        :param path: path to export
+        :return: -
+        """
         transistor_dict = self.convert_to_dict()
         if path is None:
             with open(transistor_dict['name'] + '.json', 'w') as fp:
@@ -263,6 +276,12 @@ class Transistor:
 
     @staticmethod
     def update_from_fileexchange(collection="local", overwrite=True):
+        """
+        Update your local transitor database from transistordatabase-fileexchange from github
+        :param collection: name of mongodb collection
+        :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
+        :return: -
+        """
         # Remove repo if it is already available to avoid clone error handling.
         if os.path.isdir("./cloned_repo"):
             shutil.rmtree('./cloned_repo')
@@ -309,6 +328,11 @@ class Transistor:
 
     @staticmethod
     def load_from_db(db_dict):
+        """
+
+        :param db_dict:
+        :return: transistorobject
+        """
         # Convert transistor_args
         transistor_args = db_dict
         if 'c_oss' in transistor_args:
@@ -366,10 +390,15 @@ class Transistor:
 
     @staticmethod
     def isvalid_dict(dataset_dict, dict_type):
-        """This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
+        """
+        This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
         are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'type').
         Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
-        Raises appropriate errors if dictionary invalid in other ways."""
+        Raises appropriate errors if dictionary invalid in other ways.
+        :param dataset_dict: dataset dict
+        :param dict_type:
+        :return: True in case of valid dict, 'False' if dictionary is 'None' or Empty
+        """
         # ToDo: Error if given key is not used?
         supported_types = ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']
         housing_types_filename = 'housing_types.txt'
@@ -517,7 +546,7 @@ class Transistor:
     def calc_v_eoss(self):
         """
         Calculates e_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
-        :return:
+        :return: e_oss numpy array
         """
         # energy_cumtrapz = np.zeros_like(self.c_oss[0].graph_v_c[1], dtype=np.float32)
         energy_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[0] * self.c_oss[0].graph_v_c[1],
@@ -527,7 +556,7 @@ class Transistor:
     def calc_v_qoss(self):
         """
         Calculates q_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
-        :return:
+        :return: q_oss numpy array
         """
         charge_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[1], self.c_oss[0].graph_v_c[0],
                                                          initial=0)
@@ -557,6 +586,13 @@ class Transistor:
         plt.show()
 
     def get_object_v_i(self, switch_or_diode, t_j, v_g):
+        """
+        get a channel curve including boundary conditions
+        :param switch_or_diode: 'switch' or 'diode'
+        :param t_j: junction temperature
+        :param v_g: gate voltage
+        :return: v_i-object (channel curve including boundary conditions)
+        """
         if switch_or_diode == 'switch':
             candidate_datasets = [channel for channel in self.switch.channel if
                                   (channel.t_j == t_j and channel.v_g == v_g)]
@@ -1426,8 +1462,15 @@ class Transistor:
             plt.show()
 
     def calc_lin_channel(self, t_j, v_g, i_channel, switch_or_diode):
-        """Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
-        the desired current, the equivalent parameters for u_channel and r_channel are returned"""
+        """
+        Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
+        the desired current, the equivalent parameters for u_channel and r_channel are returned
+        :param t_j: junction temperature
+        :param v_g: gate voltage
+        :param i_channel: current to linearize the channel
+        :param switch_or_diode: 'switch' or 'diode'
+        :return: linearized parameters for v_channel, r_channel
+        """
         # ToDo: rethink method name. May include switch or diode as a parameter and use one global function
         # ToDo: check if this function works for all types of transistors
         # ToDo: Error handling
@@ -1540,16 +1583,24 @@ class Transistor:
 
 
 def check_realnum(x):
-    """Check if argument is real numeric scalar. Raise TypeError if not. None is also accepted because it is valid for
-    optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand."""
+    """
+    Check if argument is real numeric scalar. Raise TypeError if not. None is also accepted because it is valid for
+    optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand.
+    :param x: input argument
+    :return: True in case of numeric scalar.
+    """
     if isinstance(x, (int, float, np.integer, np.floating)) or x is None:
         return True
     raise TypeError(f"{x} is not numeric.")
 
 
 def check_2d_dataset(x):
-    """Check if argument is real 2D-dataset of right shape. Raise TypeError if not. None is also accepted because it is
-    valid for optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand."""
+    """
+    Check if argument is real 2D-dataset of right shape. Raise TypeError if not. None is also accepted because it is
+    valid for optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand.
+    :param x: 2d-dataset
+    :return: True in case of valid 2d-dataset
+    """
     if x is None:
         return True
     if isinstance(x, np.ndarray):
@@ -1561,30 +1612,32 @@ def check_2d_dataset(x):
 
 
 def check_str(x):
-    """Check if argument is string. Raise TypeError if not. Function not necessary but helpful to keep raising of errors
+    """
+    Check if argument is string. Raise TypeError if not. Function not necessary but helpful to keep raising of errors
     consistent with other type checks. None is also accepted because it is valid for optional keys. Mandatory keys that
-    must not contain None are checked somewhere else beforehand."""
+    must not contain None are checked somewhere else beforehand.
+    :param x: input string
+    :return: True in case of valid string
+    """
     if isinstance(x, str) or x is None:
         return True
     raise TypeError(f"{x} is not a string.")
 
 
 def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_to_0=False):
-    """Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
+    """
+    Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
     https://apps.automeris.io/wpd/
-
-    csv_filename: str. Insert .csv filename, e.g. "switch_channel_25_15v"
-
-    set_first_value_to_zero: boolean True/False. Set 'True' to change the first value pair to zero. This is necessary in
+    :param csv_filename: str. Insert .csv filename, e.g. "switch_channel_25_15v"
+    :param first_xy_to_00: boolean True/False. Set 'True' to change the first value pair to zero. This is necessary in
         case of webplotdigitizer returns the first value pair e.g. as -0,13; 0,00349.
-
-    set_second_y_value_to_zero: boolean True/False. Set 'True' to set the second y-value to zero. This is interesting in
+    :param second_y_to_0: boolean True/False. Set 'True' to set the second y-value to zero. This is interesting in
         case of diode / igbt forward channel characteristic, if you want to make sure to set the point where the ui-graph
         leaves the u axis on the u-point to zero. Otherwise there might be a very small (and negative) value of u.
-
-    set_first_x_value_to_zero: boolean True/False. Set 'True' to set the first x-value to zero. This is interesting in
+    :param first_x_to_0: boolean True/False. Set 'True' to set the first x-value to zero. This is interesting in
         case of nonlinear input/output capacitances, e.g. c_oss, c_iss, c_rss
+    :return: 2d array, ready to use in the transistor database
     """
     array = np.genfromtxt(csv_filename, delimiter=";",
                           converters={0: lambda s: float(s.decode("UTF-8").replace(",", ".")),
