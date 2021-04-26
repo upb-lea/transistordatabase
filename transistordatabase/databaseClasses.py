@@ -1047,11 +1047,11 @@ class Transistor:
 
         def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10):
             """
-
-            :param t_j:
-            :param v_g:
-            :param normalize_t_to_v:
-            :return:
+            This function looks for the smallest distance to stored object value and returns this working point
+            :param t_j: junction temperature
+            :param v_g: gate voltage
+            :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
+            :return: channel-object, e_on-object, e_off-object
             """
             # Normalize t_j to v_g for distance metric
             node = np.array([t_j / normalize_t_to_v, v_g])
@@ -1060,6 +1060,7 @@ class Transistor:
             channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             nodes = np.array([channeldata_t_js/normalize_t_to_v, channeldata_v_gs]).transpose()
             index_channeldata = distance.cdist([node], nodes).argmin()
+
             # Find closest e_on
             e_on_t_js = np.array([e.t_j for e in self.e_on])
             e_on_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_on])
@@ -1070,6 +1071,11 @@ class Transistor:
             e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_off])
             nodes = np.array([e_off_t_js / normalize_t_to_v, e_off_v_gs]).transpose()
             index_e_off = distance.cdist([node], nodes).argmin()
+            print(f"run switch.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
+            print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
+            print(f"eon:     t_j = {self.e_on[index_e_on].t_j} °C and v_g = {self.e_on[index_e_on].v_g} V")
+            print(f"eoff:    t_j = {self.e_off[index_e_off].t_j} °C and v_g = {self.e_off[index_e_off].v_g} V")
+
             return self.channel[index_channeldata], self.e_on[index_e_on], self.e_off[index_e_off]
 
         def plot_all_channel_data(self):
@@ -1241,6 +1247,13 @@ class Transistor:
             return d
 
         def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10):
+            """
+            This function looks for the smallest distance to stored object value and returns this working point
+            :param t_j: junction temperature
+            :param v_g: gate voltage
+            :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
+            :return: channel-object, e_rr-object
+            """
             # Normalize t_j to v_g for distance metric
             node = np.array([t_j / normalize_t_to_v, v_g])
             # Find closest channeldata
@@ -1253,6 +1266,11 @@ class Transistor:
             e_rr_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_rr])
             nodes = np.array([e_rr_t_js / normalize_t_to_v, e_rr_v_gs]).transpose()
             index_e_rr = distance.cdist([node], nodes).argmin()
+
+            print(f"run diode.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
+            print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
+            print(f"err:     t_j = {self.e_rr[index_e_rr].t_j} °C and v_g = {self.e_rr[index_e_rr].v_g} V")
+
             return self.channel[index_channeldata], self.e_rr[index_e_rr]
 
         def plot_all_channel_data(self):
