@@ -236,7 +236,7 @@ class Transistor:
     def load(dict_filter, collection="local"):
         """
         load a transistor from your local mongodb-database
-        example: 
+        example:
         transistor_imported = Transistor.import_json('CREE_C3M0016120K.json')
         :param dict_filter: element filter, see example
         :param collection: mongodb connection, predefined value
