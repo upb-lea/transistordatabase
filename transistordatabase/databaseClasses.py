@@ -307,24 +307,7 @@ class Transistor:
                 os.chmod(os.path.join(root, file), stat.S_IRWXU)
         shutil.rmtree('./cloned_repo')
 
-    @staticmethod
-    def print_TDB(filters=[], collection="local"):
-        if collection == "local":
-            collection = Transistor.connect_local_TBD()
-        if not isinstance(filters, list):
-            if isinstance(filters, str):
-                filters = [filters]
-            else:
-                raise TypeError(
-                    "The 'filters' argument must be specified as a list of strings or a single string but is"
-                    f" {type(filters)} instead.")
-        if "name" not in filters:
-            filters.append("name")
-        """Filters must be specified according to the respective objects they're associated with. 
-        e.g. 'type' for type of Transistor or 'diode.technology' for technology of Diode."""
-        returned_cursor = collection.find({}, filters)
-        for tran in returned_cursor:
-            print(tran)
+
 
     @staticmethod
     def load_from_db(db_dict):
@@ -784,8 +767,6 @@ class Transistor:
         :param t_j: juncntion temperature of interest
         :param v_supply: supply voltage of interest
         :return: object with corrected i_e curves due to r_g and v_supply at given t_j
-
-
         """
 
         # search for graph_i_e, simplified version
@@ -1672,6 +1653,32 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
         array[0][0] = 0  # x value
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
+
+
+
+def print_TDB(filters=[], collection="local"):
+    """
+    Print all transistorelements stored in the local database
+    :param filters: filters for searching the database
+    :param collection: Choose database name in local mongodb client. Default name is "collection"
+    :return: -
+    """
+    if collection == "local":
+        collection = Transistor.connect_local_TBD()
+    if not isinstance(filters, list):
+        if isinstance(filters, str):
+            filters = [filters]
+        else:
+            raise TypeError(
+                "The 'filters' argument must be specified as a list of strings or a single string but is"
+                f" {type(filters)} instead.")
+    if "name" not in filters:
+        filters.append("name")
+    """Filters must be specified according to the respective objects they're associated with. 
+    e.g. 'type' for type of Transistor or 'diode.technology' for technology of Diode."""
+    returned_cursor = collection.find({}, filters)
+    for tran in returned_cursor:
+        print(tran)
 
 
 class PDF(FPDF):
