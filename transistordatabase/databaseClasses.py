@@ -75,6 +75,8 @@ class Transistor:
         if self.isvalid_dict(transistor_args, 'Transistor'):
             if transistor_args.get('_id') is not None:
                 self._id = transistor_args.get('_id')
+            else:
+                self._id = ObjectId()
             self.name = transistor_args.get('name')
             self.type = transistor_args.get('type')
             self.author = transistor_args.get('author')
