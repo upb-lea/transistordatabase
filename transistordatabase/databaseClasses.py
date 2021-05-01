@@ -197,28 +197,28 @@ class Transistor:
         return my_dict == other_dict
 
     @staticmethod
-    def connect_TBD(host):
+    def connect_TDB(host):
         if host == "local":
             host = "mongodb://localhost:27017/"
         myclient = MongoClient(host)
         return myclient.transistor_database.collection
 
     @staticmethod
-    def connect_local_TBD():
+    def connect_local_TDB():
         host = "mongodb://localhost:27017/"
         myclient = MongoClient(host)
         return myclient.transistor_database.collection
 
     def save(self, collection="local", overwrite=None):
         if collection == "local":
-            collection = Transistor.connect_local_TBD()
+            collection = Transistor.connect_local_TDB()
         transistor_dict = self.convert_to_dict()
         if transistor_dict.get("_id") is not None:
             _id = transistor_dict["_id"]
             if collection.find_one({"_id": _id}) is not None:
                 if not isinstance(overwrite, bool):
                     raise errors.DuplicateKeyError(
-                        f"A transistor object with {_id = } is already present in the TBD. Please specify, "
+                        f"A transistor object with {_id = } is already present in the TDB. Please specify, "
                         f"whether the newly saved Transistor should replace the old one or whether it should "
                         f"be saved as a copy. This can be done by setting the optional argument 'overwrite' "
                         f" to either True or False.")
@@ -243,7 +243,7 @@ class Transistor:
         :return: transistor object
         """
         if collection == "local":
-            collection = Transistor.connect_local_TBD()
+            collection = Transistor.connect_local_TDB()
         # ToDo: Implement case where different transistors fit the filter criterium.
         return Transistor.load_from_db(collection.find_one(dict_filter))
 
@@ -286,7 +286,7 @@ class Transistor:
         if os.path.isdir("./cloned_repo"):
             shutil.rmtree('./cloned_repo')
         if collection == "local":
-            collection = Transistor.connect_local_TBD()
+            collection = Transistor.connect_local_TDB()
         repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
         local_dir = "./cloned_repo"
         Repo.clone_from(repo_url, local_dir)
@@ -1664,7 +1664,7 @@ def print_TDB(filters=[], collection="local"):
     :return: -
     """
     if collection == "local":
-        collection = Transistor.connect_local_TBD()
+        collection = Transistor.connect_local_TDB()
     if not isinstance(filters, list):
         if isinstance(filters, str):
             filters = [filters]

@@ -282,17 +282,17 @@ if __name__ == '__main__':
     ####################################
     # before init mongo, you need to install mongodb and start the database via the command line by using 'mongo' command
     # init mongodb
-    # collection = tdb.Transistor.connect_local_TBD()  # Collection
+    # collection = tdb.Transistor.connect_local_TDB()  # Collection
 
     # reset the mongodb database
     # collection.drop()
 
     # store transistor
-    # optional argument: collection. If no collection is specified, it connects to local TBD
+    # optional argument: collection. If no collection is specified, it connects to local TDB
     # transistor.save()
 
     # load transistor
-    # optional argument: collection. If no collection is specified, it connects to local TBD
+    # optional argument: collection. If no collection is specified, it connects to local TDB
     transistor_loaded = tdb.Transistor.load({'name': 'CREE_C3M0016120K'})
     # print(transistor_loaded.switch.t_j_max)
 
@@ -305,7 +305,7 @@ if __name__ == '__main__':
     # transistor_imported = Transistor.import_json('CREE_C3M0016120K.json')
     # print(transistor_imported.switch.t_j_max)
 
-    # Transistor.connect_local_TBD().update_many({}, {"$rename": {"transistor_type": "type"}})
+    # Transistor.connect_local_TDB().update_many({}, {"$rename": {"transistor_type": "type"}})
 
 
 
