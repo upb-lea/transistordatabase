@@ -198,22 +198,10 @@ class Transistor:
         other_dict.pop('_id', None)
         return my_dict == other_dict
 
-    @staticmethod
-    def connect_TDB(host):
-        if host == "local":
-            host = "mongodb://localhost:27017/"
-        myclient = MongoClient(host)
-        return myclient.transistor_database.collection
-
-    @staticmethod
-    def connect_local_TDB():
-        host = "mongodb://localhost:27017/"
-        myclient = MongoClient(host)
-        return myclient.transistor_database.collection
 
     def save(self, collection="local", overwrite=None):
         if collection == "local":
-            collection = Transistor.connect_local_TDB()
+            collection = connect_local_TDB()
         transistor_dict = self.convert_to_dict()
         if transistor_dict.get("_id") is not None:
             _id = transistor_dict["_id"]
@@ -234,20 +222,6 @@ class Transistor:
         else:
             collection.insert_one(transistor_dict)
 
-    @staticmethod
-    def load(dict_filter, collection="local"):
-        """
-        load a transistor from your local mongodb-database
-        example:
-        transistor_imported = Transistor.import_json('CREE_C3M0016120K.json')
-        :param dict_filter: element filter, see example
-        :param collection: mongodb connection, predefined value
-        :return: transistor object
-        """
-        if collection == "local":
-            collection = Transistor.connect_local_TDB()
-        # ToDo: Implement case where different transistors fit the filter criterium.
-        return Transistor.load_from_db(collection.find_one(dict_filter))
 
     def export_json(self, path=None):
         """
@@ -266,100 +240,6 @@ class Transistor:
             print(f"Saved json-file {transistor_dict['name'] + '.json'} to {path}")
         else:
             TypeError(f"{path = } ist not a string.")
-
-    @staticmethod
-    def import_json(path):
-        if isinstance(path, str):
-            with open(path, 'r') as myfile:
-                data = myfile.read()
-            return Transistor.load_from_db(json_util.loads(data))
-        else:
-            TypeError(f"{path = } ist not a string.")
-
-    @staticmethod
-    def update_from_fileexchange(collection="local", overwrite=True):
-        """
-        Update your local transitor database from transistordatabase-fileexchange from github
-        :param collection: name of mongodb collection
-        :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
-        :return: -
-        """
-        # Remove repo if it is already available to avoid clone error handling.
-        if os.path.isdir("./cloned_repo"):
-            shutil.rmtree('./cloned_repo')
-        if collection == "local":
-            collection = Transistor.connect_local_TDB()
-        repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
-        local_dir = "./cloned_repo"
-        Repo.clone_from(repo_url, local_dir)
-        for subdir, dirs, files in os.walk(local_dir):
-            for file in files:
-                # print(f"{os.path.join(subdir, file)}")
-                filepath = subdir + os.sep + file
-
-                if filepath.endswith(".json"):
-                    transistor = Transistor.import_json(filepath)
-                    transistor.save(collection, overwrite)
-                    print(f"Update Transistor: {transistor.name}")
-
-        for root, dirs, files in os.walk(local_dir):
-            for dir in dirs:
-                os.chmod(os.path.join(root, dir), stat.S_IRWXU)
-            for file in files:
-                os.chmod(os.path.join(root, file), stat.S_IRWXU)
-        shutil.rmtree('./cloned_repo')
-
-
-
-    @staticmethod
-    def load_from_db(db_dict):
-        """
-
-        :param db_dict:
-        :return: transistorobject
-        """
-        # Convert transistor_args
-        transistor_args = db_dict
-        if 'c_oss' in transistor_args:
-            for i in range(len(transistor_args['c_oss'])):
-                transistor_args['c_oss'][i]['graph_v_c'] = np.array(transistor_args['c_oss'][i]['graph_v_c'])
-        if 'c_iss' in transistor_args:
-            for i in range(len(transistor_args['c_iss'])):
-                transistor_args['c_iss'][i]['graph_v_c'] = np.array(transistor_args['c_iss'][i]['graph_v_c'])
-        if 'c_rss' in transistor_args:
-            for i in range(len(transistor_args['c_rss'])):
-                transistor_args['c_rss'][i]['graph_v_c'] = np.array(transistor_args['c_rss'][i]['graph_v_c'])
-        if 'graph_v_ecoss' in transistor_args:
-            if transistor_args['graph_v_ecoss'] is not None:
-                transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
-        # Convert switch_args
-        switch_args = db_dict['switch']
-        if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
-            switch_args['thermal_foster']['graph_t_rthjc'] = np.array(switch_args['thermal_foster']['graph_t_rthjc'])
-        for i in range(len(switch_args['channel'])):
-            switch_args['channel'][i]['graph_v_i'] = np.array(switch_args['channel'][i]['graph_v_i'])
-        for i in range(len(switch_args['e_on'])):
-            if switch_args['e_on'][i]['dataset_type'] == 'graph_r_e':
-                switch_args['e_on'][i]['graph_r_e'] = np.array(switch_args['e_on'][i]['graph_r_e'])
-            elif switch_args['e_on'][i]['dataset_type'] == 'graph_i_e':
-                switch_args['e_on'][i]['graph_i_e'] = np.array(switch_args['e_on'][i]['graph_i_e'])
-        for i in range(len(switch_args['e_off'])):
-            if switch_args['e_off'][i]['dataset_type'] == 'graph_r_e':
-                switch_args['e_off'][i]['graph_r_e'] = np.array(switch_args['e_off'][i]['graph_r_e'])
-            elif switch_args['e_off'][i]['dataset_type'] == 'graph_i_e':
-                switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
-        # Convert diode_args
-        diode_args = db_dict['diode']
-        if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
-            diode_args['thermal_foster']['graph_t_rthjc'] = np.array(diode_args['thermal_foster']['graph_t_rthjc'])
-        for i in range(len(diode_args['channel'])):
-            diode_args['channel'][i]['graph_v_i'] = np.array(diode_args['channel'][i]['graph_v_i'])
-        for i in range(len(diode_args['e_rr'])):
-            if diode_args['e_rr'][i]['dataset_type'] == 'graph_r_e':
-                diode_args['e_rr'][i]['graph_r_e'] = np.array(diode_args['e_rr'][i]['graph_r_e'])
-            elif diode_args['e_rr'][i]['dataset_type'] == 'graph_i_e':
-                diode_args['e_rr'][i]['graph_i_e'] = np.array(diode_args['e_rr'][i]['graph_i_e'])
-        return Transistor(transistor_args, switch_args, diode_args)
 
     def convert_to_dict(self):
         d = dict(vars(self))
@@ -1666,7 +1546,7 @@ def print_TDB(filters=[], collection="local"):
     :return: -
     """
     if collection == "local":
-        collection = Transistor.connect_local_TDB()
+        collection = connect_local_TDB()
     if not isinstance(filters, list):
         if isinstance(filters, str):
             filters = [filters]
@@ -1681,6 +1561,124 @@ def print_TDB(filters=[], collection="local"):
     returned_cursor = collection.find({}, filters)
     for tran in returned_cursor:
         print(tran)
+
+
+def connect_TDB(host):
+    if host == "local":
+        host = "mongodb://localhost:27017/"
+    myclient = MongoClient(host)
+    return myclient.transistor_database.collection
+
+def connect_local_TDB():
+    host = "mongodb://localhost:27017/"
+    myclient = MongoClient(host)
+    return myclient.transistor_database.collection
+
+
+def load(dict_filter, collection="local"):
+    """
+    load a transistor from your local mongodb-database
+    example:
+    transistor_imported = import_json('CREE_C3M0016120K.json')
+    :param dict_filter: element filter, see example
+    :param collection: mongodb connection, predefined value
+    :return: transistor object
+    """
+    if collection == "local":
+        collection = connect_local_TDB()
+    # ToDo: Implement case where different transistors fit the filter criterium.
+    return load_from_db(collection.find_one(dict_filter))
+
+
+def load_from_db(db_dict):
+    """
+    :param db_dict:
+    :return: transistorobject
+    """
+    # Convert transistor_args
+    transistor_args = db_dict
+    if 'c_oss' in transistor_args:
+        for i in range(len(transistor_args['c_oss'])):
+            transistor_args['c_oss'][i]['graph_v_c'] = np.array(transistor_args['c_oss'][i]['graph_v_c'])
+    if 'c_iss' in transistor_args:
+        for i in range(len(transistor_args['c_iss'])):
+            transistor_args['c_iss'][i]['graph_v_c'] = np.array(transistor_args['c_iss'][i]['graph_v_c'])
+    if 'c_rss' in transistor_args:
+        for i in range(len(transistor_args['c_rss'])):
+            transistor_args['c_rss'][i]['graph_v_c'] = np.array(transistor_args['c_rss'][i]['graph_v_c'])
+    if 'graph_v_ecoss' in transistor_args:
+        if transistor_args['graph_v_ecoss'] is not None:
+            transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
+    # Convert switch_args
+    switch_args = db_dict['switch']
+    if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
+        switch_args['thermal_foster']['graph_t_rthjc'] = np.array(switch_args['thermal_foster']['graph_t_rthjc'])
+    for i in range(len(switch_args['channel'])):
+        switch_args['channel'][i]['graph_v_i'] = np.array(switch_args['channel'][i]['graph_v_i'])
+    for i in range(len(switch_args['e_on'])):
+        if switch_args['e_on'][i]['dataset_type'] == 'graph_r_e':
+            switch_args['e_on'][i]['graph_r_e'] = np.array(switch_args['e_on'][i]['graph_r_e'])
+        elif switch_args['e_on'][i]['dataset_type'] == 'graph_i_e':
+            switch_args['e_on'][i]['graph_i_e'] = np.array(switch_args['e_on'][i]['graph_i_e'])
+    for i in range(len(switch_args['e_off'])):
+        if switch_args['e_off'][i]['dataset_type'] == 'graph_r_e':
+            switch_args['e_off'][i]['graph_r_e'] = np.array(switch_args['e_off'][i]['graph_r_e'])
+        elif switch_args['e_off'][i]['dataset_type'] == 'graph_i_e':
+            switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
+    # Convert diode_args
+    diode_args = db_dict['diode']
+    if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
+        diode_args['thermal_foster']['graph_t_rthjc'] = np.array(diode_args['thermal_foster']['graph_t_rthjc'])
+    for i in range(len(diode_args['channel'])):
+        diode_args['channel'][i]['graph_v_i'] = np.array(diode_args['channel'][i]['graph_v_i'])
+    for i in range(len(diode_args['e_rr'])):
+        if diode_args['e_rr'][i]['dataset_type'] == 'graph_r_e':
+            diode_args['e_rr'][i]['graph_r_e'] = np.array(diode_args['e_rr'][i]['graph_r_e'])
+        elif diode_args['e_rr'][i]['dataset_type'] == 'graph_i_e':
+            diode_args['e_rr'][i]['graph_i_e'] = np.array(diode_args['e_rr'][i]['graph_i_e'])
+    return Transistor(transistor_args, switch_args, diode_args)
+
+
+def update_from_fileexchange(collection="local", overwrite=True):
+    """
+    Update your local transitor database from transistordatabase-fileexchange from github
+    :param collection: name of mongodb collection
+    :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
+    :return: -
+    """
+    # Remove repo if it is already available to avoid clone error handling.
+    if os.path.isdir("./cloned_repo"):
+        shutil.rmtree('./cloned_repo')
+    if collection == "local":
+        collection = connect_local_TDB()
+    repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
+    local_dir = "./cloned_repo"
+    Repo.clone_from(repo_url, local_dir)
+    for subdir, dirs, files in os.walk(local_dir):
+        for file in files:
+            # print(f"{os.path.join(subdir, file)}")
+            filepath = subdir + os.sep + file
+
+            if filepath.endswith(".json"):
+                transistor = import_json(filepath)
+                transistor.save(collection, overwrite)
+                print(f"Update Transistor: {transistor.name}")
+
+    for root, dirs, files in os.walk(local_dir):
+        for dir in dirs:
+            os.chmod(os.path.join(root, dir), stat.S_IRWXU)
+        for file in files:
+            os.chmod(os.path.join(root, file), stat.S_IRWXU)
+    shutil.rmtree('./cloned_repo')
+
+
+def import_json(path):
+    if isinstance(path, str):
+        with open(path, 'r') as myfile:
+            data = myfile.read()
+        return load_from_db(json_util.loads(data))
+    else:
+        TypeError(f"{path = } ist not a string.")
 
 
 class PDF(FPDF):
