@@ -66,12 +66,12 @@ Some hints to fill the template:
 ## 2.2 Update transistors from file exchange
 There is a file exchange to share transistor objects. The repository can be found [here](https://github.com/upb-lea/transistordatabase_File_Exchange). To update your local transistordatabase type in to your python code
 ```
-tdb.Transistor.update_from_fileexchange
+tdb.update_from_fileexchange()
 ```
 After this, you can find new or updated transistor files in your local transistordatabase.
 ## 2.3 Load a transistor from the database
 ```
-transistor_loaded = tdb.Transistor.load({'name': 'CREE_C3M0016120K'})
+transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
 ```
 ## 2.3 Use Transistor.wp. for usage in your programs
 There is a subclass .wp. you can fill for further program calculations.
