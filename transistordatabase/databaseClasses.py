@@ -198,7 +198,6 @@ class Transistor:
         other_dict.pop('_id', None)
         return my_dict == other_dict
 
-
     def save(self, collection="local", overwrite=None):
         if collection == "local":
             collection = connect_local_TDB()
@@ -221,7 +220,6 @@ class Transistor:
                 collection.insert_one(transistor_dict)
         else:
             collection.insert_one(transistor_dict)
-
 
     def export_json(self, path=None):
         """
@@ -408,6 +406,24 @@ class Transistor:
                 all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
             return True
 
+    def update_wp(self, t_j, v_g, i_channel, switch_or_diode="both", normalize_t_to_v=10):
+        if switch_or_diode in ["diode", "both"]:
+            diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
+            # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
+            #  object can "linearize itself".
+            self.wp.diode_r_channel, self.wp.diode_v_channel = \
+                self.calc_lin_channel(diode_channel.t_j, diode_channel.v_g, i_channel, switch_or_diode="diode")
+
+        if switch_or_diode in ["switch", "both"]:
+            switch_channel, self.wp.e_on, self.wp.e_off = self.switch.find_approx_wp(t_j, v_g, normalize_t_to_v)
+            # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
+            #  object can "linearize itself".
+            self.wp.switch_r_channel, self.wp.switch_v_channel = \
+                self.calc_lin_channel(switch_channel.t_j, switch_channel.v_g, i_channel, switch_or_diode="switch")
+
+    def quickstart_wp(self):
+        self.update_wp(self.t_c_max, 15, self.i_abs_max)
+
     def calc_v_eoss(self):
         """
         Calculates e_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
@@ -559,7 +575,6 @@ class Transistor:
                       "operating point. The first of these sets is automatically chosen because selection of a "
                       "different dataset is not yet implemented.")
             dataset = candidate_datasets[0]
-
         return dataset
 
     def get_object_i_e_simplified(self, e_on_off_rr, t_j):
@@ -635,7 +650,6 @@ class Transistor:
                   "operating point. The first of these sets is automatically chosen because selection of a "
                   "different dataset is not yet implemented.")
         dataset = candidate_datasets[0]
-
         return dataset
 
     def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply):
@@ -682,7 +696,6 @@ class Transistor:
         self.isvalid_dict(args, 'SwitchEnergyData')
         # pack to object
         object_i_e_calc = self.SwitchEnergyData(args)
-
         return object_i_e_calc
 
     def virtual_datasheet(self):
@@ -733,8 +746,98 @@ class Transistor:
         # pdf.figure_left(memfile)
         # pdf.figure_right(memfile)
         # memfile.close()
-
         pdf.output(self.name + '.pdf')
+
+    def calc_lin_channel(self, t_j, v_g, i_channel, switch_or_diode):
+        """
+        Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
+        the desired current, the equivalent parameters for u_channel and r_channel are returned
+        :param t_j: junction temperature
+        :param v_g: gate voltage
+        :param i_channel: current to linearize the channel
+        :param switch_or_diode: 'switch' or 'diode'
+        :return: linearized parameters for v_channel, r_channel
+        """
+        # ToDo: rethink method name. May include switch or diode as a parameter and use one global function
+        # ToDo: check if this function works for all types of transistors
+        # ToDo: Error handling
+        # ToDo: Unittest for this method
+        # in case of failure, return None
+        v_channel = None
+        r_channel = None
+
+        if i_channel > self.i_abs_max:
+            raise ValueError(
+                f"In calc_lin_channel: linearizing current ({i_channel} A) higher than i_absmax ({self.i_abs_max} A)")
+
+        if switch_or_diode == 'switch':
+            candidate_datasets = [channel for channel in self.switch.channel
+                                  if (channel.t_j == t_j and channel.v_g == v_g)]
+            if len(candidate_datasets) == 0:
+                available_datasets = [(channel.t_j, channel.v_g) for channel in self.switch.channel]
+                print("Available operating points: (t_j, v_g)")
+                print(available_datasets)
+                raise ValueError("No data available for linearization at the given operating point. "
+                                 "A list of available operating points is printed above.")
+            elif len(candidate_datasets) > 1:
+                print("During linearization, multiple datasets were found that are consistent with the chosen "
+                      "operating point. The first of these sets is automatically chosen because selection of a "
+                      "different dataset is not yet implemented.")
+
+            # interpolate data
+            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
+                                             candidate_datasets[0].graph_v_i[0])
+            # check kind of transistor type due to forward voltage value
+            if self.type in ['MOSFET', 'SiC-MOSFET']:
+                # transistor has no forward voltage
+                # return values
+                v_channel = 0  # no forward voltage du to resistance behaviour
+                r_channel = voltage_interpolated / i_channel
+            else:
+                # transistor has forward voltage. Other interpolating point will be with 10% more current
+                # ToDo: Test this function if IGBT is available
+                voltage_interpolated_2 = np.interp(i_channel * 0.9, candidate_datasets[0].graph_v_i[1],
+                                                   candidate_datasets[0].graph_v_i[0])
+                r_channel = (voltage_interpolated - voltage_interpolated_2) / (0.1 * i_channel)
+                v_channel = voltage_interpolated - r_channel * i_channel
+        elif switch_or_diode == 'diode':
+            if self.type in ['SiC-MOSFET', 'GaN-Transistor']:
+                candidate_datasets = [channel for channel in self.diode.channel
+                                      if (channel.t_j == t_j and channel.v_g == v_g)]
+                if len(candidate_datasets) == 0:
+                    available_datasets = [(channel.t_j, channel.v_g) for channel in self.diode.channel]
+                    print("Available operating points: (t_j, v_g)")
+                    print(available_datasets)
+                    raise ValueError("No data available for linearization at the given operating point. "
+                                     "A list of available operating points is printed above.")
+                elif len(candidate_datasets) > 1:
+                    print("During linearization, multiple datasets were found that are consistent with the chosen "
+                          "operating point. The first of these sets is automatically chosen because selection of a "
+                          "different dataset is not yet implemented.")
+            else:
+                candidate_datasets = [channel for channel in self.diode.channel
+                                      if channel.t_j == t_j]
+                if len(candidate_datasets) == 0:
+                    available_datasets = [channel.t_j for channel in self.diode.channel]
+                    print("Available operating points: (t_j)")
+                    print(available_datasets)
+                    raise ValueError("No data available for linearization at the given operating point. "
+                                     "A list of available operating points is printed above.")
+                elif len(candidate_datasets) > 1:
+                    print("During linearization, multiple datasets were found that are consistent with the chosen "
+                          "operating point. The first of these sets is automatically chosen because selection of a "
+                          "different dataset is not yet implemented.")
+            # interpolate data
+            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
+                                             candidate_datasets[0].graph_v_i[0])
+            voltage_interpolated_2 = np.interp(i_channel * 0.9, candidate_datasets[0].graph_v_i[1],
+                                               candidate_datasets[0].graph_v_i[0])
+            r_channel = (voltage_interpolated - voltage_interpolated_2) / (0.1 * i_channel)
+            v_channel = voltage_interpolated - r_channel * i_channel
+        else:
+            raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
+                             "linearization.")
+        return round(v_channel, 6), round(r_channel, 9)
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
@@ -908,12 +1011,14 @@ class Transistor:
             d['linearized_switch'] = [lsw.convert_to_dict() for lsw in self.linearized_switch]
             return d
 
-        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10):
+        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e"):
             """
             This function looks for the smallest distance to stored object value and returns this working point
             :param t_j: junction temperature
             :param v_g: gate voltage
             :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
+            :param SwitchEnergyData_dataset_type: preferred dataset_type (single, graph_r_e, graph_i_e) for e_on and
+            e_off # ToDo: Should the default be "graph_i_e" or rather a kind of "don't care"?
             :return: channel-object, e_on-object, e_off-object
             """
             # Normalize t_j to v_g for distance metric
@@ -925,21 +1030,27 @@ class Transistor:
             index_channeldata = distance.cdist([node], nodes).argmin()
 
             # Find closest e_on
-            e_on_t_js = np.array([e.t_j for e in self.e_on])
-            e_on_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_on])
+            e_ons = [e for e in self.e_on if e.dataset_type == SwitchEnergyData_dataset_type]
+            if not e_ons:
+                raise KeyError(f"There is no e_on data with type {SwitchEnergyData_dataset_type} for this Switch object.")
+            e_on_t_js = np.array([e.t_j for e in e_ons])
+            e_on_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_ons])
             nodes = np.array([e_on_t_js / normalize_t_to_v, e_on_v_gs]).transpose()
             index_e_on = distance.cdist([node], nodes).argmin()
             # Find closest e_off
-            e_off_t_js = np.array([e.t_j for e in self.e_off])
-            e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_off])
+            e_offs = [e for e in self.e_off if e.dataset_type == SwitchEnergyData_dataset_type]
+            if not e_offs:
+                raise KeyError(f"There is no e_off data with type {SwitchEnergyData_dataset_type} for this Switch object.")
+            e_off_t_js = np.array([e.t_j for e in e_offs])
+            e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_offs])
             nodes = np.array([e_off_t_js / normalize_t_to_v, e_off_v_gs]).transpose()
             index_e_off = distance.cdist([node], nodes).argmin()
             print(f"run switch.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
             print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
-            print(f"eon:     t_j = {self.e_on[index_e_on].t_j} °C and v_g = {self.e_on[index_e_on].v_g} V")
-            print(f"eoff:    t_j = {self.e_off[index_e_off].t_j} °C and v_g = {self.e_off[index_e_off].v_g} V")
+            print(f"eon:     t_j = {e_ons[index_e_on].t_j} °C and v_g = {e_ons[index_e_on].v_g} V")
+            print(f"eoff:    t_j = {e_offs[index_e_off].t_j} °C and v_g = {e_offs[index_e_off].v_g} V")
 
-            return self.channel[index_channeldata], self.e_on[index_e_on], self.e_off[index_e_off]
+            return self.channel[index_channeldata], e_ons[index_e_on], e_offs[index_e_off]
 
         def plot_all_channel_data(self):
             """ Plot all channel data """
@@ -1109,7 +1220,7 @@ class Transistor:
             d['linearized_diode'] = [ld.convert_to_dict() for ld in self.linearized_diode]
             return d
 
-        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10):
+        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e"):
             """
             This function looks for the smallest distance to stored object value and returns this working point
             :param t_j: junction temperature
@@ -1125,16 +1236,19 @@ class Transistor:
             nodes = np.array([channeldata_t_js/normalize_t_to_v, channeldata_v_gs]).transpose()
             index_channeldata = distance.cdist([node], nodes).argmin()
             # Find closest e_rr
-            e_rr_t_js = np.array([e.t_j for e in self.e_rr])
-            e_rr_v_gs = np.array([0 if e.v_g is None else e.v_g for e in self.e_rr])
+            e_rrs = [e for e in self.e_rr if e.dataset_type == SwitchEnergyData_dataset_type]
+            if not e_rrs:
+                raise KeyError(f"There is no e_rr data with type {SwitchEnergyData_dataset_type} for this Diode object.")
+            e_rr_t_js = np.array([e.t_j for e in e_rrs])
+            e_rr_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_rrs])
             nodes = np.array([e_rr_t_js / normalize_t_to_v, e_rr_v_gs]).transpose()
             index_e_rr = distance.cdist([node], nodes).argmin()
 
             print(f"run diode.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
             print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
-            print(f"err:     t_j = {self.e_rr[index_e_rr].t_j} °C and v_g = {self.e_rr[index_e_rr].v_g} V")
+            print(f"err:     t_j = {e_rrs[index_e_rr].t_j} °C and v_g = {e_rrs[index_e_rr].v_g} V")
 
-            return self.channel[index_channeldata], self.e_rr[index_e_rr]
+            return self.channel[index_channeldata], e_rrs[index_e_rr]
 
         def plot_all_channel_data(self):
             """ Plot all channel data """
@@ -1341,97 +1455,6 @@ class Transistor:
             plt.grid()
             plt.ylabel('Energy in J')
             plt.show()
-
-    def calc_lin_channel(self, t_j, v_g, i_channel, switch_or_diode):
-        """
-        Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
-        the desired current, the equivalent parameters for u_channel and r_channel are returned
-        :param t_j: junction temperature
-        :param v_g: gate voltage
-        :param i_channel: current to linearize the channel
-        :param switch_or_diode: 'switch' or 'diode'
-        :return: linearized parameters for v_channel, r_channel
-        """
-        # ToDo: rethink method name. May include switch or diode as a parameter and use one global function
-        # ToDo: check if this function works for all types of transistors
-        # ToDo: Error handling
-        # ToDo: Unittest for this method
-        # in case of failure, return None
-        v_channel = None
-        r_channel = None
-
-        if i_channel > self.i_abs_max:
-            raise ValueError(
-                f"In calc_lin_channel: linearizing current ({i_channel} A) higher than i_absmax ({self.i_abs_max} A)")
-
-        if switch_or_diode == 'switch':
-            candidate_datasets = [channel for channel in self.switch.channel
-                                  if (channel.t_j == t_j and channel.v_g == v_g)]
-            if len(candidate_datasets) == 0:
-                available_datasets = [(channel.t_j, channel.v_g) for channel in self.switch.channel]
-                print("Available operating points: (t_j, v_g)")
-                print(available_datasets)
-                raise ValueError("No data available for linearization at the given operating point. "
-                                 "A list of available operating points is printed above.")
-            elif len(candidate_datasets) > 1:
-                print("During linearization, multiple datasets were found that are consistent with the chosen "
-                      "operating point. The first of these sets is automatically chosen because selection of a "
-                      "different dataset is not yet implemented.")
-
-            # interpolate data
-            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
-                                             candidate_datasets[0].graph_v_i[0])
-            # check kind of transistor type due to forward voltage value
-            if self.type in ['MOSFET', 'SiC-MOSFET']:
-                # transistor has no forward voltage
-                # return values
-                v_channel = 0  # no forward voltage du to resistance behaviour
-                r_channel = voltage_interpolated / i_channel
-            else:
-                # transistor has forward voltage. Other interpolating point will be with 10% more current
-                # ToDo: Test this function if IGBT is available
-                voltage_interpolated_2 = np.interp(i_channel * 0.9, candidate_datasets[0].graph_v_i[1],
-                                                   candidate_datasets[0].graph_v_i[0])
-                r_channel = (voltage_interpolated - voltage_interpolated_2) / (0.1 * i_channel)
-                v_channel = voltage_interpolated - r_channel * i_channel
-        elif switch_or_diode == 'diode':
-            if self.type in ['SiC-MOSFET', 'GaN-Transistor']:
-                candidate_datasets = [channel for channel in self.diode.channel
-                                      if (channel.t_j == t_j and channel.v_g == v_g)]
-                if len(candidate_datasets) == 0:
-                    available_datasets = [(channel.t_j, channel.v_g) for channel in self.diode.channel]
-                    print("Available operating points: (t_j, v_g)")
-                    print(available_datasets)
-                    raise ValueError("No data available for linearization at the given operating point. "
-                                     "A list of available operating points is printed above.")
-                elif len(candidate_datasets) > 1:
-                    print("During linearization, multiple datasets were found that are consistent with the chosen "
-                          "operating point. The first of these sets is automatically chosen because selection of a "
-                          "different dataset is not yet implemented.")
-            else:
-                candidate_datasets = [channel for channel in self.diode.channel
-                                      if channel.t_j == t_j]
-                if len(candidate_datasets) == 0:
-                    available_datasets = [channel.t_j for channel in self.diode.channel]
-                    print("Available operating points: (t_j)")
-                    print(available_datasets)
-                    raise ValueError("No data available for linearization at the given operating point. "
-                                     "A list of available operating points is printed above.")
-                elif len(candidate_datasets) > 1:
-                    print("During linearization, multiple datasets were found that are consistent with the chosen "
-                          "operating point. The first of these sets is automatically chosen because selection of a "
-                          "different dataset is not yet implemented.")
-            # interpolate data
-            voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
-                                             candidate_datasets[0].graph_v_i[0])
-            voltage_interpolated_2 = np.interp(i_channel * 0.9, candidate_datasets[0].graph_v_i[1],
-                                               candidate_datasets[0].graph_v_i[0])
-            r_channel = (voltage_interpolated - voltage_interpolated_2) / (0.1 * i_channel)
-            v_channel = voltage_interpolated - r_channel * i_channel
-        else:
-            raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
-                             "linearization.")
-        return round(v_channel, 6), round(r_channel, 9)
 
     class WP:
         """
