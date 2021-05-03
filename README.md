@@ -113,8 +113,13 @@ For contributing, please refer to this [section](Contributing.md).
 
 ## 4.4 Authors and acknowledgement
 Actual developers
+* Nikolas Förster
 * Manuel Klädtke
-* Henning Steinhagen     
+* Henning Steinhagen    
+
+Project leading
+* Nikolas Förster
+* Philipp Rehlaender
 
 Developers in the past
 
@@ -124,4 +129,4 @@ Developers in the past
 ## 4.6 History and project status
 This project started in 2020 as a side project and was initially written in matlab. It quickly became clear that the project was no longer a side project. The project should be completely rewritten, because many new complex levels have been added. To place the project in the open source world, the programming language python is used.      
 
-In january 2021 a very early alpha status is reached. First pip package is provided in april 2021.
+In january 2021 a very early alpha status is reached. First pip package is provided in may 2021.
