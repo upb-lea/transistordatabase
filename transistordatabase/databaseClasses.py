@@ -1461,6 +1461,7 @@ class Transistor:
             self.v_switching_ref = None
             self.e_oss = None
             self.q_oss = None
+            self.parallel_transistors = None
 
 
 def check_realnum(x):
