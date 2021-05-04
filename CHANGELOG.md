@@ -1,4 +1,4 @@
-# Changelogt_ob_par
+# Changelog
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -35,11 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Construct a Transistor-object and save relevant data in its attributes and subclasses
 - Class structure documented in a class UML diagram
-- Save Transistor-object in an object database created with [ZODB](http://www.zodb.org/en/latest/)
+- Save Transistor-object in an object database created with mongodb
 - Mandatory attributes and restricted types/values to guarantee only valid and functional Transistors can be added to
   the database
-- Matlab-Exporter for later use with [Simscape Electrical](https://www.mathworks.com/products/simscape-electrical.html)
-  , [PLECS](https://plexim.com/) or just general calculation/plots
+- Matlab-Exporter
 
 [Unreleased]: https://github.com/upb-lea/Transistor_Database/compare/0.2.0...HEAD
 [0.2.0]: https://github.com/upb-lea/Transistor_Database/compare/0.1.0...0.2.0

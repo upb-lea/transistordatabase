@@ -45,6 +45,7 @@ setup(
 					  'fpdf2>=2.3.1'],
     license="GNU General Public License v3",
     long_description=readme + '\n\n' + history,
+    long_description_content_type="text/markdown",
     include_package_data=True,
     keywords='Transtordatabase',
     name='transistordatabase',
