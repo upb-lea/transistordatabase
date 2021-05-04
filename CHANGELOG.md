@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] - 2021-05-03
+## [0.2.0] - 2021-05-04
 ### Added
 - Example template to generate a transistor object
 - transistor method: linearize_switch_ui_graph
@@ -18,8 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exporter: GeckoCIRCUITS
 - calc_object_i_e to calculate loss loss curves for other gate resistors/voltage levels
 - New class 'wp' to store local calculation parameters to use in your program
+- automatically fill 'wp' objects when using functions like find_approx_wp()
+- added a quick start to fill in 'wp' values quick and easy
 - New housing types
 - .json exporter
+
 ### Removed
 - Removed Metadata class. Added its attributes to Transistor class instead
 ### Changed
