@@ -1,7 +1,7 @@
 # transistordatabase (TDB)
 Import/export and manage transistor data in the transistor database.
 
-![](documentation/Workflow.png)
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Workflow.png)
 
 Functionality examples:
  * digitize transistor datasheet parameters and graphs and save it to the TDB
