@@ -309,6 +309,30 @@ if __name__ == '__main__':
 
 
 
+    ####################################
+    # Examples to fill-in transistor.wp-class
+    ####################################
+    # full-automated example
+    #transistor_loaded.quickstart_wp()
+
+    # half-automated example
+    # transistor_loaded.update_wp(125, 15, 50)
+
+    # non-automated example
+    # # calculate energy and charge in c_oss
+    # transistor_loaded.wp.e_oss = transistor_loaded.calc_v_eoss()
+    # transistor_loaded.wp.q_oss = transistor_loaded.calc_v_qoss()
+    #
+    # # switch, linearize channel and search for losscurves
+    # transistor_loaded.wp.switch_v_channel, transistor_loaded.wp.switch_r_channel = transistor_loaded.calc_lin_channel(25, 15, 150, 'switch')
+    # transistor_loaded.wp.e_on = transistor_loaded.get_object_i_e('e_on', 25, 15, 600, 2.5).graph_i_e
+    # transistor_loaded.wp.e_off = transistor_loaded.get_object_i_e('e_off', 25, -4, 600, 2.5).graph_i_e
+    #
+    # # diode, linearize channel and search for losscurves
+    # transistor_loaded.wp.diode_v_channel, transistor_loaded.wp.diode_r_channel = transistor_loaded.calc_lin_channel(25, -4, 150, 'diode')
+
+
+
 
 
 

@@ -411,18 +411,18 @@ class Transistor:
             diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
             # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
             #  object can "linearize itself".
-            self.wp.diode_r_channel, self.wp.diode_v_channel = \
+            self.wp.diode_r_channel, self.wp.diode_r_channel = \
                 self.calc_lin_channel(diode_channel.t_j, diode_channel.v_g, i_channel, switch_or_diode="diode")
 
         if switch_or_diode in ["switch", "both"]:
             switch_channel, self.wp.e_on, self.wp.e_off = self.switch.find_approx_wp(t_j, v_g, normalize_t_to_v)
             # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
             #  object can "linearize itself".
-            self.wp.switch_r_channel, self.wp.switch_v_channel = \
+            self.wp.switch_v_channel, self.wp.switch_r_channel = \
                 self.calc_lin_channel(switch_channel.t_j, switch_channel.v_g, i_channel, switch_or_diode="switch")
 
     def quickstart_wp(self):
-        self.update_wp(self.t_c_max, 15, self.i_abs_max)
+        self.update_wp(self.switch.t_j_max - 25, 15, self.i_abs_max/2)
 
     def calc_v_eoss(self):
         """
@@ -1238,15 +1238,21 @@ class Transistor:
             # Find closest e_rr
             e_rrs = [e for e in self.e_rr if e.dataset_type == SwitchEnergyData_dataset_type]
             if not e_rrs:
-                raise KeyError(f"There is no e_rr data with type {SwitchEnergyData_dataset_type} for this Diode object.")
-            e_rr_t_js = np.array([e.t_j for e in e_rrs])
-            e_rr_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_rrs])
-            nodes = np.array([e_rr_t_js / normalize_t_to_v, e_rr_v_gs]).transpose()
-            index_e_rr = distance.cdist([node], nodes).argmin()
+                # raise KeyError(f"There is no e_rr data with type {SwitchEnergyData_dataset_type} for this Diode object.")
 
-            print(f"run diode.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
-            print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
-            print(f"err:     t_j = {e_rrs[index_e_rr].t_j} °C and v_g = {e_rrs[index_e_rr].v_g} V")
+                print(f"run diode.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
+                print(f"There is no err, may due to MOSFET, SiC-MOSFET or GaN device: Set err to [[0, 0], [0, 0]]")
+                e_rrs = [np.array([[0, 0], [0, 0]]), np.array([[0, 0], [0, 0]])]
+                index_e_rr = 0
+            else:
+                e_rr_t_js = np.array([e.t_j for e in e_rrs])
+                e_rr_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_rrs])
+                nodes = np.array([e_rr_t_js / normalize_t_to_v, e_rr_v_gs]).transpose()
+                index_e_rr = distance.cdist([node], nodes).argmin()
+
+                print(f"run diode.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
+                print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
+                print(f"err:     t_j = {e_rrs[index_e_rr].t_j} °C and v_g = {e_rrs[index_e_rr].v_g} V")
 
             return self.channel[index_channeldata], e_rrs[index_e_rr]
 

@@ -10,22 +10,34 @@ Functionality examples:
  * export transistors to GeckoCIRCUITS simulation program
 
 # 1. Installation
-## 1.1 Install Mongodb
+## 1.1 Windows
+### 1.1.1 Install Mongodb
 For the first usage, you need to install mongodb.
 Windows
 Use the MongoDB community server, as platform, choose windows. [Link](https://www.mongodb.com/try/download/community)
 
-Archlinux / Manjaro ([AUR](https://aur.archlinux.org/packages/mongodb-bin/)):
+### 1.1.2 Install git
+[Installation file](https://git-scm.com/download/win)
+
+### 1.1.3 Install Pycharm
+[Installation file](https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC)
+
+## 1.2 Linux
+Archlinux / Manjaro
+Enable Arch-User-Repository ([AUR](https://aur.archlinux.org/packages/mongodb-bin/)):
 ```
-sudo pacman -Syu mongodb-bin
+sudo pacman -Syu mongodb-bin git pycharm
+
 ```
-## 1.2 Install the transitor database
-We recommend to use pycharm. Navigate to file -> settings -> Project -> Python Interpreter -> add: transistordatabase    
 
+Ubuntu
+```
+sudo apt install python3 python3-pip git
+```
+Note: Install pycharm from Snapstore
 
-
-
-
+## 1.3 All Operating systems: Install the transitor database
+Using Pycharm: Navigate to file -> settings -> Project -> Python Interpreter -> add: transistordatabase    
 
 # 2 transistordatabase's usage
 Import transistordatabase to your python program
@@ -75,19 +87,33 @@ transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
 ```
 ## 2.3 Use Transistor.wp. for usage in your programs
 There is a subclass .wp. you can fill for further program calculations.
+### 2.3.1 Full-automated example: Use the quickstart method to fill in the wp-class. 
+There is a search function, that chooses the closes operating point. In the full-automated method, there are some predefined values
+- Chooses transistor.switch.t_j_max - 25°C as operating temperature to start search
+- Chooses transistor.i_abs_max/2 as operating current to start search
+- Chooses v_g = 15V as gate voltage to start search
 ```
-# calculate energy and charge in c_oss
-t_ib.wp.e_oss = t_ib.calc_v_eoss()
-t_ib.wp.q_oss = t_ib.calc_v_qoss()
+transistor_loaded.quickstart_wp()
+```
+### 2.3.2 Half-automated example: fill in the wp-class by a search-method to find the closes working point to your methods
+Insert a working point of interest. The algorithm will find the closest working point and fills out the Transistor.wp.-class
+```
+transistor.update_wp(125, 15, 50)
+```
+### 2.3.2 Non-automated example: fill in the wp-class manually
+Look for all operationg points manually. This will result in an error in case of no match.
+
+```
+transistor_loaded.wp.e_oss = transistor_loaded.calc_v_eoss()
+transistor_loaded.wp.q_oss = transistor_loaded.calc_v_qoss()
 
 # switch, linearize channel and search for losscurves
-t_ib.wp.switch_v_channel, t_ib.wp.switch_r_channel = t_ib.calc_lin_channel(150, 15, 150, 'switch')
-t_ib_ts_s_e_on = t_ib.get_object_i_e('e_on', 125, 15, t_ib_ts_v_losscurve, 2.7).graph_i_e
-t_ib_ts_s_e_off = t_ib.get_object_i_e('e_off', 125, -15, t_ib_ts_v_losscurve, 2.7).graph_i_e
+transistor_loaded.wp.switch_v_channel, transistor_loaded.wp.switch_r_channel = transistor_loaded.calc_lin_channel(25, 15, 150, 'switch')
+transistor_loaded.wp.e_on = transistor_loaded.get_object_i_e('e_on', 25, 15, 600, 2.5).graph_i_e
+transistor_loaded.wp.e_off = transistor_loaded.get_object_i_e('e_off', 25, -4, 600, 2.5).graph_i_e
 
 # diode, linearize channel and search for losscurves
-t_ib.wp.diode_v_channel, t_ib.wp.diode_r_channel = t_ib.calc_lin_channel(150, 15, 150, 'diode')
-t_ib_ts_d_e_rr = t_ib.get_object_i_e('e_rr', 125, 15, t_ib_ts_v_losscurve, 2.7).graph_i_e
+transistor_loaded.wp.diode_v_channel, transistor_loaded.wp.diode_r_channel = transistor_loaded.calc_lin_channel(25, -4, 150, 'diode')
 ```
 
 
