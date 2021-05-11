@@ -37,7 +37,21 @@ sudo apt install python3 python3-pip git
 Note: Install pycharm from Snapstore
 
 ## 1.3 All Operating systems: Install the transitor database
-Using Pycharm: Navigate to file -> settings -> Project -> Python Interpreter -> add: transistordatabase    
+Using Pycharm: Navigate to file -> settings -> Project -> Python Interpreter -> add: transistordatabase  
+
+## 1.4 Complete minimal python example
+```
+# load the python package
+import transistordatabase as tdb
+# update the database from the online git-repository
+tdb.update_from_fileexchange()
+# print the database
+tdb.print_TDB()
+# load a transistor from the database
+transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
+# quick start fill in .wp.-storage for further calculations in your program
+transistor_loaded.quickstart_wp()
+```
 
 # 2 transistordatabase's usage
 Import transistordatabase to your python program
