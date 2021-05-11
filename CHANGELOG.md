@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - print_TDB() returns a list with transistor names 
+- add some CREE power module housing types
 
 ### Bugfix
 - fix #6: Avoid KeyError when using devices without err-losscurves
