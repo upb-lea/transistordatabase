@@ -411,7 +411,7 @@ class Transistor:
             diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
             # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
             #  object can "linearize itself".
-            self.wp.diode_r_channel, self.wp.diode_r_channel = \
+            self.wp.diode_v_channel, self.wp.diode_r_channel = \
                 self.calc_lin_channel(diode_channel.t_j, diode_channel.v_g, i_channel, switch_or_diode="diode")
 
         if switch_or_diode in ["switch", "both"]:
