@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- print_TDB() returns a list with transistor names 
 
 ### Bugfix
 - fix #6: Avoid KeyError when using devices without err-losscurves

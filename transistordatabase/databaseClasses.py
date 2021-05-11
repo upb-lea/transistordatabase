@@ -1583,7 +1583,7 @@ def print_TDB(filters=[], collection="local"):
     Print all transistorelements stored in the local database
     :param filters: filters for searching the database
     :param collection: Choose database name in local mongodb client. Default name is "collection"
-    :return: -
+    :return: Return a list with all transistor objects fitting to the search-filter
     """
     if collection == "local":
         collection = connect_local_TDB()
@@ -1599,8 +1599,11 @@ def print_TDB(filters=[], collection="local"):
     """Filters must be specified according to the respective objects they're associated with. 
     e.g. 'type' for type of Transistor or 'diode.technology' for technology of Diode."""
     returned_cursor = collection.find({}, filters)
+    name_list = []
     for tran in returned_cursor:
         print(tran)
+        name_list.append(tran['name'])
+    return name_list
 
 
 def connect_TDB(host):
