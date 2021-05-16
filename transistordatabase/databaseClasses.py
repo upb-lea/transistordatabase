@@ -1689,6 +1689,7 @@ def update_from_fileexchange(collection="local", overwrite=True):
     :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
     :return: -
     """
+    print(f"Note: Please make sure that you have installed the latest version of the transistor database, especially if the update_from_fileexchange()-method ends in an error. Find the lastest version here: https://pypi.org/project/transistordatabase/")
     # Remove repo if it is already available to avoid clone error handling.
     if os.path.isdir("./cloned_repo"):
         shutil.rmtree('./cloned_repo')
