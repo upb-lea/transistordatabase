@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Simple calculation method for mosfet gate resistor (Paper PCIM 2006: D.Kübrich 'Invetsigation of Turn-Off Behaviour under the Assumption of Linear Capacitances')
 ### Bugfix
 - bug #7: was not fully fixed. Fixed now. 
 

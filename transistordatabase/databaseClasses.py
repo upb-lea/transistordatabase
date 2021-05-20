@@ -1724,6 +1724,22 @@ def import_json(path):
     else:
         TypeError(f"{path = } ist not a string.")
 
+def r_g_max_rapid_channel_turn_off(v_gsth, c_ds, c_gd, i_off, v_driver_off):
+    """
+    Calculates the maximum gate resistor to achieve no turn-off losses when working with MOSFETs
+    'rapid channel turn-off' (rcto)
+    Note: Input (e.g. i_off can also be a vector)
+    Source: D. Kübrich, T. Dürbraum, A. Bucher:
+    'Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances'
+    International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244
+    :param v_gsth: gate threshod voltage
+    :param c_ds: equivalent drain-source capacitance
+    :param c_gd: equivalent gate-drain capacitance
+    :param i_off: turn-off current
+    :param v_driver_off: Driver voltage during turn-off
+    :return: r_g_max_rcto maxiumum gate resistor to achieve rapid channel turn-off
+    """
+    return (v_gsth-v_driver_off)/i_off * (1 + c_ds/c_gd)
 
 class PDF(FPDF):
     # notes for A4 pages
