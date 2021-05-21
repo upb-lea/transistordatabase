@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simple calculation method for mosfet gate resistor (Paper PCIM 2006: D.Kübrich 'Invetsigation of Turn-Off Behaviour under the Assumption of Linear Capacitances')
 ### Bugfix
 - bug #7: was not fully fixed. Fixed now. 
+- bug #9: in case of no err-data, fill working point with object instead of list
 
 ## [0.2.2] - 2021-05-11
 ### Added

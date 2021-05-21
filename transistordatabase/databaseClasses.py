@@ -409,6 +409,17 @@ class Transistor:
     def update_wp(self, t_j, v_g, i_channel, switch_or_diode="both", normalize_t_to_v=10):
         if switch_or_diode in ["diode", "both"]:
             diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
+            if self.wp.e_rr is None:
+                print(f"run diode.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
+                print(f"There is no err, may due to MOSFET, SiC-MOSFET or GaN device: Set err to [[0, 0], [0, 0]]")
+                print(f"Note: Values are set to t_j = 25°C, v_g = 15V, r_g = 1 Ohm")
+                args = {"dataset_type": "graph_i_e",
+                               "t_j": 25,
+                               'v_g': 15,
+                               'v_supply': 1,
+                               'r_g': 1,
+                               "graph_i_e": [np.array([[0, 0], [0, 0]]), np.array([[0, 0], [0, 0]])]}
+                self.wp.e_rr = self.SwitchEnergyData(args)
             # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
             #  object can "linearize itself".
             self.wp.diode_v_channel, self.wp.diode_r_channel = \
@@ -1119,7 +1130,7 @@ class Transistor:
             plt.grid()
             plt.show()
 
-    class Diode:
+    class Diode():
         """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
          multiple channel- and e_rr- datasets."""
         # Metadata
@@ -1239,10 +1250,7 @@ class Transistor:
             e_rrs = [e for e in self.e_rr if e.dataset_type == SwitchEnergyData_dataset_type]
             if not e_rrs:
                 # raise KeyError(f"There is no e_rr data with type {SwitchEnergyData_dataset_type} for this Diode object.")
-
-                print(f"run diode.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
-                print(f"There is no err, may due to MOSFET, SiC-MOSFET or GaN device: Set err to [[0, 0], [0, 0]]")
-                e_rrs = [np.array([[0, 0], [0, 0]]), np.array([[0, 0], [0, 0]])]
+                e_rrs = [None]
                 index_e_rr = 0
             else:
                 e_rr_t_js = np.array([e.t_j for e in e_rrs])
