@@ -36,6 +36,7 @@ export functions accordingly.
 
 import scipy.io as sio
 import numpy as np
+import os
 
 
 ##########################################################################
@@ -639,6 +640,6 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
                     file_diode.write("<\SchaltverlusteMesskurve>\n")
 
     file_diode.close()
-
+    print(f"Export files {Transistor.name}_Switch.scl and {Transistor.name}_Diode.scl to {os.getcwd()}")
     #set print options back to default
     np.set_printoptions(linewidth=75)
