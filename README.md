@@ -8,6 +8,8 @@ Functionality examples:
  * use this data for calculations in python (e.g. some loss calulations for a boost-converter)
  * export this data to matlab for calculations in matlab
  * export transistors to GeckoCIRCUITS simulation program
+             
+Development status: Alpha
 
 # 1. Installation
 ## 1.1 Windows
