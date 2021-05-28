@@ -231,7 +231,7 @@ class Transistor:
         if path is None:
             with open(transistor_dict['name'] + '.json', 'w') as fp:
                 json.dump(transistor_dict, fp, default=json_util.default)
-            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {pathlib.Path(__file__).parent.absolute()}")
+            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {os.getcwd()}")
         elif isinstance(path, str):
             with open(os.path.join(path, transistor_dict['name'] + '.json'), 'w') as fp:
                 json.dump(transistor_dict, fp, default=json_util.default)
