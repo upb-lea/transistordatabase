@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- #13: GeckoCircuits Exporter exports mirrowed conducting characterisitc for negative currents
+### Bugfixes
+- #11, #12: Path displays when export to gecko (.scl) or to .json
 
 ## [0.2.3] - 2021-05-21
 ### Added

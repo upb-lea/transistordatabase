@@ -458,6 +458,20 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
             for i in range(len(current)):
                 if i > 0 and current[i] == 0:
                     current[i] = 0.001
+            if Transistor.type.lower() == 'mosfet' or Transistor.type.lower() == 'sic-mosfet':
+                # Note: Loss calculation in GeckoCIRCUITs will fail in case of reverse conducting
+                # Forward characteristic will be copied to backward-characteristic
+                voltage_reverse = voltage.copy()
+                voltage_reverse = voltage_reverse[voltage_reverse != 0]
+                voltage_reverse = np.flip(voltage_reverse)
+                voltage_reverse = [-x for x in voltage_reverse]
+                voltage = np.append(voltage_reverse, voltage)
+
+                current_reverse = current.copy()
+                current_reverse = current_reverse[current_reverse != 0]
+                current_reverse = np.flip(current_reverse)
+                current_reverse = [-x for x in current_reverse]
+                current = np.append(current_reverse, current)
 
             print_current = np.array2string(current, formatter={'float_kind':lambda x: "%.3f" % x})
             print_current = print_current[1:-1]
