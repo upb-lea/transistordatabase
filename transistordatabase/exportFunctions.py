@@ -38,10 +38,12 @@ export functions accordingly.
 import scipy.io as sio
 import numpy as np
 import os
+import matlab
+import datetime
 
 def compatibilityTest(Transistor, attribute):
     """
-    checks attribute for occurrences of None an replace it with n.nan
+    checks attribute for occurrences of None an replace it with np.nan
     :param Transistor: transistor object
     :param attribute: path to given attribute
     :return: attribute value or np.nan
@@ -55,7 +57,6 @@ def compatibilityTest(Transistor, attribute):
 
     except AttributeError:
         return np.nan
-
 
 
 def findChannelData(Transistor, channel, temperature, attribute, identifier):
@@ -155,12 +156,16 @@ def export_simulink_loss_model(transistor):
     #ToDo: C_th is fixed at the moment to 1e-6 for switch an diode. Needs to be calculated from ohter data
     Notes:
      - temperature next to 25 and 150 degree at 15V gate voltage will be used for channel and switching loss
+     - in case of just one temperature curve, the upper temperature will increased (+1K) to bring a small temperature change in the curves. Otherwise the model will not work
      - only necessary data from tdb will be exported to simulink
      - Simulink model need switching energy loss in 'mJ'
      - in case of no complete curve (e.g. not starting from zero), this tool will interpolate the curve
     :param transistor: transistor object
     :return: .mat file for import in matlab/simulink
     """
+    # Notes on exporting the file:
+    # values need to be exported as np.double(), otherwise the Simulink-model can not interpolate the data (but displaying the curves is working...)
+
 
     t_j_lower = 25
     t_j_upper = 150
@@ -185,20 +190,22 @@ def export_simulink_loss_model(transistor):
     e_off_upper_interp = np.interp(i_interp, eoff_object_upper.graph_i_e[0], eoff_object_upper.graph_i_e[1])
     e_off_array = np.array([e_off_lower_interp, e_off_upper_interp])
 
+    # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
+    temp_t_j_switch_channel_upper = switch_channel_object_upper.t_j + 1 if switch_channel_object_lower.t_j == switch_channel_object_upper.t_j else switch_channel_object_upper.t_j
+    temp_t_j_eon_upper = eon_object_upper.t_j + 1 if eon_object_lower.t_j == eon_object_upper.t_j else eon_object_upper.t_j
+    temp_t_j_eoff_upper = eoff_object_upper.t_j + 1 if eoff_object_lower.t_j == eoff_object_upper.t_j else eoff_object_upper.t_j
 
-    switch_dict = {'Manufacturer': compatibilityTest(transistor, 'Transistor.switch.manufacturer'),
-                   'T_j_channel': [switch_channel_object_lower.t_j, switch_channel_object_upper.t_j],
-                   'T_j_ref_on': [eon_object_lower.t_j, eon_object_upper.t_j],
-                   'T_j_ref_off': [eoff_object_lower.t_j, eoff_object_upper.t_j],
+    switch_dict = {'T_j_channel': np.double([switch_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
+                   'T_j_ref_on': np.double([eon_object_lower.t_j, temp_t_j_eon_upper]),
+                   'T_j_ref_off': np.double([eoff_object_lower.t_j, temp_t_j_eoff_upper]),
                    'R_th_total': compatibilityTest(transistor, 'Transistor.switch.thermal_foster.r_th_total') if transistor.switch.thermal_foster.r_th_total != 0 else 1e-6,
-                   'R_th_Switch_CS': compatibilityTest(transistor, 'Transistor.r_th_switch_cs') if transistor.r_th_switch_cs != 0 else 1e-6,
-                   'C_th_total': 1e-6,
-                   'V_ref_on': eon_object_upper.v_supply,
-                   'V_ref_off': eon_object_upper.v_supply,
-                   'Eon': e_on_array * 1000,
-                   'Eoff': e_off_array * 1000,
-                   'v_channel': switch_channel_array,
-                   'i_vec': i_interp,
+                   'C_th_total': np.double(1e-6),
+                   'V_ref_on': np.double(eon_object_upper.v_supply),
+                   'V_ref_off': np.double(eon_object_upper.v_supply),
+                   'Eon': np.double(e_on_array * 1000),
+                   'Eoff': np.double(e_off_array * 1000),
+                   'v_channel': np.double(switch_channel_array),
+                   'i_vec': np.double(i_interp),
                    }
     ### diode
     diode_channel_object_lower, err_object_lower = transistor.diode.find_approx_wp(t_j_lower, v_g)
@@ -211,25 +218,34 @@ def export_simulink_loss_model(transistor):
     e_rr_upper_interp = np.interp(i_interp, err_object_upper.graph_i_e[0], err_object_upper.graph_i_e[1])
     err_array = np.array([e_rr_lower_interp, e_rr_upper_interp])
 
+    # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
+    temp_t_j_switch_channel_upper = diode_channel_object_upper.t_j + 1 if diode_channel_object_lower.t_j == diode_channel_object_upper.t_j else diode_channel_object_upper.t_j
+    temp_t_j_err_upper = err_object_upper.t_j + 1 if err_object_lower.t_j == err_object_upper.t_j else err_object_upper.t_j
+
     diode_dict = {
-        'T_j_channel': [diode_channel_object_lower.t_j, diode_channel_object_upper.t_j],
-        'T_j_ref_rr': [err_object_lower.t_j, err_object_upper.t_j],
+        'T_j_channel': np.double([diode_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
+        'T_j_ref_rr': np.double([err_object_lower.t_j, temp_t_j_err_upper]),
         'R_th_total': compatibilityTest(transistor, 'Transistor.diode.thermal_foster.r_th_total') if transistor.diode.thermal_foster.r_th_total != 0 else 1e-6,
-        'C_th_total': 1e-6,
-        'V_ref_rr': err_object_lower.v_supply,
-        'v_channel': diode_channel_array,
-        'i_vec': i_interp,
-        'Err': err_array * 1000
+        'C_th_total': np.double(1e-6),
+        'V_ref_rr': np.double(err_object_lower.v_supply),
+        'v_channel': np.double(diode_channel_array),
+        'i_vec': np.double(i_interp),
+        'Err': np.double(err_array * 1000)
 
     }
 
     transistor_dict = {'Name': compatibilityTest(transistor, 'Transistor.name'),
                        'R_th_CS': compatibilityTest(transistor, 'Transistor.r_th_cs')  if transistor.r_th_cs != 0 else 1e-6,
+                       'R_th_Switch_CS': compatibilityTest(transistor, 'Transistor.r_th_switch_cs') if transistor.r_th_switch_cs != 0 else 1e-6,
+                       'R_th_Diode_CS': compatibilityTest(transistor, 'Transistor.r_th_diode_cs') if transistor.r_th_diode_cs != 0 else 1e-6,
                        'Switch': switch_dict,
                        'Diode': diode_dict,
+                       'file_generated': f"{datetime.datetime.today()}",
+                       'file_generated_by': "https://github.com/upb-lea/transistordatabase",
                        }
 
     sio.savemat(transistor.name + '_Simulink_lossmodel.mat', {transistor.name: transistor_dict})
+    print(f"Export files {transistor.name}_Simulink_lossmodel.mat to {os.getcwd()}")
 
 
 def export_matlab_v1(transistorName):
@@ -299,6 +315,7 @@ def export_matlab_v1(transistorName):
                        'Diode': Diode_dict}
 
     sio.savemat(Transistor.name + '_M1.mat', {Transistor.name: Transistor_dict})
+
 
 def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off):
     """
