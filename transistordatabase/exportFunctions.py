@@ -166,6 +166,8 @@ def export_simulink_loss_model(transistor):
     # Notes on exporting the file:
     # values need to be exported as np.double(), otherwise the Simulink-model can not interpolate the data (but displaying the curves is working...)
 
+    if transistor.type.lower() != 'igbt':
+        raise ValueError("In export_simulink_loss_model: Function is working for IGBTs only")
 
     t_j_lower = 25
     t_j_upper = 150
@@ -242,6 +244,8 @@ def export_simulink_loss_model(transistor):
                        'Diode': diode_dict,
                        'file_generated': f"{datetime.datetime.today()}",
                        'file_generated_by': "https://github.com/upb-lea/transistordatabase",
+                       'r_g_on': np.double(eon_object_lower.r_g),
+                       'r_g_off': np.double(eoff_object_lower.r_g),
                        }
 
     sio.savemat(transistor.name + '_Simulink_lossmodel.mat', {transistor.name: transistor_dict})
