@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="210mm"
    height="297mm"
    viewBox="0 0 210 297"
    version="1.1"
    id="svg5884"
-   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
    sodipodi:docname="Workflow.svg"
-   inkscape:export-filename="/home/nikolasf/Dokumente/01_git/30_Python/Transistor_Database/documentation/Workflow.png"
+   inkscape:export-filename="/home/nikolasf/Dokumente/01_git/30_Python/transistordatabase/documentation/Workflow.png"
    inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs5878">
     <marker
@@ -522,23 +522,24 @@
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="226.97042"
-     inkscape:cy="217.36496"
+     inkscape:cx="300.52038"
+     inkscape:cy="182.33253"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
-     showgrid="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1144"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
+     showgrid="false"
+     inkscape:window-width="2294"
+     inkscape:window-height="965"
+     inkscape:window-x="23"
+     inkscape:window-y="15"
+     inkscape:window-maximized="0"
      showborder="false"
      inkscape:snap-bbox="true"
-     inkscape:snap-bbox-midpoints="true">
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:pagecheckerboard="0">
     <inkscape:grid
        type="xygrid"
        id="grid5886" />
@@ -551,7 +552,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -690,15 +690,15 @@
        id="text11413"
        transform="translate(8.0522941,-5.3891213)"><tspan
          x="53.449303"
-         y="39.388885"><tspan
-           style="stroke-width:0.264583">Digitizing plots by </tspan></tspan><tspan
+         y="39.388885"
+         id="tspan848">Digitizing plots by </tspan><tspan
          x="53.449303"
-         y="42.916671"><tspan
-           style="stroke-width:0.264583">using
-</tspan></tspan><tspan
+         y="42.916671"
+         id="tspan850">using
+</tspan><tspan
          x="53.449303"
-         y="46.444457"><tspan
-           style="stroke-width:0.264583">Webplotdigitizer</tspan></tspan></text>
+         y="46.444457"
+         id="tspan852">Webplotdigitizer</tspan></text>
     <g
        id="g3992"
        transform="translate(-249.76666,95.249976)">
@@ -1086,11 +1086,11 @@
        inkscape:transform-center-x="-1.22412"
        inkscape:transform-center-y="20.520766"><tspan
          x="-63.76725"
-         y="163.4108"><tspan
-           style="stroke-width:0.264583">read from </tspan></tspan><tspan
+         y="163.4108"
+         id="tspan854">read from </tspan><tspan
          x="-63.76725"
-         y="166.93859"><tspan
-           style="stroke-width:0.264583">database</tspan></tspan></text>
+         y="166.93859"
+         id="tspan856">database</tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.264583"
        id="rect5906-1"
@@ -1141,17 +1141,17 @@
        id="text12192"
        transform="translate(-8.3178762,24.864618)"><tspan
          x="99.21875"
-         y="78.052086"><tspan
-           style="stroke-width:0.264583">Calculating curves </tspan></tspan><tspan
+         y="78.052086"
+         id="tspan858">Calculating curves </tspan><tspan
          x="99.21875"
-         y="81.579875"><tspan
-           style="stroke-width:0.264583">from measurement </tspan></tspan><tspan
+         y="81.579875"
+         id="tspan860">from measurement </tspan><tspan
          x="99.21875"
-         y="85.107661"><tspan
-           style="stroke-width:0.264583">data in the TDB </tspan></tspan><tspan
+         y="85.107661"
+         id="tspan862">data in the TDB </tspan><tspan
          x="99.21875"
-         y="88.635448"><tspan
-           style="stroke-width:0.264583">file-format</tspan></tspan></text>
+         y="88.635448"
+         id="tspan864">file-format</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path5718-7-5-9-6-0"
@@ -1166,11 +1166,11 @@
        id="text11613-2"
        transform="translate(-19.205818,24.388512)"><tspan
          x="158.18153"
-         y="66.156174"><tspan
-           style="stroke-width:0.264583">Store to </tspan></tspan><tspan
+         y="66.156174"
+         id="tspan866">Store to </tspan><tspan
          x="158.18153"
-         y="69.683963"><tspan
-           style="stroke-width:0.264583">database</tspan></tspan></text>
+         y="69.683963"
+         id="tspan868">database</tspan></text>
     <g
        id="g5533"
        transform="translate(-299.24375,12.03873)">
@@ -1785,11 +1785,11 @@
        id="text13553"
        transform="translate(-5.2441808,9.5980355)"><tspan
          x="206.375"
-         y="101.86458"><tspan
-           style="stroke-width:0.264583">calculating loss curves for </tspan></tspan><tspan
+         y="101.86458"
+         id="tspan870">calculating loss curves for </tspan><tspan
          x="206.375"
-         y="105.39237"><tspan
-           style="stroke-width:0.264583">another gate resistor</tspan></tspan></text>
+         y="105.39237"
+         id="tspan872">another gate resistor</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;white-space:pre;inline-size:37.0417;stroke-width:0.264583"
@@ -1798,11 +1798,11 @@
        id="text13557"
        transform="translate(-9.9522808,12.517404)"><tspan
          x="251.35416"
-         y="99.21875"><tspan
-           style="stroke-width:0.264583">comparison of different </tspan></tspan><tspan
+         y="99.21875"
+         id="tspan874">comparison of different </tspan><tspan
          x="251.35416"
-         y="102.74654"><tspan
-           style="stroke-width:0.264583">loss curves</tspan></tspan></text>
+         y="102.74654"
+         id="tspan876">loss curves</tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.264583"
        id="rect5906-8-4-9-7-7-4-5"
@@ -2149,11 +2149,11 @@
        id="text11613-2-1"
        transform="translate(-16.559985,-21.913571)"><tspan
          x="158.18153"
-         y="66.156174"><tspan
-           style="stroke-width:0.264583">Store to </tspan></tspan><tspan
+         y="66.156174"
+         id="tspan878">Store to </tspan><tspan
          x="158.18153"
-         y="69.683963"><tspan
-           style="stroke-width:0.264583">database</tspan></tspan></text>
+         y="69.683963"
+         id="tspan880">database</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;white-space:pre;inline-size:24.0798;stroke-width:0.264583"
@@ -2164,10 +2164,10 @@
        inkscape:transform-center-x="-1.22412"
        inkscape:transform-center-y="20.520766"><tspan
          x="-63.76725"
-         y="163.4108"><tspan
-           style="stroke-width:0.264583">read from </tspan></tspan><tspan
+         y="163.4108"
+         id="tspan882">read from </tspan><tspan
          x="-63.76725"
-         y="166.93859"><tspan
-           style="stroke-width:0.264583">database</tspan></tspan></text>
+         y="166.93859"
+         id="tspan884">database</tspan></text>
   </g>
 </svg>

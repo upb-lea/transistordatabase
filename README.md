@@ -1,6 +1,12 @@
 # transistordatabase (TDB)
 Import/export and manage transistor data in the transistor database.
+## Why the transistordatabase
+When developing electronics, you need to calculate and simulate your schematic before building up the hardware. When it comes to the point of choosing a transistor, there is typically a lot of trouble with different programs. In typical cases, you use more than one program for your calculation, e.g. a self-written program for a first guess, and a schematic simulator to verify your results. Your colleague is working on another electronics topology, may using two other programs. Both of you have stored a few transistor-files on your computers. But due to other programs and another way of using them in a self-written program, your transistors will never be compatible with your colleagures program. If he want's to use your transistors, he needs to generate them compleatly new from the datasheets to be compatible with his programs. Sharing programs and transistors will result in frustraction. This happens also in the same office (university / company / students)
 
+The transistordatabase counteracts this problem. By a defined file format, you can handle these objects, export it to some propretery simulation software and share it by a .json-file to your colleagues or share it with the world by using the [transistor database file exchange git repository](https://github.com/upb-lea/transistordatabase_File_Exchange).
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Why_transistordatabase.png)
+
+## Functionality overview
 ![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Workflow.png)
 
 Functionality examples:
@@ -8,8 +14,9 @@ Functionality examples:
  * use this data for calculations in python (e.g. some loss calulations for a boost-converter)
  * export this data to matlab for calculations in matlab
  * export transistors to GeckoCIRCUITS simulation program
-             
-Development status: Alpha
+ * export transistors to Simulink simulation program
+
+Note: Development status: Alpha
 
 # 1. Installation
 ## 1.1 Windows
@@ -103,7 +110,7 @@ transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
 ```
 ## 2.3 Use Transistor.wp. for usage in your programs
 There is a subclass .wp. you can fill for further program calculations.
-### 2.3.1 Full-automated example: Use the quickstart method to fill in the wp-class. 
+### 2.3.1 Full-automated example: Use the quickstart method to fill in the wp-class.
 There is a search function, that chooses the closes operating point. In the full-automated method, there are some predefined values
 - Chooses transistor.switch.t_j_max - 25°C as operating temperature to start search
 - Chooses transistor.i_abs_max/2 as operating current to start search
@@ -130,6 +137,49 @@ transistor_loaded.wp.e_off = transistor_loaded.get_object_i_e('e_off', 25, -4, 6
 
 # diode, linearize channel and search for losscurves
 transistor_loaded.wp.diode_v_channel, transistor_loaded.wp.diode_r_channel = transistor_loaded.calc_lin_channel(25, -4, 150, 'diode')
+```
+
+## 2.4 Share your transistors with the world
+Use your local generated transistor, load it into your workspace and export it, e.g.
+```
+transistor_loaded = load({'name': 'CREE_C3M0016120K'})
+transistor_loaded.export_json()
+```
+You can upload this file to the [transistor database file exchange git repository](https://github.com/upb-lea/transistordatabase_File_Exchange).
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Why_transistordatabase.png) by generating a pull request.
+
+## 2.5 Export transistor objects to other programs
+Using transistors within pyhton you have already seen. Now we want to take a closer look at exporting the transistors to other programs.
+These exporters are currently working. Some others are planned for the future.
+### 2.5.1 Export to GeckoCIRCUITS
+GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct [download link](http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip).
+At the moment you need to know the exporting parameters like gate resistor, gate-voltage and switching voltage. This will be simplified in the near future.
+```
+transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
+tdb.export_geckocircuits(transistor, 600, 15, -4, 2.5, 2.5)
+```
+From now on, you can load the model into your GeckoCIRCUITS schematic.
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Example_Gecko_Exporter.png)
+Hint: it is also possible to control GeckoCIRCUITS from python, e.g. to sweep transistors. In this case, linux users should consider to run [this](https://github.com/tinix84/gecko/releases/tag/v1.1) Version of GeckoCIRCUITS instead the above one (port to OpenJDK).
+
+### 2.5.2 Export to Matlab
+
+### 2.5.3 Export to Simulink
+For a loss simulation in simulink, there is a IGBT model available, which can be found in this [simulink model](https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html). Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
+```
+transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
+tdb.export_simulink_loss_model(transistor)
+```
+Output is a .mat-file, you can load in your matlab program to simulate. Now, you are able to sweep transistors within your simulation. E.g. some matlab-code:
+```
+load Infineon_FF200R12KE3_Simulink_lossmodel.mat;
+load Infineon_FF300R12KE3_Simulink_lossmodel.mat;
+load Fuji_2MBI200XBE120-50_Simulink_lossmodel.mat;
+load Fuji_2MBI300XBE120-50_Simulink_lossmodel.mat;
+Transistor_array = [Infineon_FF200R12KE3 Infineon_FF300R12KE3 Fuji_2MBI200XBE120-50 Fuji_2MBI300XBE120-50];
+for i_Transistor = 1:length(Transistor_array)
+    Transistor = Transistor_array(i_Transistor);
+    out = sim('YourSimulinkSimulationHere');
 ```
 
 
