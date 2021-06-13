@@ -40,6 +40,8 @@ import numpy as np
 import os
 import matlab
 import datetime
+import json
+from bson import json_util
 
 def compatibilityTest(Transistor, attribute):
     """
@@ -57,6 +59,21 @@ def compatibilityTest(Transistor, attribute):
 
     except AttributeError:
         return np.nan
+
+def dict_clean(input_dict):
+    """
+    Cleans a python dict and makes it compatible with matlab
+    Dict must be cleaned from 'None's to np.nan (= NaN in Matlab)
+    see https://stackoverflow.com/questions/35985923/replace-none-in-a-python-dictionary
+    :param input_dict: dictionary
+    :return:
+    """
+    result = {}
+    for key, value in input_dict:
+        if value is None:
+            value = np.nan
+        result[key] = value
+    return result
 
 
 def findChannelData(Transistor, channel, temperature, attribute, identifier):
@@ -251,75 +268,23 @@ def export_simulink_loss_model(transistor):
     sio.savemat(transistor.name + '_Simulink_lossmodel.mat', {transistor.name: transistor_dict})
     print(f"Export files {transistor.name}_Simulink_lossmodel.mat to {os.getcwd()}")
 
-
-def export_matlab_v1(transistorName):
+def export_to_matlab(transistor):
     """
-    Creates .mat file with raw transistor data
-    :param transistorName: transistor object
-    :return: creates a separate .mat file
+    Exports a transistor dictionary to a matlab dictionary
+    :param transistor: transistor object
+    :return: file stored in current working path
     """
-    Transistor = transistorName
+    transistor_dict = transistor.convert_to_dict()
+    dict_str = json.dumps(transistor_dict, default=json_util.default)
 
-    Diode_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.r_th_total'),
-                         'R_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.r_th_vector'),
-                         'C_th_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.c_th_total'),
-                         'C_th_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.c_th_vector'),
-                         'Tau_total': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.tau_total'),
-                         'Tau_vector': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.tau_vector'),
-                         'Transient_data': compatibilityTest(Transistor, 'Transistor.diode.thermal_foster.transient_data')}
+    # Note: Dict must be cleaned from 'None's to np.nan (= NaN in Matlab)
+    # see https://stackoverflow.com/questions/35985923/replace-none-in-a-python-dictionary
+    transistor_clean_dict = json.loads(dict_str, object_pairs_hook=dict_clean)
+    transistor_clean_dict['file_generated'] = f"{datetime.datetime.today()}"
+    transistor_clean_dict['file_generated_by'] = "https://github.com/upb-lea/transistordatabase",
 
-    Switch_Foster_dict = {'R_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.r_th_total'),
-                          'R_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.r_th_vector'),
-                          'C_th_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.c_th_total'),
-                          'C_th_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.c_th_vector'),
-                          'Tau_total': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.tau_total'),
-                          'Tau_vector': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.tau_vector'),
-                          'Transient_data': compatibilityTest(Transistor, 'Transistor.switch.thermal_foster.transient_data')}
-
-    Switch_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.comment'),
-                   'Manufacturer': compatibilityTest(Transistor, 'Transistor.manufacturer'),
-                   'Technology': compatibilityTest(Transistor, 'Transistor.technology'),
-                   'c_oss': compatibilityTest(Transistor, 'Transistor.switch.c_oss'),
-                   'c_iss': compatibilityTest(Transistor, 'Transistor.switch.c_iss'),
-                   'c_rss': compatibilityTest(Transistor, 'Transistor.switch.c_rss'),
-                   'channel': buildList(Transistor, 'Transistor.switch.channel'),
-                   'e_on': buildList(Transistor, 'Transistor.switch.e_on'),
-                   'e_off': buildList(Transistor, 'Transistor.switch.e_off'),
-                   'Foster Thermal Model': Switch_Foster_dict}
-
-    Diode_dict = {'Comment': compatibilityTest(Transistor, 'Transistor.comment'),
-                  'Manufacturer': compatibilityTest(Transistor, 'Transistor.manufacturer'),
-                  'Technology': compatibilityTest(Transistor, 'Transistor.technology'),
-                  'channel': buildList(Transistor, 'Transistor.diode.channel'),
-                  'e_rr': buildList(Transistor, 'Transistor.diode.e_rr'),
-                  'Foster Thermal Model': Diode_Foster_dict}
-
-    Transistor_dict = {'name': compatibilityTest(Transistor, 'Transistor.name'),
-                       'type': compatibilityTest(Transistor, 'Transistor.type'),
-                       'Author': compatibilityTest(Transistor, 'Transistor.author'),
-                       'Template_version': compatibilityTest(Transistor, 'Transistor.template_version'),
-                       'Template_date': compatibilityTest(Transistor, 'Transistor.template_date'),
-                       'Creation_date': compatibilityTest(Transistor, 'Transistor.creation_date'),
-                       'Last_modified': compatibilityTest(Transistor, 'Transistor.last_modified'),
-                       'Comment': compatibilityTest(Transistor, 'Transistor.comment'),
-                       'Manufacturer': compatibilityTest(Transistor, 'Transistor.manufacturer'),
-                       'Datasheet_hyperlink': compatibilityTest(Transistor, 'Transistor.datasheet_hyperlink'),
-                       'Datasheet_date': compatibilityTest(Transistor, 'Transistor.datasheet_date'),
-                       'Datasheet_version': compatibilityTest(Transistor, 'Transistor.datasheet_version'),
-                       'Housing_area': compatibilityTest(Transistor, 'Transistor.housing_area'),
-                       'Contact_area': compatibilityTest(Transistor, 'Transistor.cooling_area'),
-                       'Housing_type': compatibilityTest(Transistor, 'Transistor.housing_type'),
-                       'r_th_cs': compatibilityTest(Transistor, 'Transistor.r_th_cs'),
-                       'r_th_switch': compatibilityTest(Transistor, 'Transistor.r_th_switch_cs'),
-                       'r_th_diode_cs': compatibilityTest(Transistor, 'Transistor.r_th_diode_cs'),
-                       'v_max': compatibilityTest(Transistor, 'Transistor.v_max'),
-                       'i_max': compatibilityTest(Transistor, 'Transistor.i_max'),
-                       'i_cont': compatibilityTest(Transistor, 'Transistor.i_cont'),
-                       'Switch': Switch_dict,
-                       'Diode': Diode_dict}
-
-    sio.savemat(Transistor.name + '_M1.mat', {Transistor.name: Transistor_dict})
-
+    sio.savemat(transistor.name + '_Matlab.mat', {transistor.name: transistor_clean_dict})
+    print(f"Export files {transistor.name}_Matlab.mat to {os.getcwd()}")
 
 def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off):
     """

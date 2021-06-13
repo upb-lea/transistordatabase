@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- rewrite export_to_matlab() function
 
 ## [0.2.5] - 2021-06-10
 ## Added
@@ -24,12 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Simple calculation method for mosfet gate resistor (Paper PCIM 2006: D.Kübrich 'Invetsigation of Turn-Off Behaviour under the Assumption of Linear Capacitances')
 ### Bugfix
-- bug #7: was not fully fixed. Fixed now. 
+- bug #7: was not fully fixed. Fixed now.
 - bug #9: in case of no err-data, fill working point with object instead of list
 
 ## [0.2.2] - 2021-05-11
 ### Added
-- print_TDB() returns a list with transistor names 
+- print_TDB() returns a list with transistor names
 - add some CREE power module housing types
 
 ### Bugfix

@@ -33,7 +33,7 @@ Use the MongoDB community server, as platform, choose windows. [Link](https://ww
 [Installation file](https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC)
 
 ## 1.2 Linux
-Archlinux / Manjaro
+Archlinux / Manjaro    
 Enable Arch-User-Repository ([AUR](https://aur.archlinux.org/packages/mongodb-bin/)):
 ```
 sudo pacman -Syu mongodb-bin git pycharm
@@ -163,6 +163,12 @@ From now on, you can load the model into your GeckoCIRCUITS schematic.
 Hint: it is also possible to control GeckoCIRCUITS from python, e.g. to sweep transistors. In this case, linux users should consider to run [this](https://github.com/tinix84/gecko/releases/tag/v1.1) Version of GeckoCIRCUITS instead the above one (port to OpenJDK).
 
 ### 2.5.2 Export to Matlab
+Python dictionary can be exported to Matlab, see the following example:
+```
+transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
+tdb.export_to_matlab(transistor)
+```
+A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab.
 
 ### 2.5.3 Export to Simulink
 For a loss simulation in simulink, there is a IGBT model available, which can be found in this [simulink model](https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html). Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
