@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="210mm"
    height="297mm"
    viewBox="0 0 210 297"
    version="1.1"
    id="svg8"
-   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
-   sodipodi:docname="TDB_overview_drawing.svg">
+   inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
+   sodipodi:docname="TDB_overview_drawing.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2">
     <marker
@@ -967,6 +967,134 @@
          id="path5871-6-6-2-80-9-0-0-5"
          inkscape:connector-curvature="0" />
     </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="TriangleInM-5-26-2-5-3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInM">
+      <path
+         transform="scale(-0.4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path5871-6-1-1-4-6"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="TriangleInM-5-3-8-5-1-75"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInM">
+      <path
+         transform="scale(-0.4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path5871-6-6-7-9-5-3"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="TriangleInM-5-26-2-5-3-3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInM">
+      <path
+         transform="scale(-0.4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path5871-6-1-1-4-6-6"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="TriangleInM-5-3-8-5-1-75-0"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInM">
+      <path
+         transform="scale(-0.4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path5871-6-6-7-9-5-3-6"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="TriangleInM-5-26-2-5-3-9"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInM">
+      <path
+         transform="scale(-0.4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path5871-6-1-1-4-6-2"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="TriangleInM-5-3-8-5-1-75-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInM">
+      <path
+         transform="scale(-0.4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path5871-6-6-7-9-5-3-8"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="TriangleInM-5-26-2-5-3-9-1"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInM">
+      <path
+         transform="scale(-0.4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path5871-6-1-1-4-6-2-9"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:collect="always"
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="TriangleInM-5-3-8-5-1-75-2-4"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleInM">
+      <path
+         transform="scale(-0.4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path5871-6-6-7-9-5-3-8-7"
+         inkscape:connector-curvature="0" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -975,9 +1103,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="255.80478"
-     inkscape:cy="270.02808"
+     inkscape:zoom="0.24748737"
+     inkscape:cx="-591.94939"
+     inkscape:cy="812.16265"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -985,11 +1113,12 @@
      showborder="false"
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-midpoints="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1172"
+     inkscape:window-width="1280"
+     inkscape:window-height="968"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1">
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0">
     <inkscape:grid
        type="xygrid"
        id="grid10" />
@@ -3083,11 +3212,14 @@
        id="text23544-1"
        transform="translate(-160.78479,32.640922)"><tspan
          x="-125.24993"
-         y="161.11609"><tspan>optional </tspan></tspan><tspan
+         y="161.11609"
+         id="tspan12260">optional </tspan><tspan
          x="-125.24993"
-         y="164.64388"><tspan>boundary </tspan></tspan><tspan
+         y="164.64388"
+         id="tspan12262">boundary </tspan><tspan
          x="-125.24993"
-         y="168.17166"><tspan>conditions</tspan></tspan></text>
+         y="168.17166"
+         id="tspan12264">conditions</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path5718-7-5-64-9"
@@ -3102,21 +3234,20 @@
        id="text24426"
        transform="translate(-118.4075,31.710735)"><tspan
          x="-147.82358"
-         y="130.42442"><tspan
-           style="stroke-width:0.264583">multiple objects </tspan><tspan
-           style="stroke-width:0.264583">possible
-</tspan></tspan><tspan
+         y="130.42442"
+         id="tspan12266">multiple objects possible
+</tspan><tspan
          x="-147.82358"
-         y="133.95221"><tspan
-           style="stroke-width:0.264583">c_oss #opt
-</tspan></tspan><tspan
+         y="133.95221"
+         id="tspan12268">c_oss #opt
+</tspan><tspan
          x="-147.82358"
-         y="137.48"><tspan
-           style="stroke-width:0.264583">c_iss #opt
-</tspan></tspan><tspan
+         y="137.48"
+         id="tspan12270">c_iss #opt
+</tspan><tspan
          x="-147.82358"
-         y="141.00778"><tspan
-           style="stroke-width:0.264583">c_rss #opt</tspan></tspan></text>
+         y="141.00778"
+         id="tspan12272">c_rss #opt</tspan></text>
     <rect
        style="fill:#ffffff;stroke:#2ec27e;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.53, 0.53000000000000003;stroke-dashoffset:0"
        id="rect10040-2-0-9-0-4-7"
@@ -4190,16 +4321,14 @@
        id="text3772"
        transform="translate(-360.16415,210.17595)"><tspan
          x="92.737267"
-         y="74.109161"><tspan
-           style="stroke-width:0.264583">Parameterize both, </tspan><tspan
-           style="stroke-width:0.264583">e.g. set </tspan></tspan><tspan
+         y="74.109161"
+         id="tspan12274">Parameterize both, e.g. set </tspan><tspan
          x="92.737267"
-         y="77.636951"><tspan
-           style="stroke-width:0.264583">one of these to </tspan><tspan
-           style="stroke-width:0.264583">a very small </tspan></tspan><tspan
+         y="77.636951"
+         id="tspan12276">one of these to a very small </tspan><tspan
          x="92.737267"
-         y="81.164737"><tspan
-           style="stroke-width:0.264583">value, e.g. 0.00001</tspan></tspan></text>
+         y="81.164737"
+         id="tspan12278">value, e.g. 0.00001</tspan></text>
     <g
        transform="rotate(-90,14.880204,301.29685)"
        id="g16467-367">
@@ -5825,16 +5954,16 @@
        id="text661"
        transform="translate(-484.86283,218.50116)"><tspan
          x="171.97917"
-         y="128.32292"><tspan
-           style="stroke-width:0.264583">Note: Due to high power loss during switching events (e.g. </tspan></tspan><tspan
+         y="128.32292"
+         id="tspan12280">Note: Due to high power loss during switching events (e.g. </tspan><tspan
          x="171.97917"
-         y="131.85071"><tspan
-           style="stroke-width:0.264583">8kW), there must be a </tspan><tspan
-           style="fill:#1c71d8">capacitor</tspan><tspan
-           style="stroke-width:0.264583"> parallel to each thermal </tspan></tspan><tspan
+         y="131.85071"
+         id="tspan12284">8kW), there must be a <tspan
+   style="fill:#1c71d8"
+   id="tspan12282">capacitor</tspan> parallel to each thermal </tspan><tspan
          x="171.97917"
-         y="135.3785"><tspan
-           style="stroke-width:0.264583">resistance. If not available, assume a value. </tspan></tspan></text>
+         y="135.3785"
+         id="tspan12286">resistance. If not available, assume a value. </tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
@@ -7824,5 +7953,252 @@
          y="11.361942"
          style="stroke-width:0.264583"
          id="tspan1445"> - get</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="-411.9288"
+       y="413.52859"
+       id="text1866"><tspan
+         sodipodi:role="line"
+         id="tspan1864"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         x="-411.9288"
+         y="413.52859">Parallel switching (example 2 parallel transistors)</tspan></text>
+    <g
+       id="g5545-9-9-4-5"
+       transform="translate(-370.41667,402.16666)">
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="path5718-7-5-93-2-6-9-6"
+         d="M 18.520833,29.104167 H 11.90625"
+         style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInM-5-26-2-5-3)" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="path5718-7-5-93-7-0-1-8-2"
+         d="m 11.90625,22.489584 v 6.614583"
+         style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInM-5-3-8-5-1-75)" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="-350.57291"
+       y="432.59375"
+       id="text5549-2-0-3-9"><tspan
+         sodipodi:role="line"
+         id="tspan5547-3-4-8-1"
+         x="-350.57291"
+         y="432.59375"
+         style="stroke-width:0.264583">v</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="-359.28064"
+       y="423.39828"
+       id="text5553-7-2-5-2"><tspan
+         sodipodi:role="line"
+         id="tspan5551-5-2-2-70"
+         x="-359.28064"
+         y="423.39828"
+         style="stroke-width:0.264583">i</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path5718-20-2-9"
+       d="m -358.51042,431.27083 c 2.66293,0.19545 4.14461,-2.46449 4.7625,-6.08542"
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
+    <g
+       id="g5545-9-9-4-5-9"
+       transform="translate(-370.41667,420.68749)">
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="path5718-7-5-93-2-6-9-6-7"
+         d="M 18.520833,29.104167 H 11.90625"
+         style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInM-5-26-2-5-3-9)" />
+      <path
+         sodipodi:nodetypes="cc"
+         inkscape:connector-curvature="0"
+         id="path5718-7-5-93-7-0-1-8-2-3"
+         d="m 11.90625,22.489584 v 6.614583"
+         style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInM-5-3-8-5-1-75-2)" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="-350.96567"
+       y="450.86377"
+       id="text5549-2-0-3-9-6"><tspan
+         sodipodi:role="line"
+         id="tspan5547-3-4-8-1-1"
+         x="-350.96567"
+         y="450.86377"
+         style="stroke-width:0.264583">i</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="-359.28064"
+       y="441.91913"
+       id="text5553-7-2-5-2-2"><tspan
+         sodipodi:role="line"
+         id="tspan5551-5-2-2-70-9"
+         x="-359.28064"
+         y="441.91913"
+         style="stroke-width:0.264583">E</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path5718-20-2-9-3"
+       d="m -357.18749,448.46874 c 3.175,-1.32291 3.88003,-0.87699 4.49791,-4.49792"
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path5718-7-5-93-2-6-9-6-7-4"
+       d="m -329.40626,449.79167 h -13.22916"
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInM-5-26-2-5-3-9-1)" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path5718-7-5-93-7-0-1-8-2-3-5"
+       d="m -342.63542,436.5625 v 13.22917"
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInM-5-3-8-5-1-75-2-4)" />
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="-328.47607"
+       y="450.86377"
+       id="text5549-2-0-3-9-6-0"><tspan
+         sodipodi:role="line"
+         id="tspan5547-3-4-8-1-1-3"
+         x="-328.47607"
+         y="450.86377"
+         style="stroke-width:0.264583">i</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="-344.89816"
+       y="437.59122"
+       id="text5553-7-2-5-2-2-6"><tspan
+         sodipodi:role="line"
+         id="tspan5551-5-2-2-70-9-1"
+         x="-344.89816"
+         y="437.59122"
+         style="stroke-width:0.264583">E</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path5718-20-2-9-3-0"
+       d="m -339.98959,447.14583 c 3.175,-1.32291 8.64254,-5.63948 9.26042,-9.26041"
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path5718-7-5-93-2-6-9-6-6"
+       d="m -336.02084,431.27083 h -6.61458"
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInM-5-26-2-5-3-3)" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path5718-7-5-93-7-0-1-8-2-1"
+       d="m -342.63542,418.04166 v 13.22917"
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInM-5-3-8-5-1-75-0)" />
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="-334.69791"
+       y="432.59375"
+       id="text5549-2-0-3-9-8"><tspan
+         sodipodi:role="line"
+         id="tspan5547-3-4-8-1-7"
+         x="-334.69791"
+         y="432.59375"
+         style="stroke-width:0.264583">v</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       x="-344.35107"
+       y="417.79086"
+       id="text5553-7-2-5-2-9"><tspan
+         sodipodi:role="line"
+         id="tspan5551-5-2-2-70-2"
+         x="-344.35107"
+         y="417.79086"
+         style="stroke-width:0.264583">i</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path5718-20-2-9-0"
+       d="m -342.63542,431.27083 c 5.29167,0 4.67379,-8.28532 5.29167,-11.90625"
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="-404.836"
+       y="417.93829"
+       id="text2931"><tspan
+         sodipodi:role="line"
+         id="tspan2929"
+         style="stroke-width:0.264583"
+         x="-404.836"
+         y="417.93829">Channel</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="-404.836"
+         y="421.46609"
+         id="tspan3037"> - Current gets doubled</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="-404.836"
+         y="424.99387"
+         id="tspan3041"> - Forward voltage stays same</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="-404.836"
+       y="435.13623"
+       id="text2931-2"><tspan
+         sodipodi:role="line"
+         id="tspan2929-3"
+         style="stroke-width:0.264583"
+         x="-404.836"
+         y="435.13623">Switching losses</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="-404.836"
+         y="438.66403"
+         id="tspan3037-7"> - Current and Energy are doubled</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="-404.836"
+         y="442.1918"
+         id="tspan3041-5"> - Forward voltage stays same</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="-404.89389"
+       y="455.86191"
+       id="text7476"><tspan
+         sodipodi:role="line"
+         id="tspan7474"
+         style="stroke-width:0.264583"
+         x="-404.89389"
+         y="455.86191">Thermals</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="-404.89389"
+         y="459.38971"
+         id="tspan7478"> - R_th will be halfed (due to doubled power loss)</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="-404.89389"
+         y="462.91748"
+         id="tspan7480"> - C_th will be doubled </tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="-404.89389"
+         y="466.44528"
+         id="tspan7482"> - tau stays same</tspan></text>
   </g>
 </svg>
