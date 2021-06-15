@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- method 'parallel_transistors()' to parallel transistors object of same type 
 ### Changed
 - rewrite export_to_matlab() function
 

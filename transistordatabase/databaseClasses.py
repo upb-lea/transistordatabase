@@ -1500,6 +1500,93 @@ class Transistor:
             self.q_oss = None
             self.parallel_transistors = None
 
+    def parallel_transistors(self, count_parallels=2):
+        """
+        Connect [count_parallels] transistors in parallel
+        The returned transistor object behaves like a single transistor.
+         - name will be modified by adding _[count_parallels]_parallel
+         - channel characteristics will be modified
+         - e_on/e_off/e_rr characteristics will be modified
+         - thermal behaviour will be modified
+        :param count_parallels: count of parallel transistors of same type
+        :return: transistor object with parallel transistors
+        """
+        transistor_dict = self.convert_to_dict()
+
+        # modify transistor elements
+        transistor_dict['name'] = f"{transistor_dict['name']}_{count_parallels}_parallel"
+        transistor_dict['r_th_switch_cs'] = transistor_dict['r_th_switch_cs'] / count_parallels
+        transistor_dict['r_th_diode_cs'] /= count_parallels
+        transistor_dict['r_th_cs'] /= count_parallels
+        transistor_dict['i_abs_max'] = transistor_dict['i_abs_max'] * count_parallels
+        transistor_dict['i_cont'] = transistor_dict['i_cont'] * count_parallels
+        transistor_dict['c_iss'] = transistor_dict['c_iss'] * count_parallels
+        transistor_dict['c_oss'] *= count_parallels
+        transistor_dict['c_rss'] *= count_parallels
+
+        # modify switch dict
+        for channel_dict in transistor_dict['switch']['channel']:
+            if 'graph_v_i' in channel_dict:
+                channel_dict['graph_v_i'][1] = [y * count_parallels for y in channel_dict['graph_v_i'][1]]
+        for e_on_dict in transistor_dict['switch']['e_on']:
+            if e_on_dict['dataset_type'] == 'graph_i_e':
+                e_on_dict['graph_i_e'][0] = [y * count_parallels for y in e_on_dict['graph_i_e'][0]]
+                e_on_dict['graph_i_e'][1] = [y * count_parallels for y in e_on_dict['graph_i_e'][1]]
+            if e_on_dict['dataset_type'] == 'graph_r_e':
+                e_on_dict['graph_r_e'][1] = [y * count_parallels for y in e_on_dict['graph_r_e'][1]]
+        for e_off_dict in transistor_dict['switch']['e_off']:
+            if e_off_dict['dataset_type'] == 'graph_i_e':
+                e_off_dict['graph_i_e'][0] = [y * count_parallels for y in e_off_dict['graph_i_e'][0]]
+                e_off_dict['graph_i_e'][1] = [y * count_parallels for y in e_off_dict['graph_i_e'][1]]
+            if e_off_dict['dataset_type'] == 'graph_r_e':
+                e_off_dict['graph_r_e'][1] = [y * count_parallels for y in e_off_dict['graph_r_e'][1]]
+        # modify diode dict
+        for x in transistor_dict['diode']['channel']:
+            x['graph_v_i'][1] = [y * count_parallels for y in x['graph_v_i'][1]]
+        for e_rr_dict in transistor_dict['diode']['e_rr']:
+            if e_rr_dict['dataset_type'] == 'graph_i_e':
+                e_rr_dict['graph_i_e'][0] = [y * count_parallels for y in e_rr_dict['graph_i_e'][0]]
+                e_rr_dict['graph_i_e'][1] = [y * count_parallels for y in e_rr_dict['graph_i_e'][1]]
+            if e_rr_dict['dataset_type'] == 'graph_r_e':
+                e_rr_dict['graph_r_e'][1] = [y * count_parallels for y in e_rr_dict['graph_r_e'][1]]
+
+        # modify switch thermal dict
+        transistor_dict['switch']['thermal_foster']['r_th_total'] /= count_parallels
+        transistor_dict['switch']['thermal_foster']['r_th_vector'] = None if \
+        transistor_dict['switch']['thermal_foster']['r_th_vector'] is None else [x / count_parallels for x in
+                                                                                 transistor_dict['switch'][
+                                                                                     'thermal_foster']['r_th_vector']]
+        transistor_dict['switch']['thermal_foster']['c_th_total'] = None if transistor_dict['switch']['thermal_foster'][
+                                                                                'c_th_total'] is None else \
+        transistor_dict['switch']['thermal_foster']['c_th_total'] / count_parallels
+        transistor_dict['switch']['thermal_foster']['c_th_vector'] = None if \
+        transistor_dict['switch']['thermal_foster']['c_th_vector'] is None else [x / count_parallels for x in
+                                                                                 transistor_dict['switch'][
+                                                                                     'thermal_foster']['c_th_vector']]
+        transistor_dict['switch']['thermal_foster']['graph_t_rthjc'][1] = None if \
+        transistor_dict['switch']['thermal_foster']['graph_t_rthjc'] is None else [x / count_parallels for x in
+                                                                                   transistor_dict['switch'][
+                                                                                       'thermal_foster'][
+                                                                                       'graph_t_rthjc'][1]]
+        # modify diode thermal dict
+        transistor_dict['diode']['thermal_foster']['r_th_total'] /= count_parallels
+        transistor_dict['diode']['thermal_foster']['r_th_vector'] = None if transistor_dict['diode']['thermal_foster'][
+                                                                                'r_th_vector'] is None else [
+            x / count_parallels for x in transistor_dict['diode']['thermal_foster']['r_th_vector']]
+        transistor_dict['diode']['thermal_foster']['c_th_total'] = None if transistor_dict['diode']['thermal_foster'][
+                                                                               'c_th_total'] is None else \
+        transistor_dict['diode']['thermal_foster']['c_th_total'] / count_parallels
+        transistor_dict['diode']['thermal_foster']['c_th_vector'] = None if transistor_dict['diode']['thermal_foster'][
+                                                                                'c_th_vector'] is None else [
+            x / count_parallels for x in transistor_dict['diode']['thermal_foster']['c_th_vector']]
+        transistor_dict['diode']['thermal_foster']['graph_t_rthjc'][1] = None if \
+        transistor_dict['diode']['thermal_foster']['graph_t_rthjc'] is None else [x / count_parallels for x in
+                                                                                  transistor_dict['diode'][
+                                                                                      'thermal_foster'][
+                                                                                      'graph_t_rthjc'][1]]
+
+        return load_from_db(transistor_dict)
+
 
 def check_realnum(x):
     """
@@ -1839,58 +1926,5 @@ class PDF(FPDF):
         # Line break
         self.ln()
 
-def parallel_transistors(transistor, count_parallels=2):
-    transistor_dict = transistor.convert_to_dict()
 
-    # modify transistor elements
-    transistor_dict['name'] = f"{transistor_dict['name']}_{count_parallels}_parallel"
-    transistor_dict['r_th_switch_cs'] = transistor_dict['r_th_switch_cs'] / count_parallels
-    transistor_dict['r_th_diode_cs'] /= count_parallels
-    transistor_dict['r_th_cs'] /= count_parallels
-    transistor_dict['i_abs_max'] = transistor_dict['i_abs_max'] * count_parallels
-    transistor_dict['i_cont'] = transistor_dict['i_cont'] * count_parallels
-    transistor_dict['c_iss'] = transistor_dict['c_iss'] * count_parallels
-    transistor_dict['c_oss'] *= count_parallels
-    transistor_dict['c_rss'] *= count_parallels
-
-    # modify switch dict
-    for channel_dict in transistor_dict['switch']['channel']:
-        if 'graph_v_i' in channel_dict:
-            channel_dict['graph_v_i'][1] = [y * count_parallels for y in channel_dict['graph_v_i'][1]]
-    for e_on_dict in transistor_dict['switch']['e_on']:
-        if e_on_dict['dataset_type'] == 'graph_i_e':
-            e_on_dict['graph_i_e'][0] = [y * count_parallels for y in e_on_dict['graph_i_e'][0]]
-            e_on_dict['graph_i_e'][1] = [y * count_parallels for y in e_on_dict['graph_i_e'][1]]
-        if e_on_dict['dataset_type'] == 'graph_r_e':
-            e_on_dict['graph_r_e'][1] = [y * count_parallels for y in e_on_dict['graph_r_e'][1]]
-    for e_off_dict in transistor_dict['switch']['e_off']:
-        if e_off_dict['dataset_type'] == 'graph_i_e':
-            e_off_dict['graph_i_e'][0] = [y * count_parallels for y in e_off_dict['graph_i_e'][0]]
-            e_off_dict['graph_i_e'][1] = [y * count_parallels for y in e_off_dict['graph_i_e'][1]]
-        if e_off_dict['dataset_type'] == 'graph_r_e':
-            e_off_dict['graph_r_e'][1] = [y * count_parallels for y in e_off_dict['graph_r_e'][1]]
-    # modify diode dict
-    for x in transistor_dict['diode']['channel']:
-            x['graph_v_i'][1] = [y * count_parallels for y in x['graph_v_i'][1]]
-    for e_rr_dict in transistor_dict['diode']['e_rr']:
-        if e_rr_dict['dataset_type'] == 'graph_i_e':
-            e_rr_dict['graph_i_e'][0] = [y * count_parallels for y in e_rr_dict['graph_i_e'][0]]
-            e_rr_dict['graph_i_e'][1] = [y * count_parallels for y in e_rr_dict['graph_i_e'][1]]
-        if e_rr_dict['dataset_type'] == 'graph_r_e':
-            e_rr_dict['graph_r_e'][1] = [y * count_parallels for y in e_rr_dict['graph_r_e'][1]]
-
-    # modify switch thermal dict
-    transistor_dict['switch']['thermal_foster']['r_th_total'] /=  count_parallels
-    transistor_dict['switch']['thermal_foster']['r_th_vector'] = None if transistor_dict['switch']['thermal_foster']['r_th_vector'] is None else [x / count_parallels for x in transistor_dict['switch']['thermal_foster']['r_th_vector']]
-    transistor_dict['switch']['thermal_foster']['c_th_total'] = None if transistor_dict['switch']['thermal_foster']['c_th_total'] is None else transistor_dict['switch']['thermal_foster']['c_th_total'] / count_parallels
-    transistor_dict['switch']['thermal_foster']['c_th_vector'] = None if transistor_dict['switch']['thermal_foster']['c_th_vector'] is None else [x / count_parallels for x in transistor_dict['switch']['thermal_foster']['c_th_vector']]
-    transistor_dict['switch']['thermal_foster']['graph_t_rthjc'][1] = None if transistor_dict['switch']['thermal_foster']['graph_t_rthjc'] is None else [x / count_parallels for x in transistor_dict['switch']['thermal_foster']['graph_t_rthjc'][1]]
-    # modify diode thermal dict
-    transistor_dict['diode']['thermal_foster']['r_th_total'] /=  count_parallels
-    transistor_dict['diode']['thermal_foster']['r_th_vector'] = None if transistor_dict['diode']['thermal_foster']['r_th_vector'] is None else [x / count_parallels for x in transistor_dict['diode']['thermal_foster']['r_th_vector']]
-    transistor_dict['diode']['thermal_foster']['c_th_total'] = None if transistor_dict['diode']['thermal_foster']['c_th_total'] is None else transistor_dict['diode']['thermal_foster']['c_th_total'] / count_parallels
-    transistor_dict['diode']['thermal_foster']['c_th_vector'] = None if transistor_dict['diode']['thermal_foster']['c_th_vector'] is None else [x / count_parallels for x in transistor_dict['diode']['thermal_foster']['c_th_vector']]
-    transistor_dict['diode']['thermal_foster']['graph_t_rthjc'][1] = None if transistor_dict['diode']['thermal_foster']['graph_t_rthjc'] is None else [x / count_parallels for x in transistor_dict['diode']['thermal_foster']['graph_t_rthjc'][1]]
-
-    return load_from_db(transistor_dict)
 

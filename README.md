@@ -100,16 +100,24 @@ Some hints to fill the template:
 
 
 
-## 2.2 Update transistors from file exchange
+## 2.2 Update and load and share transistors
+### 2.2.1 Update transistors from file exchange
 There is a file exchange to share transistor objects. The repository can be found [here](https://github.com/upb-lea/transistordatabase_File_Exchange). To update your local transistordatabase type in to your python code
 ```
 tdb.update_from_fileexchange()
 ```
 After this, you can find new or updated transistor files in your local transistordatabase.
-## 2.3 Load a transistor from the database
+### 2.2.2 Load a transistor from the database
 ```
 transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
 ```
+### 2.2.3 Share your transistors with the world
+Use your local generated transistor, load it into your workspace and export it, e.g.
+```
+transistor_loaded = load({'name': 'CREE_C3M0016120K'})
+transistor_loaded.export_json()
+```
+You can upload this file to the [transistor database file exchange git repository](https://github.com/upb-lea/transistordatabase_File_Exchange) by generating a pull request.
 ## 2.3 Use Transistor.wp. for usage in your programs
 There is a subclass .wp. you can fill for further program calculations.
 ### 2.3.1 Full-automated example: Use the quickstart method to fill in the wp-class.
@@ -125,7 +133,7 @@ Insert a working point of interest. The algorithm will find the closest working 
 ```
 transistor.update_wp(125, 15, 50)
 ```
-### 2.3.2 Non-automated example: fill in the wp-class manually
+### 2.3.3 Non-automated example: fill in the wp-class manually
 Look for all operationg points manually. This will result in an error in case of no match.
 
 ```
@@ -140,14 +148,17 @@ transistor_loaded.wp.e_off = transistor_loaded.get_object_i_e('e_off', 25, -4, 6
 # diode, linearize channel and search for losscurves
 transistor_loaded.wp.diode_v_channel, transistor_loaded.wp.diode_r_channel = transistor_loaded.calc_lin_channel(25, -4, 150, 'diode')
 ```
+## 2.4 Calculations with transistor objects
+### 2.4.1 Parallel transistors
+To parallel transistors use the function.
+ * In case of no parameter paralleling is for 2 transistors
+ * in case of parameter, paralleling is for x transistors. Example here is for three transistors.
+```
+transistor = load({'name': 'Infineon_FF200R12KE3'})
+parallel_transistorobject = transistor.parallel_transistors(3)
+```
+After this, you can work with the transistor object as usual, e.g. fill in the .wp-workspace or export the devicice to Matlab, Simulink or GeckoCIRCUITS.
 
-## 2.4 Share your transistors with the world
-Use your local generated transistor, load it into your workspace and export it, e.g.
-```
-transistor_loaded = load({'name': 'CREE_C3M0016120K'})
-transistor_loaded.export_json()
-```
-You can upload this file to the [transistor database file exchange git repository](https://github.com/upb-lea/transistordatabase_File_Exchange) by generating a pull request.
 
 ## 2.5 Export transistor objects to other programs
 Using transistors within pyhton you have already seen. Now we want to take a closer look at exporting the transistors to other programs.
