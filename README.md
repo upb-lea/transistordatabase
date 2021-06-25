@@ -224,14 +224,15 @@ For contributing, please refer to this [section](Contributing.md).
 ## 4.4 Authors and acknowledgement
 Actual developers
 * Nikolas Förster
-* Manuel Klädtke
-* Henning Steinhagen    
+* Henning Steinhagen   
+* Mohan Nagella 
 
 Project leading
 * Nikolas Förster
 * Philipp Rehlaender
 
 Developers in the past
+* Manuel Klädtke
 
 ## 4.5 License
 [GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
