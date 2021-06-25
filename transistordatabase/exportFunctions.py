@@ -6,18 +6,13 @@ Date of modification: 02.02.2021
 Version: 1.0
 Compatibility: Python
 Other files required: Numpy and SciPy package
-Link to file: https://git.uni-paderborn.de/lea-git/lea-git-public/matlab-functions/transistor_database/-/blob/master/transistorDatabase/MatlabExport.py
+Link to file:
 ToDo: Check transistor name for forbidden symbols
 ToDo: implement linearization and update attributes (each attribute has its own TODO)
 ToDo: Add input parameters (e.g. for a given temperature set)
 
 Description:
 Exports transistor objects for multiple use cases.
-(So far Matlab/Octave)
-
-User relevant functions:
-export_simulink_v1 : exports .mat file in a format used in older simulations
-export_matlab_v1 : exports .mat file in the same format as it is saved in the database
 
 Known Bugs:
 Changelog:
@@ -38,7 +33,6 @@ export functions accordingly.
 import scipy.io as sio
 import numpy as np
 import os
-import matlab
 import datetime
 import json
 from bson import json_util

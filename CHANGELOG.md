@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - method 'parallel_transistors()' to parallel transistors object of same type 
 ### Changed
 - rewrite export_to_matlab() function
+### Removed
+- remove dependency from matlab-pip-package
 
 ## [0.2.5] - 2021-06-10
 ## Added
