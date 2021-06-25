@@ -86,7 +86,6 @@ class Transistor:
             self.creation_date = transistor_args.get('creation_date')
             self.last_modified = transistor_args.get('last_modified')
             self.comment = transistor_args.get('comment')
-            self.manufacturer = transistor_args.get('manufacturer')
             self.datasheet_hyperlink = transistor_args.get('datasheet_hyperlink')
             self.datasheet_date = transistor_args.get('datasheet_date')
             self.datasheet_version = transistor_args.get('datasheet_version')
@@ -102,7 +101,7 @@ class Transistor:
             # add housing types to the working direction
             housing_types_file = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
             with open(housing_types_file, "r") as housing_types_txt:
-                housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
+                housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines() if not line.startswith("#")]
             # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
             alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
             housing_type = transistor_args.get('housing_type')
@@ -110,6 +109,21 @@ class Transistor:
             idx = alphanum_housing_types.index(re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower())
             # Don't use the name in transistor_args but the matching name in "housing_types.txt"
             self.housing_type = housing_types[idx]
+
+            # Import list of valid module manufacturers from "module_manufacturers.txt"
+            # add manufacturer names to the working direction
+            module_owner_file = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
+            with open(module_owner_file, "r") as module_owner_txt:
+                module_owners = [line.replace("\n", "") for line in module_owner_txt.readlines() if
+                                 not line.startswith("#")]
+            # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
+            alphanum_module_owners = [re.sub("[^A-Za-z]+", "", line).lstrip().lower() for line in module_owners]
+            module_owner = transistor_args.get('manufacturer')
+            # Get index where the module_manufacturer was found in "module_manufacturers.txt"
+            idx = alphanum_module_owners.index(re.sub("[^A-Za-z]+", "", module_owner).lstrip().lower())
+            # Don't use the name in transistor_args but the matching name in "module_manufacturers.txt"
+            self.manufacturer = module_owners[idx]
+
             self.r_th_cs = transistor_args.get('r_th_cs')
             self.r_th_switch_cs = transistor_args.get('r_th_switch_cs')
             self.r_th_diode_cs = transistor_args.get('r_th_diode_cs')
@@ -264,7 +278,6 @@ class Transistor:
         """
         # ToDo: Error if given key is not used?
         supported_types = ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']
-        housing_types_filename = 'housing_types.txt'
         instructions = {
             'Transistor': {
                 'mandatory_keys': {'name', 'type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
@@ -347,14 +360,19 @@ class Transistor:
             if dataset_dict.get('type') not in supported_types:
                 raise ValueError(f"Transistor type currently not supported. 'type' must be in "
                                  f"{supported_types}")
-            housing_types_file = os.path.join(os.path.dirname(__file__), housing_types_filename)
-            with open(housing_types_file, "r") as housing_types_txt:
-                housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines()]
-            # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
-            alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
-            housing_type = dataset_dict.get('housing_type')
-            if re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower() not in alphanum_housing_types:
-                raise ValueError(f"Housing type {housing_type} is not allowed. See file {housing_types_filename} for a "
+            text_file_dict = {'housing_type': 'housing_types.txt', 'manufacturer': 'module_manufacturers.txt'}
+            for key, filename in text_file_dict.items():
+                file = os.path.join(os.path.dirname(__file__), filename)
+                with open(file, "r") as file_txt:
+                    read_list = [line.replace("\n", "") for line in file_txt.readlines()]
+                    # Remove all non alphanumeric characters from housing_type and manufacturer names and
+                    # convert to lowercase for comparison
+                    snub = "[^A-Za-z0-9]+" if key == 'housing_type' else "[^A-Za-z]+"
+                    alphanum_values = [re.sub(snub, "", line).lstrip().lower() for line in read_list]
+                    dataset_value = dataset_dict.get(key)
+                    if re.sub(snub, "", dataset_value).lstrip().lower() not in alphanum_values:
+                        name = key.capitalize().replace("_"," ")
+                        raise ValueError(f"{name} {dataset_value} is not allowed. See file {filename} for a "
                                  f"list of supported types.")
 
         if dict_type == 'SwitchEnergyData':

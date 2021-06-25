@@ -2,6 +2,7 @@ TO220
 TO247
 TO263
 TO92
+#Semikron
 Skiip
 MiniSkiipI
 MiniSkiipII
