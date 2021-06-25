@@ -1,3 +1,4 @@
+#General
 TO220
 TO247
 TO263
@@ -26,6 +27,7 @@ SEMiX3
 SEMiX5
 SEMiX6
 SKM
+#Fuji Electric
 M254
 M256
 M260
@@ -44,6 +46,7 @@ M291
 M292
 62mm
 45mm
+#CREE
 HM62mm
 FM3
 XM3
