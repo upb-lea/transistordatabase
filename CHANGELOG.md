@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ##[Unreleased]
+## [0.2.7] - 2021-06-28
+### Added
+- Module manufacturers, fix compatibility problem in 0.2.6
+
 
 ## [0.2.6] - 2021-06-27
 ### Added
@@ -84,8 +88,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.6...HEAD
-[0.2.5]: https://github.com/upb-lea/transistordatabase/compare/0.2.5...0.2.6
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.7...HEAD
+[0.2.7]: https://github.com/upb-lea/transistordatabase/compare/0.2.6...0.2.7
+[0.2.6]: https://github.com/upb-lea/transistordatabase/compare/0.2.5...0.2.6
 [0.2.5]: https://github.com/upb-lea/transistordatabase/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/upb-lea/transistordatabase/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/upb-lea/transistordatabase/compare/0.2.2...0.2.3

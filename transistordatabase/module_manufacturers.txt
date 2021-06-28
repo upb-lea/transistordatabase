@@ -3,3 +3,9 @@ Infineon
 Fuji Electric
 CREE
 Wolfspeed
+UnitedSiC
+ON Semiconductor
+Vincotech
+Mitsubishi Electric
+
+
