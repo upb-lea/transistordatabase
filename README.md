@@ -107,11 +107,21 @@ There is a file exchange to share transistor objects. The repository can be foun
 tdb.update_from_fileexchange()
 ```
 After this, you can find new or updated transistor files in your local transistordatabase.
-### 2.2.2 Load a transistor from the database
+### 2.2.2 Search the database
+Print all transistors inside the database
+```
+tdb.print_TDB()
+```
+If you want to store the transistor list, this function returns the names in a variable. Next option is the usage of filters, e.g. print the housing type and the hyperlink to the datasheet. All database entries can be used as filter.
+```
+tdb.print_TDB(['housing_type','datasheet_hyperlink'])
+```
+
+### 2.2.3 Load a transistor from the database
 ```
 transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
 ```
-### 2.2.3 Share your transistors with the world
+### 2.2.4 Share your transistors with the world
 Use your local generated transistor, load it into your workspace and export it, e.g.
 ```
 transistor_loaded = load({'name': 'CREE_C3M0016120K'})
