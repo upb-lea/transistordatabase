@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SemiconductorLibrary xmlns="http://www.plexim.com/xml/semiconductors/" version="1.1">
+    <Package class= "{{transistor['type']}}" vendor= "{{transistor['vendor']}}" partnumber="{{transistor['partnumber']}}">
+        <Variables/>
+        <SemiconductorData type= "{{transistor['type']}}">
+            <TurnOnLoss>
+                <ComputationMethod>Table only</ComputationMethod>
+				<CurrentAxis> {% for val in transistor['TurnOnLoss']['CurrentAxis'] %}{{"%.2f"|format(val)}} {% endfor %}</CurrentAxis>
+				<VoltageAxis>{% for key,value in transistor['TurnOnLoss']['Energy'].items() %}{{key}} {% endfor %}</VoltageAxis>
+				<TemperatureAxis> {% for val in transistor['TurnOnLoss']['TemperatureAxis'] %}{{val}} {% endfor %}</TemperatureAxis>
+				<Energy scale="0.001">
+					{% for n in range(transistor['TurnOnLoss']['TemperatureAxis']|length) %}
+					<Temperature>
+						{% for key,curve in transistor['TurnOnLoss']['Energy'].items() %}
+							<Voltage>{% for val in curve[n-1] %}{{"%.2f"|format(val*1000)}} {% endfor %}</Voltage>
+						{% endfor %}
+					</Temperature>
+					{% endfor %}
+				</Energy>		
+            </TurnOnLoss>
+			<TurnOffLoss>
+                <ComputationMethod>Table only</ComputationMethod>
+				<CurrentAxis> {% for val in transistor['TurnOffLoss']['CurrentAxis'] %}{{"%.2f"|format(val)}} {% endfor %}</CurrentAxis>
+				<VoltageAxis>{% for key,value in transistor['TurnOffLoss']['Energy'].items() %}{{key}} {% endfor %}</VoltageAxis>
+				<TemperatureAxis> {% for val in transistor['TurnOffLoss']['TemperatureAxis'] %}{{val}} {% endfor %}</TemperatureAxis>
+				<Energy scale="0.001">
+					{% for n in range(transistor['TurnOffLoss']['TemperatureAxis']|length) %}
+					<Temperature>
+						{% for key,curve in transistor['TurnOffLoss']['Energy'].items() %}
+						<Voltage>{% for val in curve[n-1] %}{{"%.2f"|format(val*1000)}} {% endfor %}</Voltage>
+						{% endfor %}
+					</Temperature>
+					{% endfor %}
+				</Energy>	
+			</TurnOffLoss>
+			<ConductionLoss>
+				<ComputationMethod>Table only</ComputationMethod>
+				<CurrentAxis>{% for val in transistor['ConductionLoss']['CurrentAxis'] %}{{"%.2f"|format(val)}} {% endfor %}</CurrentAxis>
+				<TemperatureAxis>{% for val in transistor['ConductionLoss']['TemperatureAxis'] %}{{val}} {% endfor %}</TemperatureAxis>
+				<VoltageDrop scale="1">
+					{% for curve in transistor['ConductionLoss']['Channel'] %}
+					<Temperature>{% for val in curve %}{{"%.2f"|format(val)}} {% endfor %}</Temperature>
+					{% endfor %}
+				</VoltageDrop>
+			</ConductionLoss>
+        </SemiconductorData>
+	    <ThermalModel>
+			<Branch type="Foster">
+				{% for value in transistor['RElement'] %}
+				<RTauElement R="{{value}}" Tau="{{transistor['TauElement'][loop.index-1]}}"/>
+				{% endfor %}
+			</Branch>
+		</ThermalModel>
+		<Comment>
+		{% for line in transistor['Comment'] %}
+			<Line>{{line}}</Line>
+		{% endfor %}
+		</Comment>
+	</Package>
+</SemiconductorLibrary>
