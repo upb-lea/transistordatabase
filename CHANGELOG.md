@@ -4,21 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-##[Unreleased]
+## [Unreleased]
+- Added plecs exporter for MOSFET and IGBT modules (outputs separate switch type and diode type xmls)
 ## [0.2.7] - 2021-06-28
 ### Added
 - Module manufacturers, fix compatibility problem in 0.2.6
 
 
 ## [0.2.6] - 2021-06-27
+### Bugfixes
+- #3, #8 : fixes to avoid typo errors in manufacturer and housing types along with comment line additions
 ### Added
 - method 'parallel_transistors()' to parallel transistors object of same type 
 ### Changed
 - rewrite export_to_matlab() function
 ### Removed
 - remove dependency from matlab-pip-package
-### Fixed
-- #3, #8
 
 ## [0.2.5] - 2021-06-10
 ## Added
