@@ -16,6 +16,7 @@ Functionality examples:
  * export this data to matlab for calculations in matlab
  * export transistors to GeckoCIRCUITS simulation program
  * export transistors to Simulink simulation program
+ * export transistors to PLECS simulation program
 
 Note: Development status: Alpha
 
@@ -211,6 +212,19 @@ for i_Transistor = 1:length(Transistor_array)
 ```
 ![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Example_Simulink_Exporter.png)
 
+### 2.5.4 Export to PLECS
+For a thermal and loss simulation using PLECS simulation tool, it requires the transistor loss and characteristic curves to be loaded in XML(Version 1.1) file format. More information on how to load the XML data can be found from [here](https://www.plexim.com/support/videos/thermal-modeling-part-1). To export the transistor object from your database to plecs required xml file format, following lines need to be executed starting with loading the required datasheet.
+```
+transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
+tdb.export_plecs(transistor)
+```
+Outputs are xml files - one for switch and one for diode (if available), which can be then loaded into your schematic following the instructions as mentioned [here](https://www.plexim.com/support/videos/thermal-modeling-part-1). Note that if channel curves for the default gate-voltage are found missing then the xml files could not be possible to generate and a respective warning message is issued to the user. The user can change the default gate-voltage and switching voltage by providing  an extra list argument as follows:
+```
+transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
+tdb.export_plecs(transistor, [15, -15, 15, 0])       
+```
+Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/PLECS_thermal_editor.png)
 
 # 3. Roadmap
 Planned features in 2021
