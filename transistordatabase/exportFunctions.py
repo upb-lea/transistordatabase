@@ -35,7 +35,9 @@ import numpy as np
 import os
 import datetime
 import json
+import collections
 from bson import json_util
+from jinja2 import Environment, FileSystemLoader
 
 def compatibilityTest(Transistor, attribute):
     """
@@ -529,3 +531,35 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
     print(f"Export files {Transistor.name}_Switch.scl and {Transistor.name}_Diode.scl to {os.getcwd()}")
     #set print options back to default
     np.set_printoptions(linewidth=75)
+
+
+def export_plecs(transistor, gate_voltages=list()):
+    file_loader = FileSystemLoader(searchpath="./")
+    env = Environment(loader=file_loader)
+    env.globals["enumerate"] = enumerate
+    print(os.getcwd())
+    switch_xml_data, diode_xml_data = transistor.get_channel_data(gate_voltages)
+    for data in filter(None, [switch_xml_data, diode_xml_data]):
+        if data['type'] == 'Diode':
+            if len(data['TurnOffLoss']['CurrentAxis']) > 1:
+                data['TurnOffLoss']['Energy'][0] = [[0] * len(data['TurnOffLoss']['CurrentAxis'])] * len(
+                data['TurnOffLoss']['TemperatureAxis'])
+            data['TurnOnLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOnLoss']['Energy'].items()))
+            data['TurnOffLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOffLoss']['Energy'].items()))
+            template = env.get_template('diodeTemplate.txt')
+            output = template.render(diode=data)
+            with open(data['partnumber']+"_diode.xml", "w") as fh:
+                fh.write(output)
+        elif data['type'] == 'IGBT' or data['type'] == 'MOSFET' or data['type'] == 'SiC-MOSFET':
+            if data['type'] == 'MOSFET' or data['type'] == 'SiC-MOSFET':
+                data['TurnOnLoss']['Energy'][-10] = [[0]*len(data['TurnOnLoss']['CurrentAxis'])]*len(data['TurnOnLoss']['TemperatureAxis'])
+                data['TurnOffLoss']['Energy'][-10] = [[0]*len(data['TurnOffLoss']['CurrentAxis'])]*len(data['TurnOffLoss']['TemperatureAxis'])
+            data['TurnOnLoss']['Energy'][0] = [[0] * len(data['TurnOnLoss']['CurrentAxis'])]*len(data['TurnOnLoss']['TemperatureAxis'])
+            data['TurnOffLoss']['Energy'][0] = [[0] * len(data['TurnOffLoss']['CurrentAxis'])]*len(data['TurnOffLoss']['TemperatureAxis'])
+            data['TurnOnLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOnLoss']['Energy'].items()))
+            data['TurnOffLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOffLoss']['Energy'].items()))
+            template = env.get_template('switchTemplate.txt')
+            output = template.render(transistor=data)
+            str_decoded = output.encode()
+            with open(data['partnumber']+"_switch.xml", "w") as fh:
+                fh.write(str_decoded.decode())
