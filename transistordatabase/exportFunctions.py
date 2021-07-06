@@ -533,12 +533,12 @@ def export_geckocircuits(Transistor, v_supply, v_g_on, v_g_off, r_g_on, r_g_off)
     np.set_printoptions(linewidth=75)
 
 
-def export_plecs(transistor, gate_voltages=list()):
+def export_plecs(transistor, recheck=True, gate_voltages=list()):
     file_loader = FileSystemLoader(searchpath="./")
     env = Environment(loader=file_loader)
     env.globals["enumerate"] = enumerate
     print(os.getcwd())
-    switch_xml_data, diode_xml_data = transistor.get_channel_data(gate_voltages)
+    switch_xml_data, diode_xml_data = transistor.get_curve_data(recheck, gate_voltages)
     for data in filter(None, [switch_xml_data, diode_xml_data]):
         if data['type'] == 'Diode':
             if len(data['TurnOffLoss']['CurrentAxis']) > 1:
