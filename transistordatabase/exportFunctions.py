@@ -163,7 +163,7 @@ def buildList(Transistor, attribute):
         Dataset = np.nan
     return Dataset
 
-def export_simulink_loss_model(transistor):
+def export_simulink_loss_model(transistor,r_g_on = None, r_g_off= None, v_supply = None, normalize_t_to_v=10):
     """
     Exports a simulation model for simulink inverter loss models, see https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
     #ToDo: C_th is fixed at the moment to 1e-6 for switch an diode. Needs to be calculated from ohter data
@@ -176,93 +176,153 @@ def export_simulink_loss_model(transistor):
     :param transistor: transistor object
     :return: .mat file for import in matlab/simulink
     """
-    # Notes on exporting the file:
-    # values need to be exported as np.double(), otherwise the Simulink-model can not interpolate the data (but displaying the curves is working...)
+    try:
+        # Notes on exporting the file:
+        # values need to be exported as np.double(), otherwise the Simulink-model can not interpolate the data (but displaying the curves is working...)
 
-    if transistor.type.lower() != 'igbt':
-        raise ValueError("In export_simulink_loss_model: Function is working for IGBTs only")
+        if transistor.type.lower() != 'igbt':
+            raise ValueError("In export_simulink_loss_model: Function is working for IGBTs only")
 
-    t_j_lower = 25
-    t_j_upper = 150
-    v_g = 15
+        t_j_lower = 25
+        t_j_upper = 150
+        v_g = 15
 
-    ### switch
-    switch_channel_object_lower, eon_object_lower, eoff_object_lower = transistor.switch.find_approx_wp(t_j_lower, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e")
-    switch_channel_object_upper, eon_object_upper, eoff_object_upper = transistor.switch.find_approx_wp(t_j_upper, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e")
+        ### switch
+        print("---------------------IGBT properties----------------------")
+        switch_channel_object_lower, eon_object_lower, eoff_object_lower = transistor.switch.find_approx_wp(t_j_lower, v_g, normalize_t_to_v, SwitchEnergyData_dataset_type="graph_i_e")
+        switch_channel_object_upper, eon_object_upper, eoff_object_upper = transistor.switch.find_approx_wp(t_j_upper, v_g, normalize_t_to_v, SwitchEnergyData_dataset_type="graph_i_e")
+        if r_g_on:
+            try:
+                eon_object_lower_calc = transistor.calc_object_i_e('e_on', r_g_on, eon_object_lower.t_j, v_supply, normalize_t_to_v)
+                eon_object_upper_calc = transistor.calc_object_i_e('e_on', r_g_on, eon_object_upper.t_j, v_supply, normalize_t_to_v)
+                if eon_object_lower_calc.t_j >= eon_object_upper_calc.t_j:
+                    raise ValueError('Junction temperatures remain same')
+                else:
+                    eon_object_lower = eon_object_lower_calc
+                    eon_object_upper = eon_object_upper_calc
+            except Exception as e:
+                print('Choosing the default curve properties for e_on')
+            else:
+                print('Generated curve properties for e_on')
+                print("Lower : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(eon_object_lower.r_g, eon_object_lower.v_g, eon_object_lower.t_j, eon_object_lower.v_supply))
+                print("Upper : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(
+                    eon_object_upper.r_g, eon_object_upper.v_g, eon_object_upper.t_j, eon_object_upper.v_supply))
+        if r_g_off:
+            try:
+                eoff_object_lower_calc = transistor.calc_object_i_e('e_off', r_g_off, eoff_object_lower.t_j, v_supply, normalize_t_to_v)
+                eoff_object_upper_calc = transistor.calc_object_i_e('e_off', r_g_off, eoff_object_upper.t_j, v_supply, normalize_t_to_v)
+                if eoff_object_lower_calc.t_j >= eoff_object_upper_calc.t_j:
+                    raise ValueError('Junction temperatures remain same')
+                else:
+                    eoff_object_lower = eoff_object_lower_calc
+                    eoff_object_upper = eoff_object_upper_calc
+            except Exception as e:
+                print('Choosing the default curve properties for e_off')
+            else:
+                print('Generated curve properties for e_off')
+                print("Lower : R_g(off) = {0}, v_g(off) = {1}, T_j = {2}, v_supply = {3}".format(eoff_object_lower.r_g,
+                                                                                                   eoff_object_lower.v_g,
+                                                                                                   eoff_object_lower.t_j,
+                                                                                                   eoff_object_lower.v_supply))
+                print("Upper : R_g(off) = {0}, v_g(off) = {1}, T_j = {2}, v_supply = {3}".format(
+                    eoff_object_upper.r_g, eoff_object_upper.v_g, eoff_object_upper.t_j, eoff_object_upper.v_supply))
 
     # all elements need the same current vector size
-    i_interp = np.linspace(0, transistor.i_abs_max, 10)
+        i_interp = np.linspace(0, transistor.i_abs_max, 10)
 
-    switch_channel_lower_interp = np.interp(i_interp, switch_channel_object_lower.graph_v_i[1], switch_channel_object_lower.graph_v_i[0])
-    switch_channel_upper_interp = np.interp(i_interp, switch_channel_object_upper.graph_v_i[1], switch_channel_object_upper.graph_v_i[0])
-    switch_channel_array = np.array([switch_channel_lower_interp, switch_channel_upper_interp])
+        switch_channel_lower_interp = np.interp(i_interp, switch_channel_object_lower.graph_v_i[1], switch_channel_object_lower.graph_v_i[0])
+        switch_channel_upper_interp = np.interp(i_interp, switch_channel_object_upper.graph_v_i[1], switch_channel_object_upper.graph_v_i[0])
+        switch_channel_array = np.array([switch_channel_lower_interp, switch_channel_upper_interp])
 
-    e_on_lower_interp = np.interp(i_interp, eon_object_lower.graph_i_e[0], eon_object_lower.graph_i_e[1])
-    e_on_upper_interp = np.interp(i_interp, eon_object_upper.graph_i_e[0], eon_object_upper.graph_i_e[1])
-    e_on_array = np.array([e_on_lower_interp, e_on_upper_interp])
+        e_on_lower_interp = np.interp(i_interp, eon_object_lower.graph_i_e[0], eon_object_lower.graph_i_e[1])
+        e_on_upper_interp = np.interp(i_interp, eon_object_upper.graph_i_e[0], eon_object_upper.graph_i_e[1])
+        e_on_array = np.array([e_on_lower_interp, e_on_upper_interp])
 
-    e_off_lower_interp = np.interp(i_interp, eoff_object_lower.graph_i_e[0], eoff_object_lower.graph_i_e[1])
-    e_off_upper_interp = np.interp(i_interp, eoff_object_upper.graph_i_e[0], eoff_object_upper.graph_i_e[1])
-    e_off_array = np.array([e_off_lower_interp, e_off_upper_interp])
+        e_off_lower_interp = np.interp(i_interp, eoff_object_lower.graph_i_e[0], eoff_object_lower.graph_i_e[1])
+        e_off_upper_interp = np.interp(i_interp, eoff_object_upper.graph_i_e[0], eoff_object_upper.graph_i_e[1])
+        e_off_array = np.array([e_off_lower_interp, e_off_upper_interp])
 
-    # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
-    temp_t_j_switch_channel_upper = switch_channel_object_upper.t_j + 1 if switch_channel_object_lower.t_j == switch_channel_object_upper.t_j else switch_channel_object_upper.t_j
-    temp_t_j_eon_upper = eon_object_upper.t_j + 1 if eon_object_lower.t_j == eon_object_upper.t_j else eon_object_upper.t_j
-    temp_t_j_eoff_upper = eoff_object_upper.t_j + 1 if eoff_object_lower.t_j == eoff_object_upper.t_j else eoff_object_upper.t_j
+        # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
+        temp_t_j_switch_channel_upper = switch_channel_object_upper.t_j + 1 if switch_channel_object_lower.t_j == switch_channel_object_upper.t_j else switch_channel_object_upper.t_j
+        temp_t_j_eon_upper = eon_object_upper.t_j + 1 if eon_object_lower.t_j == eon_object_upper.t_j else eon_object_upper.t_j
+        temp_t_j_eoff_upper = eoff_object_upper.t_j + 1 if eoff_object_lower.t_j == eoff_object_upper.t_j else eoff_object_upper.t_j
 
-    switch_dict = {'T_j_channel': np.double([switch_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
-                   'T_j_ref_on': np.double([eon_object_lower.t_j, temp_t_j_eon_upper]),
-                   'T_j_ref_off': np.double([eoff_object_lower.t_j, temp_t_j_eoff_upper]),
-                   'R_th_total': compatibilityTest(transistor, 'Transistor.switch.thermal_foster.r_th_total') if transistor.switch.thermal_foster.r_th_total != 0 else 1e-6,
-                   'C_th_total': np.double(1),
-                   'V_ref_on': np.double(eon_object_upper.v_supply),
-                   'V_ref_off': np.double(eon_object_upper.v_supply),
-                   'Eon': np.double(e_on_array * 1000),
-                   'Eoff': np.double(e_off_array * 1000),
-                   'v_channel': np.double(switch_channel_array),
-                   'i_vec': np.double(i_interp),
-                   }
-    ### diode
-    diode_channel_object_lower, err_object_lower = transistor.diode.find_approx_wp(t_j_lower, v_g)
-    diode_channel_object_upper, err_object_upper = transistor.diode.find_approx_wp(t_j_upper, v_g)
-    diode_channel_lower_interp = np.interp(i_interp, diode_channel_object_lower.graph_v_i[1], diode_channel_object_lower.graph_v_i[0])
-    diode_channel_upper_interp = np.interp(i_interp, diode_channel_object_upper.graph_v_i[1], diode_channel_object_upper.graph_v_i[0])
-    diode_channel_array = np.array([diode_channel_lower_interp, diode_channel_upper_interp])
-
-    e_rr_lower_interp = np.interp(i_interp, err_object_lower.graph_i_e[0], err_object_lower.graph_i_e[1])
-    e_rr_upper_interp = np.interp(i_interp, err_object_upper.graph_i_e[0], err_object_upper.graph_i_e[1])
-    err_array = np.array([e_rr_lower_interp, e_rr_upper_interp])
-
-    # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
-    temp_t_j_switch_channel_upper = diode_channel_object_upper.t_j + 1 if diode_channel_object_lower.t_j == diode_channel_object_upper.t_j else diode_channel_object_upper.t_j
-    temp_t_j_err_upper = err_object_upper.t_j + 1 if err_object_lower.t_j == err_object_upper.t_j else err_object_upper.t_j
-
-    diode_dict = {
-        'T_j_channel': np.double([diode_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
-        'T_j_ref_rr': np.double([err_object_lower.t_j, temp_t_j_err_upper]),
-        'R_th_total': compatibilityTest(transistor, 'Transistor.diode.thermal_foster.r_th_total') if transistor.diode.thermal_foster.r_th_total != 0 else 1e-6,
-        'C_th_total': np.double(1),
-        'V_ref_rr': np.double(err_object_lower.v_supply),
-        'v_channel': np.double(diode_channel_array),
-        'i_vec': np.double(i_interp),
-        'Err': np.double(err_array * 1000)
-
-    }
-
-    transistor_dict = {'Name': compatibilityTest(transistor, 'Transistor.name'),
-                       'R_th_CS': compatibilityTest(transistor, 'Transistor.r_th_cs')  if transistor.r_th_cs != 0 else 1e-6,
-                       'R_th_Switch_CS': compatibilityTest(transistor, 'Transistor.r_th_switch_cs') if transistor.r_th_switch_cs != 0 else 1e-6,
-                       'R_th_Diode_CS': compatibilityTest(transistor, 'Transistor.r_th_diode_cs') if transistor.r_th_diode_cs != 0 else 1e-6,
-                       'Switch': switch_dict,
-                       'Diode': diode_dict,
-                       'file_generated': f"{datetime.datetime.today()}",
-                       'file_generated_by': "https://github.com/upb-lea/transistordatabase",
-                       'r_g_on': np.double(eon_object_lower.r_g),
-                       'r_g_off': np.double(eoff_object_lower.r_g),
+        switch_dict = {'T_j_channel': np.double([switch_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
+                       'T_j_ref_on': np.double([eon_object_lower.t_j, temp_t_j_eon_upper]),
+                       'T_j_ref_off': np.double([eoff_object_lower.t_j, temp_t_j_eoff_upper]),
+                       'R_th_total': compatibilityTest(transistor, 'Transistor.switch.thermal_foster.r_th_total') if transistor.switch.thermal_foster.r_th_total != 0 else 1e-6,
+                       'C_th_total': np.double(1),
+                       'V_ref_on': np.double(eon_object_upper.v_supply),
+                       'V_ref_off': np.double(eon_object_upper.v_supply),
+                       'Eon': np.double(e_on_array * 1000),
+                       'Eoff': np.double(e_off_array * 1000),
+                       'v_channel': np.double(switch_channel_array),
+                       'i_vec': np.double(i_interp),
                        }
+        ### diode
+        print("---------------------Diode properties----------------------")
+        diode_channel_object_lower, err_object_lower = transistor.diode.find_approx_wp(t_j_lower, v_g)
+        diode_channel_object_upper, err_object_upper = transistor.diode.find_approx_wp(t_j_upper, v_g)
+        if r_g_on:
+            try:
+                err_object_lower_calc = transistor.calc_object_i_e('e_rr', r_g_on, err_object_lower.t_j, v_supply, normalize_t_to_v)
+                err_object_upper_calc = transistor.calc_object_i_e('e_rr', r_g_on, err_object_upper.t_j, v_supply, normalize_t_to_v)
+                if err_object_lower_calc.t_j >= err_object_upper_calc.t_j:
+                    raise ValueError('Junction temperatures remain same')
+                else:
+                    err_object_lower = err_object_lower_calc
+                    err_object_upper = err_object_upper_calc
+            except Exception as e:
+                print('Choosing the default properties for e_rr')
+            else:
+                print('Generated curve properties for e_rr')
+                print("Lower : R_g = {0}, v_g = {1}, T_j = {2}, v_supply = {3}".format(err_object_lower.r_g,
+                                                                                                   err_object_lower.v_g,
+                                                                                                   err_object_lower.t_j,
+                                                                                                   err_object_lower.v_supply))
+                print("Upper : R_g = {0}, v_g = {1}, T_j = {2}, v_supply = {3}".format(
+                    err_object_upper.r_g, err_object_upper.v_g, err_object_upper.t_j, err_object_upper.v_supply))
 
-    sio.savemat(transistor.name + '_Simulink_lossmodel.mat', {transistor.name: transistor_dict})
-    print(f"Export files {transistor.name}_Simulink_lossmodel.mat to {os.getcwd()}")
+        diode_channel_lower_interp = np.interp(i_interp, diode_channel_object_lower.graph_v_i[1], diode_channel_object_lower.graph_v_i[0])
+        diode_channel_upper_interp = np.interp(i_interp, diode_channel_object_upper.graph_v_i[1], diode_channel_object_upper.graph_v_i[0])
+        diode_channel_array = np.array([diode_channel_lower_interp, diode_channel_upper_interp])
+
+        e_rr_lower_interp = np.interp(i_interp, err_object_lower.graph_i_e[0], err_object_lower.graph_i_e[1])
+        e_rr_upper_interp = np.interp(i_interp, err_object_upper.graph_i_e[0], err_object_upper.graph_i_e[1])
+        err_array = np.array([e_rr_lower_interp, e_rr_upper_interp])
+
+        # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
+        temp_t_j_switch_channel_upper = diode_channel_object_upper.t_j + 1 if diode_channel_object_lower.t_j == diode_channel_object_upper.t_j else diode_channel_object_upper.t_j
+        temp_t_j_err_upper = err_object_upper.t_j + 1 if err_object_lower.t_j == err_object_upper.t_j else err_object_upper.t_j
+
+        diode_dict = {
+            'T_j_channel': np.double([diode_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
+            'T_j_ref_rr': np.double([err_object_lower.t_j, temp_t_j_err_upper]),
+            'R_th_total': compatibilityTest(transistor, 'Transistor.diode.thermal_foster.r_th_total') if transistor.diode.thermal_foster.r_th_total != 0 else 1e-6,
+            'C_th_total': np.double(1),
+            'V_ref_rr': np.double(err_object_lower.v_supply),
+            'v_channel': np.double(diode_channel_array),
+            'i_vec': np.double(i_interp),
+            'Err': np.double(err_array * 1000)
+
+        }
+
+        transistor_dict = {'Name': compatibilityTest(transistor, 'Transistor.name'),
+                           'R_th_CS': compatibilityTest(transistor, 'Transistor.r_th_cs')  if transistor.r_th_cs != 0 else 1e-6,
+                           'R_th_Switch_CS': compatibilityTest(transistor, 'Transistor.r_th_switch_cs') if transistor.r_th_switch_cs != 0 else 1e-6,
+                           'R_th_Diode_CS': compatibilityTest(transistor, 'Transistor.r_th_diode_cs') if transistor.r_th_diode_cs != 0 else 1e-6,
+                           'Switch': switch_dict,
+                           'Diode': diode_dict,
+                           'file_generated': f"{datetime.datetime.today()}",
+                           'file_generated_by': "https://github.com/upb-lea/transistordatabase",
+                           'r_g_on': np.double(eon_object_lower.r_g),
+                           'r_g_off': np.double(eoff_object_lower.r_g),
+                           }
+
+        sio.savemat(transistor.name.replace('-', '_') + '_Simulink_lossmodel.mat', {transistor.name.replace('-', '_'): transistor_dict})
+        print(f"Export files {transistor.name}_Simulink_lossmodel.mat to {os.getcwd()}")
+    except Exception as e:
+        print("Simulink exporter failed: {0}".format(e))
 
 def export_to_matlab(transistor):
     """

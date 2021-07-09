@@ -624,10 +624,11 @@ class Transistor:
         # compile is necessary due to using eval combined with if-statement
         # https://realpython.com/python-eval-function/
         code = compile(
-            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_i_e')]",
+            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_i_e')],[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if {e_on_off_rr}.dataset_type == 'graph_r_e']",
             "<string>", "eval")
-        candidate_datasets = eval(code)
-        if len(candidate_datasets) == 0:
+        ie_datasets, re_datasets = eval(code)
+        i_e_dataset, r_e_dataset = None, None
+        if len(ie_datasets) == 0 or re_datasets == 0:
             code = compile(
                 f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]",
                 "<string>", "eval")
@@ -636,15 +637,20 @@ class Transistor:
             print(available_datasets)
             raise ValueError("No data available for get_graph_i_e at the given operating point. "
                              "A list of available operating points is printed above.")
-        elif len(candidate_datasets) > 1:
-            print("multiple datasets were found that are consistent with the chosen "
-                  "operating point. The first of these sets is automatically chosen because selection of a "
-                  "different dataset is not yet implemented.")
-        dataset = candidate_datasets[0]
+        elif len(ie_datasets) > 1:
+            print("multiple datasets were found that are consistent with the chosen operating point.")
+            for re_curve in re_datasets:
+                for curve in ie_datasets:
+                    if curve.v_supply == re_curve.v_supply and curve.t_j == re_curve.t_j and curve.v_g == re_curve.v_g:
+                        i_e_dataset = curve
+                        r_e_dataset = re_curve
+            text_to_print = "A match found in r_e characteristics for the chosen operating point and therefore will be used" if match else "The first of these sets is automatically chosen because selection of a different dataset is not yet implemented."
+            print(text_to_print)
+        elif len(ie_datasets) == 1:
+            i_e_dataset = ie_datasets[0]
+        return i_e_dataset, r_e_dataset
 
-        return dataset
-
-    def get_object_r_e_simplified(self, e_on_off_rr, t_j, v_supply):
+    def get_object_r_e_simplified(self, e_on_off_rr, t_j, v_g, v_supply, normalize_t_to_v):
         """
         Function to get the loss graphs out of the transistor class, simplified version
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
@@ -662,10 +668,18 @@ class Transistor:
         # compile is necessary due to using eval combined with if-statement
         # https://realpython.com/python-eval-function/
         code = compile(
-            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_r_e' and {e_on_off_rr}.v_supply == {v_supply})]",
+            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if {e_on_off_rr}.dataset_type == 'graph_r_e' and {e_on_off_rr}.v_supply == {v_supply}]",
             "<string>", "eval")
         candidate_datasets = eval(code)
-        if len(candidate_datasets) == 0:
+        # Find closest loss curve
+        dataset = None
+        node = np.array([t_j / normalize_t_to_v, v_g])
+        lossdata_t_js = np.array([curve.t_j for curve in candidate_datasets])
+        lossdata_v_gs = np.array([0 if curve.v_g is None else curve.v_g for curve in candidate_datasets])
+        nodes = np.array([lossdata_t_js / normalize_t_to_v, lossdata_v_gs]).transpose()
+        index_lossdata = distance.cdist([node], nodes).argmin()
+        dataset = candidate_datasets[index_lossdata]
+        if dataset is None:
             code = compile(
                 f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]",
                 "<string>", "eval")
@@ -674,14 +688,9 @@ class Transistor:
             print(available_datasets)
             raise ValueError("No data available for get_graph_r_e at the given operating point. "
                              "A list of available operating points is printed above.")
-        elif len(candidate_datasets) > 1:
-            print("multiple datasets were found that are consistent with the chosen "
-                  "operating point. The first of these sets is automatically chosen because selection of a "
-                  "different dataset is not yet implemented.")
-        dataset = candidate_datasets[0]
         return dataset
 
-    def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply):
+    def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply, normalize_t_to_v):
         """
         Calculate loss curves for other gate resistor than the standard one.
         This function uses i_e loss curve in combination with r_e loss curve, to calculate a new i_e loss curve for
@@ -693,39 +702,48 @@ class Transistor:
         :param v_supply: supply voltage of interest
         :return: object with corrected i_e curves due to r_g and v_supply at given t_j
         """
+        try:
+            # search for graph_i_e, simplified version
+            i_e_object, r_e_object = self.get_object_i_e_simplified(e_on_off_rr, t_j)
+            r_e_object = r_e_object if r_e_object else self.get_object_r_e_simplified(e_on_off_rr, t_j, i_e_object.v_g, i_e_object.v_supply, normalize_t_to_v)
+            r_g_max = np.amax(r_e_object.graph_r_e[0])
+            v_supply_chosen = v_supply
+            if r_g > r_g_max:
+                raise Exception("Given r_g exceeds the graph range : r_g_max = {0}".format(r_g_max))
+            if not v_supply or v_supply > self.v_abs_max:
+                v_supply_chosen = i_e_object.v_supply
+                print("Invalid v_supply provided : v_supply = {0} and choosing v_supply = {1} ".format(v_supply, v_supply_chosen))
 
-        # search for graph_i_e, simplified version
-        i_e_object = self.get_object_i_e_simplified(e_on_off_rr, t_j)
-        r_e_object = self.get_object_r_e_simplified(e_on_off_rr, t_j, i_e_object.v_supply)
+            # generate copy
+            object_i_e_calc = i_e_object.graph_i_e.copy()
 
-        # generate copy
-        object_i_e_calc = i_e_object.graph_i_e.copy()
+            # calculate factor for new gate resistor to nominal gate resistor
+            loss_at_rg = np.interp(r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
+            loss_at_rgnom = np.interp(i_e_object.r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
+            factor_current = loss_at_rg / loss_at_rgnom
 
-        # calculate factor for new gate resistor to nominal gate resistor
-        loss_at_rg = np.interp(r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
-        loss_at_rgnom = np.interp(i_e_object.r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
-        factor_current = loss_at_rg / loss_at_rgnom
+            # current correction with factor
+            object_i_e_calc[1] = factor_current * object_i_e_calc[1]
 
-        # current correction with factor
-        object_i_e_calc[1] = factor_current * object_i_e_calc[1]
-
-        # voltage correction, linear
-        object_i_e_calc[1] = v_supply / i_e_object.v_supply * object_i_e_calc[1]
-        # generate dictionary for class SwitchEnergyData
-        args = {
-            'dataset_type': 'graph_i_e',
-            'r_g': r_g,
-            'v_supply': v_supply,
-            'graph_i_e': object_i_e_calc,
-            't_j': t_j,
-            'v_g': i_e_object.v_g,
-        }
-
-        # check dictionary
-        self.isvalid_dict(args, 'SwitchEnergyData')
-        # pack to object
-        object_i_e_calc = self.SwitchEnergyData(args)
-        return object_i_e_calc
+            # voltage correction, linear
+            object_i_e_calc[1] = v_supply_chosen / i_e_object.v_supply * object_i_e_calc[1]
+            # generate dictionary for class SwitchEnergyData
+            args = {
+                'dataset_type': 'graph_i_e',
+                'r_g': r_g,
+                'v_supply': v_supply_chosen,
+                'graph_i_e': object_i_e_calc,
+                't_j': i_e_object.t_j,
+                'v_g': i_e_object.v_g,
+            }
+            # check dictionary
+            self.isvalid_dict(args, 'SwitchEnergyData')
+            # pack to object
+            object_i_e_calc = self.SwitchEnergyData(args)
+            return object_i_e_calc
+        except Exception as e:
+            print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(e_on_off_rr, r_g, t_j, v_supply, e.args[0]))
+            raise e
 
     def virtual_datasheet(self):
         pdf = PDF()
