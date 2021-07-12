@@ -72,135 +72,139 @@ class Transistor:
     r_g_int: [float, int]  # Unit: Ohm # Mandatory
 
     def __init__(self, transistor_args, switch_args, diode_args):
-        if self.isvalid_dict(transistor_args, 'Transistor'):
-            if transistor_args.get('_id') is not None:
-                self._id = transistor_args.get('_id')
+        try:
+            if self.isvalid_dict(transistor_args, 'Transistor'):
+                if transistor_args.get('_id') is not None:
+                    self._id = transistor_args.get('_id')
+                else:
+                    self._id = ObjectId()
+                self.name = transistor_args.get('name')
+                self.type = transistor_args.get('type')
+                self.author = transistor_args.get('author')
+                self.technology = transistor_args.get('technology')
+                self.template_version = transistor_args.get('template_version')
+                self.template_date = transistor_args.get('template_date')
+                self.creation_date = transistor_args.get('creation_date')
+                self.last_modified = transistor_args.get('last_modified')
+                self.comment = transistor_args.get('comment')
+                self.datasheet_hyperlink = transistor_args.get('datasheet_hyperlink')
+                self.datasheet_date = transistor_args.get('datasheet_date')
+                self.datasheet_version = transistor_args.get('datasheet_version')
+                self.housing_area = transistor_args.get('housing_area')
+                self.cooling_area = transistor_args.get('cooling_area')
+                self.t_c_max = transistor_args.get('t_c_max')
+                self.r_g_int = transistor_args.get('r_g_int')
+                self.c_oss_fix = transistor_args.get('c_oss_fix')
+                self.c_iss_fix = transistor_args.get('c_iss_fix')
+                self.c_rss_fix = transistor_args.get('c_rss_fix')
+                # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
+                # Import list of valid housing types from "housing_types.txt"
+                # add housing types to the working direction
+                housing_types_file = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
+                with open(housing_types_file, "r") as housing_types_txt:
+                    housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines() if not line.startswith("#")]
+                # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
+                alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
+                housing_type = transistor_args.get('housing_type')
+                # Get index where the housing_type was found in "housing_types.txt"
+                idx = alphanum_housing_types.index(re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower())
+                # Don't use the name in transistor_args but the matching name in "housing_types.txt"
+                self.housing_type = housing_types[idx]
+
+                # Import list of valid module manufacturers from "module_manufacturers.txt"
+                # add manufacturer names to the working direction
+                module_owner_file = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
+                with open(module_owner_file, "r") as module_owner_txt:
+                    module_owners = [line.replace("\n", "") for line in module_owner_txt.readlines() if
+                                     not line.startswith("#")]
+                # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
+                alphanum_module_owners = [re.sub("[^A-Za-z]+", "", line).lstrip().lower() for line in module_owners]
+                module_owner = transistor_args.get('manufacturer')
+                # Get index where the module_manufacturer was found in "module_manufacturers.txt"
+                idx = alphanum_module_owners.index(re.sub("[^A-Za-z]+", "", module_owner).lstrip().lower())
+                # Don't use the name in transistor_args but the matching name in "module_manufacturers.txt"
+                self.manufacturer = module_owners[idx]
+
+                self.r_th_cs = transistor_args.get('r_th_cs')
+                self.r_th_switch_cs = transistor_args.get('r_th_switch_cs')
+                self.r_th_diode_cs = transistor_args.get('r_th_diode_cs')
+                self.v_abs_max = transistor_args.get('v_abs_max')
+                self.i_abs_max = transistor_args.get('i_abs_max')
+                self.i_cont = transistor_args.get('i_cont')
+                self.c_oss = []  # Default case: Empty list
+                if isinstance(transistor_args.get('c_oss'), list):
+                    # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in transistor_args.get('c_oss'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                                self.c_oss.append(Transistor.VoltageDependentCapacitance(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = transistor_args.get('c_oss')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_oss "
+                                          f"dictionaries: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(transistor_args.get('c_oss'), 'VoltageDependentCapacitance'):
+                    # Only create VoltageDependentCapacitance objects from valid dicts
+                    self.c_oss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_oss')))
+
+                self.c_iss = []  # Default case: Empty list
+                if isinstance(transistor_args.get('c_iss'), list):
+                    # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in transistor_args.get('c_iss'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                                self.c_iss.append(Transistor.VoltageDependentCapacitance(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = transistor_args.get('c_iss')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_iss "
+                                          f"dictionaries: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(transistor_args.get('c_iss'), 'VoltageDependentCapacitance'):
+                    # Only create VoltageDependentCapacitance objects from valid dicts
+                    self.c_iss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_iss')))
+
+                self.c_rss = []  # Default case: Empty list
+                if isinstance(transistor_args.get('c_rss'), list):
+                    # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in transistor_args.get('c_rss'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                                self.c_rss.append(Transistor.VoltageDependentCapacitance(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = transistor_args.get('c_rss')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_rss "
+                                          f"dictionaries: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(transistor_args.get('c_rss'), 'VoltageDependentCapacitance'):
+                    # Only create VoltageDependentCapacitance objects from valid dicts
+                    self.c_rss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_rss')))
+                self.graph_v_ecoss = transistor_args.get('graph_v_ecoss')
             else:
-                self._id = ObjectId()
-            self.name = transistor_args.get('name')
-            self.type = transistor_args.get('type')
-            self.author = transistor_args.get('author')
-            self.technology = transistor_args.get('technology')
-            self.template_version = transistor_args.get('template_version')
-            self.template_date = transistor_args.get('template_date')
-            self.creation_date = transistor_args.get('creation_date')
-            self.last_modified = transistor_args.get('last_modified')
-            self.comment = transistor_args.get('comment')
-            self.datasheet_hyperlink = transistor_args.get('datasheet_hyperlink')
-            self.datasheet_date = transistor_args.get('datasheet_date')
-            self.datasheet_version = transistor_args.get('datasheet_version')
-            self.housing_area = transistor_args.get('housing_area')
-            self.cooling_area = transistor_args.get('cooling_area')
-            self.t_c_max = transistor_args.get('t_c_max')
-            self.r_g_int = transistor_args.get('r_g_int')
-            self.c_oss_fix = transistor_args.get('c_oss_fix')
-            self.c_iss_fix = transistor_args.get('c_iss_fix')
-            self.c_rss_fix = transistor_args.get('c_rss_fix')
-            # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
-            # Import list of valid housing types from "housing_types.txt"
-            # add housing types to the working direction
-            housing_types_file = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
-            with open(housing_types_file, "r") as housing_types_txt:
-                housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines() if not line.startswith("#")]
-            # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
-            alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
-            housing_type = transistor_args.get('housing_type')
-            # Get index where the housing_type was found in "housing_types.txt"
-            idx = alphanum_housing_types.index(re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower())
-            # Don't use the name in transistor_args but the matching name in "housing_types.txt"
-            self.housing_type = housing_types[idx]
+                # ToDo: Is this a value or a type error?
+                # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
+                # ToDo: Use info in isvalid_dict() to print the list of mandatory values automatically
+                raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
+                                "are mandatory: 'name', 'type', 'author', 'manufacturer', 'housing_area', "
+                                "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
 
-            # Import list of valid module manufacturers from "module_manufacturers.txt"
-            # add manufacturer names to the working direction
-            module_owner_file = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
-            with open(module_owner_file, "r") as module_owner_txt:
-                module_owners = [line.replace("\n", "") for line in module_owner_txt.readlines() if
-                                 not line.startswith("#")]
-            # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
-            alphanum_module_owners = [re.sub("[^A-Za-z]+", "", line).lstrip().lower() for line in module_owners]
-            module_owner = transistor_args.get('manufacturer')
-            # Get index where the module_manufacturer was found in "module_manufacturers.txt"
-            idx = alphanum_module_owners.index(re.sub("[^A-Za-z]+", "", module_owner).lstrip().lower())
-            # Don't use the name in transistor_args but the matching name in "module_manufacturers.txt"
-            self.manufacturer = module_owners[idx]
-
-            self.r_th_cs = transistor_args.get('r_th_cs')
-            self.r_th_switch_cs = transistor_args.get('r_th_switch_cs')
-            self.r_th_diode_cs = transistor_args.get('r_th_diode_cs')
-            self.v_abs_max = transistor_args.get('v_abs_max')
-            self.i_abs_max = transistor_args.get('i_abs_max')
-            self.i_cont = transistor_args.get('i_cont')
-            self.c_oss = []  # Default case: Empty list
-            if isinstance(transistor_args.get('c_oss'), list):
-                # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
-                # valid dicts. 'None' and empty dicts are ignored.
-                for dataset in transistor_args.get('c_oss'):
-                    try:
-                        if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                            self.c_oss.append(Transistor.VoltageDependentCapacitance(dataset))
-                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                    except KeyError as error:
-                        dict_list = transistor_args.get('c_oss')
-                        if not error.args:
-                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_oss "
-                                      f"dictionaries: ",) + error.args
-                        raise
-            elif Transistor.isvalid_dict(transistor_args.get('c_oss'), 'VoltageDependentCapacitance'):
-                # Only create VoltageDependentCapacitance objects from valid dicts
-                self.c_oss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_oss')))
-
-            self.c_iss = []  # Default case: Empty list
-            if isinstance(transistor_args.get('c_iss'), list):
-                # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
-                # valid dicts. 'None' and empty dicts are ignored.
-                for dataset in transistor_args.get('c_iss'):
-                    try:
-                        if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                            self.c_iss.append(Transistor.VoltageDependentCapacitance(dataset))
-                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                    except KeyError as error:
-                        dict_list = transistor_args.get('c_iss')
-                        if not error.args:
-                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_iss "
-                                      f"dictionaries: ",) + error.args
-                        raise
-            elif Transistor.isvalid_dict(transistor_args.get('c_iss'), 'VoltageDependentCapacitance'):
-                # Only create VoltageDependentCapacitance objects from valid dicts
-                self.c_iss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_iss')))
-
-            self.c_rss = []  # Default case: Empty list
-            if isinstance(transistor_args.get('c_rss'), list):
-                # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
-                # valid dicts. 'None' and empty dicts are ignored.
-                for dataset in transistor_args.get('c_rss'):
-                    try:
-                        if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                            self.c_rss.append(Transistor.VoltageDependentCapacitance(dataset))
-                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                    except KeyError as error:
-                        dict_list = transistor_args.get('c_rss')
-                        if not error.args:
-                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_rss "
-                                      f"dictionaries: ",) + error.args
-                        raise
-            elif Transistor.isvalid_dict(transistor_args.get('c_rss'), 'VoltageDependentCapacitance'):
-                # Only create VoltageDependentCapacitance objects from valid dicts
-                self.c_rss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_rss')))
-            self.graph_v_ecoss = transistor_args.get('graph_v_ecoss')
-        else:
-            # ToDo: Is this a value or a type error?
-            # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
-            # ToDo: Use info in isvalid_dict() to print the list of mandatory values automatically
-            raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
-                            "are mandatory: 'name', 'type', 'author', 'manufacturer', 'housing_area', "
-                            "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
-
-        self.diode = self.Diode(diode_args)
-        self.switch = self.Switch(switch_args)
-        self.wp = self.WP()
+            self.diode = self.Diode(diode_args)
+            self.switch = self.Switch(switch_args)
+            self.wp = self.WP()
+        except Exception as e:
+            print('Exception occured: Selected datasheet or module could not be created or loaded\n'+str(e))
+            raise
 
     def __eq__(self, other):
         if not isinstance(other, Transistor):
@@ -405,6 +409,11 @@ class Transistor:
                 raise ValueError(f"Only 1 value out of {['r_th_vector', 'c_th_vector', 'tau_vector']} is given."
                                  f"Either specify 2, 3 (fitting) or none of these.")
             # ToDo: Add check, if all 3 are given whether they fit to each other?
+
+        if dict_type == 'Diode_ChannelData' or dict_type == 'Switch_ChannelData':
+            for axis in dataset_dict.get('graph_v_i'):
+                if any(x<0 for x in axis) == True:
+                    raise ValueError(" Negative values are not allowed, please include mirror_xy_data attribute")
 
         if dict_type not in instructions:
             raise KeyError(f"No instructions available for validity check of argument dictionary with dict_type "
@@ -964,24 +973,27 @@ class Transistor:
                 # This currently accepts dictionaries and lists of dictionaries. Validity is only checked by keys and
                 # not their values.
                 self.channel = []  # Default case: Empty list
-                if isinstance(switch_args.get('channel'), list):
-                    # Loop through list and check each dict for validity. Only create ChannelData objects from valid
-                    # dicts. 'None' and empty dicts are ignored.
-                    for dataset in switch_args.get('channel'):
-                        try:
+                try:
+                    if isinstance(switch_args.get('channel'), list):
+                        # Loop through list and check each dict for validity. Only create ChannelData objects from valid
+                        # dicts. 'None' and empty dicts are ignored.
+                        for dataset in switch_args.get('channel'):
                             if Transistor.isvalid_dict(dataset, 'Switch_ChannelData'):
                                 self.channel.append(Transistor.ChannelData(dataset))
-                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                        except KeyError as error:
-                            dict_list = switch_args.get('channel')
-                            if not error.args:
-                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                          f"Switch_ChannelData dictionaries: ",) + error.args
-                            raise
-                elif Transistor.isvalid_dict(switch_args.get('channel'), 'Switch_ChannelData'):
-                    # Only create ChannelData objects from valid dicts
-                    self.channel.append(Transistor.ChannelData(switch_args.get('channel')))
+                    elif Transistor.isvalid_dict(switch_args.get('channel'), 'Switch_ChannelData'):
+                        # Only create ChannelData objects from valid dicts
+                        self.channel.append(Transistor.ChannelData(switch_args.get('channel')))
+                except KeyError as error:
+                    # If KeyError occurs during for loop, raise KeyError and add index of list occurrence to the message
+                    dict_list = switch_args.get('channel')
+                    if not error.args:
+                        error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                    error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                  f"Switch_ChannelData dictionaries: ",) + error.args
+                    raise
+                except ValueError as error:
+                    dict_list = switch_args.get('channel')
+                    raise Exception(f"for index [{str(dict_list.index(dataset))}] in list of Switch_ChannelData dictionaries:" + str(error))
 
                 self.e_on = []  # Default case: Empty list
                 if isinstance(switch_args.get('e_on'), list):
@@ -1212,24 +1224,27 @@ class Transistor:
                 self.t_j_max = diode_args.get('t_j_max')
                 # This currently accepts dictionaries and lists of dictionaries.
                 self.channel = []  # Default case: Empty list
-                if isinstance(diode_args.get('channel'), list):
-                    # Loop through list and check each dict for validity. Only create ChannelData objects from valid
-                    # dicts. 'None' and empty dicts are ignored.
-                    for dataset in diode_args.get('channel'):
-                        try:
+                try:
+                    if isinstance(diode_args.get('channel'), list):
+                        # Loop through list and check each dict for validity. Only create ChannelData objects from valid
+                        # dicts. 'None' and empty dicts are ignored.
+                        for dataset in diode_args.get('channel'):
                             if Transistor.isvalid_dict(dataset, 'Diode_ChannelData'):
                                 self.channel.append(Transistor.ChannelData(dataset))
-                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                        except KeyError as error:
-                            dict_list = diode_args.get('channel')
-                            if not error.args:
-                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                          f"Diode_ChannelData dictionaries: ",) + error.args
-                            raise
-                elif Transistor.isvalid_dict(diode_args.get('channel'), 'Diode_ChannelData'):
-                    # Only create ChannelData objects from valid dicts
-                    self.channel.append(Transistor.ChannelData(diode_args.get('channel')))
+                                # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                    elif Transistor.isvalid_dict(diode_args.get('channel'), 'Diode_ChannelData'):
+                        # Only create ChannelData objects from valid dicts
+                        self.channel.append(Transistor.ChannelData(diode_args.get('channel')))
+                except KeyError as error:
+                    dict_list = diode_args.get('channel')
+                    if not error.args:
+                        error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                    error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                  f"Diode_ChannelData dictionaries: ",) + error.args
+                    raise
+                except ValueError as error:
+                    dict_list = diode_args.get('channel')
+                    raise Exception(f"for index [{str(dict_list.index(dataset))}] in list of Diode_ChannelData dictionaries:" + str(error))
 
                 self.e_rr = []  # Default case: Empty list
                 if isinstance(diode_args.get('e_rr'), list):
@@ -1935,7 +1950,7 @@ def check_str(x):
     raise TypeError(f"{x} is not a string.")
 
 
-def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_to_0=False):
+def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_to_0=False, mirror_xy_data = False):
     """
     Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
@@ -1973,6 +1988,9 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
 
     if first_x_to_0 == True:
         array[0][0] = 0  # x value
+
+    if mirror_xy_data == True:
+        array = np.abs(array)
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
 
@@ -2104,9 +2122,13 @@ def update_from_fileexchange(collection="local", overwrite=True):
             filepath = subdir + os.sep + file
 
             if filepath.endswith(".json"):
-                transistor = import_json(filepath)
-                transistor.save(collection, overwrite)
-                print(f"Update Transistor: {transistor.name}")
+                try:
+                    transistor = import_json(filepath)
+                except Exception as e:
+                    print("Failed Transistor : "+filepath)
+                else:
+                    transistor.save(collection, overwrite)
+                    print(f"Update Transistor: {transistor.name}")
 
     for root, dirs, files in os.walk(local_dir):
         for dir in dirs:
