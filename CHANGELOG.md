@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.9] - 2021-07-14
+### Bugfixes
+- fix #30
+
 ## [0.2.8] - 2021-07-14
 ### Added 
 - #25 Allows only positive channel data to be stored or created for both switch and diode types, added mirror_xy_data attribute in csv2array function to do so. 
@@ -99,7 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.8...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.9...HEAD
+[0.2.9]: https://github.com/upb-lea/transistordatabase/compare/0.2.8...0.2.9
 [0.2.8]: https://github.com/upb-lea/transistordatabase/compare/0.2.7...0.2.8
 [0.2.7]: https://github.com/upb-lea/transistordatabase/compare/0.2.6...0.2.7
 [0.2.6]: https://github.com/upb-lea/transistordatabase/compare/0.2.5...0.2.6
