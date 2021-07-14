@@ -42,6 +42,7 @@ setup(
 					  'pymongo>=3.11.3',
 					  'matplotlib>=3.3.4',
 					  'gitpython >=3.1.14',
+                                          'Jinja2 >= 3.01',
 					  'fpdf2>=2.3.1'],
     license="GNU General Public License v3",
     long_description=readme + '\n\n' + history,
@@ -59,7 +60,7 @@ setup(
         "Documentation": "https://github.com/upb-lea/transistordatabase",
         "Source Code": "https://github.com/upb-lea/transistordatabase",
     },
-    version='0.2.7',
+    version='0.2.8',
     zip_safe=False,
     data_files=[('', ['CHANGELOG.md'])]
 )

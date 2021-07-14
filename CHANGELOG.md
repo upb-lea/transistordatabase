@@ -5,11 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- #22 Moved exporter functions to transistor classes and removed exportFunctions.py
+
+## [0.2.8] - 2021-07-14
+### Added 
 - #25 Allows only positive channel data to be stored or created for both switch and diode types, added mirror_xy_data attribute in csv2array function to do so. 
 - #28 Integrated calculating curve characteristics at different r_g values into simuliunk exporter and added exception handlers
 - #29 Code cleanup and added recheck functionality for plecs exporter to find new gate voltage 
 - #29 Added plecs exporter for MOSFET and IGBT modules (outputs separate switch type and diode type xmls)
+
+### Changed
+- #22 Moved exporter functions to transistor classes and removed exportFunctions.py
+
 ## [0.2.7] - 2021-06-28
 ### Added
 - Module manufacturers, fix compatibility problem in 0.2.6
@@ -93,7 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.7...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.8...HEAD
+[0.2.8]: https://github.com/upb-lea/transistordatabase/compare/0.2.7...0.2.8
 [0.2.7]: https://github.com/upb-lea/transistordatabase/compare/0.2.6...0.2.7
 [0.2.6]: https://github.com/upb-lea/transistordatabase/compare/0.2.5...0.2.6
 [0.2.5]: https://github.com/upb-lea/transistordatabase/compare/0.2.4...0.2.5
