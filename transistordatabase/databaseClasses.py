@@ -1111,7 +1111,7 @@ class Transistor:
         except Exception as e:
             print("Simulink exporter failed: {0}".format(e))
 
-    def export_to_matlab(self):
+    def export_matlab(self):
         """
         Exports a transistor dictionary to a matlab dictionary
         :param transistor: transistor object

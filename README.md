@@ -189,7 +189,7 @@ Hint: it is also possible to control GeckoCIRCUITS from python, e.g. to sweep tr
 Python dictionary can be exported to Matlab, see the following example:
 ```
 transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
-transistor.export_to_matlab()
+transistor.export_matlab()
 ```
 A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab.
 
