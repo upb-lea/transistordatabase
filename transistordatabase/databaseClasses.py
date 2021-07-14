@@ -13,11 +13,13 @@ from pymongo import errors
 import json
 import pathlib
 import inspect
-import re
 from fpdf import FPDF
 from git import Repo
 import shutil
 import stat
+import scipy.io as sio
+import collections
+from jinja2 import Environment, FileSystemLoader
 
 
 class Transistor:
@@ -894,6 +896,515 @@ class Transistor:
             raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
                              "linearization.")
         return round(v_channel, 6), round(r_channel, 9)
+
+    """
+    Initial author: Henning Steinhagen
+    Date of creation: 04.01.2021
+    Last modified by: Mohan Nagella
+    Date of modification: 14.07.2021
+    Version: 0.2.7
+    Compatibility: Python
+    Other files required: Numpy and SciPy package
+    Link to file:
+    ToDo: Check transistor name for forbidden symbols
+    ToDo: implement linearization and update attributes (each attribute has its own TODO)
+    ToDo: Add input parameters (e.g. for a given temperature set)
+
+    Description:
+    Exports transistor objects for multiple use cases.
+
+    Known Bugs:
+    Changelog:
+    VERSION / DATE / NAME: Comment
+    1.0.0 / 04.01.2021 / Henning Steinhagen: Initial Version
+    1.0.1 / 08.01.2021 / Henning Steinhagen: Reformatted Code + exportTransistor implementation
+    1.0.2 / 18.01.2021 / Manuel Klaedtke: Updated names and implemented changes accordingly to the restructuring of
+    Metadata class and some other attributes
+    1.1.0 / 24.01.2021 / Henning Steinhagen: Implemented compatibilityCheck
+    1.2.0 / 25.01.2021 / Henning Steinhagen: Implemented exportTransistorV1 (Legacy format to old .mat Database)
+    1.2.1 / 01.02.2021 / Henning Steinhagen: Added functionality to exportTransistorV1 and build functions to extract Data
+    1.3.0 / 02.02.2021 / Henning Steinhagen: Added functionality to export_matlab_v1 + commented code + renamed functions
+    1.4.0 / 17.02.2021 / Manuel Klädtke: Removed Metadata class and added all its attributes to Transistor class. Updated
+    export functions accordingly.
+    1.4.1 / 1.6.2021 / Nikolas Förster: remove export_simulink_v1 and replace by export_simulink_loss_model
+    """
+
+    # export function start from here
+    def buildList(self, attribute):
+        """
+        Gather list data (e.g. channel/e_on/e_off/e_rr) and check for 'None'
+        :param Transistor: transistor object
+        :param attribute: attribute path to list
+        :return: matlab compatible list of all attributes
+        """
+
+        if compatibilityTest(self, attribute) is not np.nan:
+            ListData = eval(attribute)
+            Dataset = np.empty((len(ListData),), dtype=np.object)
+            for i in range(len(ListData)):
+                for attr, value in vars(ListData[i]).items():
+                    if value is None:
+                        setattr(ListData[i], attr, np.nan)
+                Dataset[i] = ListData[i]
+        else:
+            Dataset = np.nan
+        return Dataset
+
+    def export_simulink_loss_model(self, r_g_on=None, r_g_off=None, v_supply=None, normalize_t_to_v=10):
+        """
+        Exports a simulation model for simulink inverter loss models, see https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
+        #ToDo: C_th is fixed at the moment to 1e-6 for switch an diode. Needs to be calculated from ohter data
+        Notes:
+         - temperature next to 25 and 150 degree at 15V gate voltage will be used for channel and switching loss
+         - in case of just one temperature curve, the upper temperature will increased (+1K) to bring a small temperature change in the curves. Otherwise the model will not work
+         - only necessary data from tdb will be exported to simulink
+         - Simulink model need switching energy loss in 'mJ'
+         - in case of no complete curve (e.g. not starting from zero), this tool will interpolate the curve
+        :param transistor: transistor object
+        :return: .mat file for import in matlab/simulink
+        """
+        try:
+            # Notes on exporting the file:
+            # values need to be exported as np.double(), otherwise the Simulink-model can not interpolate the data (but displaying the curves is working...)
+
+            if self.type.lower() != 'igbt':
+                raise ValueError("In export_simulink_loss_model: Function is working for IGBTs only")
+
+            t_j_lower = 25
+            t_j_upper = 150
+            v_g = 15
+
+            ### switch
+            print("---------------------IGBT properties----------------------")
+            switch_channel_object_lower, eon_object_lower, eoff_object_lower = self.switch.find_approx_wp(t_j_lower, v_g, normalize_t_to_v, SwitchEnergyData_dataset_type="graph_i_e")
+            switch_channel_object_upper, eon_object_upper, eoff_object_upper = self.switch.find_approx_wp(t_j_upper, v_g, normalize_t_to_v, SwitchEnergyData_dataset_type="graph_i_e")
+            if r_g_on:
+                try:
+                    eon_object_lower_calc = self.calc_object_i_e('e_on', r_g_on, eon_object_lower.t_j, v_supply, normalize_t_to_v)
+                    eon_object_upper_calc = self.calc_object_i_e('e_on', r_g_on, eon_object_upper.t_j, v_supply, normalize_t_to_v)
+                    if eon_object_lower_calc.t_j >= eon_object_upper_calc.t_j:
+                        raise ValueError('Junction temperatures remain same')
+                    else:
+                        eon_object_lower = eon_object_lower_calc
+                        eon_object_upper = eon_object_upper_calc
+                except Exception as e:
+                    print('Choosing the default curve properties for e_on')
+                else:
+                    print('Generated curve properties for e_on')
+                    print("Lower : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(eon_object_lower.r_g, eon_object_lower.v_g, eon_object_lower.t_j, eon_object_lower.v_supply))
+                    print("Upper : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(
+                        eon_object_upper.r_g, eon_object_upper.v_g, eon_object_upper.t_j, eon_object_upper.v_supply))
+            if r_g_off:
+                try:
+                    eoff_object_lower_calc = self.calc_object_i_e('e_off', r_g_off, eoff_object_lower.t_j, v_supply, normalize_t_to_v)
+                    eoff_object_upper_calc = self.calc_object_i_e('e_off', r_g_off, eoff_object_upper.t_j, v_supply, normalize_t_to_v)
+                    if eoff_object_lower_calc.t_j >= eoff_object_upper_calc.t_j:
+                        raise ValueError('Junction temperatures remain same')
+                    else:
+                        eoff_object_lower = eoff_object_lower_calc
+                        eoff_object_upper = eoff_object_upper_calc
+                except Exception as e:
+                    print('Choosing the default curve properties for e_off')
+                else:
+                    print('Generated curve properties for e_off')
+                    print("Lower : R_g(off) = {0}, v_g(off) = {1}, T_j = {2}, v_supply = {3}".format(eoff_object_lower.r_g,
+                                                                                                     eoff_object_lower.v_g,
+                                                                                                     eoff_object_lower.t_j,
+                                                                                                     eoff_object_lower.v_supply))
+                    print("Upper : R_g(off) = {0}, v_g(off) = {1}, T_j = {2}, v_supply = {3}".format(
+                        eoff_object_upper.r_g, eoff_object_upper.v_g, eoff_object_upper.t_j, eoff_object_upper.v_supply))
+
+            # all elements need the same current vector size
+            i_interp = np.linspace(0, self.i_abs_max, 10)
+
+            switch_channel_lower_interp = np.interp(i_interp, switch_channel_object_lower.graph_v_i[1], switch_channel_object_lower.graph_v_i[0])
+            switch_channel_upper_interp = np.interp(i_interp, switch_channel_object_upper.graph_v_i[1], switch_channel_object_upper.graph_v_i[0])
+            switch_channel_array = np.array([switch_channel_lower_interp, switch_channel_upper_interp])
+
+            e_on_lower_interp = np.interp(i_interp, eon_object_lower.graph_i_e[0], eon_object_lower.graph_i_e[1])
+            e_on_upper_interp = np.interp(i_interp, eon_object_upper.graph_i_e[0], eon_object_upper.graph_i_e[1])
+            e_on_array = np.array([e_on_lower_interp, e_on_upper_interp])
+
+            e_off_lower_interp = np.interp(i_interp, eoff_object_lower.graph_i_e[0], eoff_object_lower.graph_i_e[1])
+            e_off_upper_interp = np.interp(i_interp, eoff_object_upper.graph_i_e[0], eoff_object_upper.graph_i_e[1])
+            e_off_array = np.array([e_off_lower_interp, e_off_upper_interp])
+
+            # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
+            temp_t_j_switch_channel_upper = switch_channel_object_upper.t_j + 1 if switch_channel_object_lower.t_j == switch_channel_object_upper.t_j else switch_channel_object_upper.t_j
+            temp_t_j_eon_upper = eon_object_upper.t_j + 1 if eon_object_lower.t_j == eon_object_upper.t_j else eon_object_upper.t_j
+            temp_t_j_eoff_upper = eoff_object_upper.t_j + 1 if eoff_object_lower.t_j == eoff_object_upper.t_j else eoff_object_upper.t_j
+
+            switch_dict = {'T_j_channel': np.double([switch_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
+                           'T_j_ref_on': np.double([eon_object_lower.t_j, temp_t_j_eon_upper]),
+                           'T_j_ref_off': np.double([eoff_object_lower.t_j, temp_t_j_eoff_upper]),
+                           'R_th_total': compatibilityTest(self, 'Transistor.switch.thermal_foster.r_th_total') if self.switch.thermal_foster.r_th_total != 0 else 1e-6,
+                           'C_th_total': np.double(1),
+                           'V_ref_on': np.double(eon_object_upper.v_supply),
+                           'V_ref_off': np.double(eon_object_upper.v_supply),
+                           'Eon': np.double(e_on_array * 1000),
+                           'Eoff': np.double(e_off_array * 1000),
+                           'v_channel': np.double(switch_channel_array),
+                           'i_vec': np.double(i_interp),
+                           }
+            ### diode
+            print("---------------------Diode properties----------------------")
+            diode_channel_object_lower, err_object_lower = self.diode.find_approx_wp(t_j_lower, v_g)
+            diode_channel_object_upper, err_object_upper = self.diode.find_approx_wp(t_j_upper, v_g)
+            if r_g_on:
+                try:
+                    err_object_lower_calc = self.calc_object_i_e('e_rr', r_g_on, err_object_lower.t_j, v_supply, normalize_t_to_v)
+                    err_object_upper_calc = self.calc_object_i_e('e_rr', r_g_on, err_object_upper.t_j, v_supply, normalize_t_to_v)
+                    if err_object_lower_calc.t_j >= err_object_upper_calc.t_j:
+                        raise ValueError('Junction temperatures remain same')
+                    else:
+                        err_object_lower = err_object_lower_calc
+                        err_object_upper = err_object_upper_calc
+                except Exception as e:
+                    print('Choosing the default properties for e_rr')
+                else:
+                    print('Generated curve properties for e_rr')
+                    print("Lower : R_g = {0}, v_g = {1}, T_j = {2}, v_supply = {3}".format(err_object_lower.r_g,
+                                                                                           err_object_lower.v_g,
+                                                                                           err_object_lower.t_j,
+                                                                                           err_object_lower.v_supply))
+                    print("Upper : R_g = {0}, v_g = {1}, T_j = {2}, v_supply = {3}".format(
+                        err_object_upper.r_g, err_object_upper.v_g, err_object_upper.t_j, err_object_upper.v_supply))
+
+            diode_channel_lower_interp = np.interp(i_interp, diode_channel_object_lower.graph_v_i[1], diode_channel_object_lower.graph_v_i[0])
+            diode_channel_upper_interp = np.interp(i_interp, diode_channel_object_upper.graph_v_i[1], diode_channel_object_upper.graph_v_i[0])
+            diode_channel_array = np.array([diode_channel_lower_interp, diode_channel_upper_interp])
+
+            e_rr_lower_interp = np.interp(i_interp, err_object_lower.graph_i_e[0], err_object_lower.graph_i_e[1])
+            e_rr_upper_interp = np.interp(i_interp, err_object_upper.graph_i_e[0], err_object_upper.graph_i_e[1])
+            err_array = np.array([e_rr_lower_interp, e_rr_upper_interp])
+
+            # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
+            temp_t_j_switch_channel_upper = diode_channel_object_upper.t_j + 1 if diode_channel_object_lower.t_j == diode_channel_object_upper.t_j else diode_channel_object_upper.t_j
+            temp_t_j_err_upper = err_object_upper.t_j + 1 if err_object_lower.t_j == err_object_upper.t_j else err_object_upper.t_j
+
+            diode_dict = {
+                'T_j_channel': np.double([diode_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
+                'T_j_ref_rr': np.double([err_object_lower.t_j, temp_t_j_err_upper]),
+                'R_th_total': compatibilityTest(self, 'Transistor.diode.thermal_foster.r_th_total') if self.diode.thermal_foster.r_th_total != 0 else 1e-6,
+                'C_th_total': np.double(1),
+                'V_ref_rr': np.double(err_object_lower.v_supply),
+                'v_channel': np.double(diode_channel_array),
+                'i_vec': np.double(i_interp),
+                'Err': np.double(err_array * 1000)
+
+            }
+
+            transistor_dict = {'Name': compatibilityTest(self, 'Transistor.name'),
+                               'R_th_CS': compatibilityTest(self, 'Transistor.r_th_cs') if self.r_th_cs != 0 else 1e-6,
+                               'R_th_Switch_CS': compatibilityTest(self, 'Transistor.r_th_switch_cs') if self.r_th_switch_cs != 0 else 1e-6,
+                               'R_th_Diode_CS': compatibilityTest(self, 'Transistor.r_th_diode_cs') if self.r_th_diode_cs != 0 else 1e-6,
+                               'Switch': switch_dict,
+                               'Diode': diode_dict,
+                               'file_generated': f"{datetime.datetime.today()}",
+                               'file_generated_by': "https://github.com/upb-lea/transistordatabase",
+                               'r_g_on': np.double(eon_object_lower.r_g),
+                               'r_g_off': np.double(eoff_object_lower.r_g),
+                               }
+
+            sio.savemat(self.name.replace('-', '_') + '_Simulink_lossmodel.mat', {self.name.replace('-', '_'): transistor_dict})
+            print(f"Export files {self.name}_Simulink_lossmodel.mat to {os.getcwd()}")
+        except Exception as e:
+            print("Simulink exporter failed: {0}".format(e))
+
+    def export_to_matlab(self):
+        """
+        Exports a transistor dictionary to a matlab dictionary
+        :param transistor: transistor object
+        :return: file stored in current working path
+        """
+        transistor_dict = self.convert_to_dict()
+        dict_str = json.dumps(transistor_dict, default=json_util.default)
+
+        # Note: Dict must be cleaned from 'None's to np.nan (= NaN in Matlab)
+        # see https://stackoverflow.com/questions/35985923/replace-none-in-a-python-dictionary
+        transistor_clean_dict = json.loads(dict_str, object_pairs_hook=dict_clean)
+        transistor_clean_dict['file_generated'] = f"{datetime.datetime.today()}"
+        transistor_clean_dict['file_generated_by'] = "https://github.com/upb-lea/transistordatabase",
+
+        sio.savemat(self.name.replace('-', '_') + '_Matlab.mat', {self.name.replace('-', '_'): transistor_clean_dict})
+        print(f"Export files {self.name.replace('-', '_')}_Matlab.mat to {os.getcwd()}")
+
+    def export_geckocircuits(self, v_supply, v_g_on, v_g_off, r_g_on, r_g_off):
+        """
+        Export transistor data to GeckoCIRCUITS
+
+        :param Transistor: choose the transistor to export
+        :param v_supply: supply voltage for turn-on/off losses
+        :param v_g_on: gate turn-on voltage
+        :param v_g_off: gate turn-off voltage
+        :param r_g_on: gate resistor for turn-on
+        :param r_g_off: gate resistor for turn-off
+        :return: two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl for geckoCIRCUITS import
+        """
+
+        # programming notes
+        # exporting the diode:
+        # diode off losses:
+        # diode on losses: these on losses must be generated, even if they are zero
+        # diode channel: it is not allowed to use more than one current that is zero (otherwise geckocircuits can not calculate the losses)
+
+        amount_v_g_switch_cond = 0
+        amount_v_g_switch_sw = 0
+        amount_v_g_diode_cond = 0
+        amount_v_g_diode_sw = 0
+
+        # set numpy print options to inf, due to geckocircuits requests the data in one single line
+        np.set_printoptions(linewidth=np.inf)
+
+        ########################
+        # export file for switch
+        ########################
+        file_switch = open(self.name + "_Switch.scl", "w")
+
+        #### switch channel data
+        # count number of arrays with gate v_g == v_g_export
+        for n_channel in np.array(range(0, len(self.switch.channel))):
+            if self.switch.channel[n_channel].v_g == v_g_on:
+                amount_v_g_switch_cond += 1
+
+        file_switch.write("anzMesskurvenPvCOND " + str(amount_v_g_switch_cond) + "\n")
+        for n_channel in np.array(range(0, len(self.switch.channel))):
+            if self.switch.channel[n_channel].v_g == v_g_on:
+
+                voltage = self.switch.channel[n_channel].graph_v_i[0]
+                current = self.switch.channel[n_channel].graph_v_i[1]
+
+                # gecko can not work in case of to currents are zero
+                # so find the second current that is zero and replace it by a very small current
+                for i in range(len(current)):
+                    if i > 0 and current[i] == 0:
+                        current[i] = 0.001
+                if self.type.lower() == 'mosfet' or self.type.lower() == 'sic-mosfet':
+                    # Note: Loss calculation in GeckoCIRCUITs will fail in case of reverse conducting
+                    # Forward characteristic will be copied to backward-characteristic
+                    voltage_reverse = voltage.copy()
+                    voltage_reverse = voltage_reverse[voltage_reverse != 0]
+                    voltage_reverse = np.flip(voltage_reverse)
+                    voltage_reverse = [-x for x in voltage_reverse]
+                    voltage = np.append(voltage_reverse, voltage)
+
+                    current_reverse = current.copy()
+                    current_reverse = current_reverse[current_reverse != 0]
+                    current_reverse = np.flip(current_reverse)
+                    current_reverse = [-x for x in current_reverse]
+                    current = np.append(current_reverse, current)
+
+                print_current = np.array2string(current, formatter={'float_kind': lambda x: "%.3f" % x})
+                print_current = print_current[1:-1]
+                print_voltage = np.array2string(voltage, formatter={'float_kind': lambda x: "%.3f" % x})
+                print_voltage = print_voltage[1:-1]
+
+                # for every loss curve, write
+                file_switch.write("<LeitverlusteMesskurve>\n")
+                file_switch.write(f"data[][] 2 {len(current)} {print_voltage} {print_current}")
+                file_switch.write(f"\ntj {self.switch.channel[n_channel].t_j}\n")
+                file_switch.write("<\LeitverlusteMesskurve>\n")
+
+        #### switch switching loss
+        # check for availability of switching loss curves
+        # count number of arrays with gate v_g == v_g_export
+        for n_on in np.array(range(0, len(self.switch.e_on))):
+            if self.switch.e_on[n_on].v_g == v_g_on and self.switch.e_on[n_on].r_g == r_g_on and \
+                    self.switch.e_on[n_on].v_supply == v_supply:
+                amount_v_g_switch_sw += 1
+
+        file_switch.write(f"anzMesskurvenPvSWITCH {amount_v_g_switch_sw}\n")
+
+        for n_on in np.array(range(0, len(self.switch.e_on))):
+            if self.switch.e_on[n_on].v_g == v_g_on and self.switch.e_on[n_on].r_g == r_g_on and \
+                    self.switch.e_on[n_on].v_supply == v_supply:
+
+                on_current = self.switch.e_on[n_on].graph_i_e[0]
+                on_energy = self.switch.e_on[n_on].graph_i_e[1]
+
+                # search for off loss curves
+                for n_off in np.array(range(0, len(self.switch.e_off))):
+                    if self.switch.e_off[n_off].v_g == v_g_off and self.switch.e_off[n_off].r_g == r_g_off and \
+                            self.switch.e_off[n_off].v_supply == v_supply:
+                        # set off current and off energy
+                        off_current = self.switch.e_off[n_off].graph_i_e[0]
+                        off_energy = self.switch.e_off[n_off].graph_i_e[1]
+
+                interp_current = np.linspace(0, on_current[-1], 10)
+                interp_on_energy = np.interp(interp_current, on_current, on_energy)
+                interp_off_energy = np.interp(interp_current, off_current, off_energy)
+
+                print_current = np.array2string(interp_current, formatter={'float_kind': lambda x: "%.2f" % x})
+                print_current = print_current[1:-1]
+                print_on_energy = np.array2string(interp_on_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                print_on_energy = print_on_energy[1:-1]
+
+                print_off_energy = np.array2string(interp_off_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                print_off_energy = print_off_energy[1:-1]
+
+                # for every loss curve, write
+                file_switch.write("<SchaltverlusteMesskurve>\n")
+                file_switch.write(f"data[][] 3 {len(interp_current)} {print_current} {print_on_energy} {print_off_energy}")
+                file_switch.write(f"\ntj {self.switch.e_on[n_on].t_j}\n")
+                file_switch.write(f"uBlock {self.switch.e_on[n_on].v_supply}\n")
+                file_switch.write("<\SchaltverlusteMesskurve>\n")
+
+        file_switch.close()
+
+        ########################
+        # export file for diode
+        ########################
+
+        file_diode = open(self.name + "_Diode.scl", "w")
+        #### diode channel data
+        # count number of arrays for conducting behaviour
+        # in case of gan-transistor, search for v_g_off
+        # in case of mosfet or igbt use all available data
+        for n_channel in np.array(range(0, len(self.diode.channel))):
+            if (self.diode.channel[n_channel].v_g == v_g_off and self.type.lower() == 'gan-transistor') or self.type == 'MOSFET' or self.type == 'IGBT':
+                amount_v_g_diode_cond += 1
+
+        file_diode.write("anzMesskurvenPvCOND " + str(amount_v_g_diode_cond) + "\n")
+        # export conducting behaviour
+        for n_channel in np.array(range(0, len(self.diode.channel))):
+            # if v_g_diode is given, search for it. Else, use all data in Transistor.diode.channel
+            # in case of gan-transistor, search for v_g_off
+            # in case of mosfet or igbt use all available data
+            if (self.diode.channel[n_channel].v_g == v_g_off and self.type.lower() == 'gan-transistor') or self.type == 'MOSFET' or self.type == 'IGBT':
+
+                voltage = np.abs(self.diode.channel[n_channel].graph_v_i[0])
+                current = np.abs(self.diode.channel[n_channel].graph_v_i[1])
+
+                # gecko can not work in case of to currents are zero
+                # so find the second current that is zero and replace it by a very small current
+                for i in range(len(current)):
+                    if i > 0 and current[i] == 0:
+                        current[i] = 0.001
+
+                print_current = np.array2string(current, formatter={'float_kind': lambda x: "%.3f" % x})
+                print_current = print_current[1:-1]
+                print_voltage = np.array2string(voltage, formatter={'float_kind': lambda x: "%.3f" % x})
+                print_voltage = print_voltage[1:-1]
+
+                # for every loss curve, write
+                file_diode.write("<LeitverlusteMesskurve>\n")
+                file_diode.write(f"data[][] 2 {len(current)} {print_voltage} {print_current}")
+                file_diode.write(f"\ntj {self.diode.channel[n_channel].t_j}\n")
+                file_diode.write("<\LeitverlusteMesskurve>\n")
+
+        #### diode err loss
+        # check for availability of switching loss curves
+        # in case of no switching losses available, set curves to zero.
+        # if switching losses will not set to zero, geckoCIRCUITS will use inital values
+        if len(self.diode.e_rr) == 0:
+            file_diode.write(f"anzMesskurvenPvSWITCH 1\n")
+            file_diode.write("<SchaltverlusteMesskurve>\n")
+            file_diode.write(f"data[][] 3 2 0 10 0 0 0 0")
+            file_diode.write(f"\ntj 125\n")
+            file_diode.write(f"uBlock 400\n")
+            file_diode.write("<\SchaltverlusteMesskurve>\n")
+
+        # in case of available data
+        #
+        else:
+            # check for curves with the gate voltage
+            # count number of arrays with gate v_g == v_g_export
+            for n_rr in np.array(range(0, len(self.diode.e_rr))):
+                if self.diode.e_rr[n_rr].v_g == v_g_on and self.diode.e_rr[n_rr].r_g == r_g_on and \
+                        self.diode.e_rr[n_rr].v_supply == v_supply:
+                    amount_v_g_diode_sw += 1
+
+            # in case of no given v_g for diode (e.g. for igbts)
+            if amount_v_g_diode_sw == 0:
+                for n_rr in np.array(range(0, len(self.diode.e_rr))):
+                    if self.diode.e_rr[n_rr].v_g and self.diode.e_rr[n_rr].r_g == r_g_on and \
+                            self.diode.e_rr[n_rr].v_supply == v_supply:
+                        amount_v_g_diode_sw += 1
+
+                file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
+
+                for n_rr in np.array(range(0, len(self.diode.e_rr))):
+                    if self.diode.e_rr[n_rr].v_g and self.diode.e_rr[n_rr].r_g == r_g_on and self.diode.e_rr[n_rr].v_supply == v_supply:
+                        rr_current = self.diode.e_rr[n_rr].graph_i_e[0]
+                        rr_energy = self.diode.e_rr[n_rr].graph_i_e[1]
+
+                        # forward recovery losses set to zero
+                        fr_energy = np.zeros(len(rr_current))
+
+                        print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                        print_fr_energy = print_fr_energy[1:-1]
+
+                        print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
+                        print_current = print_current[1:-1]
+                        print_rr_energy = np.array2string(rr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                        print_rr_energy = print_rr_energy[1:-1]
+
+                        # for every loss curve, write
+                        file_diode.write("<SchaltverlusteMesskurve>\n")
+                        file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
+                        file_diode.write(f"\ntj {self.diode.e_rr[n_rr].t_j}\n")
+                        file_diode.write(f"uBlock {self.diode.e_rr[n_rr].v_supply}\n")
+                        file_diode.write("<\SchaltverlusteMesskurve>\n")
+
+              # in case of devices wich include a gate voltage (e.g. GaN-transistors)
+            else:
+                file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
+                for n_rr in np.array(range(0, len(self.diode.e_rr))):
+                    if self.diode.e_rr[n_rr].v_g == v_g_on and self.diode.e_rr[n_rr].r_g == r_g_on and \
+                            self.diode.e_rr[n_rr].v_supply == v_supply:
+                        rr_current = self.diode.e_rr[n_rr].graph_i_e[0]
+                        rr_energy = self.diode.e_rr[n_rr].graph_i_e[1]
+                        # forward recovery losses set to zero
+                        fr_energy = np.zeros(len(rr_current))
+                        print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                        print_fr_energy = print_fr_energy[1:-1]
+                        print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
+                        print_current = print_current[1:-1]
+                        print_rr_energy = np.array2string(rr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                        print_rr_energy = print_rr_energy[1:-1]
+
+                        # for every loss curve, write
+                        file_diode.write("<SchaltverlusteMesskurve>\n")
+                        file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
+                        file_diode.write(f"\ntj {self.diode.e_rr[n_rr].t_j}\n")
+                        file_diode.write(f"uBlock {self.diode.e_rr[n_rr].v_supply}\n")
+                        file_diode.write("<\SchaltverlusteMesskurve>\n")
+
+        file_diode.close()
+        print(f"Export files {self.name}_Switch.scl and {self.name}_Diode.scl to {os.getcwd()}")
+        # set print options back to default
+        np.set_printoptions(linewidth=75)
+
+    def export_plecs(self, recheck=True, gate_voltages=list()):
+        file_loader = FileSystemLoader(searchpath="./")
+        env = Environment(loader=file_loader)
+        env.globals["enumerate"] = enumerate
+        print(os.getcwd())
+        switch_xml_data, diode_xml_data = self.get_curve_data(recheck, gate_voltages)
+        for data in filter(None, [switch_xml_data, diode_xml_data]):
+            if data['type'] == 'Diode':
+                if len(data['TurnOffLoss']['CurrentAxis']) > 1:
+                    data['TurnOffLoss']['Energy'][0] = [[0] * len(data['TurnOffLoss']['CurrentAxis'])] * len(
+                        data['TurnOffLoss']['TemperatureAxis'])
+                data['TurnOnLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOnLoss']['Energy'].items()))
+                data['TurnOffLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOffLoss']['Energy'].items()))
+                template = env.get_template('diodeTemplate.txt')
+                output = template.render(diode=data)
+                with open(data['partnumber'] + "_diode.xml", "w") as fh:
+                    fh.write(output)
+            elif data['type'] == 'IGBT' or data['type'] == 'MOSFET' or data['type'] == 'SiC-MOSFET':
+                if data['type'] == 'MOSFET' or data['type'] == 'SiC-MOSFET':
+                    data['TurnOnLoss']['Energy'][-10] = [[0] * len(data['TurnOnLoss']['CurrentAxis'])] * len(data['TurnOnLoss']['TemperatureAxis'])
+                    data['TurnOffLoss']['Energy'][-10] = [[0] * len(data['TurnOffLoss']['CurrentAxis'])] * len(data['TurnOffLoss']['TemperatureAxis'])
+                data['TurnOnLoss']['Energy'][0] = [[0] * len(data['TurnOnLoss']['CurrentAxis'])] * len(data['TurnOnLoss']['TemperatureAxis'])
+                data['TurnOffLoss']['Energy'][0] = [[0] * len(data['TurnOffLoss']['CurrentAxis'])] * len(data['TurnOffLoss']['TemperatureAxis'])
+                data['TurnOnLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOnLoss']['Energy'].items()))
+                data['TurnOffLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOffLoss']['Energy'].items()))
+                template = env.get_template('switchTemplate.txt')
+                output = template.render(transistor=data)
+                str_decoded = output.encode()
+                with open(data['partnumber'] + "_switch.xml", "w") as fh:
+                    fh.write(str_decoded.decode())
 
     class FosterThermalModel:
         """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
@@ -2164,6 +2675,38 @@ def r_g_max_rapid_channel_turn_off(v_gsth, c_ds, c_gd, i_off, v_driver_off):
     """
     return (v_gsth-v_driver_off)/i_off * (1 + c_ds/c_gd)
 
+#Export helper functions
+def dict_clean(input_dict):
+    """
+    Cleans a python dict and makes it compatible with matlab
+    Dict must be cleaned from 'None's to np.nan (= NaN in Matlab)
+    see https://stackoverflow.com/questions/35985923/replace-none-in-a-python-dictionary
+    :param input_dict: dictionary
+    :return:
+    """
+    result = {}
+    for key, value in input_dict:
+        if value is None:
+            value = np.nan
+        result[key] = value
+    return result
+
+def compatibilityTest(Transistor, attribute):
+    """
+    checks attribute for occurrences of None an replace it with np.nan
+    :param Transistor: transistor object
+    :param attribute: path to given attribute
+    :return: attribute value or np.nan
+    """
+    try:
+        att = eval(attribute)
+        if att is None:
+            return np.nan
+        else:
+            return att
+
+    except AttributeError:
+        return np.nan
 
 class MissingDataError(Exception):
     # define the error codes & messages here
@@ -2177,7 +2720,6 @@ class MissingDataError(Exception):
           1211: "Diode conduction channel information is missing at provided v_g, cannot export to .xml",
           1202: "Diode reverse recovery loss information is missing",
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
-
 
 class PDF(FPDF):
     # notes for A4 pages

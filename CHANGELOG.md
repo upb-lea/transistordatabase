@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- #22 Moved exporter functions to transistor classes and removed exportFunctions.py
 - #25 Allows only positive channel data to be stored or created for both switch and diode types, added mirror_xy_data attribute in csv2array function to do so. 
 - #28 Integrated calculating curve characteristics at different r_g values into simuliunk exporter and added exception handlers
 - #29 Code cleanup and added recheck functionality for plecs exporter to find new gate voltage 
