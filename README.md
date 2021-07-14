@@ -179,7 +179,7 @@ GeckoCIRCUITS is an open source multi platform schematic simulator. Java require
 At the moment you need to know the exporting parameters like gate resistor, gate-voltage and switching voltage. This will be simplified in the near future.
 ```
 transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
-tdb.export_geckocircuits(transistor, 600, 15, -4, 2.5, 2.5)
+transistor.export_geckocircuits(600, 15, -4, 2.5, 2.5)
 ```
 From now on, you can load the model into your GeckoCIRCUITS schematic.
 ![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Example_Gecko_Exporter.png)
@@ -189,7 +189,7 @@ Hint: it is also possible to control GeckoCIRCUITS from python, e.g. to sweep tr
 Python dictionary can be exported to Matlab, see the following example:
 ```
 transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
-tdb.export_to_matlab(transistor)
+transistor.export_to_matlab()
 ```
 A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab.
 
@@ -197,7 +197,7 @@ A .mat-file is generated, the exporting path will be displayed in the python con
 For a loss simulation in simulink, there is a IGBT model available, which can be found in this [simulink model](https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html). Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
 ```
 transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
-tdb.export_simulink_loss_model(transistor)
+transistor.export_simulink_loss_model()
 ```
 Output is a .mat-file, you can load in your matlab program to simulate. Now, you are able to sweep transistors within your simulation. E.g. some matlab-code:
 ```
@@ -216,12 +216,12 @@ for i_Transistor = 1:length(Transistor_array)
 For a thermal and loss simulation using PLECS simulation tool, it requires the transistor loss and characteristic curves to be loaded in XML(Version 1.1) file format. More information on how to load the XML data can be found from [here](https://www.plexim.com/support/videos/thermal-modeling-part-1). To export the transistor object from your database to plecs required xml file format, following lines need to be executed starting with loading the required datasheet.
 ```
 transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
-tdb.export_plecs(transistor)
+transistor.export_plecs()
 ```
 Outputs are xml files - one for switch and one for diode (if available), which can be then loaded into your schematic following the instructions as mentioned [here](https://www.plexim.com/support/videos/thermal-modeling-part-1). Note that if channel curves for the default gate-voltage are found missing then the xml files could not be possible to generate and a respective warning message is issued to the user. The user can change the default gate-voltage and switching voltage by providing  an extra list argument as follows:
 ```
 transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
-tdb.export_plecs(transistor, [15, -15, 15, 0])       
+transistor.export_plecs([15, -15, 15, 0])       
 ```
 Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.
 ![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/PLECS_thermal_editor.png)
