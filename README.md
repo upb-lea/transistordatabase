@@ -23,8 +23,7 @@ Note: Development status: Alpha
 # 1. Installation
 ## 1.1 Windows
 ### 1.1.1 Install Mongodb
-For the first usage, you need to install mongodb.
-Windows
+For the first usage, you need to install mongodb. Install with standard settings.
 Use the MongoDB community server, as platform, choose windows. [Link](https://www.mongodb.com/try/download/community)
 
 ### 1.1.2 Install git
@@ -48,7 +47,7 @@ sudo apt install python3 python3-pip git
 Note: Install pycharm from Snapstore
 
 ## 1.3 All Operating systems: Install the transitor database
-Using Pycharm: Navigate to file -> settings -> Project -> Python Interpreter -> add: transistordatabase  
+Using Pycharm: Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package'
 
 ## 1.4 Complete minimal python example
 ```
