@@ -15,7 +15,18 @@ pipreqs /home/project/location/transistor_database
 ```
 Further information can be found [here](https://pypi.org/project/pipreqs/)
 
-### setup.py
+### Generate pip-package by using setup.py
 Some useful links
  * [classifiers](https://pypi.org/classifiers/)
+Run setup.py as the following from your operating system command line
+```
+python3 setup.py bdist_wheel 
+```
+Please find the generated pip package inside the /dist-folder
+### Upload pip package to pypi
+Run this from your operating system command line
+```
+twine upload --repository pypi dist/* 
+```
+
  
