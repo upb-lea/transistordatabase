@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Datasheet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style type="text/css">
+      .container {
+        max-width: 500px;
+        padding-top: 100px;
+      }
+	  .inheaderClass{
+		float: left;
+		padding-top: 14px;
+		padding-bottom: 14px;
+		padding-left: 30px;
+		}
+	  .headerClass{
+		overflow: hidden;
+		min-width: 794px;
+		display: inline-block;
+		border-bottom: solid;
+	  }
+	  .leaLogo{
+		float: right;
+		border-left-width: 3px;
+		border-left-style: solid;
+		}
+	  html{
+		max-width : 800px;
+		margin:auto
+		}
+      h3 {
+	  color: blue;
+	  text-align: left;
+	  }
+	  .tableCSS {
+		  width:80%;
+		  margin-left: auto;
+		  margin-right: auto;
+	  }
+	  .container {
+	  max-width : 794px;
+	  padding :0px;
+	  margin : 0px;
+	  }
+	  .imgCaption {
+	  font-size: 16px;
+	  text-align: center;
+	  padding-top: 15px;
+	  }
+	  .row{
+		margin:7px;
+		overflow:hidden;
+		}
+	  .thumb{
+		  width :48%;
+		  float :left;
+		  margin-top: 10px;
+		  margin-right: 10px;
+		  padding-left: 0px;
+		  border : solid 1px;
+		  overflow : hidden;
+	  }
+	  .img {
+			max-width:400px ;
+			max-height :350px;
+			object-fit: scale-down;
+	  }
+		.media-container {
+		   display: flex;
+		}
+	  table,
+	  th,
+      td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+		th.spec,td.spec {
+		min-width : 30%
+		max-width : 30%
+		}
+		th.unit,td.unit  {
+		 min-width: 20%
+		 max-width : 30%
+		}
+		th.value,td.value  {
+		  max-width: 50%;
+		  min-width: 50%; /* Not necessary, since only 70% width remains */
+		}
+	  body {
+		background-color: #FFFFFF;
+		}
+		
+		.pagebreak { ´
+		break-after: page; } /* page-break-after works, as well */
+		
+	  footer {
+		  text-align: center;
+		  padding: 3px;
+		}	
+		.h4style{
+		font-size: 18px;
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-weight: 500;
+		line-height: 1.1;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		}
+    </style>
+  </head>
+  <body>
+	
+	<div class= "headerClass" style="border: 3px solid;">
+	<div class ="inheaderClass">
+	<h3> Technische Information / Technical Information</h3>
+	<div style="float:left;word-wrap: break-word;max-width: 175px;">
+	<p style="margin:0px">Type: {{trans["Type"]}}-Module</p>
+	<p style="margin:0px">Manufacturer: {{trans["Manufacturer"]}}</p>
+	</div>
+	
+	<div style = "float:right; padding-left:20px"> <h2>{{trans["Name"]}}</h2> </div>
+	</div>
+	<div class="leaLogo"><img src="data:image/png;base64,{{ image }}" alt="LEA Paderborn" width="150px" height="150px" >
+	</div>
+	</div>
+      {% block content %}{% endblock %}
+	  <div style="text-align:center">
+	  End of Document
+    </div>
+	
+	
+	<footer>
+		<table style="font-size: 9px;margin-left: 4px;">
+		<tr>
+		  <td style="padding: 0 2px;">Generated using:</td>
+		  <td style="font-style:italic;padding: 0 2px;"><a href="https://github.com/upb-lea/transistordatabase">transistordatabase</a></td>
+		</tr>  
+		<tr>
+		  <td style="padding: 0 2px;">Created by:</td>
+		  <td style="padding: 0 2px;">Nikolas Förster
+		  </td>
+		</tr>
+		<tr>
+		  <td style="padding: 0 2px;">Mail ID :</td>
+		  <td style="padding: 0 2px;"><a href="mailto:foerster@lea.uni-paderborn.de">foerster@lea.uni-paderborn.de</a>
+		  </td>
+		</tr>
+	    </table>	  
+	</footer>
+    
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>

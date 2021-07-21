@@ -20,7 +20,9 @@ import stat
 import scipy.io as sio
 import collections
 from jinja2 import Environment, FileSystemLoader
-
+from PIL import Image
+import base64
+import io
 
 class Transistor:
     """Groups data of all other classes for a single transistor. Methods are specified in such a way that only
@@ -484,7 +486,7 @@ class Transistor:
 
         return np.array([self.c_oss[0].graph_v_c[0], charge_cumtrapz])
 
-    def plot_v_eoss(self):
+    def plot_v_eoss(self, buffer_req=False):
         """
         Plots v_eoss with method calc_v_eoss
         :return:
@@ -495,9 +497,12 @@ class Transistor:
         plt.xlabel('Voltage in V')
         plt.ylabel('Energy in J')
         plt.grid()
-        plt.show()
+        if buffer_req:
+            return get_img_raw_data(plt)
+        else:
+            plt.show()
 
-    def plot_v_qoss(self):
+    def plot_v_qoss(self, buffer_req=False):
         v_qoss = self.calc_v_qoss()
         plt.figure()
         plt.plot(v_qoss[0], v_qoss[1])
@@ -505,6 +510,10 @@ class Transistor:
         plt.ylabel('Charge in C')
         plt.grid()
         plt.show()
+        if buffer_req:
+            return get_img_raw_data(plt)
+        else:
+            plt.show()
 
     def get_object_v_i(self, switch_or_diode, t_j, v_g):
         """
@@ -896,6 +905,36 @@ class Transistor:
             raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
                              "linearization.")
         return round(v_channel, 6), round(r_channel, 9)
+
+    def process_virtual_datasheet(self):
+        #listV = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
+        pdfData = {}
+        devices = {}
+        skipIds = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss']
+        cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
+        pdfData['c_plots'] = get_vc_plots(cap_plots)
+        for attr in dir(self):
+            if not callable(getattr(self, attr)) and not attr.startswith("__"):
+                if attr == 'switch' or attr == 'diode':
+                    devices[attr] = getattr(self, attr).collect_data(self.type.lower())
+                elif attr not in skipIds and getattr(self, attr):
+                    pdfData[attr.capitalize()] = getattr(self, attr)
+        attach_units(pdfData, devices)
+        imgpath = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
+        imageFileObj = open(imgpath, "rb")
+        imageBinaryBytes = imageFileObj.read()
+        buf = io.BytesIO(imageBinaryBytes)
+        encoded_img_data = base64.b64encode(buf.getvalue())
+        client_img = encoded_img_data.decode('utf-8')
+
+        template_dir = os.path.join(os.path.dirname(__file__), "templates")
+        env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+        template = env.get_template('VirtualDatasheet_TransistorTemplate.html')
+        html = template.render(trans=pdfData, switch=devices['switch'], diode=devices['diode'], image=client_img)
+        # to save the results to html   --- need to convert it to pdf in future
+        with open(pdfData['Name']+".html", "w") as fh:
+            fh.write(html)
+        return html
 
     """
     Initial author: Henning Steinhagen
@@ -1376,11 +1415,10 @@ class Transistor:
         np.set_printoptions(linewidth=75)
 
     def export_plecs(self, recheck=True, gate_voltages=list()):
-        file_loader = FileSystemLoader(searchpath="./")
-        env = Environment(loader=file_loader)
-        env.globals["enumerate"] = enumerate
-        print(os.getcwd())
         switch_xml_data, diode_xml_data = self.get_curve_data(recheck, gate_voltages)
+        template_dir = os.path.join(os.path.dirname(__file__), "templates")
+        env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+        env.globals["enumerate"] = enumerate
         for data in filter(None, [switch_xml_data, diode_xml_data]):
             if data['type'] == 'Diode':
                 if len(data['TurnOffLoss']['CurrentAxis']) > 1:
@@ -1388,7 +1426,7 @@ class Transistor:
                         data['TurnOffLoss']['TemperatureAxis'])
                 data['TurnOnLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOnLoss']['Energy'].items()))
                 data['TurnOffLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOffLoss']['Energy'].items()))
-                template = env.get_template('diodeTemplate.txt')
+                template = env.get_template('PLECS_Exporter_template_diode.txt')
                 output = template.render(diode=data)
                 with open(data['partnumber'] + "_diode.xml", "w") as fh:
                     fh.write(output)
@@ -1400,7 +1438,7 @@ class Transistor:
                 data['TurnOffLoss']['Energy'][0] = [[0] * len(data['TurnOffLoss']['CurrentAxis'])] * len(data['TurnOffLoss']['TemperatureAxis'])
                 data['TurnOnLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOnLoss']['Energy'].items()))
                 data['TurnOffLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOffLoss']['Energy'].items()))
-                template = env.get_template('switchTemplate.txt')
+                template = env.get_template('PLECS_Exporter_template_Switch.txt')
                 output = template.render(transistor=data)
                 str_decoded = output.encode()
                 with open(data['partnumber'] + "_switch.xml", "w") as fh:
@@ -1454,6 +1492,36 @@ class Transistor:
                 if isinstance(d[att_key], np.ndarray):
                     d[att_key] = d[att_key].tolist()
             return d
+
+        def get_plots(self, buffer_req=False):
+            if self.graph_t_rthjc is None:
+                print('No Foster impedance information exists!')
+                return None
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            ax.loglog(self.graph_t_rthjc[0], self.graph_t_rthjc[1])
+            ax.set_xlabel('Pulsewidth : $P_{W}$[sec]')
+            ax.set_ylabel('Thermalresistance: $R_{th(j-c)}$ [°C/W ]')
+            ax.grid()
+            r_tau_vector = '\n'.join([
+                '$R_{th}$ :' + " ".join(str("{:4.3f}".format(x)) for x in self.r_th_vector),
+                'tau :' + " ".join(str("{:4.3f}".format(x)) for x in self.tau_vector)
+            ])
+            props = dict(fill=False, edgecolor='black', linewidth=2)
+            ax.text(0.9, 0.2, r_tau_vector, transform=ax.transAxes, bbox=props, ha='right')
+            if buffer_req:
+                return get_img_raw_data(plt)
+            else:
+                plt.show()
+
+        def collect_data(self):
+            foster_data = {'imp_plot': self.get_plots(True)}
+            skipIds = ['graph_t_rthjc']
+            for attr in dir(self):
+                if attr not in skipIds and not callable(getattr(self, attr)) and not attr.startswith("__") and not isinstance(getattr(self, attr), (list, dict)) \
+                        and (not getattr(self, attr) is None):
+                    foster_data[attr.capitalize()] = getattr(self, attr)
+            return foster_data
 
     class Switch:
         """Contains data associated with the switchting-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
@@ -1642,20 +1710,6 @@ class Transistor:
 
             return self.channel[index_channeldata], e_ons[index_e_on], e_offs[index_e_off]
 
-        def plot_all_channel_data(self):
-            """ Plot all channel data """
-            # ToDo: only 12(?) colors available. Change linestyle for more curves.
-            plt.figure()
-            for i_channel in np.array(range(0, len(self.channel))):
-                labelplot = f"vg {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
-                plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
-
-            plt.legend()
-            plt.xlabel('Voltage in V')
-            plt.ylabel('Current in A')
-            plt.grid()
-            plt.show()
-
         def plot_channel_data_vge(self, gatevoltage):
             """ Plot channel data with a chosen gate-voltage"""
             plt.figure()
@@ -1686,30 +1740,79 @@ class Transistor:
             plt.grid()
             plt.show()
 
-        def plot_energy_data(self):
+        def plot_all_channel_data(self, switch_type=None, buffer_req=False):
+            """ Plot all channel data """
+            # ToDo: only 12(?) colors available. Change linestyle for more curves.
+            categorize_plots = {}
+            plt.figure()
+            if buffer_req and switch_type and (switch_type == 'mosfet' or switch_type == 'sic-mosfet'):
+                for channel in self.channel:
+                    try:
+                        categorize_plots[channel.t_j].append(channel)
+                    except KeyError:
+                        categorize_plots[channel.t_j] = [channel]
+                for temp_key, curve_list in categorize_plots.items():
+                    for curve in curve_list:
+                        labelplot = "$V_{{g}}$ = {0} V ".format(curve.v_g)
+                        plt.plot(curve.graph_v_i[0], curve.graph_v_i[1], label=labelplot)
+                    plt.legend(fontsize=8)
+                    plt.xlabel('Voltage in V')
+                    plt.ylabel('Current in A')
+                    plt.title('$T_{{J}}$ = {0} °C'.format(temp_key))
+                    plt.grid()
+                    categorize_plots |= {temp_key: get_img_raw_data(plt)}
+                    plt.clf()
+            else:
+                for i_channel in np.array(range(0, len(self.channel))):
+                   labelplot = "$V_{{g}}$ = {0} V, $T_{{J}}$ = {1} °C".format(self.channel[i_channel].v_g, self.channel[i_channel].t_j)
+                   plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
+                plt.legend(fontsize=8)
+                plt.xlabel('Voltage in V')
+                plt.ylabel('Current in A')
+                plt.grid()
+                if buffer_req:
+                    return get_img_raw_data(plt)
+                else:
+                    plt.show()
+            return categorize_plots
+
+        def plot_energy_data(self, buffer_req=False):
             """ Plot all switching data """
             plt.figure()
             # look for e_on losses
             for i_energy_data in np.array(range(0, len(self.e_on))):
                 if self.e_on[i_energy_data].dataset_type == 'graph_i_e':
-                    labelplot = f"e_on: v_supply = {self.e_on[i_energy_data].v_supply} V, vg = {self.e_on[i_energy_data].v_g} V, T_J = {self.e_on[i_energy_data].t_j} °C, R_g = {self.e_on[i_energy_data].r_g} Ohm"
+                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].r_g)
                     plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1],
                              label=labelplot)
 
             # look for e_off losses
             for i_energy_data in np.array(range(0, len(self.e_off))):
                 if self.e_off[i_energy_data].dataset_type == 'graph_i_e':
-                    labelplot = f"e_off: v_supply = {self.e_off[i_energy_data].v_supply} V, vg = {self.e_off[i_energy_data].v_g} V, T_J = {self.e_off[i_energy_data].t_j} °C, R_g = {self.e_off[i_energy_data].r_g} Ohm"
+                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].r_g)
                     plt.plot(self.e_off[i_energy_data].graph_i_e[0], self.e_off[i_energy_data].graph_i_e[1],
                              label=labelplot)
-
-            plt.legend()
+            plt.legend(fontsize=8)
             plt.xlabel('Current in A')
             plt.ylabel('Loss-energy in J')
             plt.grid()
-            plt.show()
+            if buffer_req:
+                return get_img_raw_data(plt)
+            else:
+                plt.show()
 
-    class Diode():
+        def collect_data(self, switch_type):
+            switch_data = {'energy_plots': self.plot_energy_data(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
+            for attr in dir(self):
+                if attr == 'thermal_foster':
+                    switch_data.update(getattr(self, attr).collect_data())
+                elif not callable(getattr(self, attr)) and not attr.startswith("__") and not \
+                        isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (not getattr(self, attr) is None) and not getattr(self, attr) == "":
+                    switch_data[attr.capitalize()] = getattr(self, attr)
+            return switch_data
+
+
+    class Diode:
         """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
          multiple channel- and e_rr- datasets."""
         # Metadata
@@ -1860,21 +1963,24 @@ class Transistor:
 
             return self.channel[index_channeldata], e_rrs[index_e_rr]
 
-        def plot_all_channel_data(self):
+        def plot_all_channel_data(self, buffer_req=False):
             """ Plot all channel data """
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
             plt.figure()
             for i_channel in np.array(range(0, len(self.channel))):
-                labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
+                labelplot = "$v_{{g}}$ = {0} V, $T_{{J}}$ = {1} °C".format(self.channel[i_channel].v_g, self.channel[i_channel].t_j)
                 plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
 
-            plt.legend()
+            plt.legend(fontsize=8)
             plt.xlabel('Voltage in V')
             plt.ylabel('Current in A')
             plt.grid()
-            plt.show()
+            if buffer_req:
+                return get_img_raw_data(plt)
+            else:
+                plt.show()
 
-        def plot_energy_data(self):
+        def plot_energy_data(self, buffer_req=False):
             """ Plot all switching data """
 
             # look for e_off losses
@@ -1884,22 +1990,37 @@ class Transistor:
                     # check if data is available as 'graph_i_e'
                     if self.e_rr[i_energy_data].dataset_type == 'graph_i_e':
                         # add label plot
-                        labelplot = f"e_rr: v_supply = {self.e_rr[i_energy_data].v_supply} V, T_J = {self.e_rr[i_energy_data].t_j} °C, R_g = {self.e_rr[i_energy_data].r_g} Ohm"
+                        labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $R_{{g}}$ = {2} Ohm".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j, self.e_rr[i_energy_data].r_g)
                         # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
                         # if ture, add gate-voltage to label
                         if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
-                            labelplot = labelplot + f", vg = {self.e_rr[i_energy_data].v_g} V"
+                            labelplot = labelplot + ", $v_{{g}}$ = {0} V".format(self.e_rr[i_energy_data].v_g)
 
                         # plot
                         plt.plot(self.e_rr[i_energy_data].graph_i_e[0], self.e_rr[i_energy_data].graph_i_e[1],
                                  label=labelplot)
-                plt.legend()
+                plt.legend(fontsize=8)
                 plt.xlabel('Current in A')
                 plt.ylabel('Loss-energy in J')
                 plt.grid()
-                plt.show()
+                if buffer_req:
+                    return get_img_raw_data(plt)
+                else:
+                    plt.show()
             else:
-                print("No Data available")
+                print("No Diode switching energy data available")
+                return None
+
+        def collect_data(self, switch_type):
+            diode_data = {'energy_plots': self.plot_energy_data(True), 'channel_plots': self.plot_all_channel_data(True)}
+            for attr in dir(self):
+                if attr == 'thermal_foster':
+                    diode_data.update(getattr(self, attr).collect_data())
+                elif not callable(getattr(self, attr)) and not attr.startswith("__") and not \
+                        isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (not getattr(self, attr) is None) and not getattr(self, attr) == "":
+                    diode_data[attr.capitalize()] = getattr(self, attr)
+            return diode_data
+
 
     class LinearizedModel:
         """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
@@ -1979,6 +2100,20 @@ class Transistor:
                 if isinstance(d[att_key], np.ndarray):
                     d[att_key] = d[att_key].tolist()
             return d
+
+        def get_plots(self, ax=None, label=None):
+            if ax:
+                label_plot = label+", $T_{{J}}$ = {0} °C".format(self.t_j)
+                return ax.plot(self.graph_v_c[0], self.graph_v_c[1], label=label_plot)
+            else:
+                plt.figure()  #needs rework because of this class being a list of transistor class members
+                label_plot = "$T_{{J}}$ = {0}".format(self.t_j)
+                plt.plot(self.graph_v_c[0], self.graph_v_c[1], label=label_plot)
+                plt.legend(fontsize=8)
+                plt.xlabel('Voltage in V')
+                plt.ylabel('Capacitance in F')
+                plt.grid()
+                plt.show()
 
     class SwitchEnergyData:
         """Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
@@ -2345,6 +2480,56 @@ class Transistor:
         return plecs_transistor if 'plecs_transistor' in locals() and 'Channel' in plecs_transistor['ConductionLoss'] \
                    else None, plecs_diode if 'plecs_diode' in locals() and 'Channel' in plecs_diode['ConductionLoss'] \
                    else None
+
+def attach_units(trans, devices):
+    amphere_list = {'A': ['I_abs_max', 'I_cont']}
+    volts_list = {'V': ['V_abs_max']}
+    area_list = {'sq.m': ['Housing_area', 'Cooling_area']}
+    temp_list = {'°C': ['T_c_max', 'T_j_max']}
+    ohm_list = {'Ohms': ['R_g_int', 'R_th_cs', 'R_th_total']}
+    cap_list = {'F': ['C_iss_fix', 'C_oss_fix', 'C_rss_fix']}
+    for item, value in trans.items():
+        for unit_list in [ohm_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
+            if item in list(unit_list.values())[0]:     #check efficient way
+                ulist = list(unit_list.keys())
+                ulist.append(value)
+                trans[item] = ulist
+                break
+
+    for stype in devices:
+        for item, value in devices[stype].items():
+            for unit_list in [ohm_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
+                if item in list(unit_list.values())[0]:  # check efficient way
+                    ulist = list(unit_list.keys())
+                    ulist.append(value)
+                    devices[stype][item] = ulist
+                    break
+
+def get_img_raw_data(plot):
+    buf = io.BytesIO()
+    plot.savefig(buf, format='png')
+    encoded_img_data = base64.b64encode(buf.getvalue())
+    return encoded_img_data.decode('utf-8')
+
+def get_vc_plots(cap_data):
+    if not all(cap_data.values()):
+        return None
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    for key, item in cap_data.items():
+        if isinstance(item, list) and item:
+            for cap_curve in item:
+                line1, = cap_curve.get_plots(ax, key)
+    plt.legend(fontsize=8)
+    plt.xlabel('Voltage in V')
+    plt.ylabel('Capacitance in F')
+    plt.grid()
+    return get_img_raw_data(plt)
+    #buf = io.BytesIO()
+    #fig.savefig(buf, format='png')
+    #encoded_img_data = base64.b64encode(buf.getvalue())
+    #return encoded_img_data.decode('utf-8')
+
 
 
 def get_channel_data(channel_data, plecs_holder, v_on, is_diode, has_body_diode):

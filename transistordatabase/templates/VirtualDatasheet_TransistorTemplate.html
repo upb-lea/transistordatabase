@@ -1,0 +1,139 @@
+{% extends "VirtualDatasheet_BaseTemplate.html" %}
+{% block content %}
+<div style="border: 3px solid; height:300mm">
+<br>
+  <table class="tableCSS"> 
+   <tr>
+    <th class="spec"><h4>Transistor Specifications</h4></th>
+	<th class="value"><div class="h4style">Value</div></th>
+	<th class="unit"><div class="h4style">Units</div></th>
+  </tr>
+  
+  {% for key, value in trans.items() %}
+  {% if not key == 'c_plots' %}
+  <tr>
+    <td style="font-weight:600; font-family: Garamond">{{ key }}</td>
+	 {% if value is string %}
+		{% if key == 'Datasheet_hyperlink' %}
+		<td class="value" style="font-family: Tahoma;"><a href= {{ value }}> {{trans["Manufacturer"]}}</a></td>
+		{% else %}
+		<td style="font-family: Tahoma;">{{ value }}</td>
+		{% endif %}
+		<td style="text-align:center"> - </td>
+	{% else %}
+		<td style="font-family: Tahoma;">{{ value[1] }}</td>
+		<td style="text-align:center">{{ value[0] }}</td>
+	{% endif %}
+  </tr>
+ {% endif %}
+  {% endfor %}
+  </table>
+  </div>
+  <div style="page-break-before:always; border: 3px solid; height:330mm">
+  <br>
+  <br>
+  <table class="tableCSS">
+   <tr>
+    <th colspan=3><h4 style="text-align:center">IGBT Specifications</h4></th>
+	
+  </tr>
+  {% for key, value in switch.items() %}
+  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'imp_plot') %}
+   <tr>
+		<td class="spec" style="font-weight:600; font-family: Garamond">{{ key }}</td>
+		 {% if value is string %}
+		    <td class="value" style="font-family: Tahoma;">{{ value }}</td>
+			<td class="unit" style="text-align:center"> - </td>
+		{% else %}
+			<td class="value" style="font-family: Tahoma;">{{ value[1] }}</td>
+			<td class="unit" style="text-align:center">{{ value[0] }}</td>
+		{% endif %}
+  </tr>
+ {% endif %}
+  {% endfor %}
+  </table>
+
+ <br>
+  <br>
+ 
+ <table class="tableCSS">
+  <tr>
+	<th colspan=3><h4 style="text-align:center">Diode Specifications</h4></th>
+	
+  </tr>
+  {% for key, value in diode.items() %}
+  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'imp_plot') %}
+   <tr>
+		<td class="spec" style="font-weight:600; font-family: Garamond">{{ key }}</td>
+		 {% if value is string %}
+			<td class="value" style="font-family: Tahoma;">{{ value }}</td>
+			<td class="unit" style="text-align:center"> - </td>
+		{% else %}
+			<td class="value" style="font-family: Tahoma;">{{ value[1] }}</td>
+			<td class="unit" style="text-align:center">{{ value[0] }}</td>
+		{% endif %}
+  </tr>
+ {% endif %}
+  {% endfor %}
+  </table>
+   </div>
+  <!-- **********switch plots start from here************* -->
+  <div style="page-break-before:always;  border: 3px solid; height:330mm">
+  <h3 style="text-align:center"> {{trans["Type"]}} Characteristic Plots </h3>
+  <div class="container">
+	   <div class="row">
+			<div class="thumb">
+			  <div class="imgCaption">Voltage dependant Capacitance</div>
+			  <img id="picture" src="data:image/png;base64,{{ trans['c_plots'] }}" class="img">
+			</div>
+		   {% if switch['channel_plots'] is mapping %}
+			   {% for key, value in switch['channel_plots'].items() %}
+			    <div class="thumb">
+				<div class="imgCaption">Channel at {{ key }}°C </div>
+				  <img id="pictureChannelMulti" class="img" src="data:image/png;base64,{{ value }}" >
+				</div>
+			   {% endfor %}
+		   {% else %}
+		    <div class="thumb">
+				<div class="imgCaption">Channel plots</div>
+				<img id="pictureChannelOne" class="img" src="data:image/png;base64,{{ switch['channel_plots'] }}" >
+			</div>
+		   {% endif %}
+			<div class="thumb">
+			  <div class="imgCaption">Energy plots</div>
+			  <img id="pictureEnergy" src="data:image/png;base64,{{ switch['energy_plots'] }}" class="img">
+			</div>
+			{% if switch['imp_plot'] is not none %}
+				<div class="thumb">
+					<div class="imgCaption">Impedance plots</div>
+					<img id="pictureImp" src="data:image/png;base64,{{ switch['imp_plot'] }}" class="img">
+				</div>
+			{% endif %}
+	   </div>
+	</div>
+</div>	
+  <!-- **********diode plots start from here************* -->
+<div style="page-break-before:always; border: 3px solid; height:320mm">
+   <h3 style="text-align:center"> Diode Characteristic Plots </h3>
+   <div class="container">
+	   <div class="row">
+			<div class="thumb">
+			  <div class="imgCaption">Channel plots</div>
+			  <img id="pictureDiodeChannel" src="data:image/png;base64,{{ diode['channel_plots'] }}" class="img">
+			</div>
+			{% if diode['imp_plot'] is not none %}
+				<div class="thumb">
+				  <div class="imgCaption">Energy plots</div>
+				  <img id="pictureDiodeEnergy" src="data:image/png;base64,{{ diode['energy_plots'] }}" class="img">
+				</div>
+			{% endif %}
+			{% if diode['imp_plot'] is not none %}
+				<div class="thumb">
+					<div class="imgCaption">Impedance plots</div>
+					<img id="pictureDiodeImp" src="data:image/png;base64,{{ diode['imp_plot'] }}" class="img">
+				</div>
+			{% endif %}
+		</div>
+   </div>
+</div>
+{% endblock %}
