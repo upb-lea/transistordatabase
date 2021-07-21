@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.9] - 2021-07-14
 ### Bugfixes
 - fix #30
+- fix #32
+### Added
+- #14 Virtual datasheet for IGBT and MOSFET types which collects all the plot and data of transistor switch and diode and presents a HTMl file
+-
 
 ## [0.2.8] - 2021-07-14
 ### Added 
