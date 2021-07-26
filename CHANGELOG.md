@@ -5,14 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- #14 Virtual datasheet for IGBT and MOSFET types which collects all the plot and data of transistor switch and diode and presents a HTMl file
+### Bugfixes
+- fix #32: incorrect template paths in PLECS exporter
 
 ## [0.2.9] - 2021-07-14
 ### Bugfixes
-- fix #30
-- fix #32
-### Added
-- #14 Virtual datasheet for IGBT and MOSFET types which collects all the plot and data of transistor switch and diode and presents a HTMl file
--
+- fix #30: Bad package dependency in setup.py
 
 ## [0.2.8] - 2021-07-14
 ### Added 
