@@ -1343,7 +1343,7 @@ class Transistor:
                         data['TurnOffLoss']['TemperatureAxis'])
                 data['TurnOnLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOnLoss']['Energy'].items()))
                 data['TurnOffLoss']['Energy'] = collections.OrderedDict(sorted(data['TurnOffLoss']['Energy'].items()))
-                template = env.get_template('PLECS_Exporter_template_diode.txt')
+                template = env.get_template('PLECS_Exporter_template_Diode.txt')
                 output = template.render(diode=data)
                 with open(data['partnumber'] + "_diode.xml", "w") as fh:
                     fh.write(output)
