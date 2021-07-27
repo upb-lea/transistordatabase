@@ -13,7 +13,6 @@ from pymongo import errors
 import json
 import pathlib
 import inspect
-from fpdf import FPDF
 from git import Repo
 import shutil
 import stat
@@ -765,56 +764,6 @@ class Transistor:
             print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(e_on_off_rr, r_g, t_j, v_supply, e.args[0]))
             raise e
 
-    def virtual_datasheet(self):
-        pdf = PDF()
-        pdf.set_title(f"Virtual datasheet {self.name}")
-        pdf.set_author('LEA - Transistor Database File generator')
-        pdf.add_page()
-        pdf.chapter_title(1, 'Transistor data')
-        pdf.print_value(self.name)
-        pdf.print_value(self.type)
-        pdf.print_value(self.author)
-        pdf.print_value(self.technology)
-        pdf.print_value(self.template_version)
-        pdf.print_value(self.template_date)
-        pdf.print_value(self.creation_date)
-        pdf.print_value(self.last_modified)
-        pdf.print_value(self.comment)
-        pdf.print_value(self.manufacturer)
-        pdf.print_value(self.datasheet_hyperlink)
-        pdf.print_value(self.datasheet_date)
-        pdf.print_value(self.datasheet_version)
-        pdf.print_value(self.housing_area)
-        pdf.print_value(self.cooling_area)
-        pdf.print_value(self.t_c_max)
-        pdf.print_value(self.r_g_int)
-        pdf.print_value(self.c_oss_fix)
-        pdf.print_value(self.c_iss_fix)
-        pdf.print_value(self.c_rss_fix)
-        pdf.print_value(self.housing_type)
-        pdf.print_value(self.r_th_cs)
-        pdf.print_value(self.r_th_switch_cs)
-        pdf.print_value(self.r_th_diode_cs)
-        pdf.print_value(self.v_abs_max)
-        pdf.print_value(self.i_abs_max)
-        pdf.print_value(self.i_cont)
-        pdf.add_page()
-        pdf.chapter_title(2, 'Switch data')
-        pdf.print_value(self.switch.comment)
-        pdf.print_value(self.switch.manufacturer)
-        pdf.print_value(self.switch.technology)
-        pdf.print_value(self.switch.t_j_max)
-        pdf.add_page()
-        pdf.chapter_title(3, 'Diode data')
-        pdf.print_value(self.diode.comment)
-        pdf.print_value(self.diode.manufacturer)
-        pdf.print_value(self.diode.technology)
-        pdf.print_value(self.diode.t_j_max)
-        # pdf.figure_left(memfile)
-        # pdf.figure_right(memfile)
-        # memfile.close()
-        pdf.output(self.name + '.pdf')
-
     def calc_lin_channel(self, t_j, v_g, i_channel, switch_or_diode):
         """
         Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
@@ -906,7 +855,7 @@ class Transistor:
                              "linearization.")
         return round(v_channel, 6), round(r_channel, 9)
 
-    def process_virtual_datasheet(self):
+    def export_datasheet(self):
         #listV = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         pdfData = {}
         devices = {}
@@ -935,38 +884,6 @@ class Transistor:
         with open(pdfData['Name']+".html", "w") as fh:
             fh.write(html)
         return html
-
-    """
-    Initial author: Henning Steinhagen
-    Date of creation: 04.01.2021
-    Last modified by: Mohan Nagella
-    Date of modification: 14.07.2021
-    Version: 0.2.7
-    Compatibility: Python
-    Other files required: Numpy and SciPy package
-    Link to file:
-    ToDo: Check transistor name for forbidden symbols
-    ToDo: implement linearization and update attributes (each attribute has its own TODO)
-    ToDo: Add input parameters (e.g. for a given temperature set)
-
-    Description:
-    Exports transistor objects for multiple use cases.
-
-    Known Bugs:
-    Changelog:
-    VERSION / DATE / NAME: Comment
-    1.0.0 / 04.01.2021 / Henning Steinhagen: Initial Version
-    1.0.1 / 08.01.2021 / Henning Steinhagen: Reformatted Code + exportTransistor implementation
-    1.0.2 / 18.01.2021 / Manuel Klaedtke: Updated names and implemented changes accordingly to the restructuring of
-    Metadata class and some other attributes
-    1.1.0 / 24.01.2021 / Henning Steinhagen: Implemented compatibilityCheck
-    1.2.0 / 25.01.2021 / Henning Steinhagen: Implemented exportTransistorV1 (Legacy format to old .mat Database)
-    1.2.1 / 01.02.2021 / Henning Steinhagen: Added functionality to exportTransistorV1 and build functions to extract Data
-    1.3.0 / 02.02.2021 / Henning Steinhagen: Added functionality to export_matlab_v1 + commented code + renamed functions
-    1.4.0 / 17.02.2021 / Manuel Klädtke: Removed Metadata class and added all its attributes to Transistor class. Updated
-    export functions accordingly.
-    1.4.1 / 1.6.2021 / Nikolas Förster: remove export_simulink_v1 and replace by export_simulink_loss_model
-    """
 
     # export function start from here
     def buildList(self, attribute):
@@ -2905,93 +2822,3 @@ class MissingDataError(Exception):
           1211: "Diode conduction channel information is missing at provided v_g, cannot export to .xml",
           1202: "Diode reverse recovery loss information is missing",
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
-
-class PDF(FPDF):
-    # notes for A4 pages
-    # DIN A4 is 210x297mm
-
-    def header(self):
-        title = 'virtual datasheet'
-        # helvetica bold 15
-        self.set_font('helvetica', 'B', 15)
-        # Calculate width of title and position
-        w = self.get_string_width(title) + 6
-        self.set_x((210 - w) / 2)
-        # Colors of frame, background and text
-        self.set_draw_color(0, 80, 180)
-        self.set_fill_color(230, 230, 0)
-        self.set_text_color(220, 50, 50)
-        # Thickness of frame (1 mm)
-        self.set_line_width(1)
-        # Title
-        self.cell(w, 9, title, 1, 1, 'C', True)
-        # Line break
-        self.ln(10)
-
-    def footer(self):
-        # Position at 1.5 cm from bottom
-        self.set_y(-15)
-        # helvetica italic 8
-        self.set_font('helvetica', 'I', 8)
-        # Text color in gray
-        self.set_text_color(128)
-        # Page number
-        self.cell(0, 10, 'Page ' + str(self.page_no()), 0, 0, 'C')
-
-    def chapter_title(self, num, label):
-        # helvetica 12
-        self.set_font('helvetica', '', 12)
-        # Background color
-        self.set_fill_color(200, 220, 255)
-        # Title
-        self.cell(0, 6, f'Section {num} : {label}', 0, 1, 'L', True)
-        # Line break
-        self.ln(4)
-
-    def chapter_body(self, name):
-        # Read text file
-        with open(name, 'rb') as fh:
-            txt = fh.read().decode('latin-1')
-        # Times 12
-        self.set_font('Times', '', 12)
-        # Output justified text
-        self.multi_cell(0, 5, txt)
-        # Line break
-        self.ln()
-        # Mention in italics
-        self.set_font('', 'I')
-        self.cell(0, 5, '(end of excerpt)')
-
-    def print_chapter(self, num, title, name):
-        self.add_page()
-        self.chapter_title(num, title)
-        self.chapter_body(name)
-
-    def figure_left(self, memfile):
-        space_fig_left_right = 10
-        space_fig_middle = 10
-        pagewidth = 210
-        figwidth = pagewidth / 2 - space_fig_middle / 2 - space_fig_left_right
-        self.image(memfile, x=space_fig_left_right, y=100, w=figwidth)
-
-    def figure_right(self, memfile):
-        space_fig_left_right = 10
-        space_fig_middle = 10
-        pagewidth = 210
-        figwidth = pagewidth / 2 - space_fig_middle / 2 - space_fig_left_right
-        figright_origin = pagewidth / 2 + space_fig_middle / 2
-        self.image(memfile, x=figright_origin, y=100, w=figwidth)
-
-    def print_value(self, variable):
-        # get the intial name of the value
-        # copied here: https://stackoverflow.com/questions/32000934/python-print-a-variables-name-and-value
-        frame = inspect.currentframe().f_back
-        s = inspect.getframeinfo(frame).code_context[0]
-        r = re.search(r"\((.*)\)", s).group(1)
-        vnames = r.split(", ")
-        #
-        self.set_font('Times', '', 12)
-        # Output justified text
-        self.multi_cell(0, 3, f'{vnames} = {variable}')
-        # Line break
-        self.ln()
