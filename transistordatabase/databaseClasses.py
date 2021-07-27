@@ -658,11 +658,13 @@ class Transistor:
                              "A list of available operating points is printed above.")
         elif len(ie_datasets) > 1:
             print("multiple datasets were found that are consistent with the chosen operating point.")
+            match = False
             for re_curve in re_datasets:
                 for curve in ie_datasets:
                     if curve.v_supply == re_curve.v_supply and curve.t_j == re_curve.t_j and curve.v_g == re_curve.v_g:
                         i_e_dataset = curve
                         r_e_dataset = re_curve
+                        match = True
             text_to_print = "A match found in r_e characteristics for the chosen operating point and therefore will be used" if match else "The first of these sets is automatically chosen because selection of a different dataset is not yet implemented."
             print(text_to_print)
         elif len(ie_datasets) == 1:
@@ -883,6 +885,7 @@ class Transistor:
         # to save the results to html   --- need to convert it to pdf in future
         with open(pdfData['Name']+".html", "w") as fh:
             fh.write(html)
+        print(f"Export virtual datasheet {self.name}.html to {os.getcwd()}")
         return html
 
     # export function start from here
