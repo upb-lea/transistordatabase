@@ -50,5 +50,9 @@ M292
 HM62mm
 FM3
 XM3
+# Mitsubishi Electric
+std type
+NX type
+NX type (press-fit)
 
 
