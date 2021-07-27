@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+
+## [0.2.10] - 2021-07-27
 ### Added
-- #14 Virtual datasheet for IGBT and MOSFET types which collects all the plot and data of transistor switch and diode and presents a HTMl file
+- #14 Virtual datasheet for IGBT and MOSFET types which collects all the plot and data of transistor switch and diode and presents a HTMl file. Use 'transistor.export_datasheet()'
 ### Bugfixes
 - fix #32: incorrect template paths in PLECS exporter
 
@@ -107,7 +110,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.9...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.10...HEAD
+[0.2.10]: https://github.com/upb-lea/transistordatabase/compare/0.2.9...0.2.10
 [0.2.9]: https://github.com/upb-lea/transistordatabase/compare/0.2.8...0.2.9
 [0.2.8]: https://github.com/upb-lea/transistordatabase/compare/0.2.7...0.2.8
 [0.2.7]: https://github.com/upb-lea/transistordatabase/compare/0.2.6...0.2.7

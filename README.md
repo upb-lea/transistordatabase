@@ -174,7 +174,14 @@ After this, you can work with the transistor object as usual, e.g. fill in the .
 ## 2.5 Export transistor objects to other programs
 Using transistors within pyhton you have already seen. Now we want to take a closer look at exporting the transistors to other programs.
 These exporters are currently working. Some others are planned for the future.
-### 2.5.1 Export to GeckoCIRCUITS
+### 2.5.1 Export a virtual datasheet
+This function exports a virtual datasheet to see stored data in the database. Function display the output path of .html-file, which can be opened in your prefered browser.
+```
+transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
+transistor.export_datasheet()
+```
+
+### 2.5.2 Export to GeckoCIRCUITS
 GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct [download link](http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip).
 At the moment you need to know the exporting parameters like gate resistor, gate-voltage and switching voltage. This will be simplified in the near future.
 ```
@@ -185,15 +192,15 @@ From now on, you can load the model into your GeckoCIRCUITS schematic.
 ![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Example_Gecko_Exporter.png)
 Hint: it is also possible to control GeckoCIRCUITS from python, e.g. to sweep transistors. In this case, linux users should consider to run [this](https://github.com/tinix84/gecko/releases/tag/v1.1) Version of GeckoCIRCUITS instead the above one (port to OpenJDK).
 
-### 2.5.2 Export to Matlab
+### 2.5.3 Export to Matlab / Octave
 Python dictionary can be exported to Matlab, see the following example:
 ```
 transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
 transistor.export_matlab()
 ```
-A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab.
+A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.
 
-### 2.5.3 Export to Simulink
+### 2.5.4 Export to Simulink
 For a loss simulation in simulink, there is a IGBT model available, which can be found in this [simulink model](https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html). Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
 ```
 transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
@@ -212,7 +219,7 @@ for i_Transistor = 1:length(Transistor_array)
 ```
 ![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Example_Simulink_Exporter.png)
 
-### 2.5.4 Export to PLECS
+### 2.5.5 Export to PLECS
 For a thermal and loss simulation using PLECS simulation tool, it requires the transistor loss and characteristic curves to be loaded in XML(Version 1.1) file format. More information on how to load the XML data can be found from [here](https://www.plexim.com/support/videos/thermal-modeling-part-1). To export the transistor object from your database to plecs required xml file format, following lines need to be executed starting with loading the required datasheet.
 ```
 transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
