@@ -180,6 +180,7 @@ This function exports a virtual datasheet to see stored data in the database. Fu
 transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
 transistor.export_datasheet()
 ```
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Virtual_Datasheet.png)
 
 ### 2.5.2 Export to GeckoCIRCUITS
 GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct [download link](http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip).
