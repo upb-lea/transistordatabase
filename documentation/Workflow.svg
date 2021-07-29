@@ -524,15 +524,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="300.52038"
-     inkscape:cy="182.33253"
+     inkscape:zoom="3.959798"
+     inkscape:cx="903.58146"
+     inkscape:cy="96.848376"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
-     inkscape:window-width="2294"
-     inkscape:window-height="965"
+     inkscape:window-width="1651"
+     inkscape:window-height="915"
      inkscape:window-x="23"
      inkscape:window-y="15"
      inkscape:window-maximized="0"
@@ -691,14 +691,14 @@
        transform="translate(8.0522941,-5.3891213)"><tspan
          x="53.449303"
          y="39.388885"
-         id="tspan848">Digitizing plots by </tspan><tspan
+         id="tspan814">Digitizing plots by </tspan><tspan
          x="53.449303"
          y="42.916671"
-         id="tspan850">using
+         id="tspan816">using
 </tspan><tspan
          x="53.449303"
          y="46.444457"
-         id="tspan852">Webplotdigitizer</tspan></text>
+         id="tspan818">Webplotdigitizer</tspan></text>
     <g
        id="g3992"
        transform="translate(-249.76666,95.249976)">
@@ -959,58 +959,58 @@
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
-       x="251.00275"
+       x="250.41296"
        y="11.635468"
        id="text11661"><tspan
          sodipodi:role="line"
          id="tspan11659"
-         x="251.00275"
+         x="250.41296"
          y="11.635468"
          style="stroke-width:0.264583">Matlab</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
-       x="251.03375"
+       x="250.50392"
        y="18.250051"
        id="text11661-0"><tspan
          sodipodi:role="line"
          id="tspan11659-8"
-         x="251.03375"
+         x="250.50392"
          y="18.250051"
          style="stroke-width:0.264583">Simulink</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
-       x="251.00414"
+       x="250.41296"
        y="24.83983"
        id="text11661-1"><tspan
          sodipodi:role="line"
          id="tspan11659-4"
-         x="251.00414"
+         x="250.41296"
          y="24.83983"
          style="stroke-width:0.264583">PLECs</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
-       x="251.33002"
+       x="250.53148"
        y="31.479218"
        id="text11661-9"><tspan
          sodipodi:role="line"
          id="tspan11659-6"
-         x="251.33002"
+         x="250.53148"
          y="31.479218"
          style="stroke-width:0.264583">GeckoCIRCUITS</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
-       x="251.06822"
+       x="250.41296"
        y="44.625011"
        id="text11661-7"><tspan
          sodipodi:role="line"
          id="tspan11659-3"
-         x="251.06822"
+         x="250.41296"
          y="44.625011"
-         style="stroke-width:0.264583">...</tspan></text>
+         style="stroke-width:0.264583">Datasheet</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path5718-7-5-9-6-5-1"
@@ -1087,10 +1087,10 @@
        inkscape:transform-center-y="20.520766"><tspan
          x="-63.76725"
          y="163.4108"
-         id="tspan854">read from </tspan><tspan
+         id="tspan820">read from </tspan><tspan
          x="-63.76725"
          y="166.93859"
-         id="tspan856">database</tspan></text>
+         id="tspan822">database</tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.264583"
        id="rect5906-1"
@@ -1142,16 +1142,16 @@
        transform="translate(-8.3178762,24.864618)"><tspan
          x="99.21875"
          y="78.052086"
-         id="tspan858">Calculating curves </tspan><tspan
+         id="tspan824">Calculating curves </tspan><tspan
          x="99.21875"
          y="81.579875"
-         id="tspan860">from measurement </tspan><tspan
+         id="tspan826">from measurement </tspan><tspan
          x="99.21875"
          y="85.107661"
-         id="tspan862">data in the TDB </tspan><tspan
+         id="tspan828">data in the TDB </tspan><tspan
          x="99.21875"
          y="88.635448"
-         id="tspan864">file-format</tspan></text>
+         id="tspan830">file-format</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path5718-7-5-9-6-0"
@@ -1167,10 +1167,10 @@
        transform="translate(-19.205818,24.388512)"><tspan
          x="158.18153"
          y="66.156174"
-         id="tspan866">Store to </tspan><tspan
+         id="tspan832">Store to </tspan><tspan
          x="158.18153"
          y="69.683963"
-         id="tspan868">database</tspan></text>
+         id="tspan834">database</tspan></text>
     <g
        id="g5533"
        transform="translate(-299.24375,12.03873)">
@@ -1786,10 +1786,10 @@
        transform="translate(-5.2441808,9.5980355)"><tspan
          x="206.375"
          y="101.86458"
-         id="tspan870">calculating loss curves for </tspan><tspan
+         id="tspan836">calculating loss curves for </tspan><tspan
          x="206.375"
          y="105.39237"
-         id="tspan872">another gate resistor</tspan></text>
+         id="tspan838">another gate resistor</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;white-space:pre;inline-size:37.0417;stroke-width:0.264583"
@@ -1799,10 +1799,10 @@
        transform="translate(-9.9522808,12.517404)"><tspan
          x="251.35416"
          y="99.21875"
-         id="tspan874">comparison of different </tspan><tspan
+         id="tspan840">comparison of different </tspan><tspan
          x="251.35416"
          y="102.74654"
-         id="tspan876">loss curves</tspan></text>
+         id="tspan842">loss curves</tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.264583"
        id="rect5906-8-4-9-7-7-4-5"
@@ -1922,12 +1922,12 @@
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
-       x="250.94212"
+       x="250.41296"
        y="38.084843"
        id="text11661-9-6"><tspan
          sodipodi:role="line"
          id="tspan11659-6-2"
-         x="250.94212"
+         x="250.41296"
          y="38.084843"
          style="stroke-width:0.264583">Python</tspan></text>
     <rect
@@ -2150,10 +2150,10 @@
        transform="translate(-16.559985,-21.913571)"><tspan
          x="158.18153"
          y="66.156174"
-         id="tspan878">Store to </tspan><tspan
+         id="tspan844">Store to </tspan><tspan
          x="158.18153"
          y="69.683963"
-         id="tspan880">database</tspan></text>
+         id="tspan846">database</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;word-spacing:0px;white-space:pre;inline-size:24.0798;stroke-width:0.264583"
@@ -2165,9 +2165,9 @@
        inkscape:transform-center-y="20.520766"><tspan
          x="-63.76725"
          y="163.4108"
-         id="tspan882">read from </tspan><tspan
+         id="tspan848">read from </tspan><tspan
          x="-63.76725"
          y="166.93859"
-         id="tspan884">database</tspan></text>
+         id="tspan850">database</tspan></text>
   </g>
 </svg>
