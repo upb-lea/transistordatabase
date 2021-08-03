@@ -50,9 +50,10 @@ M292
 HM62mm
 FM3
 XM3
-# Mitsubishi Electric
+#Mitsubishi Electric
 std type
 NX type
 NX type (press-fit)
-
+#Plecs importer
+PLECS Import
 

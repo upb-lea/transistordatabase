@@ -1,4 +1,6 @@
 import datetime
+import xml.sax
+import xml.etree.ElementTree as et
 import numpy as np
 import re
 import os
@@ -19,7 +21,6 @@ import stat
 import scipy.io as sio
 import collections
 from jinja2 import Environment, FileSystemLoader
-from PIL import Image
 import base64
 import io
 
@@ -371,14 +372,14 @@ class Transistor:
             for key, filename in text_file_dict.items():
                 file = os.path.join(os.path.dirname(__file__), filename)
                 with open(file, "r") as file_txt:
-                    read_list = [line.replace("\n", "") for line in file_txt.readlines()]
+                    read_list = [line.replace("\n", "") for line in file_txt.readlines() if not line.startswith("#")]
                     # Remove all non alphanumeric characters from housing_type and manufacturer names and
                     # convert to lowercase for comparison
                     snub = "[^A-Za-z0-9]+" if key == 'housing_type' else "[^A-Za-z]+"
                     alphanum_values = [re.sub(snub, "", line).lstrip().lower() for line in read_list]
                     dataset_value = dataset_dict.get(key)
                     if re.sub(snub, "", dataset_value).lstrip().lower() not in alphanum_values:
-                        name = key.capitalize().replace("_"," ")
+                        name = key.capitalize().replace("_", " ")
                         raise ValueError(f"{name} {dataset_value} is not allowed. See file {filename} for a "
                                  f"list of supported types.")
 
@@ -665,7 +666,8 @@ class Transistor:
                         i_e_dataset = curve
                         r_e_dataset = re_curve
                         match = True
-            text_to_print = "A match found in r_e characteristics for the chosen operating point and therefore will be used" if match else "The first of these sets is automatically chosen because selection of a different dataset is not yet implemented."
+            text_to_print = "A match found in r_e characteristics for the chosen operating point and therefore will be used" \
+                if match else "The first of these sets is automatically chosen because selection of a different dataset is not yet implemented."
             print(text_to_print)
         elif len(ie_datasets) == 1:
             i_e_dataset = ie_datasets[0]
@@ -1731,7 +1733,6 @@ class Transistor:
                     switch_data[attr.capitalize()] = getattr(self, attr)
             return switch_data
 
-
     class Diode:
         """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
          multiple channel- and e_rr- datasets."""
@@ -1940,7 +1941,6 @@ class Transistor:
                         isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (not getattr(self, attr) is None) and not getattr(self, attr) == "":
                     diode_data[attr.capitalize()] = getattr(self, attr)
             return diode_data
-
 
     class LinearizedModel:
         """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
@@ -2401,6 +2401,144 @@ class Transistor:
                    else None, plecs_diode if 'plecs_diode' in locals() and 'Channel' in plecs_diode['ConductionLoss'] \
                    else None
 
+def get_xml_data(file):
+    namespaces = {'plecs': 'http://www.plexim.com/xml/semiconductors/'}
+    etree = et.parse(file)
+    root = etree.getroot()
+    package = root.find('plecs:Package', namespaces)
+    info = package.attrib
+    v_on, v_off = (0, 12) if info['class'] == 'Diode' else (12, 0)
+    are_variables_defined = package.find('plecs:Variables', namespaces).text
+    if not are_variables_defined:
+        semiconductor_data = package.find('plecs:SemiconductorData', namespaces)
+        for character_node in semiconductor_data:
+            if character_node.tag == '{'+namespaces['plecs']+'}'+'TurnOnLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+                axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
+                current_axis = [float(x) for x in axis_string.split()]
+                axis_string = character_node.find('plecs:VoltageAxis', namespaces).text
+                voltage_axis = [float(x) for x in axis_string.split()]
+                axis_string = character_node.find('plecs:TemperatureAxis', namespaces).text
+                temperature_axis = [float(x) for x in axis_string.split()]
+                energy_node = character_node.find('plecs:Energy', namespaces)
+                scale = float(energy_node.attrib['scale'])
+                energy_on_list = []
+                for tdx, temp_node in enumerate(energy_node.findall('plecs:Temperature', namespaces)):
+                    for vdx, vltg_node in enumerate(temp_node.findall('plecs:Voltage', namespaces)):
+                        if not voltage_axis[vdx]:
+                            continue
+                        energy_dict = {}
+                        energy_data = [float(x)*scale for x in vltg_node.text.split()]
+                        energy_dict["dataset_type"] = "graph_i_e"
+                        energy_dict["t_j"] = temperature_axis[tdx]
+                        energy_dict["v_supply"] = voltage_axis[vdx]
+                        energy_dict["r_g"] = 0
+                        energy_dict["v_g"] = v_on
+                        energy_dict["graph_i_e"] = np.transpose(np.column_stack((current_axis, energy_data)))
+                        energy_on_list.append(energy_dict)
+
+            if character_node.tag == '{'+namespaces['plecs']+'}'+'TurnOffLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+                axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
+                current_axis = [float(x) for x in axis_string.split()]
+                axis_string = character_node.find('plecs:VoltageAxis', namespaces).text
+                voltage_axis = [float(x) for x in axis_string.split()]
+                axis_string = character_node.find('plecs:TemperatureAxis', namespaces).text
+                temperature_axis = [float(x) for x in axis_string.split()]
+                energy_node = character_node.find('plecs:Energy', namespaces)
+                scale = float(energy_node.attrib['scale'])
+                energy_off_list = []
+                for tdx, temp_node in enumerate(energy_node.findall('plecs:Temperature', namespaces)):
+                    for vdx, vltg_node in enumerate(temp_node.findall('plecs:Voltage', namespaces)):
+                        if not voltage_axis[vdx]:
+                            continue
+                        energy_dict = {}
+                        energy_data = [float(x) * scale for x in vltg_node.text.split()]
+                        energy_dict["dataset_type"] = "graph_i_e"
+                        energy_dict["t_j"] = temperature_axis[tdx]
+                        energy_dict["v_supply"] = voltage_axis[vdx]
+                        energy_dict["r_g"] = 0
+                        energy_dict["v_g"] = v_off
+                        energy_dict["graph_i_e"] = np.transpose(np.column_stack((current_axis, energy_data)))
+                        energy_off_list.append(energy_dict)
+
+            if character_node.tag == '{'+namespaces['plecs']+'}'+'ConductionLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+                axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
+                current_axis = [float(x) for x in axis_string.split()]
+                axis_string = character_node.find('plecs:TemperatureAxis', namespaces).text
+                temperature_axis = [float(x) for x in axis_string.split()]
+                voltage_drop_node = character_node.find('plecs:VoltageDrop', namespaces)
+                scale = float(voltage_drop_node.attrib['scale'])
+                channel_list = []
+                for tdx, temp_node in enumerate(voltage_drop_node.findall('plecs:Temperature', namespaces)):
+                    channel_dict = {}
+                    channel_data = [float(x) * scale for x in temp_node.text.split()]
+                    channel_dict["t_j"] = temperature_axis[tdx]
+                    channel_dict["v_g"] = v_on
+                    channel_dict["graph_v_i"] = np.transpose(np.column_stack((channel_data, current_axis)))
+                    channel_list.append(channel_dict)
+        thermal_data = package.find('plecs:ThermalModel', namespaces)
+        if thermal_data[0].attrib['type'] == 'Foster':
+            foster_args, r_par, tau_par = dict(), list(), list()
+            for attr in thermal_data[0].findall('plecs:RTauElement', namespaces):
+                r_par.append(float(attr.attrib['R']))
+                tau_par.append(float(attr.attrib['Tau']) if attr.attrib['Tau'] else None)
+            foster_args['r_th_vector'], foster_args['tau_vector'] = (r_par, tau_par) if len(r_par) > 1 else (None, None)
+            foster_args['r_th_total'], foster_args['tau_total'] = (r_par[0], tau_par[0]) if len(r_par) == 1 else (sum(foster_args['r_th_vector']), sum(foster_args['tau_vector']))
+        return info, energy_on_list, energy_off_list, channel_list, foster_args
+    else:
+        raise ImportError('Import of '+file+' Not possible: Only table type xml data are accepted')
+
+def import_xml_data(files):
+    try:
+        s_info, s_energy_on_list, s_energy_off_list, s_channel_list, s_foster_args = get_xml_data(files['switch'])
+        switch_args = {
+            'comment': 'Gate voltages are set to 12V/0V',
+            'manufacturer': s_info['vendor'],
+            'technology': None,
+            't_j_max': 175,
+            'channel': s_channel_list,
+            'e_on': s_energy_on_list,
+            'e_off': s_energy_off_list,
+            'thermal_foster': s_foster_args}
+        d_info, d_energy_on_list, d_energy_off_list, d_channel_list, d_foster_args = get_xml_data(files['diode'])
+        if s_info['class'] == 'IGBT' and d_info['class'] == 'Diode':
+            if s_info['vendor'] != d_info['vendor'] or s_info['partnumber'] != d_info['partnumber']:
+                raise ImportError('Vendor or part number differs')
+        else:
+            raise ImportError('Invalid files: One of type '+s_info['class']+' and other '+d_info['class'])
+        diode_args = {'comment': 'Turn On and Off voltages are set to 12V/0V',
+                      'manufacturer': d_info['vendor'],
+                      'technology': None,
+                      't_j_max': 175,
+                      'channel': d_channel_list,
+                      'e_rr': d_energy_off_list,
+                      'thermal_foster': d_foster_args}
+        transistor_args = {'name': s_info['partnumber'],
+                           'type': s_info['class'],
+                           'author': 'XML importer',
+                           'comment': 'Generated using xml importer (unaccurate)',
+                           'manufacturer': s_info['vendor'],
+                           'datasheet_hyperlink': 'http://www.plexim.com/xml/semiconductors/'+s_info['partnumber'],
+                           'datasheet_date': datetime.date.today(),
+                           'datasheet_version': "unknown",
+                           'housing_area': 0,
+                           'cooling_area': 0,
+                           'housing_type': 'PLECS Import',
+                           'v_abs_max': 999999999,
+                           'i_abs_max': max(s_channel_list[0]["graph_v_i"][1]),
+                           'i_cont': max(s_channel_list[0]["graph_v_i"][1])/2,
+                           'c_iss': None,  # insert csv here
+                           'c_oss': None,  # insert csv here
+                           'c_rss': None,  # insert csv here
+                           'graph_v_ecoss': None,
+                           'r_g_int': 0,
+                           'r_th_cs': 0,
+                           'r_th_diode_cs': 0,
+                           'r_th_switch_cs': 0,
+                           }
+        return Transistor(transistor_args, switch_args, diode_args)
+    except ImportError as e:
+        print(e.args[0])
+
 def attach_units(trans, devices):
     amphere_list = {'A': ['I_abs_max', 'I_cont']}
     volts_list = {'V': ['V_abs_max']}
@@ -2491,8 +2629,8 @@ def get_loss_curves(loss_data, plecs_holder, loss_type, v_g, is_recovery_loss):
                 plecs_holder[loss_type]['CurrentAxis'] = interp_current.tolist()
                 plecs_holder[loss_type]['Energy'] = {}
                 plecs_holder[loss_type]['TemperatureAxis'] = list()
-            rev_voltage = energy_dict['v_supply'] if not is_recovery_loss else -energy_dict['v_supply']
-            if rev_voltage not in plecs_holder[loss_type]['Energy'] :
+            rev_voltage = energy_dict['v_supply'] if not is_recovery_loss else -abs(energy_dict['v_supply'])
+            if rev_voltage not in plecs_holder[loss_type]['Energy']:
                 plecs_holder[loss_type]['Energy'][rev_voltage] = []
             plecs_holder[loss_type]['Energy'][rev_voltage].append(loss_energy.tolist())
             # Loss curves are defined at one v_g in many v_supply voltages, therefore to avoid redundancy in Tj and v_supply appends
@@ -2566,7 +2704,7 @@ def check_str(x):
     raise TypeError(f"{x} is not a string.")
 
 
-def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_to_0=False, mirror_xy_data = False):
+def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_to_0=False, mirror_xy_data=False):
     """
     Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via

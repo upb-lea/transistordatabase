@@ -12,7 +12,7 @@
 					{% for n in range(transistor['TurnOnLoss']['TemperatureAxis']|length) %}
 					<Temperature>
 						{% for key,curve in transistor['TurnOnLoss']['Energy'].items() %}
-							<Voltage>{% for val in curve[n-1] %}{{"%.2f"|format(val*1000)}} {% endfor %}</Voltage>
+							<Voltage>{% for val in curve[n] %}{{"%.2f"|format(val*1000)}} {% endfor %}</Voltage>
 						{% endfor %}
 					</Temperature>
 					{% endfor %}
@@ -27,7 +27,7 @@
 					{% for n in range(transistor['TurnOffLoss']['TemperatureAxis']|length) %}
 					<Temperature>
 						{% for key,curve in transistor['TurnOffLoss']['Energy'].items() %}
-						<Voltage>{% for val in curve[n-1] %}{{"%.2f"|format(val*1000)}} {% endfor %}</Voltage>
+						<Voltage>{% for val in curve[n] %}{{"%.2f"|format(val*1000)}} {% endfor %}</Voltage>
 						{% endfor %}
 					</Temperature>
 					{% endfor %}
