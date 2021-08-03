@@ -201,6 +201,8 @@ transistor.export_matlab()
 ```
 A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.
 
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Matlab.png)
+
 ### 2.5.4 Export to Simulink
 For a loss simulation in simulink, there is a IGBT model available, which can be found in this [simulink model](https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html). Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
 ```
