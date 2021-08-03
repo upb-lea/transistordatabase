@@ -8,5 +8,5 @@ UnitedSiC
 ON Semiconductor
 Vincotech
 Mitsubishi Electric
-
+Hitachi ABB
 
