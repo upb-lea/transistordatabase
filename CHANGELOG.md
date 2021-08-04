@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Small Improvements
+- #35 Add Datasheet Hyperlink to Simulink loss model exporter
+- #36 Display all exported file folders clickable
+- Datasheet link (.export_datasheet()) is also clickable and opens the browser to display the datasheet
 
 ## [0.2.10] - 2021-07-27
 ### Added
