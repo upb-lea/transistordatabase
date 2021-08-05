@@ -27,11 +27,11 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="true"
-     inkscape:zoom="1.1848345"
-     inkscape:cx="314.3899"
-     inkscape:cy="582.35981"
+     inkscape:zoom="0.83780451"
+     inkscape:cx="361.06275"
+     inkscape:cy="460.728"
      inkscape:window-width="1280"
-     inkscape:window-height="964"
+     inkscape:window-height="996"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -187,6 +187,13 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="fill:#ffffff;fill-rule:evenodd;stroke-width:0.264583"
+       id="rect73"
+       width="205.05208"
+       height="63.5"
+       x="3.96875"
+       y="115.09375" />
     <image
        width="108.0267"
        height="48.772732"
