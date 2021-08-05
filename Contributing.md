@@ -1,7 +1,7 @@
 ## Table of contents
-* [Drawings](#1.-dawings)
-* [Write Code](#2.-write-code)
-* [Generate pip Package](#3.-generate-pip-package)
+* [Drawings](#1-dawings)
+* [Write Code](#2-write-code)
+* [Generate pip Package](#3-generate-pip-package)
 
 ## 1. Drawings
 For drawings (e.g. in readme-files), we recomment to use the program [Inkscape](https://inkscape.org/). It is open source software and runs on Linux, Mac and Windows. If you want to draw electirc circuits, we recommend this library on [github](https://github.com/upb-lea/Inkscape_electric_Symbols).
