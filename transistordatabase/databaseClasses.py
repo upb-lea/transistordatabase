@@ -1,5 +1,4 @@
 import datetime
-import xml.sax
 import xml.etree.ElementTree as et
 import numpy as np
 import re
@@ -13,8 +12,6 @@ from scipy.spatial import distance
 from pymongo import MongoClient
 from pymongo import errors
 import json
-import pathlib
-import inspect
 from git import Repo
 import shutil
 import stat
@@ -1367,10 +1364,12 @@ class Transistor:
                     fh.write(str_decoded.decode())
 
     class FosterThermalModel:
-        """Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
+        """
+        Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
         temperature behavior as a thermal_foster RC-network. The necessary parameters can be estimated by curve-fitting
         transient temperature data supplied in graph_t_rthjc or by manually specifying the individual 2 out of 3 of the
-         parameters R, C, and tau."""
+        parameters R, C, and tau.
+        """
         # ToDo: Add function to estimate parameters from transient data.
         # ToDo: Add function to automatically calculate missing parameters from given ones.
         # ToDo: Do these need to be numpy array or should they be lists instead?
@@ -1598,7 +1597,7 @@ class Transistor:
             :param v_g: gate voltage
             :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
             :param SwitchEnergyData_dataset_type: preferred dataset_type (single, graph_r_e, graph_i_e) for e_on and
-            e_off # ToDo: Should the default be "graph_i_e" or rather a kind of "don't care"?
+            e_off
             :return: channel-object, e_on-object, e_off-object
             """
             # Normalize t_j to v_g for distance metric
@@ -1966,7 +1965,7 @@ class Transistor:
         """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
         For different temperatures: Create additional ChannelData-objects and store them as a list in the respective
         Diode- or Switch-object.
-        This data can be used to linearize the transistor at a specific operating point (ToDo!)"""
+        This data can be used to linearize the transistor at a specific operating point """
 
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
         t_j: [int, float]  # Mandatory
@@ -2155,12 +2154,14 @@ class Transistor:
         """
         Connect [count_parallels] transistors in parallel
         The returned transistor object behaves like a single transistor.
-         - name will be modified by adding _[count_parallels]_parallel
-         - channel characteristics will be modified
-         - e_on/e_off/e_rr characteristics will be modified
-         - thermal behaviour will be modified
+        - name will be modified by adding _[count_parallels]_parallel
+        - channel characteristics will be modified
+        - e_on/e_off/e_rr characteristics will be modified
+        - thermal behaviour will be modified
+
         :param count_parallels: count of parallel transistors of same type
         :return: transistor object with parallel transistors
+
         """
         transistor_dict = self.convert_to_dict()
 
@@ -2709,6 +2710,7 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
     Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
     https://apps.automeris.io/wpd/
+
     :param csv_filename: str. Insert .csv filename, e.g. "switch_channel_25_15v"
     :param first_xy_to_00: boolean True/False. Set 'True' to change the first value pair to zero. This is necessary in
         case of webplotdigitizer returns the first value pair e.g. as -0,13; 0,00349.
@@ -2718,6 +2720,7 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
     :param first_x_to_0: boolean True/False. Set 'True' to set the first x-value to zero. This is interesting in
         case of nonlinear input/output capacitances, e.g. c_oss, c_iss, c_rss
     :return: 2d array, ready to use in the transistor database
+
     """
     # See issue #5: German csv-files use ; as separator, english systems use , as separator
     # if ; is available in the file, csv-file generation was made by a german-language operating system
