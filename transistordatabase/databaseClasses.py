@@ -881,10 +881,14 @@ class Transistor:
         env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
         template = env.get_template('VirtualDatasheet_TransistorTemplate.html')
         html = template.render(trans=pdfData, switch=devices['switch'], diode=devices['diode'], image=client_img)
-        # to save the results to html   --- need to convert it to pdf in future
+        # ToDo: to save the results to html   --- need to convert it to pdf in future
+        pdfname = pdfData['Name']+".html"
+        datasheetpath = pathlib.Path.cwd() / pdfname
+        print(f"{datasheetpath = }")
         with open(pdfData['Name']+".html", "w") as fh:
             fh.write(html)
-        print(f"Export virtual datasheet {self.name}.html to {os.getcwd()}")
+        print(f"Export virtual datasheet {self.name}.html to {pathlib.Path.cwd().as_uri()}")
+        print(f"Open Datasheet here: {datasheetpath.as_uri()}")
         return html
 
     # export function start from here
@@ -1060,12 +1064,13 @@ class Transistor:
                                'Diode': diode_dict,
                                'file_generated': f"{datetime.datetime.today()}",
                                'file_generated_by': "https://github.com/upb-lea/transistordatabase",
+                               'datasheet_hyperlink': self.datasheet_hyperlink,
                                'r_g_on': np.double(eon_object_lower.r_g),
                                'r_g_off': np.double(eoff_object_lower.r_g),
                                }
 
             sio.savemat(self.name.replace('-', '_') + '_Simulink_lossmodel.mat', {self.name.replace('-', '_'): transistor_dict})
-            print(f"Export files {self.name}_Simulink_lossmodel.mat to {os.getcwd()}")
+            print(f"Export files {self.name}_Simulink_lossmodel.mat to {pathlib.Path.cwd().as_uri()}")
         except Exception as e:
             print("Simulink exporter failed: {0}".format(e))
 
@@ -1085,7 +1090,7 @@ class Transistor:
         transistor_clean_dict['file_generated_by'] = "https://github.com/upb-lea/transistordatabase",
 
         sio.savemat(self.name.replace('-', '_') + '_Matlab.mat', {self.name.replace('-', '_'): transistor_clean_dict})
-        print(f"Export files {self.name.replace('-', '_')}_Matlab.mat to {os.getcwd()}")
+        print(f"Export files {self.name.replace('-', '_')}_Matlab.mat to {pathlib.Path.cwd().as_uri()}")
 
     def export_geckocircuits(self, v_supply, v_g_on, v_g_off, r_g_on, r_g_off):
         """
@@ -1329,7 +1334,7 @@ class Transistor:
                         file_diode.write("<\SchaltverlusteMesskurve>\n")
 
         file_diode.close()
-        print(f"Export files {self.name}_Switch.scl and {self.name}_Diode.scl to {os.getcwd()}")
+        print(f"Export files {self.name}_Switch.scl and {self.name}_Diode.scl to {pathlib.Path.cwd().as_uri()}")
         # set print options back to default
         np.set_printoptions(linewidth=75)
 
@@ -1362,6 +1367,7 @@ class Transistor:
                 str_decoded = output.encode()
                 with open(data['partnumber'] + "_switch.xml", "w") as fh:
                     fh.write(str_decoded.decode())
+        print(f"Export files {data['partnumber']}_switch.xml and {data['partnumber']}_diode.xml to {pathlib.Path.cwd().as_uri()}")
 
     class FosterThermalModel:
         """

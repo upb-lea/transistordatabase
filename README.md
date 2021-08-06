@@ -93,11 +93,19 @@ Transistor
 
 ### 2.1.2 reading curves from the datasheet
 For reading datasheet curves, use the tool [WebPlotDigitizer](https://automeris.io/WebPlotDigitizer/). There is a online-version available. Also you can download it for Linux, Mac and Windows. WebPlotDigitizer is open source software.
+     
+Channel data for switch and diode always needs to be positive. Some Manufacturers give diode data in the 3rd quadrant. Here is an example how to set the axes and export the data inside WebPlotDigitizer:
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Diode_channel_data_negative.png)
+
 ### 2.1.3 Use the template to generate a new transistor object
 After digizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the [template](/template_example/template_example.py)
 
-Some hints to fill the template:
+Some values need to follow some rules, e.g. due to different spelling versions, the manufacturers name or housing types must be written as in the lists below. Some general hints to fill the template:
+ * [List of manufacturers](/transistordatabase/module_manufacturers.txt)
+ * [List of housing types](/transistordatabase/housing_types.txt)
  * Fuji housing overview https://www.fujielectric.com/products/semiconductor/model/igbt/2pack.html
+
+
 
 
 
@@ -200,6 +208,8 @@ transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
 transistor.export_matlab()
 ```
 A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.
+
+![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Matlab.png)
 
 ### 2.5.4 Export to Simulink
 For a loss simulation in simulink, there is a IGBT model available, which can be found in this [simulink model](https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html). Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
