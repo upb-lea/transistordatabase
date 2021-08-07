@@ -1730,6 +1730,8 @@ class Transistor:
             else:
                 plt.show()
 
+        
+
         def collect_data(self, switch_type):
             switch_data = {'energy_plots': self.plot_energy_data(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
             for attr in dir(self):
@@ -2556,10 +2558,11 @@ def attach_units(trans, devices):
     volts_list = {'V': ['V_abs_max']}
     area_list = {'sq.m': ['Housing_area', 'Cooling_area']}
     temp_list = {'°C': ['T_c_max', 'T_j_max']}
-    ohm_list = {'Ohms': ['R_g_int', 'R_th_cs', 'R_th_total']}
+    ohm_list = {'Ohms': ['R_g_int']}
+    zth_list = {'K/W': ['R_th_cs', 'R_th_total']}
     cap_list = {'F': ['C_iss_fix', 'C_oss_fix', 'C_rss_fix']}
     for item, value in trans.items():
-        for unit_list in [ohm_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
+        for unit_list in [ohm_list, zth_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
             if item in list(unit_list.values())[0]:     #check efficient way
                 ulist = list(unit_list.keys())
                 ulist.append(value)
@@ -2568,7 +2571,7 @@ def attach_units(trans, devices):
 
     for stype in devices:
         for item, value in devices[stype].items():
-            for unit_list in [ohm_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
+            for unit_list in [ohm_list, zth_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
                 if item in list(unit_list.values())[0]:  # check efficient way
                     ulist = list(unit_list.keys())
                     ulist.append(value)
