@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Bugfixes
 - fix #43: Problem when paralleling transistors with no r-th-curve given
+- fix #39: Problem when exporting datasheet with not r_th_vector and tau_vector variables
 
 
 ## [0.2.10] - 2021-07-27

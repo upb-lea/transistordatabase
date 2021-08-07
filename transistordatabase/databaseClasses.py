@@ -885,7 +885,6 @@ class Transistor:
         # ToDo: to save the results to html   --- need to convert it to pdf in future
         pdfname = pdfData['Name']+".html"
         datasheetpath = pathlib.Path.cwd() / pdfname
-        print(f"{datasheetpath = }")
         with open(pdfData['Name']+".html", "w") as fh:
             fh.write(html)
         print(f"Export virtual datasheet {self.name}.html to {pathlib.Path.cwd().as_uri()}")
@@ -1428,15 +1427,17 @@ class Transistor:
             fig = plt.figure()
             ax = fig.add_subplot(111)
             ax.loglog(self.graph_t_rthjc[0], self.graph_t_rthjc[1])
-            ax.set_xlabel('Pulsewidth : $P_{W}$[sec]')
-            ax.set_ylabel('Thermalresistance: $R_{th(j-c)}$ [°C/W ]')
+            ax.set_xlabel('Time : $t$ [sec]')
+            ax.set_ylabel('Thermal impedance: $Z_{th(j-c)}$ [K/W ]')
             ax.grid()
-            r_tau_vector = '\n'.join([
-                '$R_{th}$ :' + " ".join(str("{:4.3f}".format(x)) for x in self.r_th_vector),
-                'tau :' + " ".join(str("{:4.3f}".format(x)) for x in self.tau_vector)
-            ])
-            props = dict(fill=False, edgecolor='black', linewidth=2)
-            ax.text(0.9, 0.2, r_tau_vector, transform=ax.transAxes, bbox=props, ha='right')
+            # self.r_th_vector and self.tau_vector are optional.
+            if self.r_th_vector is not None and self.tau_vector is not None:
+                r_tau_vector = '\n'.join([
+                    '$R_{th}$ :' + " ".join(str("{:4.3f}".format(x)) for x in self.r_th_vector),
+                    'tau :' + " ".join(str("{:4.3f}".format(x)) for x in self.tau_vector)
+                ])
+                props = dict(fill=False, edgecolor='black', linewidth=2)
+                ax.text(0.9, 0.2, r_tau_vector, transform=ax.transAxes, bbox=props, ha='right')
             if buffer_req:
                 return get_img_raw_data(plt)
             else:
