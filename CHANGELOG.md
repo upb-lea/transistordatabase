@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - #34, #36 Display all exported file folders clickable
 - Datasheet link (.export_datasheet()) is also clickable and opens the browser to display the datasheet
 - #38 Update template with new examples
+- Small changes on datasheet displaying
 
 ### Bugfixes
 - fix #43: Problem when paralleling transistors with no r-th-curve given

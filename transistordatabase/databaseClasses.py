@@ -1706,7 +1706,7 @@ class Transistor:
             return categorize_plots
 
         def plot_energy_data(self, buffer_req=False):
-            """ Plot all switching data """
+            """ Plot all switching data for i-e-graphs """
             plt.figure()
             # look for e_on losses
             for i_energy_data in np.array(range(0, len(self.e_on))):
@@ -1730,10 +1730,33 @@ class Transistor:
             else:
                 plt.show()
 
-        
+        def plot_energy_data_r(self, buffer_req=False):
+            """ Plot all switching data for r-e-graphs"""
+            plt.figure()
+            # look for e_on losses
+            for i_energy_data in np.array(range(0, len(self.e_on))):
+                if self.e_on[i_energy_data].dataset_type == 'graph_r_e':
+                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].i_x)
+                    plt.plot(self.e_on[i_energy_data].graph_r_e[0], self.e_on[i_energy_data].graph_r_e[1],
+                             label=labelplot)
+
+            # look for e_off losses
+            for i_energy_data in np.array(range(0, len(self.e_off))):
+                if self.e_off[i_energy_data].dataset_type == 'graph_r_e':
+                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].i_x)
+                    plt.plot(self.e_off[i_energy_data].graph_r_e[0], self.e_off[i_energy_data].graph_r_e[1],
+                             label=labelplot)
+            plt.legend(fontsize=8)
+            plt.xlabel('External Gate Resistor in Ohm')
+            plt.ylabel('Loss-energy in J')
+            plt.grid()
+            if buffer_req:
+                return get_img_raw_data(plt)
+            else:
+                plt.show()
 
         def collect_data(self, switch_type):
-            switch_data = {'energy_plots': self.plot_energy_data(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
+            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     switch_data.update(getattr(self, attr).collect_data())
@@ -1910,8 +1933,9 @@ class Transistor:
             else:
                 plt.show()
 
+
         def plot_energy_data(self, buffer_req=False):
-            """ Plot all switching data """
+            """ Plot all switching data for diode i-e-graphs """
 
             # look for e_off losses
             if len(self.e_rr) != 0:
@@ -1938,11 +1962,42 @@ class Transistor:
                 else:
                     plt.show()
             else:
-                print("No Diode switching energy data available")
+                print("No Diode switching energy data available (diode graph_i_e)")
+                return None
+
+        def plot_energy_data_r(self, buffer_req=False):
+            """ Plot all switching data for diode r-e-graphs"""
+
+            # look for e_off losses
+            if len(self.e_rr) != 0:
+                plt.figure()
+                for i_energy_data in np.array(range(0, len(self.e_rr))):
+                    # check if data is available as 'graph_i_e'
+                    if self.e_rr[i_energy_data].dataset_type == 'graph_r_e':
+                        # add label plot
+                        labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $I_{{ch}}$ = {2} Ohm".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j, self.e_rr[i_energy_data].i_x)
+                        # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
+                        # if ture, add gate-voltage to label
+                        if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
+                            labelplot = labelplot + ", $v_{{g}}$ = {0} V".format(self.e_rr[i_energy_data].v_g)
+
+                        # plot
+                        plt.plot(self.e_rr[i_energy_data].graph_r_e[0], self.e_rr[i_energy_data].graph_r_e[1],
+                                 label=labelplot)
+                plt.legend(fontsize=8)
+                plt.xlabel('External Gate Resistor in Ohm')
+                plt.ylabel('Loss-energy in J')
+                plt.grid()
+                if buffer_req:
+                    return get_img_raw_data(plt)
+                else:
+                    plt.show()
+            else:
+                print("No Diode switching energy data available (diode graph_r_e)")
                 return None
 
         def collect_data(self, switch_type):
-            diode_data = {'energy_plots': self.plot_energy_data(True), 'channel_plots': self.plot_all_channel_data(True)}
+            diode_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     diode_data.update(getattr(self, attr).collect_data())
