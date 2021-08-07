@@ -6,10 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Small Improvements
+### Small Improvements
 - #35 Add Datasheet Hyperlink to Simulink loss model exporter
-- #36 Display all exported file folders clickable
+- #34, #36 Display all exported file folders clickable
 - Datasheet link (.export_datasheet()) is also clickable and opens the browser to display the datasheet
+- #38 Update template with new examples
+
+### Bugfixes
+- fix #43: Problem when paralleling transistors with no r-th-curve given
+
 
 ## [0.2.10] - 2021-07-27
 ### Added

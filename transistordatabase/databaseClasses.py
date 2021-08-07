@@ -20,6 +20,7 @@ import collections
 from jinja2 import Environment, FileSystemLoader
 import base64
 import io
+import pathlib
 
 class Transistor:
     """Groups data of all other classes for a single transistor. Methods are specified in such a way that only
@@ -2165,7 +2166,7 @@ class Transistor:
         - e_on/e_off/e_rr characteristics will be modified
         - thermal behaviour will be modified
 
-        :param count_parallels: count of parallel transistors of same type
+        :param count_parallels: count of parallel transistors of same type, default = 2
         :return: transistor object with parallel transistors
 
         """
@@ -2221,8 +2222,10 @@ class Transistor:
         transistor_dict['switch']['thermal_foster']['c_th_vector'] is None else [x / count_parallels for x in
                                                                                  transistor_dict['switch'][
                                                                                      'thermal_foster']['c_th_vector']]
-        transistor_dict['switch']['thermal_foster']['graph_t_rthjc'][1] = None if \
-        transistor_dict['switch']['thermal_foster']['graph_t_rthjc'] is None else [x / count_parallels for x in
+
+
+        if transistor_dict['switch']['thermal_foster']['graph_t_rthjc'] is not None:
+            transistor_dict['switch']['thermal_foster']['graph_t_rthjc'][1] = [x / count_parallels for x in
                                                                                    transistor_dict['switch'][
                                                                                        'thermal_foster'][
                                                                                        'graph_t_rthjc'][1]]
@@ -2237,8 +2240,9 @@ class Transistor:
         transistor_dict['diode']['thermal_foster']['c_th_vector'] = None if transistor_dict['diode']['thermal_foster'][
                                                                                 'c_th_vector'] is None else [
             x / count_parallels for x in transistor_dict['diode']['thermal_foster']['c_th_vector']]
-        transistor_dict['diode']['thermal_foster']['graph_t_rthjc'][1] = None if \
-        transistor_dict['diode']['thermal_foster']['graph_t_rthjc'] is None else [x / count_parallels for x in
+
+        if transistor_dict['diode']['thermal_foster']['graph_t_rthjc'] is not None:
+            transistor_dict['diode']['thermal_foster']['graph_t_rthjc'][1] = [x / count_parallels for x in
                                                                                   transistor_dict['diode'][
                                                                                       'thermal_foster'][
                                                                                       'graph_t_rthjc'][1]]

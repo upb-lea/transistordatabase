@@ -158,13 +158,13 @@ def Template():
     technology = 'technology diode'
 
     #### Channel parameters
-    channel_25_0 = {"t_j": 25, 'v_g': 0, "graph_v_i": tdb.csv2array('diode_channel_25_0vgs.csv', first_xy_to_00=True, second_y_to_0=True)}  # insert csv here
-    channel_25_neg2 = {"t_j": 25, 'v_g': -2, "graph_v_i": tdb.csv2array('diode_channel_25_-2vgs.csv', first_xy_to_00=True, second_y_to_0=True)}  # insert csv here
-    channel_25_neg4 = {"t_j": 25, 'v_g': -4, "graph_v_i": tdb.csv2array('diode_channel_25_-4vgs.csv', first_xy_to_00=True, second_y_to_0=True)}  # insert csv here
+    channel_25_0 = {"t_j": 25, 'v_g': 0, "graph_v_i": tdb.csv2array('diode_channel_25_0vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_25_neg2 = {"t_j": 25, 'v_g': -2, "graph_v_i": tdb.csv2array('diode_channel_25_-2vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_25_neg4 = {"t_j": 25, 'v_g': -4, "graph_v_i": tdb.csv2array('diode_channel_25_-4vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
 
-    channel_175_0 = {"t_j": 175, 'v_g': 0, "graph_v_i": tdb.csv2array('diode_channel_175_0vgs.csv', first_xy_to_00=True, second_y_to_0=True)}  # insert csv here
-    channel_175_neg2 = {"t_j": 175, 'v_g': -2, "graph_v_i": tdb.csv2array('diode_channel_175_-2vgs.csv', first_xy_to_00=True, second_y_to_0=True)}  # insert csv here
-    channel_175_neg4 = {"t_j": 175, 'v_g': -4, "graph_v_i": tdb.csv2array('diode_channel_175_-4vgs.csv', first_xy_to_00=True, second_y_to_0=True)}  # insert csv here
+    channel_175_0 = {"t_j": 175, 'v_g': 0, "graph_v_i": tdb.csv2array('diode_channel_175_0vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_175_neg2 = {"t_j": 175, 'v_g': -2, "graph_v_i": tdb.csv2array('diode_channel_175_-2vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_175_neg4 = {"t_j": 175, 'v_g': -4, "graph_v_i": tdb.csv2array('diode_channel_175_-4vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
 
     ### diode foster parameters
     diode_foster_args = {
@@ -195,65 +195,19 @@ if __name__ == '__main__':
     transistor = Template()
 
     ####################################
-    # Metadata
-    ####################################
-
-    print('---------------------')
-    print("transistor metadata")
-    print('---------------------')
-    print(f"{transistor.name = }")
-    print(f"{transistor.type = }")
-    print(f"{transistor.author = }")
-    print(f"{transistor.comment = }")
-    print(f"{transistor.manufacturer = }")
-    print(f"{transistor.datasheet_hyperlink = }")
-    print(f"{transistor.datasheet_date = }")
-    print(f"{transistor.datasheet_version = }")
-    print(f"{transistor.housing_area = }")
-    print(f"{transistor.cooling_area = }")
-    print(f"{transistor.housing_type = }")
-    print(f"{transistor.r_g_int = }")
-    print('---------------------')
-    print("switch metadata")
-    print('---------------------')
-    print(f"{transistor.switch.manufacturer = }")
-    print(f"{transistor.switch.comment = }")
-    print(f"{transistor.switch.technology = }")
-    print(f"{transistor.switch.t_j_max = }")
-    print('---------------------')
-    print("diode metadata")
-    print('---------------------')
-    print(f"{transistor.diode.manufacturer = }")
-    print(f"{transistor.diode.comment = }")
-    print(f"{transistor.diode.technology = }")
-    print(f"{transistor.diode.t_j_max = }")
-    print('---------------------')
-    print("working points")
-    print('---------------------')
-    # print(f"{transistor.wp.v_channel = }")
-    # print(f"{transistor.wp.r_channel = }")
-    # print(f"{transistor.wp.e_on = }")
-    # print(f"{transistor.wp.e_off = }")
-    # print(f"{transistor.wp.e_rr = }")
-    ####################################
     # Method examples
     ####################################
 
     #### transistor methods ####
-    transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
-    print(f"{transistor.wp.switch_v_channel = } V")
-    print(f"{transistor.wp.switch_r_channel = } Ohm")
+    # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    # print(f"{transistor.wp.switch_v_channel = } V")
+    # print(f"{transistor.wp.switch_r_channel = } Ohm")
     # print(transistor.calc_v_eoss())
     # transistor.plot_v_eoss()
     # transistor.plot_v_qoss()
-    # print(transistor.get_graph_v_i('switch', 25, 15))
 
-    # print(transistor.get_graph_i_e('e_on', 25, 15, 600, 2.5))
-    # print(transistor.get_graph_i_e('e_off', 25, -4, 600, 2.5))
-    # print(transistor.get_graph_i_e('e_rr', 25, 15, 600, 2.5))  # not working in this example because of no e_rr for SiC-MOSFETs
-
-    # export virtual datasheet as PDF
-    # transistor.virtual_datasheet()
+    # connect transistors in parallel
+    parallel_transistors = transistor.parallel_transistors(3)
 
     #### switch methods ####
     # transistor.switch.plot_energy_data()
@@ -261,25 +215,41 @@ if __name__ == '__main__':
     # transistor.switch.plot_channel_data_vge(15)
     # transistor.switch.plot_channel_data_temp(175)
 
-
     #### diode methods ####
     # transistor.diode.plot_energy_data()
     # transistor.diode.plot_all_channel_data()
+
 
     ####################################
     # exporter example
     ####################################
 
+    # Export virtual datasheet
+    # transistor.export_datasheet()
+
     # Export to MATLAB
+    # transistor.export_matlab()
 
     # Export to SIMULINK
+    # NOTE: Exporter is only working for IGBTs. This Template contains a SiC-MOSFET!
+    # transistor.export_simulink_loss_model()
+
+    # Export to PLECS
+    # transistor.export_plecs()
 
     # Export to geckoCIRCUITS
-    tdb.export_geckocircuits(transistor, 600, 15, -4, 2.5, 2.5)
+    # transistor.export_geckocircuits(600, 15, -4, 2.5, 2.5)
 
     ####################################
     # Database example
     ####################################
+
+    # print ALL database content
+    # tdb.print_TDB()
+
+    # print database content of housing and datasheet hyperlink
+    # tdb.print_TDB(['housing_type','datasheet_hyperlink'])
+
     # before init mongo, you need to install mongodb and start the database via the command line by using 'mongo' command
     # init mongodb
     # collection = tdb.connect_local_TDB()  # Collection
@@ -293,43 +263,42 @@ if __name__ == '__main__':
 
     # load transistor
     # optional argument: collection. If no collection is specified, it connects to local TDB
-    transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
+    # transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
     # print(transistor_loaded.switch.t_j_max)
 
     # export to json
     # optional argument: path. If no path is specified, saves exports to local folder
-    # transistor_loaded.export_json()
+    # transistor.export_json()
 
     # import from json
     # optional argument: path. If no path is specified, it loads from to local folder
     # transistor_imported = tdb.import_json('CREE_C3M0016120K.json')
     # print(transistor_imported.switch.t_j_max)
 
+    # Rename transistor arguments
     # tdb.connect_local_TDB().update_many({}, {"$rename": {"transistor_type": "type"}})
-
-
 
     ####################################
     # Examples to fill-in transistor.wp-class
     ####################################
     # full-automated example
-    #transistor_loaded.quickstart_wp()
+    # transistor.quickstart_wp()
 
     # half-automated example
-    # transistor_loaded.update_wp(125, 15, 50)
+    # transistor.update_wp(125, 15, 50)
 
     # non-automated example
     # # calculate energy and charge in c_oss
-    # transistor_loaded.wp.e_oss = transistor_loaded.calc_v_eoss()
-    # transistor_loaded.wp.q_oss = transistor_loaded.calc_v_qoss()
+    # transistor.wp.e_oss = transistor.calc_v_eoss()
+    # transistor.wp.q_oss = transistor.calc_v_qoss()
     #
     # # switch, linearize channel and search for losscurves
-    # transistor_loaded.wp.switch_v_channel, transistor_loaded.wp.switch_r_channel = transistor_loaded.calc_lin_channel(25, 15, 150, 'switch')
-    # transistor_loaded.wp.e_on = transistor_loaded.get_object_i_e('e_on', 25, 15, 600, 2.5).graph_i_e
-    # transistor_loaded.wp.e_off = transistor_loaded.get_object_i_e('e_off', 25, -4, 600, 2.5).graph_i_e
+    # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(25, 15, 150, 'switch')
+    # transistor.wp.e_on = transistor.get_object_i_e('e_on', 25, 15, 600, 2.5).graph_i_e
+    # transistor.wp.e_off = transistor.get_object_i_e('e_off', 25, -4, 600, 2.5).graph_i_e
     #
     # # diode, linearize channel and search for losscurves
-    # transistor_loaded.wp.diode_v_channel, transistor_loaded.wp.diode_r_channel = transistor_loaded.calc_lin_channel(25, -4, 150, 'diode')
+    # transistor.wp.diode_v_channel, transistor.wp.diode_r_channel = transistor.calc_lin_channel(25, -4, 150, 'diode')
 
 
 
