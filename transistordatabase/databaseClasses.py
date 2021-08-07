@@ -2820,6 +2820,27 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
 
+def merge_curve(curve, curve_detail):
+    """
+    merges two equal curves, one of which contains an enlarged section of the first curve.
+    Use case is the merging of capacity curves, here often two curves (normal and zoom) are given in the data sheets.
+    :param curve: full curve
+    :param curve_detail: curve with zoom on x-axis
+    :return: merged curve
+    """
+
+    # find out max(x) from detailed curve
+    curve_detail_max_x = max(curve_detail[0])
+
+    merged_curve = curve_detail.copy()
+
+    # cut all values that are smaller than max(x) from
+    for x in range(len(curve[0])):
+        if curve[0][x] > curve_detail_max_x:
+            merged_curve = np.append(merged_curve, [[curve[0][x]], [curve[1][x]]], axis=1)
+            type(merged_curve)
+    return merged_curve
+
 
 def print_TDB(filters=[], collection="local"):
     """

@@ -45,6 +45,20 @@ def Template():
     ####################################
     # transistor parameters
     ####################################
+
+    c_iss_normal = tdb.csv2array('transistor_c_iss.csv', first_x_to_0=True)
+    c_iss_detail = tdb.csv2array('transistor_c_iss_detail.csv', first_x_to_0=True)
+
+    c_oss_normal = tdb.csv2array('transistor_c_oss.csv', first_x_to_0=True)
+    c_oss_detail = tdb.csv2array('transistor_c_oss_detail.csv', first_x_to_0=True)
+
+    c_rss_normal = tdb.csv2array('transistor_c_rss.csv', first_x_to_0=True)
+    c_rss_detail = tdb.csv2array('transistor_c_rss_detail.csv', first_x_to_0=True)
+
+    c_iss_merged = tdb.merge_curve(c_iss_normal, c_iss_detail)
+    c_oss_merged = tdb.merge_curve(c_oss_normal, c_oss_detail)
+    c_rss_merged = tdb.merge_curve(c_rss_normal, c_rss_detail)
+
     # Create argument dictionaries
     transistor_args = {'name': 'CREE_C3M0016120K',
                        'type': 'SiC-MOSFET',
@@ -60,9 +74,9 @@ def Template():
                        'v_abs_max': 1200,
                        'i_abs_max': 250,
                        'i_cont': 115,
-                       'c_iss':  {"t_j": 25, "graph_v_c": tdb.csv2array('transistor_c_iss.csv', first_x_to_0=True)},  # insert csv here
-                       'c_oss': {"t_j": 25, "graph_v_c": tdb.csv2array('transistor_c_oss.csv', first_x_to_0=True)},  # insert csv here
-                       'c_rss': {"t_j": 25, "graph_v_c": tdb.csv2array('transistor_c_rss.csv', first_x_to_0=True)},  # insert csv here
+                       'c_iss':  {"t_j": 25, "graph_v_c": c_iss_merged},  # insert csv here
+                       'c_oss': {"t_j": 25, "graph_v_c": c_oss_merged},  # insert csv here
+                       'c_rss': {"t_j": 25, "graph_v_c": c_rss_merged},  # insert csv here
                        'graph_v_ecoss': tdb.csv2array('transistor_V_Eoss.csv'),
                        'r_g_int': 2.6,
                        'r_th_cs': 0,
