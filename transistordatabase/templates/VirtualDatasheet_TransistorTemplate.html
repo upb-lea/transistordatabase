@@ -38,7 +38,7 @@
 	
   </tr>
   {% for key, value in switch.items() %}
-  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'imp_plot') %}
+  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'energy_plots_r' or key == 'imp_plot') %}
    <tr>
 		<td class="spec" style="font-weight:600; font-family: Garamond">{{ key }}</td>
 		 {% if value is string %}
@@ -62,7 +62,7 @@
 	
   </tr>
   {% for key, value in diode.items() %}
-  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'imp_plot') %}
+  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'energy_plots_r' or key == 'imp_plot') %}
    <tr>
 		<td class="spec" style="font-weight:600; font-family: Garamond">{{ key }}</td>
 		 {% if value is string %}
@@ -103,6 +103,13 @@
 			  <div class="imgCaption">Energy plots</div>
 			  <img id="pictureEnergy" src="data:image/png;base64,{{ switch['energy_plots'] }}" class="img">
 			</div>
+			
+			{% if switch['energy_plots_r'] is not none %}		    
+			<div class="thumb">
+				<div class="imgCaption">Energy plots</div>
+				<img id="pictureEnergy" src="data:image/png;base64,{{ switch['energy_plots_r'] }}" class="img">
+			</div>
+			{% endif %}			
 			{% if switch['imp_plot'] is not none %}
 				<div class="thumb">
 					<div class="imgCaption">Impedance plots</div>
@@ -121,10 +128,18 @@
 			  <div class="imgCaption">Channel plots</div>
 			  <img id="pictureDiodeChannel" src="data:image/png;base64,{{ diode['channel_plots'] }}" class="img">
 			</div>
-			{% if diode['imp_plot'] is not none %}
+						
+			
+			{% if diode['energy_plots'] is not none %}
 				<div class="thumb">
 				  <div class="imgCaption">Energy plots</div>
 				  <img id="pictureDiodeEnergy" src="data:image/png;base64,{{ diode['energy_plots'] }}" class="img">
+				</div>
+			{% endif %}
+			{% if diode['energy_plots_r'] is not none %}
+				<div class="thumb">
+				  <div class="imgCaption">Energy plots</div>
+				  <img id="pictureDiodeEnergy" src="data:image/png;base64,{{ diode['energy_plots_r'] }}" class="img">
 				</div>
 			{% endif %}
 			{% if diode['imp_plot'] is not none %}

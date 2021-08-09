@@ -54,14 +54,18 @@ Using Pycharm: Navigate to file -> settings -> Project -> Python Interpreter -> 
 ```
 # load the python package
 import transistordatabase as tdb
+
 # update the database from the online git-repository
 tdb.update_from_fileexchange()
+
 # print the database
 tdb.print_TDB()
+
 # load a transistor from the database
 transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
-# quick start fill in .wp.-storage for further calculations in your program
-transistor_loaded.quickstart_wp()
+
+# export a virtual datasheet
+transistor_loaded.export_datasheet()
 ```
 
 # 2 transistordatabase's usage
@@ -104,7 +108,19 @@ Some values need to follow some rules, e.g. due to different spelling versions, 
  * [List of manufacturers](/transistordatabase/module_manufacturers.txt)
  * [List of housing types](/transistordatabase/housing_types.txt)
  * Fuji housing overview https://www.fujielectric.com/products/semiconductor/model/igbt/2pack.html
-
+ 
+In many cases, two capacity curves are specified in the data sheets. One curve for the full voltage range, and one with zoom to a small voltage range. To represent the stored curves in the best possible way, both curves can be read in and then merged.
+```
+    c_rss_normal = csv2array('transistor_c_rss.csv', first_x_to_0=True)
+    c_rss_detail = csv2array('transistor_c_rss_detail.csv', first_x_to_0=True)
+    
+    transistor_args = {
+                   ...
+                   'c_rss': {"t_j": 25, "graph_v_c": c_rss_merged},
+				   ...
+                   }
+    
+```
 
 
 

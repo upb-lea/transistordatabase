@@ -6,10 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Small Improvements
+
+## [0.2.11] - 2021-08-07
+### Added
+- #40 Read two curves for parasitic capacitance
+
+### Small Improvements
 - #35 Add Datasheet Hyperlink to Simulink loss model exporter
-- #36 Display all exported file folders clickable
+- #34, #36 Display all exported file folders clickable
 - Datasheet link (.export_datasheet()) is also clickable and opens the browser to display the datasheet
+- #38 Update template with new examples
+- Small changes on datasheet displaying
+
+### Bugfixes
+- fix #43: Problem when paralleling transistors with no r-th-curve given
+- fix #39: Problem when exporting datasheet with not r_th_vector and tau_vector variables
+
 
 ## [0.2.10] - 2021-07-27
 ### Added
@@ -114,7 +126,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.10...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.11...HEAD
+[0.2.11]: https://github.com/upb-lea/transistordatabase/compare/0.2.10...0.2.11
 [0.2.10]: https://github.com/upb-lea/transistordatabase/compare/0.2.9...0.2.10
 [0.2.9]: https://github.com/upb-lea/transistordatabase/compare/0.2.8...0.2.9
 [0.2.8]: https://github.com/upb-lea/transistordatabase/compare/0.2.7...0.2.8

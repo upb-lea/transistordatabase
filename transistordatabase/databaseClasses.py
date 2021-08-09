@@ -20,6 +20,7 @@ import collections
 from jinja2 import Environment, FileSystemLoader
 import base64
 import io
+import pathlib
 
 class Transistor:
     """Groups data of all other classes for a single transistor. Methods are specified in such a way that only
@@ -884,7 +885,6 @@ class Transistor:
         # ToDo: to save the results to html   --- need to convert it to pdf in future
         pdfname = pdfData['Name']+".html"
         datasheetpath = pathlib.Path.cwd() / pdfname
-        print(f"{datasheetpath = }")
         with open(pdfData['Name']+".html", "w") as fh:
             fh.write(html)
         print(f"Export virtual datasheet {self.name}.html to {pathlib.Path.cwd().as_uri()}")
@@ -1427,15 +1427,17 @@ class Transistor:
             fig = plt.figure()
             ax = fig.add_subplot(111)
             ax.loglog(self.graph_t_rthjc[0], self.graph_t_rthjc[1])
-            ax.set_xlabel('Pulsewidth : $P_{W}$[sec]')
-            ax.set_ylabel('Thermalresistance: $R_{th(j-c)}$ [°C/W ]')
+            ax.set_xlabel('Time : $t$ [sec]')
+            ax.set_ylabel('Thermal impedance: $Z_{th(j-c)}$ [K/W ]')
             ax.grid()
-            r_tau_vector = '\n'.join([
-                '$R_{th}$ :' + " ".join(str("{:4.3f}".format(x)) for x in self.r_th_vector),
-                'tau :' + " ".join(str("{:4.3f}".format(x)) for x in self.tau_vector)
-            ])
-            props = dict(fill=False, edgecolor='black', linewidth=2)
-            ax.text(0.9, 0.2, r_tau_vector, transform=ax.transAxes, bbox=props, ha='right')
+            # self.r_th_vector and self.tau_vector are optional.
+            if self.r_th_vector is not None and self.tau_vector is not None:
+                r_tau_vector = '\n'.join([
+                    '$R_{th}$ :' + " ".join(str("{:4.3f}".format(x)) for x in self.r_th_vector),
+                    'tau :' + " ".join(str("{:4.3f}".format(x)) for x in self.tau_vector)
+                ])
+                props = dict(fill=False, edgecolor='black', linewidth=2)
+                ax.text(0.9, 0.2, r_tau_vector, transform=ax.transAxes, bbox=props, ha='right')
             if buffer_req:
                 return get_img_raw_data(plt)
             else:
@@ -1704,7 +1706,7 @@ class Transistor:
             return categorize_plots
 
         def plot_energy_data(self, buffer_req=False):
-            """ Plot all switching data """
+            """ Plot all switching data for i-e-graphs """
             plt.figure()
             # look for e_on losses
             for i_energy_data in np.array(range(0, len(self.e_on))):
@@ -1728,8 +1730,33 @@ class Transistor:
             else:
                 plt.show()
 
+        def plot_energy_data_r(self, buffer_req=False):
+            """ Plot all switching data for r-e-graphs"""
+            plt.figure()
+            # look for e_on losses
+            for i_energy_data in np.array(range(0, len(self.e_on))):
+                if self.e_on[i_energy_data].dataset_type == 'graph_r_e':
+                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].i_x)
+                    plt.plot(self.e_on[i_energy_data].graph_r_e[0], self.e_on[i_energy_data].graph_r_e[1],
+                             label=labelplot)
+
+            # look for e_off losses
+            for i_energy_data in np.array(range(0, len(self.e_off))):
+                if self.e_off[i_energy_data].dataset_type == 'graph_r_e':
+                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].i_x)
+                    plt.plot(self.e_off[i_energy_data].graph_r_e[0], self.e_off[i_energy_data].graph_r_e[1],
+                             label=labelplot)
+            plt.legend(fontsize=8)
+            plt.xlabel('External Gate Resistor in Ohm')
+            plt.ylabel('Loss-energy in J')
+            plt.grid()
+            if buffer_req:
+                return get_img_raw_data(plt)
+            else:
+                plt.show()
+
         def collect_data(self, switch_type):
-            switch_data = {'energy_plots': self.plot_energy_data(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
+            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     switch_data.update(getattr(self, attr).collect_data())
@@ -1906,8 +1933,9 @@ class Transistor:
             else:
                 plt.show()
 
+
         def plot_energy_data(self, buffer_req=False):
-            """ Plot all switching data """
+            """ Plot all switching data for diode i-e-graphs """
 
             # look for e_off losses
             if len(self.e_rr) != 0:
@@ -1934,11 +1962,42 @@ class Transistor:
                 else:
                     plt.show()
             else:
-                print("No Diode switching energy data available")
+                print("No Diode switching energy data available (diode graph_i_e)")
+                return None
+
+        def plot_energy_data_r(self, buffer_req=False):
+            """ Plot all switching data for diode r-e-graphs"""
+
+            # look for e_off losses
+            if len(self.e_rr) != 0:
+                plt.figure()
+                for i_energy_data in np.array(range(0, len(self.e_rr))):
+                    # check if data is available as 'graph_i_e'
+                    if self.e_rr[i_energy_data].dataset_type == 'graph_r_e':
+                        # add label plot
+                        labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $I_{{ch}}$ = {2} Ohm".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j, self.e_rr[i_energy_data].i_x)
+                        # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
+                        # if ture, add gate-voltage to label
+                        if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
+                            labelplot = labelplot + ", $v_{{g}}$ = {0} V".format(self.e_rr[i_energy_data].v_g)
+
+                        # plot
+                        plt.plot(self.e_rr[i_energy_data].graph_r_e[0], self.e_rr[i_energy_data].graph_r_e[1],
+                                 label=labelplot)
+                plt.legend(fontsize=8)
+                plt.xlabel('External Gate Resistor in Ohm')
+                plt.ylabel('Loss-energy in J')
+                plt.grid()
+                if buffer_req:
+                    return get_img_raw_data(plt)
+                else:
+                    plt.show()
+            else:
+                print("No Diode switching energy data available (diode graph_r_e)")
                 return None
 
         def collect_data(self, switch_type):
-            diode_data = {'energy_plots': self.plot_energy_data(True), 'channel_plots': self.plot_all_channel_data(True)}
+            diode_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     diode_data.update(getattr(self, attr).collect_data())
@@ -2165,7 +2224,7 @@ class Transistor:
         - e_on/e_off/e_rr characteristics will be modified
         - thermal behaviour will be modified
 
-        :param count_parallels: count of parallel transistors of same type
+        :param count_parallels: count of parallel transistors of same type, default = 2
         :return: transistor object with parallel transistors
 
         """
@@ -2221,8 +2280,10 @@ class Transistor:
         transistor_dict['switch']['thermal_foster']['c_th_vector'] is None else [x / count_parallels for x in
                                                                                  transistor_dict['switch'][
                                                                                      'thermal_foster']['c_th_vector']]
-        transistor_dict['switch']['thermal_foster']['graph_t_rthjc'][1] = None if \
-        transistor_dict['switch']['thermal_foster']['graph_t_rthjc'] is None else [x / count_parallels for x in
+
+
+        if transistor_dict['switch']['thermal_foster']['graph_t_rthjc'] is not None:
+            transistor_dict['switch']['thermal_foster']['graph_t_rthjc'][1] = [x / count_parallels for x in
                                                                                    transistor_dict['switch'][
                                                                                        'thermal_foster'][
                                                                                        'graph_t_rthjc'][1]]
@@ -2237,8 +2298,9 @@ class Transistor:
         transistor_dict['diode']['thermal_foster']['c_th_vector'] = None if transistor_dict['diode']['thermal_foster'][
                                                                                 'c_th_vector'] is None else [
             x / count_parallels for x in transistor_dict['diode']['thermal_foster']['c_th_vector']]
-        transistor_dict['diode']['thermal_foster']['graph_t_rthjc'][1] = None if \
-        transistor_dict['diode']['thermal_foster']['graph_t_rthjc'] is None else [x / count_parallels for x in
+
+        if transistor_dict['diode']['thermal_foster']['graph_t_rthjc'] is not None:
+            transistor_dict['diode']['thermal_foster']['graph_t_rthjc'][1] = [x / count_parallels for x in
                                                                                   transistor_dict['diode'][
                                                                                       'thermal_foster'][
                                                                                       'graph_t_rthjc'][1]]
@@ -2551,10 +2613,11 @@ def attach_units(trans, devices):
     volts_list = {'V': ['V_abs_max']}
     area_list = {'sq.m': ['Housing_area', 'Cooling_area']}
     temp_list = {'°C': ['T_c_max', 'T_j_max']}
-    ohm_list = {'Ohms': ['R_g_int', 'R_th_cs', 'R_th_total']}
+    ohm_list = {'Ohms': ['R_g_int']}
+    zth_list = {'K/W': ['R_th_cs', 'R_th_total']}
     cap_list = {'F': ['C_iss_fix', 'C_oss_fix', 'C_rss_fix']}
     for item, value in trans.items():
-        for unit_list in [ohm_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
+        for unit_list in [ohm_list, zth_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
             if item in list(unit_list.values())[0]:     #check efficient way
                 ulist = list(unit_list.keys())
                 ulist.append(value)
@@ -2563,7 +2626,7 @@ def attach_units(trans, devices):
 
     for stype in devices:
         for item, value in devices[stype].items():
-            for unit_list in [ohm_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
+            for unit_list in [ohm_list, zth_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
                 if item in list(unit_list.values())[0]:  # check efficient way
                     ulist = list(unit_list.keys())
                     ulist.append(value)
@@ -2756,6 +2819,27 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
         array = np.abs(array)
 
     return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
+
+def merge_curve(curve, curve_detail):
+    """
+    merges two equal curves, one of which contains an enlarged section of the first curve.
+    Use case is the merging of capacity curves, here often two curves (normal and zoom) are given in the data sheets.
+    :param curve: full curve
+    :param curve_detail: curve with zoom on x-axis
+    :return: merged curve
+    """
+
+    # find out max(x) from detailed curve
+    curve_detail_max_x = max(curve_detail[0])
+
+    merged_curve = curve_detail.copy()
+
+    # cut all values that are smaller than max(x) from
+    for x in range(len(curve[0])):
+        if curve[0][x] > curve_detail_max_x:
+            merged_curve = np.append(merged_curve, [[curve[0][x]], [curve[1][x]]], axis=1)
+            type(merged_curve)
+    return merged_curve
 
 
 def print_TDB(filters=[], collection="local"):
