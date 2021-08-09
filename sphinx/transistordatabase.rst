@@ -1,5 +1,9 @@
-transistordatabase package
+Documentation
 ==========================
-.. automodule:: databaseClasses
-   :members:
-   :show-inheritance:
+The ``Transistor`` class
+*****************************
+.. autoclass:: databaseClasses.Transistor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
