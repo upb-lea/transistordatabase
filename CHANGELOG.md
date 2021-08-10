@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Transistor method 'compare_channel_linearized()' to compare channel data with linearized data 
 
+### Bugfixes
+- #44: Choose another linearisation default current for quickstart_wp()
+
 ## [0.2.11] - 2021-08-07
 ### Added
 - #40 Read two curves for parasitic capacitance

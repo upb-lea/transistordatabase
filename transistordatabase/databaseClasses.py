@@ -462,7 +462,8 @@ class Transistor:
                 self.calc_lin_channel(switch_channel.t_j, switch_channel.v_g, i_channel, switch_or_diode="switch")
 
     def quickstart_wp(self):
-        self.update_wp(self.switch.t_j_max - 25, 15, self.i_abs_max/2)
+        #ToDo: may separate data for IGBT, MOSFET, SiC-MOSFET and GaN-Transistor
+        self.update_wp(self.switch.t_j_max - 25, 15, self.i_cont)
 
     def calc_v_eoss(self):
         """
