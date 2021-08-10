@@ -1,3 +1,4 @@
+#########################
 Export transistor objects
 #########################
 
@@ -42,7 +43,7 @@ For a thermal and loss simulation using PLECS simulation tool, it requires the t
     transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
     transistor.export_plecs()
 
-Outputs are xml files - one for switch and one for diode (if available), which can be then loaded into your schematic following the instructions as mentioned `here <https://www.plexim.com/support/videos/thermal-modeling-part-1>`_. Note that if channel curves for the default gate-voltage are found missing then the xml files could not be possible to generate and a respective warning message is issued to the user. The user can change the default gate-voltage and switching voltage by providing an extra list argument as follows:
+Outputs are xml files - one for switch and one for diode (if available), which can be then loaded into your schematic following the instructions as mentioned `here <https://www.plexim.com/support/videos/thermal-modeling-part-1>`__. Note that if channel curves for the default gate-voltage are found missing then the xml files could not be possible to generate and a respective warning message is issued to the user. The user can change the default gate-voltage and switching voltage by providing an extra list argument as follows:
 
 .. code-block::
 

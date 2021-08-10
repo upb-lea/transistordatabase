@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Documentation &mdash; transistordatabase(TDB) 0.2.10 documentation</title>
+  <title>Documentation &mdash; transistordatabase(TDB) 0.2.11 documentation</title>
   
 
   
@@ -38,8 +38,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Roadmap" href="other.html" />
-    <link rel="prev" title="Export transistor objects" href="exports.html" /> 
+    <link rel="prev" title="1 Introduction" href="intro.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,15 +87,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html"><span class="sectnum">1</span> Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">2</span> Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">transistordatabase’s usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exports.html">Export transistor objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase-s-usage"><span class="sectnum">3</span> transistordatabase’s usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">4</span> Export transistor objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">5</span> Others</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-transistor-class">The <code class="docutils literal notranslate"><span class="pre">Transistor</span></code> class</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="other.html">Roadmap</a></li>
-<li class="toctree-l1"><a class="reference internal" href="other.html#organisation">Organisation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="other.html#about">About</a></li>
 </ul>
 
             
@@ -275,7 +272,13 @@ multiple channel- and e_rr- datasets.</p>
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.plot_energy_data">
 <code class="sig-name descname"><span class="pre">plot_energy_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.plot_energy_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all switching data</p>
+<dd><p>Plot all switching data for diode i-e-graphs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="databaseClasses.Transistor.Diode.plot_energy_data_r">
+<code class="sig-name descname"><span class="pre">plot_energy_data_r</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.plot_energy_data_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot all switching data for diode r-e-graphs</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -417,12 +420,7 @@ channel-, e_on- and e_off-datasets.</p>
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.convert_to_dict">
 <code class="sig-name descname"><span class="pre">convert_to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.convert_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.e_off">
@@ -482,7 +480,13 @@ e_off
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.plot_energy_data">
 <code class="sig-name descname"><span class="pre">plot_energy_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_energy_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all switching data</p>
+<dd><p>Plot all switching data for i-e-graphs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="databaseClasses.Transistor.Switch.plot_energy_data_r">
+<code class="sig-name descname"><span class="pre">plot_energy_data_r</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_energy_data_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot all switching data for r-e-graphs</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -953,7 +957,7 @@ The returned transistor object behaves like a single transistor.
 - thermal behaviour will be modified</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>count_parallels</strong> – count of parallel transistors of same type</p>
+<dd class="field-odd"><p><strong>count_parallels</strong> – count of parallel transistors of same type, default = 2</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>transistor object with parallel transistors</p>
@@ -1054,8 +1058,7 @@ The returned transistor object behaves like a single transistor.
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="other.html" class="btn btn-neutral float-right" title="Roadmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="exports.html" class="btn btn-neutral float-left" title="Export transistor objects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="intro.html" class="btn btn-neutral float-left" title="1 Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
