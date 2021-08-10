@@ -857,6 +857,63 @@ class Transistor:
                              "linearization.")
         return round(v_channel, 6), round(r_channel, 9)
 
+    def compare_channel_linearized(self, i_channel, t_j=150, v_g=15):
+        """
+        Shows channel plots for switch and diode comparing the linearized graph and the original graph.
+        This function searches for the closest available curves for given arguments t_j and v_g
+        :param i_channel: current to linearize the channel
+        :param t_j: junction temperature of interest, default set to 150 degree
+        :param v_g: gate voltage of interest, default set to 15V
+        :return: -
+        """
+
+        # search for closest objects
+        switch_channel, eon, eoff = self.switch.find_approx_wp(t_j, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e")
+        diode_channel, err = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v=10,
+                                                               SwitchEnergyData_dataset_type="graph_i_e")
+        # linearize channels at given points
+        s_v_channel, s_r_channel = self.calc_lin_channel(switch_channel.t_j, switch_channel.v_g, i_channel, 'switch')
+        d_v_channel, d_r_channel = self.calc_lin_channel(diode_channel.t_j, diode_channel.v_g, i_channel, 'diode')
+
+        print(f'Linearized values. Switch at {switch_channel.t_j} °C and {switch_channel.v_g} V, diode at {diode_channel.t_j} °C and {diode_channel.v_g} V')
+        print(f"{s_v_channel = } V")
+        print(f"{s_r_channel = } Ohm")
+        print(f"{d_v_channel = } V")
+        print(f"{d_r_channel = } Ohm")
+
+        i_vec = np.linspace(0, self.i_abs_max)
+        s_v_vec = s_v_channel + s_r_channel * i_vec
+        d_v_vec = d_v_channel + d_r_channel * i_vec
+
+        # insert zeros to start linearized curve from zero
+        i_vec = np.insert(i_vec ,0, 0)
+        s_v_vec = np.insert(s_v_vec,0, 0)
+        d_v_vec = np.insert(d_v_vec, 0, 0)
+
+        plt.figure()
+        # generate switch curve
+        plt.subplot(1,2,1)
+        plt.plot(switch_channel.graph_v_i[0], switch_channel.graph_v_i[1], label=f"Datasheet, t_j = {switch_channel.t_j} °C, v_g = {switch_channel.v_g} V")
+        plt.plot(s_v_vec, i_vec,label=f"Linearized curve, t_j = {switch_channel.t_j} °C, v_g = {switch_channel.v_g} V")
+        plt.xlabel('Voltage in V')
+        plt.ylabel('Current in A')
+        plt.title('Switch')
+        plt.grid()
+        plt.legend()
+
+        # generate diode curve
+        plt.subplot(1, 2, 2)
+        plt.plot(diode_channel.graph_v_i[0], diode_channel.graph_v_i[1], label=f"Datasheet, t_j = {diode_channel.t_j} °C, v_g = {diode_channel.v_g} V")
+        plt.plot(d_v_vec, i_vec, label=f"Linearized curve, t_j = {diode_channel.t_j} °C, v_g = {diode_channel.v_g} V")
+        plt.xlabel('Voltage in V')
+        plt.ylabel('Current in A')
+        plt.title('Diode')
+        plt.grid()
+        plt.legend()
+
+        #plt.tight_layout()
+        plt.show()
+
     def export_datasheet(self):
         #listV = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         pdfData = {}
@@ -3056,3 +3113,6 @@ class MissingDataError(Exception):
           1211: "Diode conduction channel information is missing at provided v_g, cannot export to .xml",
           1202: "Diode reverse recovery loss information is missing",
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
+
+
+
