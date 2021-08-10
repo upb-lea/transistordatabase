@@ -68,7 +68,7 @@ Update and load and share transistors
 
 Update transistors from file exchange
 -------------------------------------
-There is a file exchange to share transistor objects. The repository can be found `here <https://github.com/upb-lea/transistordatabase_File_Exchange>`_. To update your local transistordatabase type in to your python code
+There is a file exchange to share transistor objects. The repository can be found `here <https://github.com/upb-lea/transistordatabase_File_Exchange>`__. To update your local transistordatabase type in to your python code
 
 .. code-block::
 
@@ -168,7 +168,7 @@ To parallel transistors use the function.
     transistor = load({'name': 'Infineon_FF200R12KE3'})
     parallel_transistorobject = transistor.parallel_transistors(3)
 
-After this, you can work with the transistor object as usual, e.g. fill in the .wp-workspace or export the devicice to Matlab, Simulink or GeckoCIRCUITS.
+After this, you can work with the transistor object as usual, e.g. fill in the .wp-workspace or export the device to Matlab, Simulink or GeckoCIRCUITS.
 
 
 

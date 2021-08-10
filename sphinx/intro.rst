@@ -39,3 +39,9 @@ Functionality examples:
     Development status: Alpha
 
 .. include:: install.rst
+
+.. include:: usage.rst
+
+.. include:: exports.rst
+
+.. include:: other.rst

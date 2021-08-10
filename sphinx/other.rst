@@ -1,3 +1,6 @@
+#######
+Others
+#######
 Roadmap
 *******
 Planned features in 2021
@@ -49,4 +52,4 @@ Developers in the past
 
 License
 -------
- Licensed under `GPLv3 <https://choosealicense.com/licenses/gpl-3.0/>`_
+Licensed under `GPLv3 <https://choosealicense.com/licenses/gpl-3.0/>`_

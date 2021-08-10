@@ -7,14 +7,12 @@ transistordatabase(TDB)
 ===================================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
    :caption: Contents:
 
    intro
-   usage
-   exports
    transistordatabase
-   other
+
 
 
 
