@@ -58,7 +58,7 @@ setup(
     extras_require={},
     url='https://github.com/upb-lea/transistordatabase',
     project_urls={
-        "Documentation": "https://github.com/upb-lea/transistordatabase",
+        "Documentation": "https://upb-lea.github.io/transistordatabase/transistordatabase.html",
         "Source Code": "https://github.com/upb-lea/transistordatabase",
     },
     version='0.2.11',
