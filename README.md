@@ -21,6 +21,9 @@ Functionality examples:
 
 Note: Development status: Alpha
 
+## Complete documentation
+The complete documentation can be found [here](https://upb-lea.github.io/transistordatabase/transistordatabase.html).
+
 # 1. Installation
 ## 1.1 Windows
 ### 1.1.1 Install Mongodb
