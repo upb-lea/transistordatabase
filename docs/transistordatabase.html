@@ -710,12 +710,6 @@ This function searches for the closest available curves for given arguments t_j 
 <li><p><strong>v_g</strong> – gate voltage of interest, default set to 15V</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li></li>
-</ul>
-</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -958,7 +952,7 @@ parameters R, C, and tau.</p>
 <dd><p>The method converts FosterThermalModel object into dict datatype</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>FosterThermalModel of dictionary type</p>
+<dd class="field-odd"><p>FosterThermalModel of dict type</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dict</p>
@@ -1005,110 +999,226 @@ channel-, e_on- and e_off-datasets.</p>
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>Initalization method of Switch object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>switch_args</strong> – argument to be passed for initialization</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – Expected during the channele_one_off instance initiaization</p></li>
+<li><p><strong>ValueError</strong> – Expected during the channele_one_off instance initiaization</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-todo admonition" id="id8">
+<p class="admonition-title">Todo</p>
+<p>Is this the right behavior or should the ‘thermal_foster’ attribute be left empty istead?</p>
+</div>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.thermal_foster">
 <code class="sig-name descname"><span class="pre">thermal_foster</span></code><em class="property"><span class="pre">:</span> <span class="pre">FosterThermalModel</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.thermal_foster" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Transient thermal_foster model. (Optional key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.t_j_max">
 <code class="sig-name descname"><span class="pre">t_j_max</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘float’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘int’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.t_j_max" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Maximum junction temperature. Units in °C (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.comment">
 <code class="sig-name descname"><span class="pre">comment</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘str’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.comment" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Comment if any to be specified (Optional key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.manufacturer">
 <code class="sig-name descname"><span class="pre">manufacturer</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘str’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.manufacturer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Name of the manufacturer (Optional key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.technology">
 <code class="sig-name descname"><span class="pre">technology</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘str’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.technology" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  (Optional key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.channel">
 <code class="sig-name descname"><span class="pre">channel</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ChannelData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Switch channel voltage and current data.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.e_on">
 <code class="sig-name descname"><span class="pre">e_on</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.e_on" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Switch on energy data.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.e_off">
 <code class="sig-name descname"><span class="pre">e_off</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.e_off" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Switch of energy data.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Switch.linearized_switch">
 <code class="sig-name descname"><span class="pre">linearized_switch</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">LinearizedModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.linearized_switch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Static data valid for a specific operating point.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.convert_to_dict">
 <code class="sig-name descname"><span class="pre">convert_to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.convert_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The method converts Switch object into dict datatype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Switch object of dict type</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.find_next_gate_voltage">
 <code class="sig-name descname"><span class="pre">find_next_gate_voltage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_on</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_off</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SwitchEnergyData_dataset_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'graph_i_e'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.find_next_gate_voltage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v_on</strong> – gate turn on voltage/channel voltage</p></li>
+<li><p><strong>v_off</strong> – gate turn off voltage</p></li>
+<li><p><strong>SwitchEnergyData_dataset_type</strong> – dataset curve type to be specified</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>v_g, v_g_on, v_g_off</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.find_approx_wp">
 <code class="sig-name descname"><span class="pre">find_approx_wp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_t_to_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SwitchEnergyData_dataset_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'graph_i_e'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.find_approx_wp" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function looks for the smallest distance to stored object value and returns this working point
-:param t_j: junction temperature
-:param v_g: gate voltage
-:param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
-:param SwitchEnergyData_dataset_type: preferred dataset_type (single, graph_r_e, graph_i_e) for e_on and
-e_off
-:return: channel-object, e_on-object, e_off-object</p>
+<dd><p>This function looks for the smallest distance to stored object value and returns this working point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_j</strong> – junction temperature</p></li>
+<li><p><strong>v_g</strong> – gate voltage</p></li>
+<li><p><strong>normalize_t_to_v</strong> – ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V</p></li>
+<li><p><strong>SwitchEnergyData_dataset_type</strong> – preferred dataset_type (single, graph_r_e, graph_i_e) for e_on and e_off</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – Raised when there no data for the specified SwitchEnergyData_dataset_type</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>channel-object, e_on-object, e_off-object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.plot_channel_data_vge">
 <code class="sig-name descname"><span class="pre">plot_channel_data_vge</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gatevoltage</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_channel_data_vge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot channel data with a chosen gate-voltage</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gatevoltage</strong> – gatevoltage at which the channel curves are selected and plotted</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.plot_channel_data_temp">
 <code class="sig-name descname"><span class="pre">plot_channel_data_temp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_channel_data_temp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot channel data with chosen temperature</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>temperature</strong> – junction temperature at which the channel curves are selected and plotted</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.plot_all_channel_data">
 <code class="sig-name descname"><span class="pre">plot_all_channel_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_all_channel_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all channel data</p>
+<dd><p>Plot all switch channel characteristic curves</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>switch_type</strong> – switch type e.g Mosfet, SiC-Mosfet, IGBT</p></li>
+<li><p><strong>buffer_req</strong> – Internally required for generating virtual datasheets</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.plot_energy_data">
 <code class="sig-name descname"><span class="pre">plot_energy_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_energy_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all switching data for i-e-graphs</p>
+<dd><p>Plots all switch energy i-e characterisitic curves which are extracted from the manufacturer datasheet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>buffer_req</strong> – Internally required for generating virtual datasheets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.plot_energy_data_r">
 <code class="sig-name descname"><span class="pre">plot_energy_data_r</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_energy_data_r" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all switching data for r-e-graphs</p>
+<dd><blockquote>
+<div><p>Plots all switch energy r-e characteristic curves</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>buffer_req</strong> – Internally required for generating virtual datasheets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Switch.collect_data">
 <code class="sig-name descname"><span class="pre">collect_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.collect_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Collects switch data in form of dictionary for generating virtual datahseet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>switch_type</strong> – switch type e.g Mosfet, SiC-Mosfet, IGBT</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>switch data in form of dictionary</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1121,91 +1231,179 @@ multiple channel- and e_rr- datasets.</p>
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diode_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>Initalization method of Diode object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>diode_args</strong> – argument to be passed for initialization</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – Expected during the channele_rr instance initiaization</p></li>
+<li><p><strong>ValueError</strong> – Expected during the channele_rr instance initiaization</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Diode.thermal_foster">
 <code class="sig-name descname"><span class="pre">thermal_foster</span></code><em class="property"><span class="pre">:</span> <span class="p"><span class="pre">[</span></span><span class="pre">FosterThermalModel</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.thermal_foster" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Transient thermal_foster model.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Diode.t_j_max">
 <code class="sig-name descname"><span class="pre">t_j_max</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘float’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘int’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.t_j_max" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>diode maximum junction temperature. Units in °C (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Diode.comment">
 <code class="sig-name descname"><span class="pre">comment</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘str’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.comment" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Comment if any specified by the user. (Optional key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Diode.manufacturer">
 <code class="sig-name descname"><span class="pre">manufacturer</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘str’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.manufacturer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Name of the manufacturer. (Optional key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Diode.technology">
 <code class="sig-name descname"><span class="pre">technology</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘str’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.technology" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7. (Optional key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Diode.channel">
 <code class="sig-name descname"><span class="pre">channel</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ChannelData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Diode forward voltage and forward current data.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Diode.e_rr">
 <code class="sig-name descname"><span class="pre">e_rr</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.e_rr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Reverse recovery energy data.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.Diode.linearized_diode">
 <code class="sig-name descname"><span class="pre">linearized_diode</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">LinearizedModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.linearized_diode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Static data. Valid for a specific operating point.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.convert_to_dict">
 <code class="sig-name descname"><span class="pre">convert_to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.convert_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The method converts Diode object into dict datatype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Diode object of dict type</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.find_next_gate_voltage">
 <code class="sig-name descname"><span class="pre">find_next_gate_voltage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_off</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SwitchEnergyData_dataset_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'graph_i_e'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.find_next_gate_voltage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Finds the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+The diode has only turn-off gate voltage which is the switch turn-on gate voltage</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v_on</strong> – gate turn on voltage/channel voltage</p></li>
+<li><p><strong>v_off</strong> – gate turn off voltage</p></li>
+<li><p><strong>SwitchEnergyData_dataset_type</strong> – dataset curve type to be specified</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>v_d, v_off</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.find_approx_wp">
 <code class="sig-name descname"><span class="pre">find_approx_wp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_t_to_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SwitchEnergyData_dataset_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'graph_i_e'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.find_approx_wp" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function looks for the smallest distance to stored object value and returns this working point
-:param t_j: junction temperature
-:param v_g: gate voltage
-:param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
-:return: channel-object, e_rr-object</p>
+<dd><p>This function looks for the smallest distance to stored object value and returns this working point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_j</strong> – junction temperature</p></li>
+<li><p><strong>v_g</strong> – gate voltage</p></li>
+<li><p><strong>normalize_t_to_v</strong> – ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>channel-object, e_rr-object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.plot_all_channel_data">
 <code class="sig-name descname"><span class="pre">plot_all_channel_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.plot_all_channel_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all channel data</p>
+<dd><p>Plot all diode channel characteristic curves</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>buffer_req</strong> – Internally required for generating virtual datasheets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.plot_energy_data">
 <code class="sig-name descname"><span class="pre">plot_energy_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.plot_energy_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all switching data for diode i-e-graphs</p>
+<dd><p>Plots all diode reverse recovery energy i-e characterisitic curves which are extracted from the manufacturer datasheet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>buffer_req</strong> – Internally required for generating virtual datasheets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.plot_energy_data_r">
 <code class="sig-name descname"><span class="pre">plot_energy_data_r</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.plot_energy_data_r" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all switching data for diode r-e-graphs</p>
+<dd><blockquote>
+<div><p>Plots all diode energy r-e characteristic curves</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>buffer_req</strong> – Internally required for generating virtual datasheets</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.Diode.collect_data">
-<code class="sig-name descname"><span class="pre">collect_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.collect_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">collect_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.collect_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collects diode data in form of dictionary for generating virtual datahseet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>switch data in form of dictionary</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1218,38 +1416,57 @@ t_j, i_channel and (not for all diode types) v_g.</p>
 <dl class="py method">
 <dt id="databaseClasses.Transistor.LinearizedModel.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>Initialization method for linearizedmodel object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – argumnets to passed for initialization</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.LinearizedModel.t_j">
 <code class="sig-name descname"><span class="pre">t_j</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.t_j" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Junction temperature of diodeswitch. Units in K  (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.LinearizedModel.v_g">
 <code class="sig-name descname"><span class="pre">v_g</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.v_g" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Gate voltage of switch or diode. Units in V (Mandatory for Switch, Optional for some Diode types)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.LinearizedModel.i_channel">
 <code class="sig-name descname"><span class="pre">i_channel</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.i_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Channel current of diodeswitch. Units in A (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.LinearizedModel.r_channel">
 <code class="sig-name descname"><span class="pre">r_channel</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.r_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Channel resistance of diodeswitch. Units in Ohm (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.LinearizedModel.v0_channel">
 <code class="sig-name descname"><span class="pre">v0_channel</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.v0_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Channel voltage of diodeswitch. Unis in V (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.LinearizedModel.convert_to_dict">
 <code class="sig-name descname"><span class="pre">convert_to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.convert_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The method converts LinearizedModel object into dict datatype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>LinearizedModel object of dict type</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1264,33 +1481,64 @@ This data can be used to linearize the transistor at a specific operating point<
 <dl class="py method">
 <dt id="databaseClasses.Transistor.ChannelData.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>Initialization method for ChannelData object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – arguments to be passed for initialization</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.ChannelData.t_j">
 <code class="sig-name descname"><span class="pre">t_j</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.t_j" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Junction temperature of switchdiode. (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.ChannelData.graph_v_i">
 <code class="sig-name descname"><span class="pre">graph_v_i</span></code><em class="property"><span class="pre">:</span> <span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.graph_v_i" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Represented as a numpy 2D array where row 1 is the voltage and row 2 the current. Units of Row 1 = V; Row 2 = A (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.ChannelData.v_g">
 <code class="sig-name descname"><span class="pre">v_g</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.v_g" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>optional (standard diode useless, for GaN ‘diode’ necessary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#databaseClasses.Transistor.Switch" title="databaseClasses.Transistor.Switch">Switch</a></p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>Mandatory key, <a class="reference internal" href="#databaseClasses.Transistor.Diode" title="databaseClasses.Transistor.Diode">Diode</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.ChannelData.convert_to_dict">
 <code class="sig-name descname"><span class="pre">convert_to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.convert_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The method converts ChannelData object into dict datatype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ChannelData object of dict type</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.ChannelData.plot_graph">
 <code class="sig-name descname"><span class="pre">plot_graph</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.plot_graph" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots the channel curve v_i characteristics called by using any ChannelData object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Respective plots are displayed</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1303,28 +1551,56 @@ For different temperatures: Create additional VoltageDependentCapacitance-object
 <dl class="py method">
 <dt id="databaseClasses.Transistor.VoltageDependentCapacitance.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>Initialization method for VoltageDependentCapacitance object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – arguments to be passed for initialization</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.VoltageDependentCapacitance.t_j">
 <code class="sig-name descname"><span class="pre">t_j</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.t_j" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Junction temperature (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.VoltageDependentCapacitance.graph_v_c">
 <code class="sig-name descname"><span class="pre">graph_v_c</span></code><em class="property"><span class="pre">:</span> <span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.graph_v_c" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Represented as a 2D numpy array where row 1 is the voltage and row 2 the capacitance. Units of Row 1 = V; Row 2 = A  (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.VoltageDependentCapacitance.convert_to_dict">
 <code class="sig-name descname"><span class="pre">convert_to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.convert_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The method converts VoltageDependentCapacitance object into dict datatype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>VoltageDependentCapacitance object of dict type</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.VoltageDependentCapacitance.get_plots">
 <code class="sig-name descname"><span class="pre">get_plots</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.get_plots" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots the voltage dependant capacitance graph_v_c of the VoltageDependentCapacitance object. Also attaches the plot to figure axes for the purpose virtual datasheet if ax argument is specified</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> – figure axes for making the graph_v_c plot in virtual datasheet</p></li>
+<li><p><strong>label</strong> – label of the plot for virtual datasheet plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Respective plots are displayed</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1332,76 +1608,107 @@ For different temperatures: Create additional VoltageDependentCapacitance-object
 <dt id="databaseClasses.Transistor.SwitchEnergyData">
 <em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">SwitchEnergyData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
-already implicitly specified by how the respective objects of this class are used in a Diode- or Switch-object.
-For each set (e.g. every curve in the datasheet) of switching energy data a separate object should be created.
-This also includes the reference values in a datasheet given without a graph. (Those are considered as data sets
-with just a single data point.)
-Data sets with more than one point are given as graph_i_e with an r_g parameter or as graph_r_e with an i_x
-parameter.
-Unused parameters or datasets should be left empty.
-Which of these cases (single point, E vs I dataset, E vs R dataset) is valid for the current object also needs
-to be specified by the dataset_type-property.</p>
+<ul class="simple">
+<li><p>Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is already implicitly specified by how the respective objects of this class are used in a Diode- or Switch-object.</p></li>
+<li><p>For each set (e.g. every curve in the datasheet) of switching energy data a separate object should be created.</p></li>
+<li><p>This also includes the reference values in a datasheet given without a graph. (Those are considered as data sets with just a single data point.)</p></li>
+<li><p>Data sets with more than one point are given as graph_i_e with an r_g parameter or as graph_r_e with an i_x parameter.</p></li>
+<li><p>Unused parameters or datasets should be left empty.</p></li>
+<li><p>Which of these cases (single point, E vs I dataset, E vs R dataset) is valid for the current object also needs to be specified by the dataset_type-property.</p></li>
+</ul>
 <dl class="py method">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>Initialization method for VoltageDependentCapacitance object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – arguments to be passed for initialization</p>
+</dd>
+</dl>
+<div class="admonition-todo admonition" id="id9">
+<p class="admonition-title">Todo</p>
+<p>Add warning if data is ignored because of dataset_type?</p>
+</div>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.dataset_type">
 <code class="sig-name descname"><span class="pre">dataset_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.dataset_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Single, graph_r_e, graph_i_e (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.v_supply">
 <code class="sig-name descname"><span class="pre">v_supply</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.v_supply" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Supply voltage. Units in V (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.v_g">
 <code class="sig-name descname"><span class="pre">v_g</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.v_g" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Gate voltage. Units in V (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.t_j">
 <code class="sig-name descname"><span class="pre">t_j</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;]</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.t_j" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Junction temperature. Units in °C (Mandatory key)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.e_x">
 <code class="sig-name descname"><span class="pre">e_x</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.e_x" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Scalar dataset-parameter - switching energy. Units in J</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.r_g">
 <code class="sig-name descname"><span class="pre">r_g</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.r_g" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Scalar dataset-parameter - gate resistance. Units in Ohm</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.i_x">
 <code class="sig-name descname"><span class="pre">i_x</span></code><em class="property"><span class="pre">:</span> <span class="pre">[&lt;class</span> <span class="pre">‘int’&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">‘float’&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.i_x" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Scalar dataset-parameter - current rating. Units in A</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.graph_i_e">
 <code class="sig-name descname"><span class="pre">graph_i_e</span></code><em class="property"><span class="pre">:</span> <span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray[np.float64]</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.graph_i_e" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Units for Row 1 = A; Row 2 = J</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.graph_r_e">
 <code class="sig-name descname"><span class="pre">graph_r_e</span></code><em class="property"><span class="pre">:</span> <span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray[np.float64]</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.graph_r_e" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Units for Row 1 = Ohm; Row 2 = J</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.convert_to_dict">
 <code class="sig-name descname"><span class="pre">convert_to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.convert_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The method converts SwitchEnergyData object into dict datatype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>SwitchEnergyData object of dict type</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.SwitchEnergyData.plot_graph">
 <code class="sig-name descname"><span class="pre">plot_graph</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.plot_graph" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots switchdiode energy curve characteristics (either from graph_i_e or graph_r_e dataset)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Respective plots are displayed</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1483,12 +1790,42 @@ The returned transistor object behaves like a single transistor.
 <dl class="py method">
 <dt id="databaseClasses.Transistor.validate_transistor">
 <code class="sig-name descname"><span class="pre">validate_transistor</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.validate_transistor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A helper function for plecs exporter. Checks if curve characteristics and thermal network parameters of both switch and diode to be None or empty
+Appends corresponding codes for further verification in get_curve_data(..) method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Availability codes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="databaseClasses.Transistor.get_curve_data">
 <code class="sig-name descname"><span class="pre">get_curve_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_recheck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_voltages</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.get_curve_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><blockquote>
+<div><p>Collects the available information of switch and diode from transistor object and passes it to plecs_exporter(..) for generating the diode and switch .xml files</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel_recheck</strong> (<em>bool</em>) – If set to True, collects the channel and energy curve characteristics at nearest gate voltage if the given gate voltages are not found</p></li>
+<li><p><strong>gate_voltages</strong> (<em>list</em>) – Turn on and off gate voltages for selecting the curves of switch and diode</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>MissingDataError</strong> – If any information of switch or diode is missing completely</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>switch and diode objects</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
