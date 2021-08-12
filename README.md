@@ -210,7 +210,7 @@ transistor.export_datasheet()
 ![](https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Virtual_Datasheet.png)
 
 ### 2.5.2 Export to GeckoCIRCUITS
-GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct [download link](http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip).
+GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct [download link](http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip). [GeckoCIRCUITS github repository](https://github.com/geckocircuits/GeckoCIRCUITS). [GeckoCIRCUITS on Wikipedia](https://de.wikipedia.org/wiki/GeckoCircuits).
 At the moment you need to know the exporting parameters like gate resistor, gate-voltage and switching voltage. This will be simplified in the near future.
 ```
 transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
