@@ -976,7 +976,6 @@ class Transistor:
         :param t_j: junction temperature of interest, default set to 150 degree
         :param v_g: gate voltage of interest, default set to 15V
 
-        :return: -
         """
 
         # search for closest objects
@@ -1656,7 +1655,7 @@ class Transistor:
             """
             The method converts FosterThermalModel object into dict datatype
 
-            :return: FosterThermalModel of dictionary type
+            :return: FosterThermalModel of dict type
             :rtype: dict
             """
             d = dict(vars(self))
@@ -1714,19 +1713,28 @@ class Transistor:
         """Contains data associated with the switchting-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
         channel-, e_on- and e_off-datasets. """
         # Metadata
-        comment: [str, None]  # Optional
-        manufacturer: [str, None]  # Optional
-        technology: [str, None]  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
+        comment: [str, None]  #: Comment if any to be specified (Optional key)
+        manufacturer: [str, None]  #: Name of the manufacturer (Optional key)
+        technology: [str, None]  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  (Optional key)
         # These are documented in their respective class definitions.
-        thermal_foster: "FosterThermalModel"  # Transient thermal_foster model.  # Optional
-        channel: List["ChannelData"]  # Switch channel voltage and current data.
-        e_on: List["SwitchEnergyData"]  # Switch on energy data.
-        e_off: List["SwitchEnergyData"]  # Switch of energy data.
-        linearized_switch: List["LinearizedModel"]  # Static data valid for a specific operating point.
-        #
-        t_j_max: [float, int]  # Unit: °C # Mandatory
+        thermal_foster: "FosterThermalModel"  #: Transient thermal_foster model. (Optional key)
+        channel: List["ChannelData"]  #: Switch channel voltage and current data.
+        e_on: List["SwitchEnergyData"]  #: Switch on energy data.
+        e_off: List["SwitchEnergyData"]  #: Switch of energy data.
+        linearized_switch: List["LinearizedModel"]  #: Static data valid for a specific operating point.
+        t_j_max: [float, int]  #: Maximum junction temperature. Units in °C (Mandatory key)
 
         def __init__(self, switch_args):
+            """
+            Initalization method of Switch object
+
+            :param switch_args: argument to be passed for initialization
+
+            :raises KeyError: Expected during the channel\e_on\e_off instance initiaization
+            :raises ValueError: Expected during the channel\e_on\e_off instance initiaization
+
+            .. todo:: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
+            """
             # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty attributes.
             # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
             self.thermal_foster = Transistor.FosterThermalModel(switch_args.get('thermal_foster'))
@@ -1828,6 +1836,12 @@ class Transistor:
                 self.linearized_switch = []
 
         def convert_to_dict(self):
+            """
+            The method converts Switch object into dict datatype
+
+            :return: Switch object of dict type
+            :rtype: dict
+            """
             d = dict(vars(self))
             d['thermal_foster'] = self.thermal_foster.convert_to_dict()
             d['channel'] = [c.convert_to_dict() for c in self.channel]
@@ -1837,6 +1851,16 @@ class Transistor:
             return d
 
         def find_next_gate_voltage(self, v_on, v_off, SwitchEnergyData_dataset_type="graph_i_e"):
+            """
+            Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets
+
+            :param v_on: gate turn on voltage/channel voltage
+            :param v_off: gate turn off voltage
+            :param SwitchEnergyData_dataset_type: dataset curve type to be specified
+
+            :return: v_g, v_g_on, v_g_off
+            :rtype: int
+            """
             # recheck channel characteristics curves at v_supply
             channel_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             v_g = min(channel_v_gs, key=lambda x: abs(x-v_on))
@@ -1859,11 +1883,14 @@ class Transistor:
         def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e"):
             """
             This function looks for the smallest distance to stored object value and returns this working point
+
             :param t_j: junction temperature
             :param v_g: gate voltage
             :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
-            :param SwitchEnergyData_dataset_type: preferred dataset_type (single, graph_r_e, graph_i_e) for e_on and
-            e_off
+            :param SwitchEnergyData_dataset_type: preferred dataset_type (single, graph_r_e, graph_i_e) for e_on and e_off
+
+            :raises KeyError: Raised when there no data for the specified SwitchEnergyData_dataset_type
+
             :return: channel-object, e_on-object, e_off-object
             """
             # Normalize t_j to v_g for distance metric
@@ -1898,7 +1925,13 @@ class Transistor:
             return self.channel[index_channeldata], e_ons[index_e_on], e_offs[index_e_off]
 
         def plot_channel_data_vge(self, gatevoltage):
-            """ Plot channel data with a chosen gate-voltage"""
+            """
+            Plot channel data with a chosen gate-voltage
+
+            :param gatevoltage: gatevoltage at which the channel curves are selected and plotted
+
+            :return: Respective plots are displayed
+            """
             plt.figure()
             for i_channel in np.array(range(0, len(self.channel))):
                 if self.channel[i_channel].v_g == gatevoltage:
@@ -1913,7 +1946,14 @@ class Transistor:
             plt.show()
 
         def plot_channel_data_temp(self, temperature):
-            """ Plot channel data with chosen temperature"""
+            """
+            Plot channel data with chosen temperature
+
+            :param temperature: junction temperature at which the channel curves are selected and plotted
+
+            :return: Respective plots are displayed
+            """
+
             plt.figure()
             for i_channel in np.array(range(0, len(self.channel))):
                 if self.channel[i_channel].t_j == temperature:
@@ -1928,7 +1968,15 @@ class Transistor:
             plt.show()
 
         def plot_all_channel_data(self, switch_type=None, buffer_req=False):
-            """ Plot all channel data """
+            """
+            Plot all switch channel characteristic curves
+
+            :param switch_type: switch type e.g Mosfet, SiC-Mosfet, IGBT
+            :param buffer_req: internally required for generating virtual datasheets
+
+            :return: Respective plots are displayed
+            """
+
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
             categorize_plots = {}
             plt.figure()
@@ -1964,7 +2012,13 @@ class Transistor:
             return categorize_plots
 
         def plot_energy_data(self, buffer_req=False):
-            """ Plot all switching data for i-e-graphs """
+            """
+            Plots all switch energy i-e characterisitic curves which are extracted from the manufacturer datasheet
+
+            :param buffer_req: internally required for generating virtual datasheets
+
+            :return: Respective plots are displayed
+            """
             plt.figure()
             # look for e_on losses
             for i_energy_data in np.array(range(0, len(self.e_on))):
@@ -1989,7 +2043,13 @@ class Transistor:
                 plt.show()
 
         def plot_energy_data_r(self, buffer_req=False):
-            """ Plot all switching data for r-e-graphs"""
+            """
+             Plots all switch energy r-e characteristic curves
+
+            :param buffer_req: internally required for generating virtual datasheets
+
+            :return: Respective plots are displayed
+            """
             plt.figure()
             # look for e_on losses
             for i_energy_data in np.array(range(0, len(self.e_on))):
@@ -2014,6 +2074,14 @@ class Transistor:
                 plt.show()
 
         def collect_data(self, switch_type):
+            """
+            Collects switch data in form of dictionary for generating virtual datahseet
+
+            :param switch_type: switch type e.g Mosfet, SiC-Mosfet, IGBT
+
+            :return: Switch data in form of dictionary
+            :rtype: dict
+            """
             switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
@@ -2024,22 +2092,35 @@ class Transistor:
             return switch_data
 
     class Diode:
-        """Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
-         multiple channel- and e_rr- datasets."""
+        """
+        Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
+        multiple channel- and e_rr- datasets.
+         """
         # Metadata
-        comment: [str, None]  # Optional
-        manufacturer: [str, None]  # Optional
-        technology: [str, None]  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
+        comment: [str, None]  #: Comment if any specified by the user. (Optional key)
+        manufacturer: [str, None]  #: Name of the manufacturer. (Optional key)
+        technology: [str, None]  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7. (Optional key)
         # These are documented in their respective class definitions.
-        thermal_foster: ["FosterThermalModel", None]  # Transient thermal_foster model.
-        channel: List["ChannelData"]  # Diode forward voltage and forward current data.
-        e_rr: List["SwitchEnergyData"]  # Reverse recovery energy data.
-        linearized_diode: List["LinearizedModel"]  # Static data. Valid for a specific operating point.
-        t_j_max: [float, int]  # Unit: °C # Mandatory
+        thermal_foster: ["FosterThermalModel", None]  #: Transient thermal_foster model.
+        channel: List["ChannelData"]  #: Diode forward voltage and forward current data.
+        e_rr: List["SwitchEnergyData"]  #: Reverse recovery energy data.
+        linearized_diode: List["LinearizedModel"]  #: Static data. Valid for a specific operating point.
+        t_j_max: [float, int]  #: Diode maximum junction temperature. Units in °C (Mandatory key)
 
         def __init__(self, diode_args):
+            """
+            Initalization method of Diode object
+
+            :param diode_args: argument to be passed for initialization
+
+            :raises KeyError: Expected during the channel\e_rr instance initiaization
+            :raises ValueError: Expected during the channel\e_rr instance initiaization
+
+
+            """
             # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty
             # attributes.
+
             # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
             self.thermal_foster = Transistor.FosterThermalModel(diode_args.get('thermal_foster'))
             if Transistor.isvalid_dict(diode_args, 'Diode'):
@@ -2056,7 +2137,7 @@ class Transistor:
                         for dataset in diode_args.get('channel'):
                             if Transistor.isvalid_dict(dataset, 'Diode_ChannelData'):
                                 self.channel.append(Transistor.ChannelData(dataset))
-                                # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                                # If  occurs during this, raise KeyError and add index of list occurrence to the message
                     elif Transistor.isvalid_dict(diode_args.get('channel'), 'Diode_ChannelData'):
                         # Only create ChannelData objects from valid dicts
                         self.channel.append(Transistor.ChannelData(diode_args.get('channel')))
@@ -2120,6 +2201,13 @@ class Transistor:
                 self.linearized_diode = []
 
         def convert_to_dict(self):
+            """
+            The method converts Diode object into dict datatype
+
+            :return: Diode object of dict type
+            :rtype: dict
+            """
+
             d = dict(vars(self))
             d['thermal_foster'] = self.thermal_foster.convert_to_dict()
             d['channel'] = [c.convert_to_dict() for c in self.channel]
@@ -2128,6 +2216,18 @@ class Transistor:
             return d
 
         def find_next_gate_voltage(self, v_d, v_off, SwitchEnergyData_dataset_type="graph_i_e"):
+            """
+            Finds the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+            The diode has only turn-off gate voltage which is the switch turn-on gate voltage
+
+            :param v_on: gate turn on voltage/channel voltage
+            :param v_off: gate turn off voltage
+            :param SwitchEnergyData_dataset_type: dataset curve type to be specified
+
+            :return: v_d, v_off
+            :rtype: int
+            """
+
             # recheck channel characteristics curves at v_supply
             channel_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             v_d = min(channel_v_gs, key=lambda x: abs(x-v_d))
@@ -2144,9 +2244,11 @@ class Transistor:
         def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e"):
             """
             This function looks for the smallest distance to stored object value and returns this working point
+
             :param t_j: junction temperature
             :param v_g: gate voltage
             :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
+
             :return: channel-object, e_rr-object
             """
             # Normalize t_j to v_g for distance metric
@@ -2175,7 +2277,13 @@ class Transistor:
             return self.channel[index_channeldata], e_rrs[index_e_rr]
 
         def plot_all_channel_data(self, buffer_req=False):
-            """ Plot all channel data """
+            """
+            Plot all diode channel characteristic curves
+
+            :param buffer_req: internally required for generating virtual datasheets
+
+            :return: Respective plots are displayed
+            """
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
             plt.figure()
             for i_channel in np.array(range(0, len(self.channel))):
@@ -2193,7 +2301,13 @@ class Transistor:
 
 
         def plot_energy_data(self, buffer_req=False):
-            """ Plot all switching data for diode i-e-graphs """
+            """
+            Plots all diode reverse recovery energy i-e characterisitic curves which are extracted from the manufacturer datasheet
+
+            :param buffer_req: internally required for generating virtual datasheets
+
+            :return: Respective plots are displayed
+            """
 
             # look for e_off losses
             if len(self.e_rr) != 0:
@@ -2224,7 +2338,13 @@ class Transistor:
                 return None
 
         def plot_energy_data_r(self, buffer_req=False):
-            """ Plot all switching data for diode r-e-graphs"""
+            """
+             Plots all diode energy r-e characteristic curves
+
+            :param buffer_req: internally required for generating virtual datasheets
+
+            :return: Respective plots are displayed
+            """
 
             # look for e_off losses
             if len(self.e_rr) != 0:
@@ -2254,7 +2374,13 @@ class Transistor:
                 print("No Diode switching energy data available (diode graph_r_e)")
                 return None
 
-        def collect_data(self, switch_type):
+        def collect_data(self):
+            """
+            Collects diode data in form of dictionary for generating virtual datahseet
+
+            :return: Diode data in form of dictionary
+            :rtype: dict
+            """
             diode_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
@@ -2267,13 +2393,18 @@ class Transistor:
     class LinearizedModel:
         """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
         t_j, i_channel and (not for all diode types) v_g."""
-        t_j: [int, float]  # Unit: K # Mandatory
-        v_g: [int, float, None]  # Unit: V # Mandatory for Switch, Optional for some Diode types
-        i_channel: [int, float]  # Unit: A # Mandatory
-        r_channel: [int, float]  # Unit: Ohm Mandatory
-        v0_channel: [int, float]  # Unit: V # Mandatory
+        t_j: [int, float]  #: Junction temperature of diode\switch. Units in K  (Mandatory key)
+        v_g: [int, float, None]  #: Gate voltage of switch or diode. Units in V (Mandatory for Switch, Optional for some Diode types)
+        i_channel: [int, float]  #: Channel current of diode\switch. Units in A (Mandatory key)
+        r_channel: [int, float]  #: Channel resistance of diode\switch. Units in Ohm (Mandatory key)
+        v0_channel: [int, float]  #: Channel voltage of diode\switch. Unis in V (Mandatory key)
 
         def __init__(self, args):
+            """
+            Initialization method for linearizedmodel object
+
+            :param args: arguments to passed for initialization
+            """
             self.t_j = args.get('t_j')
             self.v_g = args.get('v_g')
             self.i_channel = args.get('i_channel')
@@ -2281,6 +2412,12 @@ class Transistor:
             self.v0_channel = args.get('v0_channel')
 
         def convert_to_dict(self):
+            """
+            The method converts LinearizedModel object into dict datatype
+
+            :return: LinearizedModel object of dict type
+            :rtype: dict
+            """
             d = dict(vars(self))
             return d
 
@@ -2291,12 +2428,17 @@ class Transistor:
         This data can be used to linearize the transistor at a specific operating point """
 
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
-        t_j: [int, float]  # Mandatory
-        v_g: [int, float]  # Switch: Mandatory, Diode: optional (standard diode useless, for GaN 'diode' necessary
+        t_j: [int, float]  #: Junction temperature of switch\diode. (Mandatory key)
+        v_g: [int, float]  #: Switch: Mandatory key, Diode: optional (standard diode useless, for GaN 'diode' necessary
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
-        graph_v_i: "np.ndarray[np.float64]"  # Units: Row 1: V; Row 2: A  # Mandatory
+        graph_v_i: "np.ndarray[np.float64]"  #: Represented as a numpy 2D array where row 1 is the voltage and row 2 the current. Units of Row 1 = V; Row 2 = A (Mandatory key)
 
         def __init__(self, args):
+            """
+            Initialization method for ChannelData object
+
+            :param args: arguments to be passed for initialization
+            """
             # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
             # checked again here.
             self.t_j = args.get('t_j')
@@ -2304,6 +2446,12 @@ class Transistor:
             self.v_g = args.get('v_g')
 
         def convert_to_dict(self):
+            """
+            The method converts ChannelData object into dict datatype
+
+            :return: ChannelData object of dict type
+            :rtype: dict
+            """
             d = dict(vars(self))
             for att_key in d:
                 if isinstance(d[att_key], np.ndarray):
@@ -2311,6 +2459,11 @@ class Transistor:
             return d
 
         def plot_graph(self):
+            """
+            Plots the channel curve v_i characteristics called by using any ChannelData object
+
+            :return: Respective plots are displayed
+            """
             plt.figure()
             label = f"v_g = {self.v_g} V, t_j = {self.t_j} °C"
             plt.plot(self.graph_v_i[0], self.graph_v_i[1], label=label)
@@ -2324,19 +2477,29 @@ class Transistor:
         """Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
         For different temperatures: Create additional VoltageDependentCapacitance-objects and store them as a list in the transistor-object.
         """
-
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
-        t_j: [int, float]  # Mandatory
+        t_j: [int, float]  #: Junction temperature (Mandatory key)
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the capacitance.
-        graph_v_c: "np.ndarray[np.float64]"  # Units: Row 1: V; Row 2: A  # Mandatory
+        graph_v_c: "np.ndarray[np.float64]"  #: Represented as a 2D numpy array where row 1 is the voltage and row 2 the capacitance. Units of Row 1 = V; Row 2 = A  (Mandatory key)
 
         def __init__(self, args):
+            """
+            Initialization method for VoltageDependentCapacitance object
+
+            :param args: arguments to be passed for initialization
+            """
             # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
             # checked again here.
             self.t_j = args.get('t_j')
             self.graph_v_c = args.get('graph_v_c')
 
         def convert_to_dict(self):
+            """
+            The method converts VoltageDependentCapacitance object into dict datatype
+
+            :return: VoltageDependentCapacitance object of dict type
+            :rtype: dict
+            """
             d = dict(vars(self))
             for att_key in d:
                 if isinstance(d[att_key], np.ndarray):
@@ -2344,6 +2507,14 @@ class Transistor:
             return d
 
         def get_plots(self, ax=None, label=None):
+            """
+            Plots the voltage dependant capacitance graph_v_c of the VoltageDependentCapacitance object. Also attaches the plot to figure axes for the purpose virtual datasheet if ax argument is specified
+
+            :param ax: figure axes for making the graph_v_c plot in virtual datasheet
+            :param label: label of the plot for virtual datasheet plot
+
+            :return: Respective plots are displayed
+            """
             if ax:
                 label_plot = label+", $T_{{J}}$ = {0} °C".format(self.t_j)
                 return ax.plot(self.graph_v_c[0], self.graph_v_c[1], label=label_plot)
@@ -2358,33 +2529,31 @@ class Transistor:
                 plt.show()
 
     class SwitchEnergyData:
-        """Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
-        already implicitly specified by how the respective objects of this class are used in a Diode- or Switch-object.
-        For each set (e.g. every curve in the datasheet) of switching energy data a separate object should be created.
-        This also includes the reference values in a datasheet given without a graph. (Those are considered as data sets
-        with just a single data point.)
-        Data sets with more than one point are given as graph_i_e with an r_g parameter or as graph_r_e with an i_x
-        parameter.
-        Unused parameters or datasets should be left empty.
-        Which of these cases (single point, E vs I dataset, E vs R dataset) is valid for the current object also needs
-        to be specified by the dataset_type-property."""
+        """
+        - Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is already implicitly specified by how the respective objects of this class are used in a Diode- or Switch-object.
+        - For each set (e.g. every curve in the datasheet) of switching energy data a separate object should be created.
+        - This also includes the reference values in a datasheet given without a graph. (Those are considered as data sets with just a single data point.)
+        - Data sets with more than one point are given as graph_i_e with an r_g parameter or as graph_r_e with an i_x parameter.
+        - Unused parameters or datasets should be left empty.
+        - Which of these cases (single point, E vs I dataset, E vs R dataset) is valid for the current object also needs to be specified by the dataset_type-property.
+        """
 
         # Type of the dataset:
         # single: e_x, r_g, i_x are scalars. Given e.g. by a table in the datasheet.
         # graph_r_e: r_e is a 2-dim numpy array with two rows. i_x is a scalar. Given e.g. by an E vs R graph.
         # graph_i_e: i_e is a 2-dim numpy array with two rows. r_g is a scalar. Given e.g. by an E vs I graph.
-        dataset_type: str  # Mandatory
+        dataset_type: str  #: Single, graph_r_e, graph_i_e (Mandatory key)
         # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
-        t_j: [int, float]  # Unit: °C  # Mandatory
-        v_supply: [int, float]  # Unit: V  # Mandatory
-        v_g: [int, float]  # Unit: V  # Mandatory
+        t_j: [int, float]  #: Junction temperature. Units in °C (Mandatory key)
+        v_supply: [int, float]  #: Supply voltage. Units in V (Mandatory key)
+        v_g: [int, float]  #: Gate voltage. Units in V (Mandatory key)
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
-        e_x: [int, float, None]  # Unit: J
-        r_g: [int, float, None]  # Unit: Ohm
-        i_x: [int, float, None]  # Unit: A
+        e_x: [int, float, None]  #: Scalar dataset-parameter - switching energy. Units in J
+        r_g: [int, float, None]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
+        i_x: [int, float, None]  #: Scalar dataset-parameter - current rating. Units in A
         # Dataset. Only one of these is allowed. The other should be 'None'.
-        graph_i_e: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
-        graph_r_e: ["np.ndarray[np.float64]", None]  # Units: Row 1: Ohm; Row 2: J
+        graph_i_e: ["np.ndarray[np.float64]", None]  #: Units for Row 1 = A; Row 2 = J
+        graph_r_e: ["np.ndarray[np.float64]", None]  #: Units for Row 1 = Ohm; Row 2 = J
 
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
         # ToDo: Add additional class for linearized switching loss model with capacitances. (See infineon application
@@ -2396,6 +2565,13 @@ class Transistor:
         def __init__(self, args):
             # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
             # checked again here.
+            """
+            Initialization method for VoltageDependentCapacitance object
+
+            :param args: arguments to be passed for initialization
+
+            .. todo:: Add warning if data is ignored because of dataset_type?
+            """
             # ToDo: Add warning if data is ignored because of dataset_type?
             self.dataset_type = args.get('dataset_type')
             self.v_supply = args.get('v_supply')
@@ -2421,6 +2597,12 @@ class Transistor:
                 self.graph_r_e = args.get('graph_r_e')
 
         def convert_to_dict(self):
+            """
+              The method converts SwitchEnergyData object into dict datatype
+
+              :return: SwitchEnergyData object of dict type
+              :rtype: dict
+              """
             d = dict(vars(self))
             for att_key in d:
                 if isinstance(d[att_key], np.ndarray):
@@ -2428,6 +2610,11 @@ class Transistor:
             return d
 
         def plot_graph(self):
+            """
+            Plots switch\diode energy curve characteristics (either from graph_i_e or graph_r_e dataset)
+
+            :return: Respective plots are displayed
+            """
             plt.figure()
             if self.dataset_type == 'graph_i_e':
                 label = f"v_g = {self.v_g} V, v_supply = {self.v_supply} V, r_g = {self.r_g} Ohm, t_j = {self.t_j} °C"
@@ -2566,6 +2753,13 @@ class Transistor:
         return load_from_db(transistor_dict)
 
     def validate_transistor(self):
+        """
+        A helper function for plecs exporter. Checks if curve characteristics and thermal network parameters of both switch and diode to be None or empty
+        Appends corresponding codes for further verification in get_curve_data(..) method
+
+        :return: Availability codes
+        :rtype: dict
+        """
         transistor_dict = self.convert_to_dict()
         codes = {'Switch': list(),'Diode': list()}
         if not transistor_dict['switch']['channel']:
@@ -2585,6 +2779,19 @@ class Transistor:
         return codes
 
     def get_curve_data(self, channel_recheck, gate_voltages):
+        """
+         Collects the available information of switch and diode from transistor object and passes it to plecs_exporter(..) for generating the diode and switch .xml files
+
+        :param channel_recheck: if set to True, collects the channel and energy curve characteristics at nearest gate voltage if the given gate voltages are not found
+        :type channel_recheck: bool
+        :param gate_voltages: turn on and off gate voltages for selecting the curves of switch and diode
+        :type gate_voltages: list
+
+        :raises MissingDataError: If any information of switch or diode is missing completely
+
+        :return: Switch and diode objects
+        :rtype: dict
+        """
         v_g_on, v_g_off, v_d_on, v_d_off = gate_voltages if len(gate_voltages) == 4 else \
             get_gatedefaults(self.type)
         v_g = v_g_on
