@@ -37,7 +37,7 @@ class Transistor:
     type: str  #: Specifies the type of module either e.g IGBT, MOSFET, SiC MOSFET etc. (Mandatory key)
     # User-specific data
     author: str  #: The author of the module specific object. Usually added when creating and adding a new datasheet module using template.py. (Mandatory key)
-    comment: [str, None]  #: Any user specific comment created when adding a new datasheet module. (Optional key)
+    comment: Union[str, None]  #: Any user specific comment created when adding a new datasheet module. (Optional key)
     # Date and template data. Should not be changed manually
     # ToDo: Add methods to automatically determine dates and template_version on construction or update.
     template_version: str  #: Specifies the template version using which a new datasheet module is created. (Mandatory/Automatic)
@@ -45,9 +45,9 @@ class Transistor:
     creation_date: "datetime.datetime"  #: Specifies the date and time of the new transistor module that is created using template. (Mandatory/Automatic)
     # Manufacturer- and part-specific data
     manufacturer: str  #: Provides information of the module maufacturer. (Mandatory key)
-    datasheet_hyperlink: [str, None]  #: As the name specifies, provides the hyperlink of the datasheet that is being referred to. Should be a valid link if specified(Optional)
-    datasheet_date: ["datetime.datetime", None]  #: pymongo cannot encode date => always save as datetime. (Optional key)
-    datasheet_version: [str, None]  #: Specifies the version of the module manufacturer datasheet. (Optional key)
+    datasheet_hyperlink: Union[str, None]  #: As the name specifies, provides the hyperlink of the datasheet that is being referred to. Should be a valid link if specified(Optional)
+    datasheet_date: Union["datetime.datetime", None]  #: pymongo cannot encode date => always save as datetime. (Optional key)
+    datasheet_version: Union[str, None]  #: Specifies the version of the module manufacturer datasheet. (Optional key)
     housing_area: float  #: Housing area extracted from datasheet. Units in m^2. (Mandatory key)
     cooling_area: float  #: Housing area extracted from datasheet. Units in m^2. (Mandatory key)
     housing_type: str  #: e.g. TO-220, etc. Must be from a list of specific strings. (Mandatory key)
@@ -55,30 +55,30 @@ class Transistor:
     switch: "Switch"   #: Member instance for class type Switch (Mandatory key)
     diode: "Diode"  #: Member instance for class type Diode (Mandatory key)
     # Thermal data. See git for equivalent thermal_foster circuit diagram.
-    r_th_cs: [float, int, None]  #: Module specific case to sink thermal resistance.  Units in K/W  (Optional key)
-    r_th_switch_cs: [float, int, None]  #: Switch specific case to sink thermal resistance. Units in K/W  (Optional key)
-    r_th_diode_cs: [float, int, None]  #: Diode specifc case to sink thermal resistance. Units in K/W  (Optional key)
+    r_th_cs: Union[float, None]  #: Module specific case to sink thermal resistance.  Units in K/W  (Optional key)
+    r_th_switch_cs: Union[float, None]  #: Switch specific case to sink thermal resistance. Units in K/W  (Optional key)
+    r_th_diode_cs: Union[float, None]  #: Diode specifc case to sink thermal resistance. Units in K/W  (Optional key)
     # Absolute maximum ratings
-    v_abs_max: [float, int]  #: Absolute maximum voltage rating. Units in V  (Mandatory key)
-    i_abs_max: [float, int]  #: Absolute maximum current rating. Units in A  (Mandatory key)
+    v_abs_max: float  #: Absolute maximum voltage rating. Units in V  (Mandatory key)
+    i_abs_max: float  #: Absolute maximum current rating. Units in A  (Mandatory key)
     # Constant Capacitances
-    c_oss_fix: [float, int, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
-    c_iss_fix: [float, int, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
-    c_rss_fix: [float, int, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
+    c_oss_fix: Union[float, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
+    c_iss_fix: Union[float, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
+    c_rss_fix: Union[float, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
     # Voltage dependent capacitances
-    c_oss: List["VoltageDependentCapacitance"]  #: List of VoltageDependentCapacitance. (Optional key)
-    c_iss: List["VoltageDependentCapacitance"]  #: List of VoltageDependentCapacitance. (Optional key)
-    c_rss: List["VoltageDependentCapacitance"]  #: List of VoltageDependentCapacitance. (Optional key)
+    c_oss: Union[List["VoltageDependentCapacitance"], None]  #: List of VoltageDependentCapacitance. (Optional key)
+    c_iss: Union[List["VoltageDependentCapacitance"], None]  #: List of VoltageDependentCapacitance. (Optional key)
+    c_rss: Union[List["VoltageDependentCapacitance"], None]  #: List of VoltageDependentCapacitance. (Optional key)
     # Energy stored in c_oss
-    graph_v_ecoss: ["np.ndarray[np.float64]", None]  #: Member instance for storing the voltage dependant capacitance graph in the form of 2D numpy array. Units of Row 1 = V; Row 2 = J  (Optional key)
+    graph_v_ecoss: Union["np.ndarray[np.float64]", None]  #: Member instance for storing the voltage dependant capacitance graph in the form of 2D numpy array. Units of Row 1 = V; Row 2 = J  (Optional key)
 
     # Rated operation region
 
-    i_cont: [float, int, None]  #: Module specific continuous current. Units in  A e.g. Fuji = I_c, Semikron = I_c,nom (Mandatory key)
-    t_c_max: [float, int]  #: Module specific maximum junction temperature. Units in °C (Optional key)
-    r_g_int: [float, int]  #: Internal gate resistance. Units in Ohm (Mandatory key)
+    i_cont: Union[float, None]  #: Module specific continuous current. Units in  A e.g. Fuji = I_c, Semikron = I_c,nom (Mandatory key)
+    t_c_max: float  #: Module specific maximum junction temperature. Units in °C (Optional key)
+    r_g_int: float  #: Internal gate resistance. Units in Ohm (Mandatory key)
 
-    def __init__(self, transistor_args, switch_args, diode_args):
+    def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict) -> None:
         """
         Takes in the following dictionary arguments for creating and initializing the transistor object. isvalid_dict() method is applied on transistor_args object
         to validate the argument. Else TypeError exception is raised. Module manufacturer type and housing type data validations are performed for matching the given
@@ -228,7 +228,7 @@ class Transistor:
             print('Exception occured: Selected datasheet or module could not be created or loaded\n'+str(e))
             raise
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """
         This method checks if the passed transistor object and the transistor object in scope are both same by matching their object id's
 
@@ -245,7 +245,7 @@ class Transistor:
         other_dict.pop('_id', None)
         return my_dict == other_dict
 
-    def save(self, collection="local", overwrite=None):
+    def save(self, collection: str ="local", overwrite: bool =None) -> None:
         """
         The method save the transistor object to local mongodb database.
         Currently receives the execution instructions from update_from_fileexchange(..)
@@ -278,7 +278,7 @@ class Transistor:
         else:
             collection.insert_one(transistor_dict)
 
-    def export_json(self, path=None):
+    def export_json(self, path: str =None) -> None:
         """
         Exports the transistor object to .json file, e.g. to share this file on fileexchange on github
 
@@ -318,7 +318,7 @@ class Transistor:
         return d
 
     @staticmethod
-    def isvalid_dict(dataset_dict, dict_type):
+    def isvalid_dict(dataset_dict: dict, dict_type: dict) -> bool:
         """
         This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
         are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'type').
@@ -490,16 +490,17 @@ class Transistor:
                 all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
             return True
 
-    def update_wp(self, t_j, v_g, i_channel, switch_or_diode="both", normalize_t_to_v=10):
+    def update_wp(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str ="both", normalize_t_to_v=10):
         """
-        To be filled by Mr.Nikolas
+        Fills the .wp-class, a temporary storage for self-written user-programs
+        Searches for the input values and fills the .wp-class with data next to this points
 
-        :param t_j:
-        :param v_g:
-        :param i_channel:
-        :param switch_or_diode:
-        :param normalize_t_to_v:
-        :return:
+        :param t_j: junction temperature
+        :param v_g: gate voltage
+        :param i_channel: channel current for linearisation
+        :param switch_or_diode: 'switch' or 'diode' or 'both'
+        :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
+        :return: None
         """
         if switch_or_diode in ["diode", "both"]:
             diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
@@ -526,10 +527,13 @@ class Transistor:
             self.wp.switch_v_channel, self.wp.switch_r_channel = \
                 self.calc_lin_channel(switch_channel.t_j, switch_channel.v_g, i_channel, switch_or_diode="switch")
 
-    def quickstart_wp(self):
+    def quickstart_wp(self) -> None:
         """
-        To be filled by Mr.Nikolas
-        :return:
+        Function to fill out the .wp-class by just one command 'quickstart_wp()'.
+        Uses typical working points
+         - channel linearisation next to v_g = 15V, i_cont and t_j = t_j_abs_max - 25 degree
+         - switching loss curves next to t_j = t_j_abs_max - 25 degree
+        :return: None
         """
         #ToDo: may separate data for IGBT, MOSFET, SiC-MOSFET and GaN-Transistor
         self.update_wp(self.switch.t_j_max - 25, 15, self.i_cont)
@@ -1610,20 +1614,20 @@ class Transistor:
         """
 
         # Thermal resistances of RC-network (array).
-        r_th_vector: [List[float], None]  #: Thermal resistances of RC-network (array). Units in K/W (Optional key)
+        r_th_vector: Union[List[float], None]  #: Thermal resistances of RC-network (array). Units in K/W (Optional key)
         # Sum of thermal_foster resistances of n-pole RC-network (scalar).
-        r_th_total: [float, int, None]  #: Sum of thermal_foster resistances of n-pole RC-network (scalar). Units in K/W  (Optional key)
+        r_th_total: Union[float, None]  #: Sum of thermal_foster resistances of n-pole RC-network (scalar). Units in K/W  (Optional key)
         # Thermal capacitances of n-pole RC-network (array).
-        c_th_vector: [List[float], None]  #: Thermal capacitances of n-pole RC-network (array). Units in J/K (Optional key)
+        c_th_vector: Union[List[float], None]  #: Thermal capacitances of n-pole RC-network (array). Units in J/K (Optional key)
         # Sum of thermal_foster capacitances of n-pole low pass as (scalar).
-        c_th_total: [float, int, None]  #: Sum of thermal_foster capacitances of n-pole low pass as (scalar). Units in J/K  (Optional key)
+        c_th_total: Union[float, None]  #: Sum of thermal_foster capacitances of n-pole low pass as (scalar). Units in J/K  (Optional key)
         # Thermal time constants of n-pole RC-network (array).
-        tau_vector: [List[float], None]  #: Thermal time constants of n-pole RC-network (array). Units in s  (Optional key)
+        tau_vector: Union[List[float], None]  #: Thermal time constants of n-pole RC-network (array). Units in s  (Optional key)
         # Sum of thermal_foster time constants of n-pole RC-network (scalar).
-        tau_total: [float, int, None]  #: Sum of thermal_foster time constants of n-pole RC-network (scalar). Units in s (Optional key)
+        tau_total: Union[float, None]  #: Sum of thermal_foster time constants of n-pole RC-network (scalar). Units in s (Optional key)
         # Transient data for extraction of the thermal_foster parameters specified above.
         # Represented as a 2xm Matrix where row 1 is the time and row 2 the temperature.
-        graph_t_rthjc: ["np.ndarray[np.float64]", None]  #: Transient data for extraction of the thermal_foster parameters specified above. Units of Row 1 in s; Row 2 in K/W  (Optional key)
+        graph_t_rthjc: Union["np.ndarray[np.float64]", None]  #: Transient data for extraction of the thermal_foster parameters specified above. Units of Row 1 in s; Row 2 in K/W  (Optional key)
 
         def __init__(self, args):
             """
@@ -1713,16 +1717,16 @@ class Transistor:
         """Contains data associated with the switchting-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
         channel-, e_on- and e_off-datasets. """
         # Metadata
-        comment: [str, None]  #: Comment if any to be specified (Optional key)
-        manufacturer: [str, None]  #: Name of the manufacturer (Optional key)
-        technology: [str, None]  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  (Optional key)
+        comment: Union[str, None]  #: Comment if any to be specified (Optional key)
+        manufacturer: Union[str, None]  #: Name of the manufacturer (Optional key)
+        technology: Union[str, None]  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  (Optional key)
         # These are documented in their respective class definitions.
         thermal_foster: "FosterThermalModel"  #: Transient thermal_foster model. (Optional key)
-        channel: List["ChannelData"]  #: Switch channel voltage and current data.
-        e_on: List["SwitchEnergyData"]  #: Switch on energy data.
-        e_off: List["SwitchEnergyData"]  #: Switch of energy data.
-        linearized_switch: List["LinearizedModel"]  #: Static data valid for a specific operating point.
-        t_j_max: [float, int]  #: Maximum junction temperature. Units in °C (Mandatory key)
+        channel: Union[List["ChannelData"], None]  #: Switch channel voltage and current data.
+        e_on: Union[List["SwitchEnergyData"], None]  #: Switch on energy data.
+        e_off: Union[List["SwitchEnergyData"], None]  #: Switch of energy data.
+        linearized_switch: Union[List["LinearizedModel"], None]  #: Static data valid for a specific operating point.
+        t_j_max: float  #: Maximum junction temperature. Units in °C (Mandatory key)
 
         def __init__(self, switch_args):
             """
@@ -1924,7 +1928,7 @@ class Transistor:
 
             return self.channel[index_channeldata], e_ons[index_e_on], e_offs[index_e_off]
 
-        def plot_channel_data_vge(self, gatevoltage):
+        def plot_channel_data_vge(self, gatevoltage: float) -> None:
             """
             Plot channel data with a chosen gate-voltage
 
@@ -2097,15 +2101,15 @@ class Transistor:
         multiple channel- and e_rr- datasets.
          """
         # Metadata
-        comment: [str, None]  #: Comment if any specified by the user. (Optional key)
-        manufacturer: [str, None]  #: Name of the manufacturer. (Optional key)
-        technology: [str, None]  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7. (Optional key)
+        comment: Union[str, None]  #: Comment if any specified by the user. (Optional key)
+        manufacturer: Union[str, None]  #: Name of the manufacturer. (Optional key)
+        technology: Union[str, None]  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7. (Optional key)
         # These are documented in their respective class definitions.
-        thermal_foster: ["FosterThermalModel", None]  #: Transient thermal_foster model.
+        thermal_foster: Union["FosterThermalModel", None]  #: Transient thermal_foster model.
         channel: List["ChannelData"]  #: Diode forward voltage and forward current data.
         e_rr: List["SwitchEnergyData"]  #: Reverse recovery energy data.
         linearized_diode: List["LinearizedModel"]  #: Static data. Valid for a specific operating point.
-        t_j_max: [float, int]  #: Diode maximum junction temperature. Units in °C (Mandatory key)
+        t_j_max: float  #: Diode maximum junction temperature. Units in °C (Mandatory key)
 
         def __init__(self, diode_args):
             """
@@ -2223,7 +2227,7 @@ class Transistor:
             :param v_on: gate turn on voltage/channel voltage
             :param v_off: gate turn off voltage
             :param SwitchEnergyData_dataset_type: dataset curve type to be specified
-
+            :param SwitchEnergyData_dataset_type: 'graph_i_e' or 'graph_r_e'
             :return: v_d, v_off
             :rtype: int
             """
@@ -2248,7 +2252,7 @@ class Transistor:
             :param t_j: junction temperature
             :param v_g: gate voltage
             :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
-
+            :param SwitchEnergyData_dataset_type: 'graph_i_e' or 'graph_r_e'
             :return: channel-object, e_rr-object
             """
             # Normalize t_j to v_g for distance metric
@@ -2393,11 +2397,11 @@ class Transistor:
     class LinearizedModel:
         """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
         t_j, i_channel and (not for all diode types) v_g."""
-        t_j: [int, float]  #: Junction temperature of diode\switch. Units in K  (Mandatory key)
-        v_g: [int, float, None]  #: Gate voltage of switch or diode. Units in V (Mandatory for Switch, Optional for some Diode types)
-        i_channel: [int, float]  #: Channel current of diode\switch. Units in A (Mandatory key)
-        r_channel: [int, float]  #: Channel resistance of diode\switch. Units in Ohm (Mandatory key)
-        v0_channel: [int, float]  #: Channel voltage of diode\switch. Unis in V (Mandatory key)
+        t_j: float  #: Junction temperature of diode\switch. Units in K  (Mandatory key)
+        v_g: Union[float, None]  #: Gate voltage of switch or diode. Units in V (Mandatory for Switch, Optional for some Diode types)
+        i_channel: float  #: Channel current of diode\switch. Units in A (Mandatory key)
+        r_channel: float  #: Channel resistance of diode\switch. Units in Ohm (Mandatory key)
+        v0_channel: float  #: Channel voltage of diode\switch. Unis in V (Mandatory key)
 
         def __init__(self, args):
             """
@@ -2428,8 +2432,8 @@ class Transistor:
         This data can be used to linearize the transistor at a specific operating point """
 
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
-        t_j: [int, float]  #: Junction temperature of switch\diode. (Mandatory key)
-        v_g: [int, float]  #: Switch: Mandatory key, Diode: optional (standard diode useless, for GaN 'diode' necessary
+        t_j: float  #: Junction temperature of switch\diode. (Mandatory key)
+        v_g: float  #: Switch: Mandatory key, Diode: optional (standard diode useless, for GaN 'diode' necessary
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
         graph_v_i: "np.ndarray[np.float64]"  #: Represented as a numpy 2D array where row 1 is the voltage and row 2 the current. Units of Row 1 = V; Row 2 = A (Mandatory key)
 
@@ -2478,7 +2482,7 @@ class Transistor:
         For different temperatures: Create additional VoltageDependentCapacitance-objects and store them as a list in the transistor-object.
         """
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
-        t_j: [int, float]  #: Junction temperature (Mandatory key)
+        t_j: float  #: Junction temperature (Mandatory key)
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the capacitance.
         graph_v_c: "np.ndarray[np.float64]"  #: Represented as a 2D numpy array where row 1 is the voltage and row 2 the capacitance. Units of Row 1 = V; Row 2 = A  (Mandatory key)
 
@@ -2544,16 +2548,16 @@ class Transistor:
         # graph_i_e: i_e is a 2-dim numpy array with two rows. r_g is a scalar. Given e.g. by an E vs I graph.
         dataset_type: str  #: Single, graph_r_e, graph_i_e (Mandatory key)
         # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
-        t_j: [int, float]  #: Junction temperature. Units in °C (Mandatory key)
-        v_supply: [int, float]  #: Supply voltage. Units in V (Mandatory key)
-        v_g: [int, float]  #: Gate voltage. Units in V (Mandatory key)
+        t_j: float  #: Junction temperature. Units in °C (Mandatory key)
+        v_supply: float  #: Supply voltage. Units in V (Mandatory key)
+        v_g: float  #: Gate voltage. Units in V (Mandatory key)
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
-        e_x: [int, float, None]  #: Scalar dataset-parameter - switching energy. Units in J
-        r_g: [int, float, None]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
-        i_x: [int, float, None]  #: Scalar dataset-parameter - current rating. Units in A
+        e_x: Union[float, None]  #: Scalar dataset-parameter - switching energy. Units in J
+        r_g: Union[float, None]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
+        i_x: Union[float, None]  #: Scalar dataset-parameter - current rating. Units in A
         # Dataset. Only one of these is allowed. The other should be 'None'.
-        graph_i_e: ["np.ndarray[np.float64]", None]  #: Units for Row 1 = A; Row 2 = J
-        graph_r_e: ["np.ndarray[np.float64]", None]  #: Units for Row 1 = Ohm; Row 2 = J
+        graph_i_e: Union["np.ndarray[np.float64]", None]  #: Units for Row 1 = A; Row 2 = J
+        graph_r_e: Union["np.ndarray[np.float64]", None]  #: Units for Row 1 = Ohm; Row 2 = J
 
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
         # ToDo: Add additional class for linearized switching loss model with capacitances. (See infineon application
@@ -2632,20 +2636,25 @@ class Transistor:
 
     class WP:
         """
-        Class WP is for user calculations in python. The user is able to linearize the channel and store the result in
-        transistor.wp . Doing so, it will be easy to handle transistor objects in later calculating code.
-        Always initialized as None. Always exported as None to .json or to database.
-        This is a temporary workspace.
+         The WP class is intended for user calculations in Python. It is used to access transistor data in user-written programs.
+         It allows the user to linearize the channel and store the result in transistor.wp. Switching loss curves can be stored
+         for specific boundary conditions, so that the same variable is always accessed in the self-written program, regardless of the transistor.
+        The class WP...
+        - Always initialized as None.
+        - Is always exported as None to .json or to the database.
+        - Is a temporary workspace.
+
         """
         # type hints
-        v_channel: [float, int, None]
-        r_channel: [float, int, None]
-        e_on: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
-        e_off: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
-        e_rr: ["np.ndarray[np.float64]", None]  # Units: Row 1: A; Row 2: J
-        v_switching_ref: [float, int, None]
-        e_oss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: J
-        q_oss: ["np.ndarray[np.float64]", None]  # Units: Row 1: V; Row 2: C
+        v_channel: Union[float, None]
+        r_channel: Union[float, None]
+        e_on: Union["np.ndarray[np.float64]", None]  #: Units: Row 1: A; Row 2: J
+        e_off: Union["np.ndarray[np.float64]", None]  #: Units: Row 1: A; Row 2: J
+        e_rr: Union["np.ndarray[np.float64]", None]  #: Units: Row 1: A; Row 2: J
+        v_switching_ref: Union[float, None]  #: Unit: V
+        e_oss: Union["np.ndarray[np.float64]", None]  #: Units: Row 1: V; Row 2: J
+        q_oss: Union["np.ndarray[np.float64]", None]  #: Units: Row 1: V; Row 2: C
+        parallel_transistors: Union[float, None]  #: Unit: Number
 
         def __init__(self):
             self.switch_v_channel = None
@@ -2668,6 +2677,10 @@ class Transistor:
         - channel characteristics will be modified
         - e_on/e_off/e_rr characteristics will be modified
         - thermal behaviour will be modified
+
+        :Example:
+        >>> transistor = load({'name': 'Infineon_FF200R12KE3'})
+        >>> parallel_transistorobject = transistor.parallel_transistors(3)
 
         :param count_parallels: count of parallel transistors of same type, default = 2
         :return: transistor object with parallel transistors
@@ -2756,6 +2769,8 @@ class Transistor:
         """
         A helper function for plecs exporter. Checks if curve characteristics and thermal network parameters of both switch and diode to be None or empty
         Appends corresponding codes for further verification in get_curve_data(..) method
+
+        .. todo: May rename to 'plecs_validate_transistor'
 
         :return: Availability codes
         :rtype: dict
@@ -3189,6 +3204,11 @@ def negate_and_append(voltage, current):
 
 
 def get_gatedefaults(type):
+    """
+    Defines gate voltage defaults depending on the transistor type
+    :param type: transtior type, e.g. IGBT, MOSFET, SiC-MOSFET or GaN-Transistor
+    :return: default gate voltages [v_g_turn_on, v_g_turn_off, v_g_channel_blocks, v_g_channel_conducting]
+    """
     gate_voltages = {'sic-mosfet': [12, 0, 0, 12],
                      'mosfet': [12, 0, 0, 12],
                      'igbt': [15, -15, 0, 15],
@@ -3253,6 +3273,7 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
         leaves the u axis on the u-point to zero. Otherwise there might be a very small (and negative) value of u.
     :param first_x_to_0: boolean True/False. Set 'True' to set the first x-value to zero. This is interesting in
         case of nonlinear input/output capacitances, e.g. c_oss, c_iss, c_rss
+    :param mirror_xy_data: Takes the absolue() of both axis. Used for given mirrored data, e.g. some datasheet show diode data in the 3rd quadrand instead of the 1st quadrant
     :return: 2d array, ready to use in the transistor database
 
     """
@@ -3288,7 +3309,14 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
 def merge_curve(curve, curve_detail):
     """
     merges two equal curves, one of which contains an enlarged section of the first curve.
+
     Use case is the merging of capacity curves, here often two curves (normal and zoom) are given in the data sheets.
+
+    :Example (e.g. merges c_oss curve from 0-200V and from 0-1000V):
+    >>> c_oss_normal = tdb.csv2array('transistor_c_oss.csv', first_x_to_0=True)
+    >>> c_oss_detail = tdb.csv2array('transistor_c_oss_detail.csv', first_x_to_0=True)
+    >>> c_oss_merged = tdb.merge_curve(c_oss_normal, c_oss_detail)
+
     :param curve: full curve
     :param curve_detail: curve with zoom on x-axis
     :return: merged curve
@@ -3307,10 +3335,16 @@ def merge_curve(curve, curve_detail):
     return merged_curve
 
 
-def print_TDB(filters=[], collection="local"):
+def print_TDB(filters: List[str] = [], collection: str ="local") -> List[str]:
     """
     Print all transistorelements stored in the local database
-    :param filters: filters for searching the database
+
+    :Example:
+    >>> tdb.print_TDB()
+    >>> # or
+    >>> tdb.print_TDB('type')
+
+    :param filters: filters for searching the database, e.g. 'name' or 'type'
     :param collection: Choose database name in local mongodb client. Default name is "collection"
     :return: Return a list with all transistor objects fitting to the search-filter
     """
@@ -3363,8 +3397,12 @@ def load(dict_filter, collection="local"):
     return load_from_db(collection.find_one(dict_filter))
 
 
-def load_from_db(db_dict):
+def load_from_db(db_dict: dict):
     """
+    Loads a transistor object from the database
+
+    .. todo: This function might needs to be renamed, e.g. 'convert_dict_to_object'
+
     :param db_dict:
     :return: transistorobject
     """
@@ -3412,12 +3450,13 @@ def load_from_db(db_dict):
     return Transistor(transistor_args, switch_args, diode_args)
 
 
-def update_from_fileexchange(collection="local", overwrite=True):
+def update_from_fileexchange(collection: str ="local", overwrite: bool =True) -> None:
     """
     Update your local transitor database from transistordatabase-fileexchange from github
+
     :param collection: name of mongodb collection
     :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
-    :return: -
+    :return: None
     """
     print(f"Note: Please make sure that you have installed the latest version of the transistor database, especially if the update_from_fileexchange()-method ends in an error. Find the lastest version here: https://pypi.org/project/transistordatabase/")
     # Remove repo if it is already available to avoid clone error handling.
@@ -3450,7 +3489,13 @@ def update_from_fileexchange(collection="local", overwrite=True):
     shutil.rmtree('./cloned_repo')
 
 
-def import_json(path):
+def import_json(path: str) -> dict:
+    """
+    Import a json-file to your local transistor database
+
+    :param path: path to the .json-file
+    :return: transistor dictionary, loaded from the .json-file
+    """
     if isinstance(path, str):
         with open(path, 'r') as myfile:
             data = myfile.read()
@@ -3459,10 +3504,11 @@ def import_json(path):
         TypeError(f"{path = } ist not a string.")
 
 
-def r_g_max_rapid_channel_turn_off(v_gsth, c_ds, c_gd, i_off, v_driver_off):
+def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: Union[float, List[float]], v_driver_off: float) -> float:
     """
     Calculates the maximum gate resistor to achieve no turn-off losses when working with MOSFETs
     'rapid channel turn-off' (rcto)
+
     Note: Input (e.g. i_off can also be a vector)
     Source: D. Kübrich, T. Dürbraum, A. Bucher:
     'Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances'
@@ -3477,13 +3523,14 @@ def r_g_max_rapid_channel_turn_off(v_gsth, c_ds, c_gd, i_off, v_driver_off):
     return (v_gsth-v_driver_off)/i_off * (1 + c_ds/c_gd)
 
 #Export helper functions
-def dict_clean(input_dict):
+def dict_clean(input_dict: dict) -> dict:
     """
     Cleans a python dict and makes it compatible with matlab
+
     Dict must be cleaned from 'None's to np.nan (= NaN in Matlab)
     see https://stackoverflow.com/questions/35985923/replace-none-in-a-python-dictionary
     :param input_dict: dictionary
-    :return:
+    :return: 'clean' matlab-compatible transistor dictionary
     """
     result = {}
     for key, value in input_dict:
@@ -3495,6 +3542,9 @@ def dict_clean(input_dict):
 def compatibilityTest(Transistor, attribute):
     """
     checks attribute for occurrences of None an replace it with np.nan
+
+    .. todo: This function might can be replaced by dict_clean()
+
     :param Transistor: transistor object
     :param attribute: path to given attribute
     :return: attribute value or np.nan
