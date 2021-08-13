@@ -3,7 +3,7 @@ import xml.etree.ElementTree as et
 import numpy as np
 import re
 import os
-from typing import List
+from typing import List, Union
 from matplotlib import pyplot as plt
 from bson.objectid import ObjectId
 from bson import json_util

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Transistor method 'compare_channel_linearized()' to compare channel data with linearized data 
+- Sphinx documentation, see [here](https://upb-lea.github.io/transistordatabase/transistordatabase.html)
+
+### Updated
+- Docstrings
 
 ### Bugfixes
 - #44: Choose another linearisation default current for quickstart_wp()
