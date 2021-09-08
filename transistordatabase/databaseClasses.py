@@ -2678,12 +2678,14 @@ class Transistor:
         - e_on/e_off/e_rr characteristics will be modified
         - thermal behaviour will be modified
 
+        :param count_parallels: count of parallel transistors of same type, default = 2
+        
+        :return: transistor object with parallel transistors
+
         :Example:
+
         >>> transistor = load({'name': 'Infineon_FF200R12KE3'})
         >>> parallel_transistorobject = transistor.parallel_transistors(3)
-
-        :param count_parallels: count of parallel transistors of same type, default = 2
-        :return: transistor object with parallel transistors
 
         """
         transistor_dict = self.convert_to_dict()
@@ -2951,6 +2953,18 @@ class Transistor:
                    else None
 
 def get_xml_data(file):
+    """
+    A helper function to import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data.
+
+    :param file: name of the xml file to be read
+    :type file: str
+
+    :raises ImportError: If the provide files doesn't relate to XML file format
+
+    :return: dictionaries holding turn on/off energies, channel data, foster thermal data
+    :rtype: dict
+
+    """
     namespaces = {'plecs': 'http://www.plexim.com/xml/semiconductors/'}
     etree = et.parse(file)
     root = etree.getroot()
@@ -3037,6 +3051,17 @@ def get_xml_data(file):
         raise ImportError('Import of '+file+' Not possible: Only table type xml data are accepted')
 
 def import_xml_data(files):
+    """
+    A function feature of transistordatabase module to import switch and diode characteristics in plecs xml file format.
+
+    :param files: dictionary holding switch and diode xml file names
+    :rtype files: dict
+
+    :raises ImportError: raised when file format is not valid or not found
+
+    :return: Transistor object creating using information extracted from the provided files
+    :rtype: Transistor
+    """
     try:
         s_info, s_energy_on_list, s_energy_off_list, s_channel_list, s_foster_args = get_xml_data(files['switch'])
         switch_args = {
@@ -3089,6 +3114,16 @@ def import_xml_data(files):
         print(e.args[0])
 
 def attach_units(trans, devices):
+    """
+    The function will attach units for the virtual datasheet parameters when a call is made in export_datasheet() method.
+
+    :param trans: pdf data which contains the transistor related generic information
+    :type trans: dict
+    :param devices: pdf data which contains the switch type related information
+    :type devices: dict
+
+    :return: None
+    """
     amphere_list = {'A': ['I_abs_max', 'I_cont']}
     volts_list = {'V': ['V_abs_max']}
     area_list = {'sq.m': ['Housing_area', 'Cooling_area']}
@@ -3114,12 +3149,26 @@ def attach_units(trans, devices):
                     break
 
 def get_img_raw_data(plot):
+    """
+    A helper method to convert the plot images to raw data which is further used to display plots in virtual datasheet
+
+    :param plot: pyplot object
+
+    :return: decoded raw image data to utf-8
+    """
     buf = io.BytesIO()
     plot.savefig(buf, format='png')
     encoded_img_data = base64.b64encode(buf.getvalue())
     return encoded_img_data.decode('utf-8')
 
 def get_vc_plots(cap_data):
+    """
+    A helper function to plot and convert voltage dependant capacitance plots in raw data format. Invoked internally by export_datasheet() method.
+
+    :param cap_data: dictionary holding capacitance information of type list (self.c_oss, self.c_iss, self.c_rss)
+
+    :return: decoded raw image data to utf-8
+    """
     if not all(cap_data.values()):
         return None
     fig = plt.figure()
@@ -3133,14 +3182,26 @@ def get_vc_plots(cap_data):
     plt.ylabel('Capacitance in F')
     plt.grid()
     return get_img_raw_data(plt)
-    #buf = io.BytesIO()
-    #fig.savefig(buf, format='png')
-    #encoded_img_data = base64.b64encode(buf.getvalue())
-    #return encoded_img_data.decode('utf-8')
-
 
 
 def get_channel_data(channel_data, plecs_holder, v_on, is_diode, has_body_diode):
+    """
+    A helper method to extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
+
+    :param channel_data: channel data taken from transitor class switch/diode object
+    :type channel_data: list
+    :param plecs_holder: dictionary to collect the channel data
+    :type plecs_holder: dict
+    :param v_on: channel voltage of IGBT/MOSFET
+    :type v_on: int
+    :param is_diode: a boolean to notify that argument channel_data relates to diode
+    :type is_diode: bool
+    :param has_body_diode: a boolean to check if the switch relates to either mosfet or sic-mosfet type
+    :type has_body_diode: bool
+
+    :return: plecs_holder filled with the extracted switch's or diode's channel information
+    :rtype: dict
+    """
     for channel in channel_data:
         if channel['v_g'] == v_on or (not has_body_diode and is_diode):
             try:
@@ -3162,6 +3223,23 @@ def get_channel_data(channel_data, plecs_holder, v_on, is_diode, has_body_diode)
 
 
 def get_loss_curves(loss_data, plecs_holder, loss_type, v_g, is_recovery_loss):
+    """
+    A helper method to extract loss information of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
+
+    :param loss_data: turn on/off energy data taken from transistor class switch or diode object
+    :type loss_data: list
+    :param plecs_holder: dictionary to collect the energy loss data
+    :type plecs_holder: dict
+    :param loss_type: either of type TurnOnLoss or TurnOffLoss
+    :type loss_type: str
+    :param v_g: gate turn on or turn off voltage at which the curves selected are being made
+    :type v_g: int
+    :param is_recovery_loss: a boolean to specify the provided loss information relates to diode's reverse recovery losses
+    :type is_recovery_loss: bool
+
+    :return: plecs_holder filled with the extracted switch's or diode's energy loss information
+    :rtype: dict
+    """
     for energy_dict in loss_data:
         if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict[
             'graph_i_e'] is not None:
@@ -3189,6 +3267,18 @@ def get_loss_curves(loss_data, plecs_holder, loss_type, v_g, is_recovery_loss):
 
 
 def negate_and_append(voltage, current):
+    """
+    A helper function to negate the channel current x-axis data for the transistors of type mosfet.
+    Generates third quadrant curve characteristics for mosfet.
+
+    :param voltage: channel voltage y-axis information
+    :type voltage: list
+    :param current: channel current x-axis information
+    :type current: list
+
+    :return: the negated channel axis information is appended to the exists axis and returned
+    :rtype: list, list
+    """
     current_reverse = np.array(current)
     current_reverse = current_reverse[current_reverse != 0]
     current_reverse = np.flip(current_reverse)
@@ -3206,7 +3296,10 @@ def negate_and_append(voltage, current):
 def get_gatedefaults(type):
     """
     Defines gate voltage defaults depending on the transistor type
+
     :param type: transtior type, e.g. IGBT, MOSFET, SiC-MOSFET or GaN-Transistor
+    :type type: str
+
     :return: default gate voltages [v_g_turn_on, v_g_turn_off, v_g_channel_blocks, v_g_channel_conducting]
     """
     gate_voltages = {'sic-mosfet': [12, 0, 0, 12],
@@ -3221,7 +3314,11 @@ def check_realnum(x):
     """
     Check if argument is real numeric scalar. Raise TypeError if not. None is also accepted because it is valid for
     optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand.
+
     :param x: input argument
+
+    :raises TypeError: if x is not numeric
+
     :return: True in case of numeric scalar.
     """
     if isinstance(x, (int, float, np.integer, np.floating)) or x is None:
@@ -3231,9 +3328,13 @@ def check_realnum(x):
 
 def check_2d_dataset(x):
     """
-    Check if argument is real 2D-dataset of right shape. Raise TypeError if not. None is also accepted because it is
+    Check if argument is real 2D-dataset of right shape. None is also accepted because it is
     valid for optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand.
+
     :param x: 2d-dataset
+
+    :raises TypeError: if the passed argument is a 2D-numpy array with real numeric values
+
     :return: True in case of valid 2d-dataset
     """
     if x is None:
@@ -3248,10 +3349,14 @@ def check_2d_dataset(x):
 
 def check_str(x):
     """
-    Check if argument is string. Raise TypeError if not. Function not necessary but helpful to keep raising of errors
+    Check if argument is string. Function not necessary but helpful to keep raising of errors
     consistent with other type checks. None is also accepted because it is valid for optional keys. Mandatory keys that
     must not contain None are checked somewhere else beforehand.
+
     :param x: input string
+    
+    :raises TypeError: if the argument is not of type string
+
     :return: True in case of valid string
     """
     if isinstance(x, str) or x is None:
@@ -3265,17 +3370,25 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
     https://apps.automeris.io/wpd/
 
-    :param csv_filename: str. Insert .csv filename, e.g. "switch_channel_25_15v"
-    :param first_xy_to_00: boolean True/False. Set 'True' to change the first value pair to zero. This is necessary in
+    .. todo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
+
+    :param csv_filename: Insert .csv filename, e.g. "switch_channel_25_15v"
+    :type csv_filename: str
+    :param first_xy_to_00: Set 'True' to change the first value pair to zero. This is necessary in
         case of webplotdigitizer returns the first value pair e.g. as -0,13; 0,00349.
-    :param second_y_to_0: boolean True/False. Set 'True' to set the second y-value to zero. This is interesting in
+    :type first_xy_to_00: bool
+    :param second_y_to_0: Set 'True' to set the second y-value to zero. This is interesting in
         case of diode / igbt forward channel characteristic, if you want to make sure to set the point where the ui-graph
         leaves the u axis on the u-point to zero. Otherwise there might be a very small (and negative) value of u.
-    :param first_x_to_0: boolean True/False. Set 'True' to set the first x-value to zero. This is interesting in
+    :type second_y_to_0: bool
+    :param first_x_to_0: Set 'True' to set the first x-value to zero. This is interesting in
         case of nonlinear input/output capacitances, e.g. c_oss, c_iss, c_rss
+    :type first_x_to_0: bool
     :param mirror_xy_data: Takes the absolue() of both axis. Used for given mirrored data, e.g. some datasheet show diode data in the 3rd quadrand instead of the 1st quadrant
-    :return: 2d array, ready to use in the transistor database
+    :type mirror_xy_data: bool
 
+    :return: 2d array, ready to use in the transistor database
+    :rtype: 2D-array
     """
     # See issue #5: German csv-files use ; as separator, english systems use , as separator
     # if ; is available in the file, csv-file generation was made by a german-language operating system
@@ -3304,22 +3417,24 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
     if mirror_xy_data == True:
         array = np.abs(array)
 
-    return np.transpose(array)  # ToDo: Check if array needs to be transposed? (Always the case for webplotdigitizer)
+    return np.transpose(array)
 
 def merge_curve(curve, curve_detail):
     """
-    merges two equal curves, one of which contains an enlarged section of the first curve.
-
+    Merges two equal curves, one of which contains an enlarged section of the first curve.
     Use case is the merging of capacity curves, here often two curves (normal and zoom) are given in the data sheets.
 
+    :param curve: full curve
+    :param curve_detail: curve with zoom on x-axis
+
+    :return: merged curve
+
     :Example (e.g. merges c_oss curve from 0-200V and from 0-1000V):
+
     >>> c_oss_normal = tdb.csv2array('transistor_c_oss.csv', first_x_to_0=True)
     >>> c_oss_detail = tdb.csv2array('transistor_c_oss_detail.csv', first_x_to_0=True)
     >>> c_oss_merged = tdb.merge_curve(c_oss_normal, c_oss_detail)
 
-    :param curve: full curve
-    :param curve_detail: curve with zoom on x-axis
-    :return: merged curve
     """
 
     # find out max(x) from detailed curve
@@ -3339,14 +3454,19 @@ def print_TDB(filters: List[str] = [], collection: str ="local") -> List[str]:
     """
     Print all transistorelements stored in the local database
 
+    :param filters: filters for searching the database, e.g. 'name' or 'type'
+    :type filters: List[str]
+    :param collection: Choose database name in local mongodb client. Default name is "collection"
+    :type collection: str
+
+    :return: Return a list with all transistor objects fitting to the search-filter
+    :rtype: list
+
     :Example:
+
     >>> tdb.print_TDB()
     >>> # or
     >>> tdb.print_TDB('type')
-
-    :param filters: filters for searching the database, e.g. 'name' or 'type'
-    :param collection: Choose database name in local mongodb client. Default name is "collection"
-    :return: Return a list with all transistor objects fitting to the search-filter
     """
     if collection == "local":
         collection = connect_local_TDB()
@@ -3370,6 +3490,13 @@ def print_TDB(filters: List[str] = [], collection: str ="local") -> List[str]:
 
 
 def connect_TDB(host):
+    """
+    A method for establishing connection with transistordatabase_exchange.
+
+    :param host: "local" is specified by default, other cases need to be investigated
+
+    :return: transistor_database collection
+    """
     if host == "local":
         host = "mongodb://localhost:27017/"
     myclient = MongoClient(host)
@@ -3377,6 +3504,13 @@ def connect_TDB(host):
 
 
 def connect_local_TDB():
+    """
+    A method for establishing connection with transistordatabase_exchange. Internally used by update_from_fileexchange() method to sync the local with
+    transistordatabase_File_Exchange and load() methods for saving and loading the transistor object to local mongodb-database.
+
+    :return: transistor_database collection
+
+    """
     host = "mongodb://localhost:27017/"
     myclient = MongoClient(host)
     return myclient.transistor_database.collection
@@ -3385,11 +3519,15 @@ def connect_local_TDB():
 def load(dict_filter, collection="local"):
     """
     load a transistor from your local mongodb-database
-    example:
-    transistor_imported = import_json('CREE_C3M0016120K.json')
+
     :param dict_filter: element filter, see example
     :param collection: mongodb connection, predefined value
-    :return: transistor object
+
+    :return: transistor
+
+    :Example:
+
+    >>>transistor_imported = import_json('CREE_C3M0016120K.json')
     """
     if collection == "local":
         collection = connect_local_TDB()
@@ -3404,6 +3542,7 @@ def load_from_db(db_dict: dict):
     .. todo: This function might needs to be renamed, e.g. 'convert_dict_to_object'
 
     :param db_dict:
+
     :return: transistorobject
     """
     # Convert transistor_args
@@ -3455,7 +3594,10 @@ def update_from_fileexchange(collection: str ="local", overwrite: bool =True) ->
     Update your local transitor database from transistordatabase-fileexchange from github
 
     :param collection: name of mongodb collection
+    :type collection: str
     :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
+    :type overwrite: bool
+
     :return: None
     """
     print(f"Note: Please make sure that you have installed the latest version of the transistor database, especially if the update_from_fileexchange()-method ends in an error. Find the lastest version here: https://pypi.org/project/transistordatabase/")
@@ -3494,6 +3636,8 @@ def import_json(path: str) -> dict:
     Import a json-file to your local transistor database
 
     :param path: path to the .json-file
+    :type path:str
+
     :return: transistor dictionary, loaded from the .json-file
     """
     if isinstance(path, str):
@@ -3513,12 +3657,20 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     Source: D. Kübrich, T. Dürbraum, A. Bucher:
     'Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances'
     International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244
+
     :param v_gsth: gate threshod voltage
+    :type v_gsth: float
     :param c_ds: equivalent drain-source capacitance
+    :type c_ds: float
     :param c_gd: equivalent gate-drain capacitance
+    :type c_gd: float
     :param i_off: turn-off current
+    :type i_off: float or List[float]
     :param v_driver_off: Driver voltage during turn-off
+    :type v_driver_off: float
+
     :return: r_g_max_rcto maxiumum gate resistor to achieve rapid channel turn-off
+    :rtype: float
     """
     return (v_gsth-v_driver_off)/i_off * (1 + c_ds/c_gd)
 
@@ -3529,7 +3681,10 @@ def dict_clean(input_dict: dict) -> dict:
 
     Dict must be cleaned from 'None's to np.nan (= NaN in Matlab)
     see https://stackoverflow.com/questions/35985923/replace-none-in-a-python-dictionary
-    :param input_dict: dictionary
+
+    :param input_dict: dictionary to be cleaned
+    :type input_dict: dict
+
     :return: 'clean' matlab-compatible transistor dictionary
     """
     result = {}
@@ -3546,7 +3701,12 @@ def compatibilityTest(Transistor, attribute):
     .. todo: This function might can be replaced by dict_clean()
 
     :param Transistor: transistor object
+    :type Transistor: Transistor
     :param attribute: path to given attribute
+    :type attribute: str
+
+    :raises AttributeError: if the provided path evaluates to invalid attribute
+
     :return: attribute value or np.nan
     """
     try:
@@ -3560,6 +3720,8 @@ def compatibilityTest(Transistor, attribute):
         return np.nan
 
 class MissingDataError(Exception):
+    """Custom exception class for plecs_exporter"""
+
     # define the error codes & messages here
     em = {1101: "Switch conduction channel information is missing, cannot export to .xml",
           1111: "Switch conduction channel information is missing at provided v_g, cannot export to .xml",
