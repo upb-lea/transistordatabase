@@ -8,5 +8,4 @@ build/
 dist/
 transistordatabase.egg-info/
 .eggs/
-/sphinx/_build
 /.idea

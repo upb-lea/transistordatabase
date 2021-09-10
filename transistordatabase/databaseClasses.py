@@ -531,8 +531,10 @@ class Transistor:
         """
         Function to fill out the .wp-class by just one command 'quickstart_wp()'.
         Uses typical working points
+
          - channel linearisation next to v_g = 15V, i_cont and t_j = t_j_abs_max - 25 degree
          - switching loss curves next to t_j = t_j_abs_max - 25 degree
+
         :return: None
         """
         #ToDo: may separate data for IGBT, MOSFET, SiC-MOSFET and GaN-Transistor
@@ -2639,11 +2641,12 @@ class Transistor:
          The WP class is intended for user calculations in Python. It is used to access transistor data in user-written programs.
          It allows the user to linearize the channel and store the result in transistor.wp. Switching loss curves can be stored
          for specific boundary conditions, so that the same variable is always accessed in the self-written program, regardless of the transistor.
+
         The class WP...
+
         - Always initialized as None.
         - Is always exported as None to .json or to the database.
         - Is a temporary workspace.
-
         """
         # type hints
         v_channel: Union[float, None]
