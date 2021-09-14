@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Export transistor objects &mdash; transistordatabase(TDB) 0.2.11 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> transistordatabase(TDB)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html"><span class="sectnum">1</span> Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">2</span> Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase-s-usage"><span class="sectnum">3</span> transistordatabase’s usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">4</span> Export transistor objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">5</span> Others</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transistordatabase.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">transistordatabase(TDB)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Export transistor objects</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            
+              <a href="https://github.com/Mohan Nagella/transistordatabse/blob/main/docs/exports.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="export-transistor-objects">
+<h1>Export transistor objects<a class="headerlink" href="#export-transistor-objects" title="Permalink to this headline">¶</a></h1>
+<p>Using transistors within pyhton you have already seen. Now we want to take a closer look at exporting the transistors to other programs. These exporters are currently working. Some others are planned for the future.</p>
+<div class="section" id="export-a-virtual-datasheet">
+<h2>Export a Virtual datasheet<a class="headerlink" href="#export-a-virtual-datasheet" title="Permalink to this headline">¶</a></h2>
+<p>This function exports a virtual datasheet to see stored data in the database. Function display the output path of .html-file, which can be opened in your prefered browser.</p>
+<img alt="Generated virtual datasheet example" class="align-center" src="_images/Virtual_Datasheet.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<p>transistor = tdb.load({‘name’: ‘Fuji_2MBI100XAA120-50’})
+transistor.export_datasheet()</p>
+</div>
+<div class="section" id="export-to-geckocircuits">
+<h2>Export to GeckoCIRCUITS<a class="headerlink" href="#export-to-geckocircuits" title="Permalink to this headline">¶</a></h2>
+<p>GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct <a class="reference external" href="http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip">download link</a>. At the moment you need to know the exporting parameters like gate resistor, gate-voltage and switching voltage. This will be simplified in the near future.
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">})</span>
+<span class="n">transistor</span><span class="o">.</span><span class="n">export_geckocircuits</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From now on, you can load the model into your GeckoCIRCUITS schematic.</p>
+<img alt="GeckoExporter usage example" class="align-center" src="_images/Example_Gecko_Exporter.png" />
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>It is also possible to control GeckoCIRCUITS from python, e.g. to sweep transistors. In this case, linux users should consider to run <a class="reference external" href="https://github.com/tinix84/gecko/releases/tag/v1.1">this</a> Version of GeckoCIRCUITS instead the above one (port to OpenJDK).</p>
+</div>
+</div>
+<div class="section" id="export-to-plecs">
+<h2>Export to PLECS<a class="headerlink" href="#export-to-plecs" title="Permalink to this headline">¶</a></h2>
+<p>For a thermal and loss simulation using PLECS simulation tool, it requires the transistor loss and characteristic curves to be loaded in XML(Version 1.1) file format. More information on how to load the XML data can be found from here. To export the transistor object from your database to plecs required xml file format, following lines need to be executed starting with loading the required datasheet.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Fuji_2MBI200XAA065-50&#39;</span><span class="p">})</span>
+<span class="n">transistor</span><span class="o">.</span><span class="n">export_plecs</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Outputs are xml files - one for switch and one for diode (if available), which can be then loaded into your schematic following the instructions as mentioned <a class="reference external" href="https://www.plexim.com/support/videos/thermal-modeling-part-1">here</a>. Note that if channel curves for the default gate-voltage are found missing then the xml files could not be possible to generate and a respective warning message is issued to the user. The user can change the default gate-voltage and switching voltage by providing an extra list argument as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Fuji_2MBI200XAA065-50&#39;</span><span class="p">})</span>
+<span class="n">transistor</span><span class="o">.</span><span class="n">export_plecs</span><span class="p">([</span><span class="mi">15</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.</p>
+<img alt="PLECS thermal exporter usage example" class="align-center" src="_images/PLECS_thermal_editor.png" />
+</div>
+<div class="section" id="export-to-simulink">
+<h2>Export to Simulink<a class="headerlink" href="#export-to-simulink" title="Permalink to this headline">¶</a></h2>
+<p>For a loss simulation in simulink, there is a IGBT model available, which can be found in this <a class="reference external" href="https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html">simulink model</a> . Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Infineon_FF200R12KE3&#39;</span><span class="p">})</span>
+<span class="n">transistor</span><span class="o">.</span><span class="n">export_simulink_loss_model</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Output is a .mat-file, you can load in your matlab program to simulate. Now, you are able to sweep transistors within your simulation. E.g. some matlab-code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load</span> <span class="n">Infineon_FF200R12KE3_Simulink_lossmodel</span><span class="o">.</span><span class="n">mat</span><span class="p">;</span>
+<span class="n">load</span> <span class="n">Infineon_FF300R12KE3_Simulink_lossmodel</span><span class="o">.</span><span class="n">mat</span><span class="p">;</span>
+<span class="n">load</span> <span class="n">Fuji_2MBI200XBE120</span><span class="o">-</span><span class="mi">50</span><span class="n">_Simulink_lossmodel</span><span class="o">.</span><span class="n">mat</span><span class="p">;</span>
+<span class="n">load</span> <span class="n">Fuji_2MBI300XBE120</span><span class="o">-</span><span class="mi">50</span><span class="n">_Simulink_lossmodel</span><span class="o">.</span><span class="n">mat</span><span class="p">;</span>
+<span class="n">Transistor_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">Infineon_FF200R12KE3</span> <span class="n">Infineon_FF300R12KE3</span> <span class="n">Fuji_2MBI200XBE120</span><span class="o">-</span><span class="mi">50</span> <span class="n">Fuji_2MBI300XBE120</span><span class="o">-</span><span class="mi">50</span><span class="p">];</span>
+<span class="k">for</span> <span class="n">i_Transistor</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">length</span><span class="p">(</span><span class="n">Transistor_array</span><span class="p">)</span>
+    <span class="n">Transistor</span> <span class="o">=</span> <span class="n">Transistor_array</span><span class="p">(</span><span class="n">i_Transistor</span><span class="p">);</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">sim</span><span class="p">(</span><span class="s1">&#39;YourSimulinkSimulationHere&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="Simulink exporter usage example" class="align-center" src="_images/Example_Simulink_Exporter.png" />
+</div>
+<div class="section" id="export-to-matlab-octave">
+<h2>Export to Matlab/Octave<a class="headerlink" href="#export-to-matlab-octave" title="Permalink to this headline">¶</a></h2>
+<p>Python dictionary can be exported to Matlab, see the following example:
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">})</span>
+<span class="n">transistor</span><span class="o">.</span><span class="n">export_matlab</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.</p>
+<img alt="Matlab .mat exporter usage example" class="align-center" src="_images/Matlab.png" />
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, LEA, Paderborn University.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../0.2.11/index.html">0.2.11</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="exports.html">main</a></dd>
+    </dl>
+  </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
