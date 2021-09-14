@@ -3530,7 +3530,7 @@ def load(dict_filter, collection="local"):
 
     :Example:
 
-    >>>transistor_imported = import_json('CREE_C3M0016120K.json')
+    >>> transistor_imported = import_json('CREE_C3M0016120K.json')
     """
     if collection == "local":
         collection = connect_local_TDB()
@@ -3639,7 +3639,7 @@ def import_json(path: str) -> dict:
     Import a json-file to your local transistor database
 
     :param path: path to the .json-file
-    :type path:str
+    :type path: str
 
     :return: transistor dictionary, loaded from the .json-file
     """
