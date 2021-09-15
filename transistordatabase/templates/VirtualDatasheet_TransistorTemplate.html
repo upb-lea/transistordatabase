@@ -1,23 +1,24 @@
 {% extends "VirtualDatasheet_BaseTemplate.html" %}
 {% block content %}
-dPlotCnt = 0
-sPlotCnt = 0
+{% set dPlotCnt = 0 %}
+{% set sPlotCnt = 0 %}
 {% if diode['energy_plots_r'] is not none %}
-dPlotCnt = dPlotCnt + 1
+{% set dPlotCnt = dPlotCnt + 1 %}
 {% endif %}
 {% if diode['imp_plot'] is not none %}
-dPlotCnt = dPlotCnt + 1
+{% set dPlotCnt = dPlotCnt + 1 %}
 {% endif %}
 
 {% if switch['energy_plots'] is not  none %}
-sPlotCnt = sPlotCnt + 1
+{% set sPlotCnt = sPlotCnt + 1 %}
 {% endif %}
 {% if switch['energy_plots_r'] is not none %}
-sPlotCnt = sPlotCnt + 1
+{% set sPlotCnt = sPlotCnt + 1 %}
 {% endif %}
 {% if switch['imp_plot'] is not none %}
-sPlotCnt = sPlotCnt + 1
+{% set sPlotCnt = sPlotCnt + 1 %}
 {% endif %}
+<!-- **********Above code is for checking if the energy and img plots exists for extending html page************* -->
 
 <div style="border: 3px solid; height:300mm">
 <br>
@@ -119,7 +120,7 @@ sPlotCnt = sPlotCnt + 1
 </div>	
 	{% if sPlotCnt != 0 %}
 	<div style="page-break-before:always;  border: 3px solid; height:220mm">
-  <h3 style="text-align:center"> {{trans["Type"]}} Characteristic Plots (..contd) </h3>
+  <h3 style="text-align:center"> {{trans["Type"]}} Characteristic Plots (..contd)</h3>
   <div class="container">
 	   <div class="row">
 			{% if switch['energy_plots_r'] is not none %}
