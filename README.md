@@ -22,7 +22,7 @@ Functionality examples:
 Note: Development status: Alpha
 
 ## Complete documentation
-The complete documentation can be found [here](https://upb-lea.github.io/transistordatabase/transistordatabase.html).
+The complete documentation can be found [here](https://upb-lea.github.io/transistordatabase/main/transistordatabase.html).
 
 # 1. Installation
 ## 1.1 Windows
