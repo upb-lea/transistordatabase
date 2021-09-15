@@ -1,5 +1,24 @@
 {% extends "VirtualDatasheet_BaseTemplate.html" %}
 {% block content %}
+dPlotCnt = 0
+sPlotCnt = 0
+{% if diode['energy_plots_r'] is not none %}
+dPlotCnt = dPlotCnt + 1
+{% endif %}
+{% if diode['imp_plot'] is not none %}
+dPlotCnt = dPlotCnt + 1
+{% endif %}
+
+{% if switch['energy_plots'] is not  none %}
+sPlotCnt = sPlotCnt + 1
+{% endif %}
+{% if switch['energy_plots_r'] is not none %}
+sPlotCnt = sPlotCnt + 1
+{% endif %}
+{% if switch['imp_plot'] is not none %}
+sPlotCnt = sPlotCnt + 1
+{% endif %}
+
 <div style="border: 3px solid; height:300mm">
 <br>
   <table class="tableCSS"> 
@@ -29,7 +48,7 @@
   {% endfor %}
   </table>
   </div>
-  <div style="page-break-before:always; border: 3px solid; height:330mm">
+<div style="page-break-before:always; border: 3px solid; height:320mm">
   <br>
   <br>
   <table class="tableCSS">
@@ -82,26 +101,33 @@
 <div style="page-break-before:always;  border: 3px solid; height:220mm">
   <h3 style="text-align:center"> {{trans["Type"]}} Characteristic Plots </h3>
   <div class="container">
-	   <div class="row">			
+	   <div class="row">
+			{% if trans['c_plots'] is not none %}
+			<div class="thumb">
+			  <div class="imgCaption">Voltage dependant Capacitance</div>
+			  <img id="picture" src="data:image/png;base64,{{ trans['c_plots'] }}" class="img">
+			</div>
+			{% endif %}
 			{% for key, value in switch['channel_plots'].items() %}
 			    <div class="thumb">				
 				<div class="imgCaption">Channel at {{ key }}°C </div>
 				  <img id="pictureChannelMulti" class="img" src="data:image/png;base64,{{ value }}" >
 				</div>
 			{% endfor %}
-		   {% if switch['energy_plots_r'] is not none %}
+		</div>
+	</div>
+</div>	
+	{% if sPlotCnt != 0 %}
+	<div style="page-break-before:always;  border: 3px solid; height:220mm">
+  <h3 style="text-align:center"> {{trans["Type"]}} Characteristic Plots (..contd) </h3>
+  <div class="container">
+	   <div class="row">
+			{% if switch['energy_plots_r'] is not none %}
 			<div class="thumb">
 			  <div class="imgCaption">Energy plots</div>
 			  <img id="pictureEnergy" src="data:image/png;base64,{{ switch['energy_plots'] }}" class="img">
 			</div>
 			{% endif %}
-		</div>
-	</div>
-</div>	
-<div style="page-break-before:always;  border: 3px solid; height:220mm">
-  <h3 style="text-align:center"> {{trans["Type"]}} Characteristic Plots (..contd) </h3>
-  <div class="container">
-	   <div class="row">	
 			{% if switch['energy_plots_r'] is not none %}		    
 			<div class="thumb">
 				<div class="imgCaption">Energy plots</div>
@@ -113,18 +139,13 @@
 					<div class="imgCaption">Impedance plots</div>
 					<img id="pictureImp" src="data:image/png;base64,{{ switch['imp_plot'] }}" class="img">
 				</div>
-			{% endif %}
-			{% if trans['c_plots'] is not none %}
-			<div class="thumb">
-			  <div class="imgCaption">Voltage dependant Capacitance</div>
-			  <img id="picture" src="data:image/png;base64,{{ trans['c_plots'] }}" class="img">
-			</div>
-			{% endif %}
+			{% endif %}			
 	   </div>
 	</div>
 </div>	
+	{% endif %}
 {% else %}
-  <div style="page-break-before:always;  border: 3px solid; height:330mm">
+<div style="page-break-before:always;  border: 3px solid; height:320mm">
   <h3 style="text-align:center"> {{trans["Type"]}} Characteristic Plots </h3>
   <div class="container">
 	   <div class="row">			
@@ -169,23 +190,33 @@
 	</div>
 </div>	
 {% endif %} 
+
+{% if diode['channel_plots'] is mapping and diode['channel_plots']|length > 2 %}
   <!-- **********diode plots start from here************* -->
-<div style="page-break-before:always; border: 3px solid; height:320mm">
+<div style="page-break-before:always; border: 3px solid; height:220mm">
    <h3 style="text-align:center"> Diode Characteristic Plots </h3>
    <div class="container">
 	   <div class="row">
-			<div class="thumb">
-			  <div class="imgCaption">Channel plots</div>
-			  <img id="pictureDiodeChannel" src="data:image/png;base64,{{ diode['channel_plots'] }}" class="img">
-			</div>
-						
-			
-			{% if diode['energy_plots'] is not none %}
+			{% for key, value in diode['channel_plots'].items() %}
+			    <div class="thumb">				
+				<div class="imgCaption">Channel at {{ key }}°C </div>
+				  <img id="pictureChannelMulti" class="img" src="data:image/png;base64,{{ value }}" >
+				</div>
+			{% endfor %}
+		    {% if diode['energy_plots'] is not none %}
 				<div class="thumb">
 				  <div class="imgCaption">Energy plots</div>
 				  <img id="pictureDiodeEnergy" src="data:image/png;base64,{{ diode['energy_plots'] }}" class="img">
 				</div>
 			{% endif %}
+		</div>
+   </div>
+</div>	
+	{% if dPlotCnt != 0 %}
+<div style="page-break-before:always; border: 3px solid; height:220mm">
+   <h3 style="text-align:center"> Diode Characteristic Plots </h3>
+   <div class="container">
+		<div class="row">
 			{% if diode['energy_plots_r'] is not none %}
 				<div class="thumb">
 				  <div class="imgCaption">Energy plots</div>
@@ -201,4 +232,36 @@
 		</div>
    </div>
 </div>
+	{% endif %}
+{% else %}
+<div style="page-break-before:always; border: 3px solid; height:320mm">
+   <h3 style="text-align:center"> Diode Characteristic Plots </h3>
+   <div class="container">
+		<div class="row">
+			<div class="thumb">
+			  <div class="imgCaption">Channel plots</div>
+			  <img id="pictureDiodeChannel" src="data:image/png;base64,{{ diode['channel_plots'] }}" class="img">
+			</div>		
+			{% if diode['energy_plots'] is not none %}
+				<div class="thumb">
+				  <div class="imgCaption">Energy plots</div>
+				  <img id="pictureDiodeEnergy" src="data:image/png;base64,{{ diode['energy_plots'] }}" class="img">
+				</div>
+			{% endif %}		
+			{% if diode['energy_plots_r'] is not none %}
+				<div class="thumb">
+				  <div class="imgCaption">Energy plots</div>
+				  <img id="pictureDiodeEnergy" src="data:image/png;base64,{{ diode['energy_plots_r'] }}" class="img">
+				</div>
+			{% endif %}
+			{% if diode['imp_plot'] is not none %}
+				<div class="thumb">
+					<div class="imgCaption">Impedance plots</div>
+					<img id="pictureDiodeImp" src="data:image/png;base64,{{ diode['imp_plot'] }}" class="img">
+				</div>
+			{% endif %}
+		</div>
+   </div>
+</div>
+{% endif %}
 {% endblock %}

@@ -1053,7 +1053,7 @@ class Transistor:
         for attr in dir(self):
             if not callable(getattr(self, attr)) and not attr.startswith("__"):
                 if attr == 'switch' or attr == 'diode':
-                    devices[attr] = getattr(self, attr).collect_data(self.type.lower()) if attr == 'switch' else getattr(self, attr).collect_data()
+                    devices[attr] = getattr(self, attr).collect_data(self.type.lower())
                 elif attr not in skipIds and getattr(self, attr):
                     pdfData[attr.capitalize()] = getattr(self, attr)
         attach_units(pdfData, devices)
@@ -2282,28 +2282,47 @@ class Transistor:
 
             return self.channel[index_channeldata], e_rrs[index_e_rr]
 
-        def plot_all_channel_data(self, buffer_req=False):
+        def plot_all_channel_data(self, switch_type=None, buffer_req=False):
             """
             Plot all diode channel characteristic curves
 
+            :param switch_type: switch type e.g Mosfet, SiC-Mosfet, IGBT
             :param buffer_req: internally required for generating virtual datasheets
 
             :return: Respective plots are displayed
             """
-            # ToDo: only 12(?) colors available. Change linestyle for more curves.
+            categorize_plots = {}
             plt.figure()
-            for i_channel in np.array(range(0, len(self.channel))):
-                labelplot = "$v_{{g}}$ = {0} V, $T_{{J}}$ = {1} °C".format(self.channel[i_channel].v_g, self.channel[i_channel].t_j)
-                plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
-
-            plt.legend(fontsize=8)
-            plt.xlabel('Voltage in V')
-            plt.ylabel('Current in A')
-            plt.grid()
-            if buffer_req:
-                return get_img_raw_data(plt)
+            if buffer_req and switch_type and (switch_type == 'mosfet' or switch_type == 'sic-mosfet'):
+                for channel in self.channel:
+                    try:
+                        categorize_plots[channel.t_j].append(channel)
+                    except KeyError:
+                        categorize_plots[channel.t_j] = [channel]
+                for temp_key, curve_list in categorize_plots.items():
+                    for curve in curve_list:
+                        labelplot = "$V_{{g}}$ = {0} V ".format(curve.v_g)
+                        plt.plot(curve.graph_v_i[0], curve.graph_v_i[1], label=labelplot)
+                    plt.legend(fontsize=8)
+                    plt.xlabel('Voltage in V')
+                    plt.ylabel('Current in A')
+                    plt.title('$T_{{J}}$ = {0} °C'.format(temp_key))
+                    plt.grid()
+                    categorize_plots |= {temp_key: get_img_raw_data(plt)}
+                    plt.clf()
             else:
-                plt.show()
+                for i_channel in np.array(range(0, len(self.channel))):
+                    labelplot = "$V_{{g}}$ = {0} V, $T_{{J}}$ = {1} °C".format(self.channel[i_channel].v_g, self.channel[i_channel].t_j)
+                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
+                plt.legend(fontsize=8)
+                plt.xlabel('Voltage in V')
+                plt.ylabel('Current in A')
+                plt.grid()
+                if buffer_req:
+                    return get_img_raw_data(plt)
+                else:
+                    plt.show()
+            return categorize_plots
 
 
         def plot_energy_data(self, buffer_req=False):
@@ -2380,14 +2399,14 @@ class Transistor:
                 print("No Diode switching energy data available (diode graph_r_e)")
                 return None
 
-        def collect_data(self):
+        def collect_data(self, switch_type):
             """
             Collects diode data in form of dictionary for generating virtual datahseet
 
             :return: Diode data in form of dictionary
             :rtype: dict
             """
-            diode_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True)}
+            diode_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     diode_data.update(getattr(self, attr).collect_data())
