@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+
+## [0.2.12] - 2021-09-15
 ### Added
 - Transistor method 'compare_channel_linearized()' to compare channel data with linearized data 
 - Sphinx documentation, see [here](https://upb-lea.github.io/transistordatabase/transistordatabase.html)
@@ -14,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Bugfixes
 - #44: Choose another linearisation default current for quickstart_wp()
+- #48: Crash when exporting virtual datasheet
 
 ## [0.2.11] - 2021-08-07
 ### Added
@@ -134,7 +138,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.11...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.12...HEAD
+[0.2.12]: https://github.com/upb-lea/transistordatabase/compare/0.2.11...0.2.12
 [0.2.11]: https://github.com/upb-lea/transistordatabase/compare/0.2.10...0.2.11
 [0.2.10]: https://github.com/upb-lea/transistordatabase/compare/0.2.9...0.2.10
 [0.2.9]: https://github.com/upb-lea/transistordatabase/compare/0.2.8...0.2.9
