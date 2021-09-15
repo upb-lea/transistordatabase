@@ -1053,7 +1053,7 @@ class Transistor:
         for attr in dir(self):
             if not callable(getattr(self, attr)) and not attr.startswith("__"):
                 if attr == 'switch' or attr == 'diode':
-                    devices[attr] = getattr(self, attr).collect_data(self.type.lower())
+                    devices[attr] = getattr(self, attr).collect_data(self.type.lower()) if attr == 'switch' else getattr(self, attr).collect_data()
                 elif attr not in skipIds and getattr(self, attr):
                     pdfData[attr.capitalize()] = getattr(self, attr)
         attach_units(pdfData, devices)
