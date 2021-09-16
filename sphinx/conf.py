@@ -21,7 +21,7 @@ copyright = '2021, LEA, Paderborn University'
 author = 'LEA-UPB'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.11'
+release = '0.2.12'
 
 # -- General configuration ---------------------------------------------------
 
