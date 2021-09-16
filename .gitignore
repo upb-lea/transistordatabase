@@ -9,3 +9,4 @@ dist/
 transistordatabase.egg-info/
 .eggs/
 /.idea
+/template_example/template_trials.py
