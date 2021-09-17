@@ -1053,10 +1053,10 @@ class Transistor:
         for attr in dir(self):
             if not callable(getattr(self, attr)) and not attr.startswith("__"):
                 if attr == 'switch' or attr == 'diode':
-                    devices[attr] = getattr(self, attr).collect_data(self.type.lower())
+                    devices[attr] = getattr(self, attr).collect_data()
                 elif attr not in skipIds and getattr(self, attr):
                     pdfData[attr.capitalize()] = getattr(self, attr)
-        attach_units(pdfData, devices)
+        trans, diode, switch = attach_units(pdfData, devices)
         imgpath = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
         imageFileObj = open(imgpath, "rb")
         imageBinaryBytes = imageFileObj.read()
@@ -1067,11 +1067,11 @@ class Transistor:
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
         template = env.get_template('VirtualDatasheet_TransistorTemplate.html')
-        html = template.render(trans=pdfData, switch=devices['switch'], diode=devices['diode'], image=client_img)
+        html = template.render(trans=trans, switch=switch, diode=diode, image=client_img)
         # ToDo: to save the results to html   --- need to convert it to pdf in future
-        pdfname = pdfData['Name']+".html"
+        pdfname = trans['Name'][0]+".html"
         datasheetpath = pathlib.Path.cwd() / pdfname
-        with open(pdfData['Name']+".html", "w") as fh:
+        with open(trans['Name'][0]+".html", "w") as fh:
             fh.write(html)
         print(f"Export virtual datasheet {self.name}.html to {pathlib.Path.cwd().as_uri()}")
         print(f"Open Datasheet here: {datasheetpath.as_uri()}")
@@ -1973,11 +1973,10 @@ class Transistor:
             plt.grid()
             plt.show()
 
-        def plot_all_channel_data(self, switch_type=None, buffer_req=False):
+        def plot_all_channel_data(self, buffer_req=False):
             """
             Plot all switch channel characteristic curves
 
-            :param switch_type: switch type e.g Mosfet, SiC-Mosfet, IGBT
             :param buffer_req: internally required for generating virtual datasheets
 
             :return: Respective plots are displayed
@@ -1986,7 +1985,7 @@ class Transistor:
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
             categorize_plots = {}
             plt.figure()
-            if buffer_req and switch_type and (switch_type == 'mosfet' or switch_type == 'sic-mosfet'):
+            if buffer_req and len(self.channel) > 5: # 5 - expecting only -40°,25°,50°,125°,175° curves at gate voltage 15V or 25° curves at 20,15,12,10,8V
                 for channel in self.channel:
                     try:
                         categorize_plots[channel.t_j].append(channel)
@@ -2079,16 +2078,14 @@ class Transistor:
             else:
                 plt.show()
 
-        def collect_data(self, switch_type):
+        def collect_data(self):
             """
             Collects switch data in form of dictionary for generating virtual datahseet
-
-            :param switch_type: switch type e.g Mosfet, SiC-Mosfet, IGBT
 
             :return: Switch data in form of dictionary
             :rtype: dict
             """
-            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
+            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     switch_data.update(getattr(self, attr).collect_data())
@@ -2282,7 +2279,7 @@ class Transistor:
 
             return self.channel[index_channeldata], e_rrs[index_e_rr]
 
-        def plot_all_channel_data(self, switch_type=None, buffer_req=False):
+        def plot_all_channel_data(self, buffer_req=False):
             """
             Plot all diode channel characteristic curves
 
@@ -2293,8 +2290,8 @@ class Transistor:
             """
             categorize_plots = {}
             plt.figure()
-            if buffer_req and switch_type and (switch_type == 'mosfet' or switch_type == 'sic-mosfet'):
-                for channel in self.channel:
+            if buffer_req and len(self.channel) > 5:    # 5 - expecting only -40°,25°,50°,125°,175° curves at gate voltage 15V or 25° curves at 20,15,12,10,8V
+                for channel in self.channel:            # gate voltages. Greater than 5 channel curves means curves at multiple gate voltages, temp being specified.
                     try:
                         categorize_plots[channel.t_j].append(channel)
                     except KeyError:
@@ -2399,14 +2396,14 @@ class Transistor:
                 print("No Diode switching energy data available (diode graph_r_e)")
                 return None
 
-        def collect_data(self, switch_type):
+        def collect_data(self):
             """
             Collects diode data in form of dictionary for generating virtual datahseet
 
             :return: Diode data in form of dictionary
             :rtype: dict
             """
-            diode_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(switch_type, True)}
+            diode_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     diode_data.update(getattr(self, attr).collect_data())
@@ -3144,31 +3141,38 @@ def attach_units(trans, devices):
     :param devices: pdf data which contains the switch type related information
     :type devices: dict
 
-    :return: None
+    :return: sorted data along with units to be displayed in transistor, diode, switch  section on virtual datasheet
+    :rtype: dict, dict, dict
     """
-    amphere_list = {'A': ['I_abs_max', 'I_cont']}
-    volts_list = {'V': ['V_abs_max']}
-    area_list = {'sq.m': ['Housing_area', 'Cooling_area']}
-    temp_list = {'°C': ['T_c_max', 'T_j_max']}
-    ohm_list = {'Ohms': ['R_g_int']}
-    zth_list = {'K/W': ['R_th_cs', 'R_th_total']}
-    cap_list = {'F': ['C_iss_fix', 'C_oss_fix', 'C_rss_fix']}
-    for item, value in trans.items():
-        for unit_list in [ohm_list, zth_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
-            if item in list(unit_list.values())[0]:     #check efficient way
-                ulist = list(unit_list.keys())
-                ulist.append(value)
-                trans[item] = ulist
-                break
+    standard_list = [('Author', 'Author', None), ('Name', 'Name', None), ('Manufacturer', 'Manufacturer', None), ('Type', 'Type', None), ('Datasheet_date', 'Datasheet date', None), ('Datasheet_hyperlink', 'Datasheet hyperlink', None)]
+    mechthermal_list = [('Housing_area', 'Housing area', 'sq.m'), ('Housing_type', 'Housing type', 'None'), ('Cooling_area', 'Cooling area', 'sq.m'), ('R_th_cs', 'R_th,cs', 'K/W'), ('R_th_total', 'R_th,total', 'K/W')]
+    maxratings_list = [('V_abs_max', 'V_abs,max', 'V'), ('I_abs_max', 'I_abs,max', 'A'), ('I_cont', 'I_cont', 'A'), ('T_j_max', 'T_j,max', '°C'), ('T_c_max', 'T_c,max', '°C')]
+    cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F')]
+    trans_sorted = {}
+    diode_sorted = {}
+    switch_sorted = {}
+    for list_unit in [standard_list, mechthermal_list, maxratings_list, cap_list]:
+        for tuple_unit in list_unit:
+            try:
+                trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
+            except KeyError:
+                pass
+    if len(trans.keys()) > 0:
+        trans_sorted.update(trans)
 
-    for stype in devices:
-        for item, value in devices[stype].items():
-            for unit_list in [ohm_list, zth_list, cap_list, temp_list, area_list, amphere_list, volts_list]:
-                if item in list(unit_list.values())[0]:  # check efficient way
-                    ulist = list(unit_list.keys())
-                    ulist.append(value)
-                    devices[stype][item] = ulist
-                    break
+    for list_unit in [mechthermal_list, maxratings_list]:
+        for tuple_unit in list_unit:
+            try:
+                diode_sorted.update({tuple_unit[1]: [devices['diode'].pop(tuple_unit[0]), tuple_unit[2]]})
+                switch_sorted.update({tuple_unit[1]: [devices['switch'].pop(tuple_unit[0]), tuple_unit[2]]})
+            except KeyError:
+                pass
+    if len(devices['diode'].keys()) > 0:
+        diode_sorted.update(devices['diode'])
+    if len(devices['switch'].keys()) > 0:
+        switch_sorted.update(devices['switch'])
+
+    return trans_sorted, diode_sorted, switch_sorted
 
 def get_img_raw_data(plot):
     """
