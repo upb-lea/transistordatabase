@@ -33,7 +33,10 @@ Use the MongoDB community server, as platform, choose windows. [Link](https://ww
 ### 1.1.2 Install git
 [Installation file](https://git-scm.com/download/win)
 
-### 1.1.3 Install Pycharm
+### 1.1.3 Install Python
+Install latest Python version: [Link](https://www.python.org/)
+
+### 1.1.4 Install Pycharm
 [Installation file](https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC)
 
 ## 1.2 Linux
@@ -51,9 +54,12 @@ sudo apt install python3 python3-pip git
 Note: Install pycharm from Snapstore
 
 ## 1.3 All Operating systems: Install the transitor database
-Using Pycharm: Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package'
+Inside pycharm, create a new project. Select 'new environment using' -> 'Virtualenv'.
+As a base interpreter, select 'C:\Users\xxxxxx\AppData\Local\Programs\Python\Python39\Python.exe'. Click on create.
+Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package'
 
 ## 1.4 Complete minimal python example
+Copy this example to a new pycharm project.
 ```
 # load the python package
 import transistordatabase as tdb
@@ -70,6 +76,7 @@ transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
 # export a virtual datasheet
 transistor_loaded.export_datasheet()
 ```
+On the output line, you should see a message which links to the datasheet file. Click on it to view the datasheet in your browser. If this works, you have set up the transistor database correctly.
 
 # 2 transistordatabase's usage
 Import transistordatabase to your python program
