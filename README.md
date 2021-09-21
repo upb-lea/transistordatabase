@@ -156,6 +156,9 @@ transistor_loaded = load({'name': 'CREE_C3M0016120K'})
 transistor_loaded.export_json()
 ```
 You can upload this file to the [transistor database file exchange git repository](https://github.com/upb-lea/transistordatabase_File_Exchange) by generating a pull request.
+
+if you don't want to create a github account, you can also send the .json file to this [email address](mailto:tdb@lea.upb.de).
+
 ## 2.3 Use Transistor.wp. for usage in your programs
 There is a subclass .wp. you can fill for further program calculations.
 ### 2.3.1 Full-automated example: Use the quickstart method to fill in the wp-class.
