@@ -1,5 +1,7 @@
 {% extends "VirtualDatasheet_BaseTemplate.html" %}
 {% block content %}
+
+<!-- ********** code is for checking if the energy and img plots exists for extending html page ************* -->
 {% set dPlotCnt = 0 %}
 {% set sPlotCnt = 0 %}
 {% if diode['energy_plots_r'] is not none %}
@@ -18,104 +20,106 @@
 {% if switch['imp_plot'] is not none %}
 {% set sPlotCnt = sPlotCnt + 1 %}
 {% endif %}
-<!-- **********Above code is for checking if the energy and img plots exists for extending html page************* -->
+<!-- *********************************************************************************************************** -->
 
-<div style="border: 3px solid; height:300mm">
+<!-- ********** transistor specifications table ************* -->
+<div style="border: 3px solid; height:257mm">
 <br>
-  <table class="tableCSS"> 
-   <tr>
+  <table class="tableCSS">
+  <tr>
     <th class="spec"><h4>Transistor Specifications</h4></th>
 	<th class="value"><div class="h4style">Value</div></th>
 	<th class="unit"><div class="h4style">Units</div></th>
   </tr>
-  
   {% for key, value in trans.items() %}
   {% if not key == 'c_plots' %}
   <tr>
 	  {% set split_list = key.split('_') %}
 	  <td style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
-	 {% if value is string %}
-		{% if key == 'Datasheet_hyperlink' %}
-		<td class="value" style="font-family: Tahoma;"><a href= {{ value }}> {{trans["Manufacturer"][0]}}</a></td>
-		{% else %}
+	  {% if value is string %}
 		<td style="font-family: Tahoma;">{{ value }}</td>
-		{% endif %}
 		<td style="text-align:center"> - </td>
-	{% else %}
-	  	<td style="font-family: Tahoma;">{{ value[0] }}</td>
-	  	{% if value[1] is none %}
-	  	<td style="text-align:center"> - </td>
+	  {% else %}
+	    {% if key == 'Datasheet hyperlink' %}
+			<td class="value" style="font-family: Tahoma;"><a href= {{ value[0] }}> {{trans["Manufacturer"][0]}}</a></td>
 		{% else %}
-		<td style="text-align:center">{{ value[1] }}</td>
-	  {% endif %}
+	  		<td style="font-family: Tahoma;">{{ value[0] }}</td>
+	    {% endif %}
+	  	{% if value[1] is none %}
+	  		<td style="text-align:center"> - </td>
+		{% else %}
+			<td style="text-align:center">{{ value[1] }}</td>
+	    {% endif %}
 	{% endif %}
   </tr>
- {% endif %}
+  {% endif %}
   {% endfor %}
   </table>
-  </div>
-<div style="page-break-before:always; border: 3px solid; height:320mm">
-  <br>
-  <br>
-  <table class="tableCSS">
-   <tr>
-    <th colspan=3><h4 style="text-align:center">{{trans["Type"][0]}} Specifications</h4></th>
-	
-  </tr>
-  {% for key, value in switch.items() %}
-  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'energy_plots_r' or key == 'imp_plot') %}
-   <tr>
-	   {% set split_list = key.split('_') %}
-		<td class="spec" style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
-		 {% if value is string %}
-		    <td class="value" style="font-family: Tahoma;">{{ value }}</td>
-			<td class="unit" style="text-align:center"> - </td>
-		{% else %}
-			<td class="value" style="font-family: Tahoma;">{{ value[0]}}</td>
-	   		{% if value[1] is none %}
-	   		<td class="unit" style="text-align:center"> - </td>
-	   		{% else %}
-			<td class="unit" style="text-align:center">{{ value[1] }}</td>
-	   		{% endif %}
-		{% endif %}
-  </tr>
- {% endif %}
-  {% endfor %}
-  </table>
+</div>
 
- <br>
+<!-- ********** specifications table ************* -->
+<div style="page-break-before:always; border: 3px solid; height:297mm">
   <br>
- 
- <table class="tableCSS">
-  <tr>
-	<th colspan=3><h4 style="text-align:center">Diode Specifications</h4></th>
-	
-  </tr>
-  {% for key, value in diode.items() %}
-  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'energy_plots_r' or key == 'imp_plot') %}
-   <tr>
-	   {% set split_list = key.split('_') %}
+  <br>
+	<!-- ********** switch specifications table ************* -->
+	  <table class="tableCSS">
+	  <tr>
+		<th colspan=3><h4 style="text-align:center">{{trans["Type"][0]}} Specifications</h4></th>
+	  </tr>
+	  {% for key, value in switch.items() %}
+	  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'energy_plots_r' or key == 'imp_plot') %}
+	  <tr>
+		   {% set split_list = key.split('_') %}
+			<td class="spec" style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
+			 {% if value is string %}
+				<td class="value" style="font-family: Tahoma;">{{ value }}</td>
+				<td class="unit" style="text-align:center"> - </td>
+			{% else %}
+				<td class="value" style="font-family: Tahoma;">{{ value[0]}}</td>
+				{% if value[1] is none %}
+				<td class="unit" style="text-align:center"> - </td>
+				{% else %}
+				<td class="unit" style="text-align:center">{{ value[1] }}</td>
+				{% endif %}
+			{% endif %}
+	  </tr>
+	  {% endif %}
+	  {% endfor %}
+	  </table>
+  <br>
+  <br>
+	<!-- ********** diode specifications table ************* -->
+	 <table class="tableCSS">
+	   <tr>
+		<th colspan=3><h4 style="text-align:center">Diode Specifications</h4></th>
+	  </tr>
+		{% for key, value in diode.items() %}
+		{% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'energy_plots_r' or key == 'imp_plot') %}
+		<tr>
+		{% set split_list = key.split('_') %}
 		<td class="spec" style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
 		 {% if value is string %}
 			<td class="value" style="font-family: Tahoma;">{{ value }}</td>
 			<td class="unit" style="text-align:center"> - </td>
 		{% else %}
-	   		<td class="value" style="font-family: Tahoma;">{{ value[0] }}</td>
-	   		{% if value[0] is none %}
-	   		<td class="unit" style="text-align:center"> - </td>
-	   		{% else %}
+			<td class="value" style="font-family: Tahoma;">{{ value[0] }}</td>
+			{% if value[0] is none %}
+			<td class="unit" style="text-align:center"> - </td>
+			{% else %}
 			<td class="unit" style="text-align:center">{{ value[1] }}</td>
-	   		{% endif %}
+			{% endif %}
 		{% endif %}
-  </tr>
- {% endif %}
-  {% endfor %}
-  </table>
-   </div>
-  <!-- **********switch plots start from here************* -->
+		</tr>
+		{% endif %}
+		{% endfor %}
+	  </table>
+</div>
+
+  <!-- ********** switch plots start from here ************* -->
+  <!-- ********** switch plots count greater than 5 ************* -->
 {% if switch['channel_plots'] is mapping and switch['channel_plots']|length > 2 %}
-<div style="page-break-before:always;  border: 3px solid; height:220mm">
-  <h3 style="text-align:center"> {{trans["Type"]}} Characteristic Plots </h3>
+	<div style="page-break-before:always;  border: 3px solid; height:297mm">
+  <h3 style="text-align:center"> {{trans["Type"][0]}} Characteristic Plots </h3>
   <div class="container">
 	   <div class="row">
 			{% if trans['c_plots'] is not none %}
@@ -132,9 +136,9 @@
 			{% endfor %}
 		</div>
 	</div>
-</div>	
+</div>
 	{% if sPlotCnt != 0 %}
-	<div style="page-break-before:always;  border: 3px solid; height:220mm">
+	<div style="page-break-before:always;  border: 3px solid; height:297mm">
   <h3 style="text-align:center"> {{trans["Type"][0]}} Characteristic Plots (..contd)</h3>
   <div class="container">
 	   <div class="row">
@@ -161,7 +165,8 @@
 </div>	
 	{% endif %}
 {% else %}
-<div style="page-break-before:always;  border: 3px solid; height:320mm">
+	<!-- ********** switch plots count not more than 5 ************* -->
+	<div style="page-break-before:always;  border: 3px solid; height:297mm">
   <h3 style="text-align:center"> {{trans["Type"][0]}} Characteristic Plots </h3>
   <div class="container">
 	   <div class="row">			
@@ -207,19 +212,21 @@
 </div>	
 {% endif %} 
 
+
+  <!-- ************** diode plots start from here *************** -->
+  <!-- ********** diode plot count greater than 5 ************* -->
 {% if diode['channel_plots'] is mapping and diode['channel_plots']|length > 2 %}
-  <!-- **********diode plots start from here************* -->
-<div style="page-break-before:always; border: 3px solid; height:220mm">
+	<div style="page-break-before:always; border: 3px solid; height:297mm">
    <h3 style="text-align:center"> Diode Characteristic Plots </h3>
    <div class="container">
 	   <div class="row">
 			{% for key, value in diode['channel_plots'].items() %}
-			    <div class="thumb">				
+				<div class="thumb">
 				<div class="imgCaption">Channel at {{ key }}°C </div>
 				  <img id="pictureChannelMulti" class="img" src="data:image/png;base64,{{ value }}" >
 				</div>
 			{% endfor %}
-		    {% if diode['energy_plots'] is not none %}
+			{% if diode['energy_plots'] is not none %}
 				<div class="thumb">
 				  <div class="imgCaption">Energy plots</div>
 				  <img id="pictureDiodeEnergy" src="data:image/png;base64,{{ diode['energy_plots'] }}" class="img">
@@ -227,9 +234,9 @@
 			{% endif %}
 		</div>
    </div>
-</div>	
+</div>
 	{% if dPlotCnt != 0 %}
-<div style="page-break-before:always; border: 3px solid; height:220mm">
+	<div style="page-break-before:always; border: 3px solid; height:297mm">
    <h3 style="text-align:center"> Diode Characteristic Plots </h3>
    <div class="container">
 		<div class="row">
@@ -250,20 +257,21 @@
 </div>
 	{% endif %}
 {% else %}
-<div style="page-break-before:always; border: 3px solid; height:320mm">
+	<!-- ********** diode plot count not more than 5 ************* -->
+	<div style="page-break-before:always; border: 3px solid; height:297mm">
    <h3 style="text-align:center"> Diode Characteristic Plots </h3>
    <div class="container">
 		<div class="row">
 			<div class="thumb">
 			  <div class="imgCaption">Channel plots</div>
 			  <img id="pictureDiodeChannel" src="data:image/png;base64,{{ diode['channel_plots'] }}" class="img">
-			</div>		
+			</div>
 			{% if diode['energy_plots'] is not none %}
 				<div class="thumb">
 				  <div class="imgCaption">Energy plots</div>
 				  <img id="pictureDiodeEnergy" src="data:image/png;base64,{{ diode['energy_plots'] }}" class="img">
 				</div>
-			{% endif %}		
+			{% endif %}
 			{% if diode['energy_plots_r'] is not none %}
 				<div class="thumb">
 				  <div class="imgCaption">Energy plots</div>
@@ -280,4 +288,5 @@
    </div>
 </div>
 {% endif %}
+
 {% endblock %}
