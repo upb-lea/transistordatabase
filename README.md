@@ -32,6 +32,8 @@ Use the MongoDB community server, as platform, choose windows. [Link](https://ww
 
 ### 1.1.2 Install git
 [Installation file](https://git-scm.com/download/win)
+If you already have git installed, make sure you are using the latest version.     
+Note: During installation, you will be asked 'Which editor would you like Git to use?'. Default is 'Vim', but it is one of the most complex one for beginners. Switch to 'Notepad++', 'Nano' or another one.
 
 ### 1.1.3 Install Python
 Install latest Python version: [Link](https://www.python.org/)
