@@ -13,6 +13,7 @@ from pymongo import MongoClient
 from pymongo import errors
 import json
 from git import Repo
+import git
 import shutil
 import stat
 import scipy.io as sio
@@ -3627,19 +3628,45 @@ def update_from_fileexchange(collection: str ="local", overwrite: bool =True) ->
     :return: None
     """
     print(f"Note: Please make sure that you have installed the latest version of the transistor database, especially if the update_from_fileexchange()-method ends in an error. Find the lastest version here: https://pypi.org/project/transistordatabase/")
-    # Remove repo if it is already available to avoid clone error handling.
-    if os.path.isdir("./cloned_repo"):
-        shutil.rmtree('./cloned_repo')
+    # Check if the local repository exists, if yes load the repo information
+    try:
+        repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
+        module_file_path = pathlib.Path(__file__).parent.absolute()
+        local_dir = os.path.join(module_file_path, "cloned_repo")
+        # Raises InvalidGitRepositoryError when not in a repo
+        repo = Repo(local_dir, search_parent_directories=False)
+        # check that the repository loaded correctly
+        if not repo.bare:
+            print('Repo at {} successfully loaded.'.format(repo.working_tree_dir))
+            print("Remote: " + repo.remote("origin").url)
+            # If the loaded repo is dirty discard the local changes
+            if repo.is_dirty():
+                repo.git.reset('--hard')
+            repo.remotes.origin.pull()
+        else:
+            print('Could not load repository at {} :('.format(repo.working_tree_dir))
+            raise git.exc.InvalidGitRepositoryError
+    except git.exc.InvalidGitRepositoryError:
+        # Occurs if repo couldn't be located, initially check if cloned_repo folder exists and deletes it before cloning from remote
+        if os.path.isdir(local_dir):
+            for root, dirs, files in os.walk(local_dir):
+                for dir in dirs:
+                    os.chmod(os.path.join(root, dir), stat.S_IRWXU)
+                for file in files:
+                    os.chmod(os.path.join(root, file), stat.S_IRWXU)
+            shutil.rmtree(local_dir)
+        Repo.clone_from(repo_url, local_dir)
+    except git.exc.NoSuchPathError:
+        # if local repository doesn't exits, clone from remote branch
+        Repo.clone_from(repo_url, local_dir)
+
     if collection == "local":
         collection = connect_local_TDB()
-    repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
-    local_dir = "./cloned_repo"
-    Repo.clone_from(repo_url, local_dir)
+
     for subdir, dirs, files in os.walk(local_dir):
         for file in files:
             # print(f"{os.path.join(subdir, file)}")
             filepath = subdir + os.sep + file
-
             if filepath.endswith(".json"):
                 try:
                     transistor = import_json(filepath)
@@ -3648,13 +3675,6 @@ def update_from_fileexchange(collection: str ="local", overwrite: bool =True) ->
                 else:
                     transistor.save(collection, overwrite)
                     print(f"Update Transistor: {transistor.name}")
-
-    for root, dirs, files in os.walk(local_dir):
-        for dir in dirs:
-            os.chmod(os.path.join(root, dir), stat.S_IRWXU)
-        for file in files:
-            os.chmod(os.path.join(root, file), stat.S_IRWXU)
-    shutil.rmtree('./cloned_repo')
 
 
 def import_json(path: str) -> dict:
