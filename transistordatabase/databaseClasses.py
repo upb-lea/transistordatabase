@@ -9,6 +9,8 @@ from bson.objectid import ObjectId
 from bson import json_util
 from scipy import integrate
 from scipy.spatial import distance
+from scipy.optimize import curve_fit
+from sklearn.metrics import r2_score
 from pymongo import MongoClient
 from pymongo import errors
 import json
@@ -224,6 +226,8 @@ class Transistor:
 
             self.diode = self.Diode(diode_args)
             self.switch = self.Switch(switch_args)
+            #self.calc_thermal_params('switch')
+            #self.calc_thermal_params('diode')
             self.wp = self.WP()
         except Exception as e:
             print('Exception occured: Selected datasheet or module could not be created or loaded\n'+str(e))
@@ -973,6 +977,51 @@ class Transistor:
             raise ValueError("switch_or_diode must be either specified as 'switch' or 'diode' for channel "
                              "linearization.")
         return round(v_channel, 6), round(r_channel, 9)
+
+    def calc_thermal_params(self, order=4, input_type=None, plotbit=False):
+        try:
+            if order > 5 or input_type is None:
+                raise ValueError("Summation is limited to only n = 5 or invalid type provided")
+            code = compile(f"self.{input_type}.thermal_foster", "<string>", "eval")
+            foster_args = eval(code)
+            if foster_args.graph_t_rthjc.any():
+                rth = self.switch.thermal_foster.graph_t_rthjc[1]
+                time = self.switch.thermal_foster.graph_t_rthjc[0]
+                func = gen_exp_func(order)
+
+                def upper_limit(x):
+                    return {1: 1, 2: 0.5, 3: 0.3, 4: 0.1, 5: 0.1}.get(x, 1)
+                popt, _ = curve_fit(func, time, rth, maxfev=5000, bounds=([0]*2*order, [upper_limit(order)]*2*order))
+                rth_op = func(time, *popt)
+                tau_values = popt[1::2]
+                rth_values = popt[0::2]
+                tuple_list = sorted(zip(tau_values, rth_values))
+                cap_values = [x / y for x, y in tuple_list]
+                tau_values, rth_values = (list(t) for t in zip(*tuple_list))
+                print("R^2 score:", r2_score(rth, rth_op))
+                if len(rth_values) > 1:
+                    foster_args.r_th_vector = [round(x, 5) for x in rth_values]
+                    foster_args.tau_vector = [round(x, 5) for x in tau_values]
+                    foster_args.c_th_vector = [round(x, 5) for x in cap_values]
+                foster_args.r_th_total = round(sum(rth_values), 4)
+                foster_args.tau_total = round(sum(tau_values), 4)
+                foster_args.c_th_total = round(sum(cap_values), 4)
+            else:
+                raise Exception(f"graph_t_rthjc in {input_type}'s foster thermal object is empty!")
+            if plotbit:
+                print("Computed Rth values: ", rth_values)
+                print("Computed tau values: ", tau_values)
+                print("Computed Cth values: ", cap_values)
+                plt.figure()
+                plt.plot(time, rth, 'ko', label="Original Rth Data")
+                plt.plot(time, func(time, *popt), 'r-', label="Fitted Curve")
+                plt.legend()
+                plt.show()
+        except Exception as e:
+            print("Thermal parameter computation failed: {0}".format(e))
+        else:
+            exec(f"self.{input_type}.thermal_foster = foster_args")
+            print(input_type, ':Thermal parameters re-assigned to foster object')
 
     def compare_channel_linearized(self, i_channel, t_j=150, v_g=15):
         """
@@ -2971,6 +3020,26 @@ class Transistor:
         return plecs_transistor if 'plecs_transistor' in locals() and 'Channel' in plecs_transistor['ConductionLoss'] \
                    else None, plecs_diode if 'plecs_diode' in locals() and 'Channel' in plecs_diode['ConductionLoss'] \
                    else None
+
+
+def gen_exp_func(order):
+    if order == 1:
+        def func(t, rn, tau):
+            return rn * (1-np.exp(-t/tau))
+    elif order == 2:
+        def func(t, rn, tau, rn2, tau2):
+            return rn * (1-np.exp(-t/tau)) + rn2 * (1-np.exp(-t/tau2))
+    elif order == 3:
+        def func(t, rn, tau, rn2, tau2, rn3, tau3):
+            return rn * (1-np.exp(-t/tau)) + rn2 * (1-np.exp(-t/tau2)) + rn3 * (1-np.exp(-t/tau3))
+    elif order == 4:
+        def func(t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4):
+            return rn * (1-np.exp(-t/tau)) + rn2 * (1-np.exp(-t/tau2)) + rn3 * (1-np.exp(-t/tau3)) + rn4 * (1-np.exp(-t/tau4))
+    elif order == 5:
+        def func(t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4, rn5, tau5):
+            return rn * (1-np.exp(-t/tau)) + rn2 * (1-np.exp(-t/tau2)) + rn3 * (1-np.exp(-t/tau3)) + rn4 * (1-np.exp(-t/tau4)) + rn5 * (1-np.exp(-t/tau5))
+    return func
+
 
 def get_xml_data(file):
     """
