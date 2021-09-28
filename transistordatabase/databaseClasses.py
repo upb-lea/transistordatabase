@@ -3739,7 +3739,7 @@ class MissingDataError(Exception):
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
 
 
-def dpt_save_data(path, load_inductance, safe_RAW_data, time_correction, integration_interval):
+def dpt_safe_data(path,energies, load_inductance, safe_RAW_data, time_correction, integration_interval):
 
     if integration_interval == 'IEC 60747-8' or integration_interval is None:
         off_vds_limit = 0.1
@@ -3750,123 +3750,246 @@ def dpt_save_data(path, load_inductance, safe_RAW_data, time_correction, integra
     # Get a list of all the csv files
     csv_files = glob.glob(path)
 
-    off_I_locations = []
-    off_U_locations = []
-    csv_length = len(csv_files)
-
-    ##############################
-    # Read all Turn-off current measurements and sort them by Ud2
-    ##############################
-    i = 0
-    while csv_length > i:
-        if csv_files[i].rfind("_OFF_I") != -1:
-            positionA = csv_files[i].rfind("A_")
-            positionV = csv_files[i].rfind("V_")
-            off_I_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
-        i += 1
-    off_I_locations.sort(key=lambda x: x[1])
-
-    ##############################
-    # Read all Turn-off voltage measurements and sort them by Ud2
-    ##############################
-    i = 0
-    while csv_length > i:
-        if csv_files[i].rfind("_OFF_U") != -1:
-            positionA = csv_files[i].rfind("A_")
-            positionV = csv_files[i].rfind("V_")
-            off_U_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
-        i += 1
-    off_U_locations.sort(key=lambda x: x[1])
-
-    # ToDo delete prints after debug
-    # print(off_I_locations)
-    # print(off_U_locations)
-
-    sample_point = 0
-    measurement_points = len(off_I_locations)
-    E_off = []
-
-    while measurement_points > sample_point:
-        # Load Uds and Ud2 pairs in increasing order
-        Uds = np.genfromtxt(csv_files[off_U_locations[sample_point][0]], delimiter=',', skip_header=24)
-        Id = np.genfromtxt(csv_files[off_I_locations[sample_point][0]], delimiter=',', skip_header=24)
-
-        sample_length = len(Uds)
-        sample_interval = abs(Uds[1, 0] - Uds[2, 0])
-        avg_interval = int(sample_length * 0.05)
-
-        # ToDo delete prints after debug
-        # print(avg_interval)
-
-        Uds_avg_max = 0
-        Id_avg_max = 0
+    if energies == 'E_off' or energies is None:
+        off_I_locations = []
+        off_U_locations = []
+        csv_length = len(csv_files)
 
         ##############################
-        # Find the max. Ud2 in steady state
+        # Read all Turn-off current measurements and sort them by Ud2
         ##############################
         i = 0
-        while i <= avg_interval:
-            Id_avg_max = Id_avg_max + Id[i, 1] / avg_interval
+        while csv_length > i:
+            if csv_files[i].rfind("_OFF_I") != -1:
+                positionA = csv_files[i].rfind("A_")
+                positionV = csv_files[i].rfind("V_")
+                off_I_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
             i += 1
-
-        # ToDo delete prints after debug
-        # print(Id_avg_max)
+        off_I_locations.sort(key=lambda x: x[1])
 
         ##############################
-        # Find the max. Uds in steady state
+        # Read all Turn-off voltage measurements and sort them by Ud2
         ##############################
         i = 0
-        while i <= avg_interval:
-            Uds_avg_max = Uds_avg_max + Uds[(sample_length - 1 - i), 1] / avg_interval
+        while csv_length > i:
+            if csv_files[i].rfind("_OFF_U") != -1:
+                positionA = csv_files[i].rfind("A_")
+                positionV = csv_files[i].rfind("V_")
+                off_U_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
             i += 1
+        off_U_locations.sort(key=lambda x: x[1])
 
         # ToDo delete prints after debug
-        # print(Uds_avg_max)
+        # print(off_I_locations)
+        # print(off_U_locations)
+
+        sample_point = 0
+        measurement_points = len(off_I_locations)
+        E_off = []
+
+        while measurement_points > sample_point:
+            # Load Uds and Ud2 pairs in increasing order
+            Uds = np.genfromtxt(csv_files[off_U_locations[sample_point][0]], delimiter=',', skip_header=24)
+            Id = np.genfromtxt(csv_files[off_I_locations[sample_point][0]], delimiter=',', skip_header=24)
+
+            sample_length = len(Uds)
+            sample_interval = abs(Uds[1, 0] - Uds[2, 0])
+            avg_interval = int(sample_length * 0.05)
+
+            # ToDo delete prints after debug
+            # print(avg_interval)
+
+            Uds_avg_max = 0
+            Id_avg_max = 0
+
+            ##############################
+            # Find the max. Ud2 in steady state
+            ##############################
+            i = 0
+            while i <= avg_interval:
+                Id_avg_max = Id_avg_max + Id[i, 1] / avg_interval
+                i += 1
+
+            # ToDo delete prints after debug
+            # print(Id_avg_max)
+
+            ##############################
+            # Find the max. Uds in steady state
+            ##############################
+            i = 0
+            while i <= avg_interval:
+                Uds_avg_max = Uds_avg_max + Uds[(sample_length - 1 - i), 1] / avg_interval
+                i += 1
+
+            # ToDo delete prints after debug
+            # print(Uds_avg_max)
+
+            ##############################
+            # Find the starting point of the Eoff integration
+            # i equals the lower integration limit
+            ##############################
+            i = 0
+            E_off_temp = 0
+            while Uds[i, 1] < (Uds_avg_max * off_vds_limit):
+                i += 1
+
+            # ##############################
+            # # Time correction: Align when Uds and Ud2 are at 95%
+            # ##############################
+            # u = 0
+            # while Uds[u, 1] < (Uds_avg_max):  # * 0.95):
+            #     u += 1
+            #
+            # i_offset = 0
+            # while Id[i_offset, 1] > (Id_avg_max * 0.95):
+            #     i_offset += 1
+            #
+            # time_correction = u - i_offset
+
+            time_correction = 0
+
+            ##############################
+            # Integrate the power from 10% Uds_max to 10% Id_max
+            ##############################
+            while Id[i - time_correction, 1] >= (Id_avg_max * off_is_limit):
+                E_off_temp = E_off_temp + (Uds[i, 1] * Id[i - time_correction, 1] * sample_interval)
+                i += 1
+            E_off.append([off_I_locations[sample_point][1], E_off_temp])
+            sample_point += 1
+
+        # ToDo delete prints after debug
+        # print(E_off)
 
         ##############################
-        # Find the starting point of the Eoff integration
-        # i equals the lower integration limit
+        # Plot Eoff
+        ##############################
+        x = [sub[0] for sub in E_off]
+        y = [sub[1] * 1000000 for sub in E_off]
+        fig, ax1 = plt.subplots()
+        color = 'tab:red'
+        ax1.set_xlabel("Ud2 / A")
+        ax1.set_ylabel("Eoff / µJ", color=color)
+        ax1.plot(x, y, color=color)
+        plt.show()
+
+
+    if energies == 'E_on' or energies is None:
+        i = 0
+        on_I_locations = []
+        on_U_locations = []
+        csv_length = len(csv_files)
+        ##############################
+        # Read all Turn-on current measurements and sort them by Id
+        ##############################
+        while csv_length > i:
+            if csv_files[i].rfind("_ON_I") != -1:
+                positionA = csv_files[i].rfind("A_")
+                positionV = csv_files[i].rfind("V_")
+                on_I_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
+            i += 1
+        on_I_locations.sort(key=lambda x: x[1])
+
+        ##############################
+        # Read all Turn-on voltage measurements and sort them by Id
         ##############################
         i = 0
-        E_off_temp = 0
-        while Uds[i, 1] < (Uds_avg_max * off_vds_limit):
+        while csv_length > i:
+            if csv_files[i].rfind("_ON_U") != -1:
+                positionA = csv_files[i].rfind("A_")
+                positionV = csv_files[i].rfind("V_")
+                on_U_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
             i += 1
+        on_U_locations.sort(key=lambda x: x[1])
 
-        # ##############################
-        # # Time correction: Align when Uds and Ud2 are at 95%
-        # ##############################
-        # u = 0
-        # while Uds[u, 1] < (Uds_avg_max):  # * 0.95):
-        #     u += 1
-        #
-        # i_offset = 0
-        # while Id[i_offset, 1] > (Id_avg_max * 0.95):
-        #     i_offset += 1
-        #
-        # time_correction = u - i_offset
+        # ToDo delete after debug
+        # print(on_I_locations)
+        # print(on_U_locations)
 
-        time_correction = 0
+        sample_point = 0
+        measurement_points = len(on_I_locations)
+        E_on = []
 
+        # ToDo delete after debug
+        # print(csv_files[on_U_locations[sample_point][0]])
+
+        while measurement_points > sample_point:
+            # Load Uds and Id pairs in increasing order
+            Uds = np.genfromtxt(csv_files[on_U_locations[sample_point][0]], delimiter=',', skip_header=24)
+            Id = np.genfromtxt(csv_files[on_I_locations[sample_point][0]], delimiter=',', skip_header=24)
+
+            sample_length = len(Uds)
+            sample_interval = abs(Uds[1, 0] - Uds[2, 0])
+            avg_interval = int(sample_length * 0.05)
+            Uds_avg_max = 0
+            Id_avg_max = 0
+
+            # ToDo delete after debug
+            # print('#####')
+            # print(sample_length)
+            # print(sample_interval)
+            # print(avg_interval)
+            # print('#####')
+            ##############################
+            # Find the max. Id in steady state
+            ##############################
+            i = 0
+            while i <= avg_interval:
+                Id_avg_max = Id_avg_max + (Id[(sample_length - 3 - i), 1] / avg_interval)
+                i += 1
+            # ToDo delete after debug
+            # print(Id_avg_max)
+            ##############################
+            # Find the max. Uds in steady state
+            ##############################
+            i = 0
+            while i <= avg_interval:
+                Uds_avg_max = Uds_avg_max + (Uds[i, 1] / avg_interval)
+                i += 1
+            # ToDo delete after debug
+            # print(Uds_avg_max)
+            ##############################
+            # Find the starting point of the Eon integration
+            # i equals the lower integration limit
+            ##############################
+            i = 0
+            E_on_temp = 0
+            while Id[i, 1] < (Id_avg_max * on_is_limit):
+                i += 1
+            # ToDo delete after debug
+            # print(i)
+            ##############################
+            # Time correction: Align when Uds and Id are at 95%
+            ##############################
+            # u = 0
+            # while Uds[u, 1] > (Uds_avg_max * 0.95):
+            #     u += 1
+            #
+            # i_offset = 0
+            # while Id[i_offset, 1] < (Id_avg_max * 0.1):
+            #     i_offset += 1
+            #
+            # time_correction = u - i_offset
+            time_correction = 0
+            ##############################
+            # Integrate the power from 10% Id_max to 10% Uds_max
+            ##############################
+            while Uds[i + time_correction, 1] >= (Uds_avg_max * on_vds_limit):
+                E_on_temp = E_on_temp + (Uds[i + time_correction, 1] * Id[i, 1] * sample_interval)
+                i += 1
+            E_on.append([on_I_locations[sample_point][1], E_on_temp])
+            sample_point += 1
+
+        # ToDo delete after debug
+        # print(E_on)
         ##############################
-        # Integrate the power from 10% Uds_max to 10% Id_max
+        # Plot Eon
         ##############################
-        while Id[i - time_correction, 1] >= (Id_avg_max * off_is_limit):
-            E_off_temp = E_off_temp + (Uds[i, 1] * Id[i - time_correction, 1] * sample_interval)
-            i += 1
-        E_off.append([off_I_locations[sample_point][1], E_off_temp])
-        sample_point += 1
-
-    # ToDo delete prints after debug
-    # print(E_off)
-
-    ##############################
-    # Plot Eoff
-    ##############################
-    x = [sub[0] for sub in E_off]
-    y = [sub[1] * 1000000 for sub in E_off]
-    fig, ax1 = plt.subplots()
-    color = 'tab:red'
-    ax1.set_xlabel("Ud2 / A")
-    ax1.set_ylabel("Eoff / µJ", color=color)
-    ax1.plot(x, y, color=color)
-    plt.show()
+        # ToDo Plot for different Rgs,Uds
+        x = [sub[0] for sub in E_on]
+        y = [sub[1] * 1000000 for sub in E_on]
+        fig, ax1 = plt.subplots()
+        color = 'tab:red'
+        ax1.set_xlabel("A")
+        ax1.set_ylabel("Eon / µJ", color=color)
+        ax1.plot(x, y, color=color)
+        plt.show()
