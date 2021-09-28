@@ -3739,13 +3739,34 @@ class MissingDataError(Exception):
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
 
 
-def dpt_safe_data(path,energies, load_inductance, safe_RAW_data, time_correction, integration_interval):
+def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correction, integration_interval):
 
     if integration_interval == 'IEC 60747-8' or integration_interval is None:
         off_vds_limit = 0.1
         off_is_limit = 0.1
         on_vds_limit = 0.1
         on_is_limit = 0.1
+    elif integration_interval == 'IEC 60747-9':
+        off_vds_limit = 0.1
+        off_is_limit = 0.02
+        on_vds_limit = 0.02
+        on_is_limit = 0.1
+    elif integration_interval == 'Mitsubishi':
+        off_vds_limit = 0.1
+        off_is_limit = 0.1
+        on_vds_limit = 0.1
+        on_is_limit = 0.1
+    elif integration_interval == 'Infineon':
+        off_vds_limit = 0.1
+        off_is_limit = 0.02
+        on_vds_limit = 0.02
+        on_is_limit = 0.1
+    elif integration_interval == 'Wolfspeed':
+        off_vds_limit = 0
+        off_is_limit = -0.1
+        on_vds_limit = -0.1
+        on_is_limit = 0
+
 
     # Get a list of all the csv files
     csv_files = glob.glob(path)
