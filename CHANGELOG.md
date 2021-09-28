@@ -4,8 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] - 2021-09-28
+### Added
+- #37: Function to calculate thermal parameters from given thermal curve
+- scipy curve fitting method is utilized to extract thermal parameters
 
+### Updated
+- Docstrings
+- added calc_thermal_params function call to init block of transistor object to calculate the missing thermal parameters
+
+### Bugfixes
+- #19: Problems in Windows when removing cloned repo
 
 ## [0.2.12] - 2021-09-15
 ### Added
