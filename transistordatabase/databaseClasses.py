@@ -226,8 +226,8 @@ class Transistor:
 
             self.diode = self.Diode(diode_args)
             self.switch = self.Switch(switch_args)
-            self.calc_thermal_params('switch')
-            self.calc_thermal_params('diode')
+            self.calc_thermal_params(input_type='switch')
+            self.calc_thermal_params(input_type='diode')
             self.wp = self.WP()
         except Exception as e:
             print('Exception occured: Selected datasheet or module could not be created or loaded\n'+str(e))
@@ -978,7 +978,7 @@ class Transistor:
                              "linearization.")
         return round(v_channel, 6), round(r_channel, 9)
 
-    def calc_thermal_params(self, order=4, input_type=None, plotbit=False):
+    def calc_thermal_params(self, input_type=None, order=4, plotbit=False):
         """
         A method to generate thermal parameters like Rth_total, tau_total, Cth_total and vectors like Rth_vector, tau_vector, Cth_vector based
         on data availability passed by the user while creating a new transistor object.
