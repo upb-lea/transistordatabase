@@ -3,7 +3,7 @@ import xml.etree.ElementTree as et
 import numpy as np
 import re
 import os
-from typing import List, Union
+from typing import List, Union, Optional
 from matplotlib import pyplot as plt
 from bson.objectid import ObjectId
 from bson import json_util
@@ -3546,7 +3546,7 @@ def merge_curve(curve, curve_detail):
     return merged_curve
 
 
-def print_TDB(filters: List[str] = [], collection: str ="local") -> List[str]:
+def print_TDB(filters: Optional[List[str]] = None, collection: str ="local") -> List[str]:
     """
     Print all transistorelements stored in the local database
 
@@ -3564,6 +3564,11 @@ def print_TDB(filters: List[str] = [], collection: str ="local") -> List[str]:
     >>> # or
     >>> tdb.print_TDB('type')
     """
+    # Note: Never use mutable default arguments
+    # see https://florimond.dev/en/posts/2018/08/python-mutable-defaults-are-the-source-of-all-evil/
+    # This is the better solution
+    filters = filters or []
+
     if collection == "local":
         collection = connect_local_TDB()
     if not isinstance(filters, list):
