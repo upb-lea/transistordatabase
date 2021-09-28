@@ -3739,7 +3739,25 @@ class MissingDataError(Exception):
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
 
 
-def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correction, integration_interval):
+def dpt_safe_data(path, energies, safe_RAW_data, time_correction, integration_interval):
+    """
+        Imports double pulse measurements and calculates switching losses to each given working point.
+
+        [1] options for the integration interval are based on following paper:
+        Link:
+
+        :param path: path to double pulse measurements
+        :type path: str
+        :param energies: defines which switching energies should be calculated
+        :type energies: str
+        :param safe_RAW_data: safe the double pulse measurements to the db
+        :type safe_RAW_data: bool
+        :param time_correction: defines wheather a runtime correction process should be done
+        :type time_correction: bool
+        :param integration_interval: gives the integration interval as stated in [1]
+        :type integration_interval: str
+
+        """
 
     if integration_interval == 'IEC 60747-8' or integration_interval is None:
         off_vds_limit = 0.1
@@ -3800,10 +3818,6 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             i += 1
         off_U_locations.sort(key=lambda x: x[1])
 
-        # ToDo delete prints after debug
-        # print(off_I_locations)
-        # print(off_U_locations)
-
         sample_point = 0
         measurement_points = len(off_I_locations)
         E_off = []
@@ -3817,9 +3831,6 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             sample_interval = abs(Uds[1, 0] - Uds[2, 0])
             avg_interval = int(sample_length * 0.05)
 
-            # ToDo delete prints after debug
-            # print(avg_interval)
-
             Uds_avg_max = 0
             Id_avg_max = 0
 
@@ -3831,9 +3842,6 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
                 Id_avg_max = Id_avg_max + Id[i, 1] / avg_interval
                 i += 1
 
-            # ToDo delete prints after debug
-            # print(Id_avg_max)
-
             ##############################
             # Find the max. Uds in steady state
             ##############################
@@ -3841,9 +3849,6 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             while i <= avg_interval:
                 Uds_avg_max = Uds_avg_max + Uds[(sample_length - 1 - i), 1] / avg_interval
                 i += 1
-
-            # ToDo delete prints after debug
-            # print(Uds_avg_max)
 
             ##############################
             # Find the starting point of the Eoff integration
@@ -3853,19 +3858,6 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             E_off_temp = 0
             while Uds[i, 1] < (Uds_avg_max * off_vds_limit):
                 i += 1
-
-            # ##############################
-            # # Time correction: Align when Uds and Ud2 are at 95%
-            # ##############################
-            # u = 0
-            # while Uds[u, 1] < (Uds_avg_max):  # * 0.95):
-            #     u += 1
-            #
-            # i_offset = 0
-            # while Id[i_offset, 1] > (Id_avg_max * 0.95):
-            #     i_offset += 1
-            #
-            # time_correction = u - i_offset
 
             time_correction = 0
 
@@ -3878,8 +3870,6 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             E_off.append([off_I_locations[sample_point][1], E_off_temp])
             sample_point += 1
 
-        # ToDo delete prints after debug
-        # print(E_off)
 
         ##############################
         # Plot Eoff
@@ -3922,16 +3912,10 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             i += 1
         on_U_locations.sort(key=lambda x: x[1])
 
-        # ToDo delete after debug
-        # print(on_I_locations)
-        # print(on_U_locations)
-
         sample_point = 0
         measurement_points = len(on_I_locations)
         E_on = []
 
-        # ToDo delete after debug
-        # print(csv_files[on_U_locations[sample_point][0]])
 
         while measurement_points > sample_point:
             # Load Uds and Id pairs in increasing order
@@ -3944,12 +3928,6 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             Uds_avg_max = 0
             Id_avg_max = 0
 
-            # ToDo delete after debug
-            # print('#####')
-            # print(sample_length)
-            # print(sample_interval)
-            # print(avg_interval)
-            # print('#####')
             ##############################
             # Find the max. Id in steady state
             ##############################
@@ -3957,8 +3935,7 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             while i <= avg_interval:
                 Id_avg_max = Id_avg_max + (Id[(sample_length - 3 - i), 1] / avg_interval)
                 i += 1
-            # ToDo delete after debug
-            # print(Id_avg_max)
+
             ##############################
             # Find the max. Uds in steady state
             ##############################
@@ -3966,8 +3943,7 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             while i <= avg_interval:
                 Uds_avg_max = Uds_avg_max + (Uds[i, 1] / avg_interval)
                 i += 1
-            # ToDo delete after debug
-            # print(Uds_avg_max)
+
             ##############################
             # Find the starting point of the Eon integration
             # i equals the lower integration limit
@@ -3976,20 +3952,7 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             E_on_temp = 0
             while Id[i, 1] < (Id_avg_max * on_is_limit):
                 i += 1
-            # ToDo delete after debug
-            # print(i)
-            ##############################
-            # Time correction: Align when Uds and Id are at 95%
-            ##############################
-            # u = 0
-            # while Uds[u, 1] > (Uds_avg_max * 0.95):
-            #     u += 1
-            #
-            # i_offset = 0
-            # while Id[i_offset, 1] < (Id_avg_max * 0.1):
-            #     i_offset += 1
-            #
-            # time_correction = u - i_offset
+
             time_correction = 0
             ##############################
             # Integrate the power from 10% Id_max to 10% Uds_max
@@ -4000,8 +3963,6 @@ def dpt_safe_data(path, energies, load_inductance, safe_RAW_data, time_correctio
             E_on.append([on_I_locations[sample_point][1], E_on_temp])
             sample_point += 1
 
-        # ToDo delete after debug
-        # print(E_on)
         ##############################
         # Plot Eon
         ##############################
