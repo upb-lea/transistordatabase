@@ -10,7 +10,6 @@ from bson import json_util
 from scipy import integrate
 from scipy.spatial import distance
 from scipy.optimize import curve_fit
-from sklearn.metrics import r2_score
 from pymongo import MongoClient
 from pymongo import errors
 import json
@@ -1032,7 +1031,11 @@ class Transistor:
                     tuple_list = sorted(zip(tau_values, rth_values))
                     cap_values = [x / y for x, y in tuple_list]
                     tau_values, rth_values = (list(t) for t in zip(*tuple_list))
-                    print("R^2 score:", r2_score(rth, rth_op))
+                    residuals = rth - rth_op
+                    ss_res = np.sum(residuals**2)
+                    ss_tot = np.sum((rth - np.mean(rth)) ** 2)
+                    r_squared = 1 - (ss_res / ss_tot)
+                    print("R^2 score:", r_squared)
                     if len(rth_values) > 1:
                         foster_args.r_th_vector = [round(x, 5) for x in rth_values]
                         foster_args.tau_vector = [round(x, 5) for x in tau_values]
