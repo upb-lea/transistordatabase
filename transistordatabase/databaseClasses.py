@@ -1739,8 +1739,8 @@ class Transistor:
 
             :param switch_args: argument to be passed for initialization
 
-            :raises KeyError: Expected during the channel\e_on\e_off instance initiaization
-            :raises ValueError: Expected during the channel\e_on\e_off instance initiaization
+            :raises KeyError: Expected during the channel\e_on(_meas)\e_off(_meas) instance initiaization
+            :raises ValueError: Expected during the channel\e_on(_meas)\e_off(_meas) instance initiaization
 
             .. todo:: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
             """
@@ -1879,6 +1879,8 @@ class Transistor:
                 self.channel = []
                 self.e_on = []
                 self.e_off = []
+                self.e_on_meas = []
+                self.e_off_meas = []
                 self.linearized_switch = []
 
         def convert_to_dict(self):
@@ -3789,7 +3791,7 @@ class MissingDataError(Exception):
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
 
 
-def dpt_safe_data(path, energies, safe_RAW_data, time_correction, integration_interval):
+def dpt_safe_data(path, energies, safe_RAW_data, time_correction, integration_interval, v_g):
     """
         Imports double pulse measurements and calculates switching losses to each given working point.
 
@@ -3806,6 +3808,8 @@ def dpt_safe_data(path, energies, safe_RAW_data, time_correction, integration_in
         :type time_correction: bool
         :param integration_interval: gives the integration interval as stated in [1]
         :type integration_interval: str
+        :param v_g: Gate-Sourve Voltage
+        :type integration_interval: int
 
         """
 
@@ -3838,6 +3842,19 @@ def dpt_safe_data(path, energies, safe_RAW_data, time_correction, integration_in
 
     # Get a list of all the csv files
     csv_files = glob.glob(path)
+
+    position_t_j = csv_files[1].rfind("C_")
+    position_t_j_start = csv_files[1].rfind("_", 0, position_t_j)
+    t_j =int(csv_files[1][position_t_j_start + 1:position_t_j])
+
+    position_r_g = csv_files[1].rfind("R_")
+    position_r_g_start = csv_files[1].rfind("_", 0, position_r_g)
+    r_g = int(csv_files[1][position_r_g_start + 1:position_r_g])
+
+    position_v_supply = csv_files[1].rfind("V_")
+    position_v_supply_start = csv_files[1].rfind("_", 0, position_v_supply)
+    v_supply = int(csv_files[1][position_v_supply_start + 1:position_v_supply])
+
 
     if energies == 'E_off' or energies is None:
         off_I_locations = []
@@ -3928,7 +3945,7 @@ def dpt_safe_data(path, energies, safe_RAW_data, time_correction, integration_in
         y = [sub[1] * 1000000 for sub in E_off]
         fig, ax1 = plt.subplots()
         color = 'tab:red'
-        ax1.set_xlabel("Ud2 / A")
+        ax1.set_xlabel("Id / A")
         ax1.set_ylabel("Eoff / µJ", color=color)
         ax1.plot(x, y, color=color)
         plt.show()
@@ -4021,7 +4038,24 @@ def dpt_safe_data(path, energies, safe_RAW_data, time_correction, integration_in
         y = [sub[1] * 1000000 for sub in E_on]
         fig, ax1 = plt.subplots()
         color = 'tab:red'
-        ax1.set_xlabel("A")
+        ax1.set_xlabel("Id / A")
         ax1.set_ylabel("Eon / µJ", color=color)
         ax1.plot(x, y, color=color)
         plt.show()
+
+    e_off_meas = {'dataset_type': 'graph_i_e',
+                  't_j': t_j,
+                  'v_supply': v_supply,
+                  'v_g': v_g,
+                  'r_g': r_g,
+                  'graph_i_e': E_off}
+
+    e_on_meas = {'dataset_type': 'graph_i_e',
+                 't_j': t_j,
+                 'v_supply': v_supply,
+                 'v_g': v_g,
+                 'r_g': r_g,
+                 'graph_i_e': E_on}
+
+    dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas}
+    return dpt_dict
