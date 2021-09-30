@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentation &mdash; transistordatabase(TDB) 0.2.12 documentation</title>
+  <title>Documentation &mdash; transistordatabase(TDB) 0.2.13 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -623,6 +623,64 @@ the desired current, the equivalent parameters for u_channel and r_channel are r
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="databaseClasses.Transistor.calc_thermal_params">
+<span class="sig-name descname"><span class="pre">calc_thermal_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotbit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.calc_thermal_params" title="Permalink to this definition"></a></dt>
+<dd><p>A method to generate thermal parameters like Rth_total, tau_total, Cth_total and vectors like Rth_vector, tau_vector, Cth_vector based
+on data availability passed by the user while creating a new transistor object.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 18%" />
+<col style="width: 16%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Cases</p></th>
+<th class="head"><p>Vectors</p></th>
+<th class="head"><p>Total</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Only curve available</p></td>
+<td><p>R_th, C_th, tau</p></td>
+<td><p>R_th, C_th, tau</p></td>
+<td><p>Compute all parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p>Curve and R_th_total available</p></td>
+<td><p>R_th, C_th, tau</p></td>
+<td><p>C_th, tau</p></td>
+<td><p>No overwrite of R_th_total</p></td>
+</tr>
+<tr class="row-even"><td><p>Total values available, no curve available</p></td>
+<td><p>C_th</p></td>
+<td><p>None</p></td>
+<td><p>Compute only C_th_total</p></td>
+</tr>
+<tr class="row-odd"><td><p>Vectors available AND/OR
+Curve available</p></td>
+<td><p>Cth</p></td>
+<td><p>Cth</p></td>
+<td><p>-No curve fitting necessary,
+-Do not overwrite R_th_total</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>int</em>) – The length of the polynomial to be used for curve fitting based parameters extraction. (cannot be more than 5)</p></li>
+<li><p><strong>input_type</strong> (<em>str</em>) – The type of object for which the thermal parameters need to computed. Can be either ‘switch’ or ‘diode’ type</p></li>
+<li><p><strong>plotbit</strong> (<em>bool</em>) – A boolean flag to visualize the fitted curve using matplotlib plotting features</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Foster object filled with missing parameters within the input_type object of transistor object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.compare_channel_linearized">
 <span class="sig-name descname"><span class="pre">compare_channel_linearized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i_channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_j</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.compare_channel_linearized" title="Permalink to this definition"></a></dt>
 <dd><p>Shows channel plots for switch and diode comparing the linearized graph and the original graph.
@@ -1083,14 +1141,11 @@ channel-, e_on- and e_off-datasets.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.plot_all_channel_data">
-<span class="sig-name descname"><span class="pre">plot_all_channel_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_all_channel_data" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_all_channel_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_all_channel_data" title="Permalink to this definition"></a></dt>
 <dd><p>Plot all switch channel characteristic curves</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>switch_type</strong> – switch type e.g Mosfet, SiC-Mosfet, IGBT</p></li>
-<li><p><strong>buffer_req</strong> – internally required for generating virtual datasheets</p></li>
-</ul>
+<dd class="field-odd"><p><strong>buffer_req</strong> – internally required for generating virtual datasheets</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Respective plots are displayed</p>
@@ -1130,17 +1185,14 @@ channel-, e_on- and e_off-datasets.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.collect_data">
-<span class="sig-name descname"><span class="pre">collect_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.collect_data" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">collect_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch.collect_data" title="Permalink to this definition"></a></dt>
 <dd><p>Collects switch data in form of dictionary for generating virtual datahseet</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>switch_type</strong> – switch type e.g Mosfet, SiC-Mosfet, IGBT</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Switch data in form of dictionary</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Switch data in form of dictionary</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1276,7 +1328,7 @@ The diode has only turn-off gate voltage which is the switch turn-on gate voltag
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.plot_all_channel_data">
-<span class="sig-name descname"><span class="pre">plot_all_channel_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.plot_all_channel_data" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_all_channel_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_req</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.plot_all_channel_data" title="Permalink to this definition"></a></dt>
 <dd><p>Plot all diode channel characteristic curves</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1323,7 +1375,7 @@ The diode has only turn-off gate voltage which is the switch turn-on gate voltag
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.collect_data">
-<span class="sig-name descname"><span class="pre">collect_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.collect_data" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">collect_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode.collect_data" title="Permalink to this definition"></a></dt>
 <dd><p>Collects diode data in form of dictionary for generating virtual datahseet</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1968,7 +2020,7 @@ Use case is the merging of capacity curves, here often two curves (normal and zo
 
 <dl class="py function">
 <dt class="sig sig-object py" id="databaseClasses.print_TDB">
-<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">print_TDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'local'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#databaseClasses.print_TDB" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">print_TDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'local'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#databaseClasses.print_TDB" title="Permalink to this definition"></a></dt>
 <dd><p>Print all transistorelements stored in the local database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2076,6 +2128,7 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
       <dt>Tags</dt>
       <dd><a href="../0.2.11/transistordatabase.html">0.2.11</a></dd>
       <dd><a href="../0.2.12/transistordatabase.html">0.2.12</a></dd>
+      <dd><a href="../0.2.13/transistordatabase.html">0.2.13</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>
