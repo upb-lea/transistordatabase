@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2021-09-28
+## [Unreleased]
+
+## [0.2.13] - 2021-09-30
 ### Added
 - #37: Function to calculate thermal parameters from given thermal curve
 - scipy curve fitting method is utilized to extract thermal parameters
@@ -147,7 +149,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.12...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.13...HEAD
+[0.2.13]: https://github.com/upb-lea/transistordatabase/compare/0.2.12...0.2.13
 [0.2.12]: https://github.com/upb-lea/transistordatabase/compare/0.2.11...0.2.12
 [0.2.11]: https://github.com/upb-lea/transistordatabase/compare/0.2.10...0.2.11
 [0.2.10]: https://github.com/upb-lea/transistordatabase/compare/0.2.9...0.2.10

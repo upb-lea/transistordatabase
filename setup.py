@@ -61,7 +61,7 @@ setup(
         "Documentation": "https://upb-lea.github.io/transistordatabase/main/transistordatabase.html",
         "Source Code": "https://github.com/upb-lea/transistordatabase",
     },
-    version='0.2.12',
+    version='0.2.13',
     zip_safe=False,
     data_files=[('', ['CHANGELOG.md'])]
 )
