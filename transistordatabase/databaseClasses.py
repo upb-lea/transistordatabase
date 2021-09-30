@@ -1728,6 +1728,8 @@ class Transistor:
         channel: Union[List["ChannelData"], None]  #: Switch channel voltage and current data.
         e_on: Union[List["SwitchEnergyData"], None]  #: Switch on energy data.
         e_off: Union[List["SwitchEnergyData"], None]  #: Switch of energy data.
+        e_on_meas: Union[List["SwitchEnergyData"], None]  #: Switch on energy data.
+        e_off_meas: Union[List["SwitchEnergyData"], None]  #: Switch on energy data.
         linearized_switch: Union[List["LinearizedModel"], None]  #: Static data valid for a specific operating point.
         t_j_max: float  #: Maximum junction temperature. Units in °C (Mandatory key)
 
@@ -1812,6 +1814,43 @@ class Transistor:
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
                     self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off')))
+
+                self.e_on_meas = []  # Default case: Empty list
+                if isinstance(switch_args.get('e_on_meas'), list):
+                    # Loop through list and check each dict for validity. Only create SwitchEnergyData objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in switch_args.get('e_on_meas'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                                self.e_on_meas.append(Transistor.SwitchEnergyData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('e_on_meas')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(switch_args.get('e_on_meas'), 'SwitchEnergyData'):
+                    # Only create SwitchEnergyData objects from valid dicts
+                    self.e_on.append(Transistor.SwitchEnergyData(switch_args.get('e_on_meas')))
+
+                self.e_off_meas = []  # Default case: Empty list
+                if isinstance(switch_args.get('e_off_meas'), list):
+                    for dataset in switch_args.get('e_off_meas'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                                self.e_off_meas.append(Transistor.SwitchEnergyData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('e_off_meas')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-SwitchEnergyData dictionaries for e_off_meas: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(switch_args.get('e_off_meas'), 'SwitchEnergyData'):
+                    self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off_meas')))
 
                 self.linearized_switch = []  # Default case: Empty list
                 if isinstance(switch_args.get('linearized_switch'), list):
@@ -2955,6 +2994,17 @@ class Transistor:
         return plecs_transistor if 'plecs_transistor' in locals() and 'Channel' in plecs_transistor['ConductionLoss'] \
                    else None, plecs_diode if 'plecs_diode' in locals() and 'Channel' in plecs_diode['ConductionLoss'] \
                    else None
+
+    class RawMeasurementData:
+        """
+                - Contains RAW measurement data. e.g. for voltage and current graphs from a double pulse test.
+                """
+
+        # Type of the dataset:
+        # dpt_u_i: U/t I/t graph from double pulse measurements
+        dataset_type: str  #: dpt_u_i (Mandatory key)
+
+
 
 def get_xml_data(file):
     """
