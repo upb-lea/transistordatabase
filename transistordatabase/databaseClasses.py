@@ -1018,7 +1018,7 @@ class Transistor:
             else:
                 if order > 5:
                     raise ValueError("Summation is limited to only n = 5")
-                if foster_args.graph_t_rthjc and foster_args.graph_t_rthjc.any():
+                if foster_args.graph_t_rthjc is not None and foster_args.graph_t_rthjc.any():
                     rth = self.switch.thermal_foster.graph_t_rthjc[1]
                     time = self.switch.thermal_foster.graph_t_rthjc[0]
                     func = gen_exp_func(order)
