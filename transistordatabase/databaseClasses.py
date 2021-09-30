@@ -983,7 +983,7 @@ class Transistor:
         on data availability passed by the user while creating a new transistor object.
 
         +-------------------------------------------+-------------------+-----------------+-----------------------------+
-        | Cases                                     | Vectors           | Total           | Comments                    |
+        | Cases                                     | Vectors           | Total           | To be computed              |
         +===========================================+===================+=================+=============================+
         | Only curve available                      | R_th, C_th, tau   | R_th, C_th, tau |  Compute all parameters     |
         +-------------------------------------------+-------------------+-----------------+-----------------------------+
@@ -991,8 +991,8 @@ class Transistor:
         +-------------------------------------------+-------------------+-----------------+-----------------------------+
         | Total values available, no curve available| C_th              |  None           |  Compute only C_th_total    |
         +-------------------------------------------+-------------------+-----------------+-----------------------------+
-        | Vectors available AND/OR                  | Cth               | Cth             | -No curve fitting necessary,|
-        | Curve available                           |                   |                 | -Do not overwrite R_th_total|
+        | Vectors available AND/OR                  | Cth               | Cth             |- No curve fitting necessary |
+        | Curve available                           |                   |                 |- Do not overwrite R_th_total|
         +-------------------------------------------+-------------------+-----------------+-----------------------------+
 
         :param order: The length of the polynomial to be used for curve fitting based parameters extraction. (cannot be more than 5)

@@ -2,6 +2,7 @@ import transistordatabase as tdb
 import numpy as np
 import datetime
 import pytest
+from pytest import approx
 
 @pytest.fixture()
 def my_transistor():
@@ -78,18 +79,33 @@ def my_transistor():
 
 
 def test_calc_thermal_params(my_transistor):
+    """
+    Test case for the transistor method to check if respective thermal parameters are generated or ignored
+    as per the 4 possible handling situations
+
+    :param my_transistor: a fixture a load the arrange the required transistor object that goes into testing
+
+    :return: assertion based result
+    """
     transistor_args, switch_args, diode_args = my_transistor
     transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    tst_type = 'switch'
+    poly_len = 3
+    fixed_rth_value = 0.5
+    fit_rth_vector = [0.06413, 0.3, 0.18463]
+    fit_tau_vector = [0.00255, 0.04281, 0.06846]
+    fit_rth_value = sum(fit_rth_vector)
+    fit_tau_value = sum(fit_tau_vector)
 
     # Case 0: When vectors are available irrespective of R_th_total
-    transistor.switch.thermal_foster.c_th_vector = None
-    vector = transistor.switch.thermal_foster.r_th_vector
-    assert transistor.switch.thermal_foster.r_th_vector is not None
-    assert transistor.switch.thermal_foster.tau_vector is not None
-    transistor.calc_thermal_params('switch', 5)  # compute c_th_total and c_th_vector if missing
-    assert transistor.switch.thermal_foster.r_th_total is not None
-    assert transistor.switch.thermal_foster.c_th_vector is not None
-    assert vector is transistor.switch.thermal_foster.r_th_vector
+    transistor.switch.thermal_foster.c_th_total = None
+    r_th_vector = transistor.switch.thermal_foster.r_th_vector
+    r_th_total = transistor.switch.thermal_foster.r_th_total
+    tau_total = transistor.switch.thermal_foster.tau_total
+    transistor.calc_thermal_params(input_type=tst_type, order=poly_len)  # compute c_th_total and c_th_vector if missing
+    assert transistor.switch.thermal_foster.r_th_total is r_th_total
+    assert transistor.switch.thermal_foster.c_th_total == tau_total/r_th_total
+    assert r_th_vector is transistor.switch.thermal_foster.r_th_vector
 
 
     # Case 1: Only rth_graph is available
@@ -97,30 +113,27 @@ def test_calc_thermal_params(my_transistor):
     transistor.switch.thermal_foster.tau_total = None
     transistor.switch.thermal_foster.r_th_vector = None
     transistor.switch.thermal_foster.tau_vector = None
-    transistor.calc_thermal_params('switch', order=3)  # reestimate all parameters from polynomial of order 5
-    assert transistor.switch.thermal_foster.r_th_total is not None
-    assert transistor.switch.thermal_foster.c_th_total is not None
-    assert len(transistor.switch.thermal_foster.r_th_vector) == 3
-    assert len(transistor.switch.thermal_foster.c_th_vector) == 3
+    transistor.calc_thermal_params(input_type=tst_type, order=poly_len)  # reestimate all parameters from polynomial of order 3
+    assert transistor.switch.thermal_foster.r_th_total == approx(fit_rth_value, 0.0001)
+    assert transistor.switch.thermal_foster.c_th_total == approx(fit_tau_value/fit_rth_value, 0.0001)
 
 
     # Case 2: When vectors are None and r_th_total, rth_graph is available
-    transistor.switch.thermal_foster.r_th_total = 0.5
+    transistor.switch.thermal_foster.r_th_total = fixed_rth_value
     transistor.switch.thermal_foster.r_th_vector = None
     transistor.switch.thermal_foster.tau_vector = None
-    transistor.calc_thermal_params('switch', order=3)  # re-estimate all parameters but do not overwrite r_th_total
-    assert transistor.switch.thermal_foster.r_th_total is 0.5
-    assert len(transistor.switch.thermal_foster.r_th_vector) == 3
+    transistor.calc_thermal_params(input_type=tst_type, order=poly_len)  # re-estimate all parameters but do not overwrite r_th_total
+    assert transistor.switch.thermal_foster.r_th_total is fixed_rth_value
+    assert transistor.switch.thermal_foster.r_th_vector == approx(fit_rth_vector, 0.0001)
 
-    # Case 3: When vectors, rth_graph are None and r_th_total is available
-    transistor.switch.thermal_foster.r_th_total = 0.5
+    # Case 3: When r_th_vectors, rth_graph are None and r_th_total is available
+    transistor.switch.thermal_foster.r_th_total = fixed_rth_value
     transistor.switch.thermal_foster.r_th_vector = None
-    transistor.switch.thermal_foster.tau_vector = None
     transistor.switch.thermal_foster.graph_t_rthjc = None
-    transistor.calc_thermal_params('switch', order=3)   # compute c_th_total if tau_total is available
+    transistor.calc_thermal_params(input_type=tst_type, order=poly_len)   # compute c_th_total if tau_total is available
     if transistor.switch.thermal_foster.tau_total is not None:
-        assert transistor.switch.thermal_foster.c_th_total is not None
-    assert transistor.switch.thermal_foster.r_th_total is 0.5
+        assert transistor.switch.thermal_foster.c_th_total == transistor.switch.thermal_foster.tau_total/fixed_rth_value
+    assert transistor.switch.thermal_foster.r_th_total is fixed_rth_value
     assert transistor.switch.thermal_foster.r_th_vector is None
 
     # Case 4: When nothing is available do nothing
@@ -128,7 +141,6 @@ def test_calc_thermal_params(my_transistor):
     transistor.switch.thermal_foster.r_th_vector = None
     transistor.switch.thermal_foster.tau_vector = None
     transistor.switch.thermal_foster.graph_t_rthjc = None
-    transistor.calc_thermal_params('switch', order=3)  # do nothing
+    transistor.calc_thermal_params(input_type=tst_type, order=poly_len)  # do nothing
     assert transistor.switch.thermal_foster.r_th_total is None
-    assert transistor.switch.thermal_foster.r_th_vector is None
 
