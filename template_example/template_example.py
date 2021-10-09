@@ -77,6 +77,9 @@ def Template():
                        'c_iss':  {"t_j": 25, "graph_v_c": c_iss_merged},  # insert csv here
                        'c_oss': {"t_j": 25, "graph_v_c": c_oss_merged},  # insert csv here
                        'c_rss': {"t_j": 25, "graph_v_c": c_rss_merged},  # insert csv here
+                       'c_iss_fix': 6085e-12,
+                       'c_oss_fix': 230e-12,
+                       'c_rss_fix': 13e-12,
                        'graph_v_ecoss': tdb.csv2array('transistor_V_Eoss.csv'),
                        'r_g_int': 2.6,
                        'r_th_cs': 0,
@@ -221,7 +224,7 @@ if __name__ == '__main__':
     # transistor.plot_v_qoss()
 
     # connect transistors in parallel
-    parallel_transistors = transistor.parallel_transistors(3)
+    #parallel_transistors = transistor.parallel_transistors(3)
 
     #### switch methods ####
     # transistor.switch.plot_energy_data()
