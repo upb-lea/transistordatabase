@@ -293,13 +293,14 @@ class Transistor:
         """
         transistor_dict = self.convert_to_dict()
         if path is None:
+            display_path = pathlib.Path.cwd()
             with open(transistor_dict['name'] + '.json', 'w') as fp:
                 json.dump(transistor_dict, fp, default=json_util.default)
-            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {os.getcwd()}")
+            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {display_path.as_uri()}")
         elif isinstance(path, str):
             with open(os.path.join(path, transistor_dict['name'] + '.json'), 'w') as fp:
                 json.dump(transistor_dict, fp, default=json_util.default)
-            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {path}")
+            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {display_path.as_uri()}")
         else:
             TypeError(f"{path = } ist not a string.")
 
