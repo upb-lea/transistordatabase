@@ -3747,7 +3747,7 @@ def update_from_fileexchange(collection: str ="local", overwrite: bool =True) ->
     try:
         repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
         module_file_path = pathlib.Path(__file__).parent.absolute()
-        local_dir = os.path.join(module_file_path, "cloned_repo")
+        local_dir = os.path.join(module_file_path, "cloned_repo_TDB_File_Exchange")
         # Raises InvalidGitRepositoryError when not in a repo
         repo = Repo(local_dir, search_parent_directories=False)
         # check that the repository loaded correctly
@@ -3786,7 +3786,7 @@ def update_from_fileexchange(collection: str ="local", overwrite: bool =True) ->
                 try:
                     transistor = import_json(filepath)
                 except Exception as e:
-                    print("Failed Transistor : "+filepath)
+                    warnings.warn("Failed Transistor : "+filepath)
                 else:
                     transistor.save(collection, overwrite)
                     print(f"Update Transistor: {transistor.name}")
