@@ -2591,10 +2591,15 @@ class Transistor:
         # graph_r_e: r_e is a 2-dim numpy array with two rows. i_x is a scalar. Given e.g. by an E vs R graph.
         # graph_i_e: i_e is a 2-dim numpy array with two rows. r_g is a scalar. Given e.g. by an E vs I graph.
         dataset_type: str  #: Single, graph_r_e, graph_i_e (Mandatory key)
+        # Additional measurement information.
+        measurement_date: "datetime.datetime"  #: Specifies the date and time at which the measurement was done.
+        measurement_testbench: str  #: Specifies the testbench used for the measurement.
         # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
         t_j: float  #: Junction temperature. Units in °C (Mandatory key)
         v_supply: float  #: Supply voltage. Units in V (Mandatory key)
         v_g: float  #: Gate voltage. Units in V (Mandatory key)
+        v_g_off: float  #: Gate voltage for turn off. Units in V
+        load_l: float  #: Load inductance. Units in µH
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
         e_x: Union[float, None]  #: Scalar dataset-parameter - switching energy. Units in J
         r_g: Union[float, None]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
