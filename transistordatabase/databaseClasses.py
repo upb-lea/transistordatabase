@@ -3929,27 +3929,27 @@ def dpt_safe_data(measurement_dict: dict):
 
         """
 
-    if 'integration_interval' in measurement_dict == 'IEC 60747-8' or 'integration_interval' in measurement_dict is None:
+    if measurement_dict['integration_interval'] == 'IEC 60747-8' or 'integration_interval' in measurement_dict is None:
         off_vds_limit = 0.1
         off_is_limit = 0.1
         on_vds_limit = 0.1
         on_is_limit = 0.1
-    elif 'integration_interval' in measurement_dict == 'IEC 60747-9':
+    elif measurement_dict['integration_interval'] == 'IEC 60747-9':
         off_vds_limit = 0.1
         off_is_limit = 0.02
         on_vds_limit = 0.02
         on_is_limit = 0.1
-    elif 'integration_interval' in measurement_dict == 'Mitsubishi':
+    elif measurement_dict['integration_interval'] == 'Mitsubishi':
         off_vds_limit = 0.1
         off_is_limit = 0.1
         on_vds_limit = 0.1
         on_is_limit = 0.1
-    elif 'integration_interval' in measurement_dict == 'Infineon':
+    elif measurement_dict['integration_interval'] == 'Infineon':
         off_vds_limit = 0.1
         off_is_limit = 0.02
         on_vds_limit = 0.02
         on_is_limit = 0.1
-    elif 'integration_interval' in measurement_dict == 'Wolfspeed':
+    elif measurement_dict['integration_interval'] == 'Wolfspeed':
         off_vds_limit = 0
         off_is_limit = -0.1
         on_vds_limit = -0.1
@@ -3976,7 +3976,7 @@ def dpt_safe_data(measurement_dict: dict):
         csv_length = len(csv_files)
 
         ##############################
-        # Read all Turn-off current measurements and sort them by Ud2
+        # Read all Turn-off current measurements and sort them by Id
         ##############################
         i = 0
         while csv_length > i:
@@ -3988,7 +3988,7 @@ def dpt_safe_data(measurement_dict: dict):
         off_I_locations.sort(key=lambda x: x[1])
 
         ##############################
-        # Read all Turn-off voltage measurements and sort them by Ud2
+        # Read all Turn-off voltage measurements and sort them by Uds
         ##############################
         i = 0
         while csv_length > i:
@@ -4004,9 +4004,12 @@ def dpt_safe_data(measurement_dict: dict):
         E_off = []
 
         while measurement_points > sample_point:
-            # Load Uds and Ud2 pairs in increasing order
+            # Load Uds and Id pairs in increasing order
             Uds = np.genfromtxt(csv_files[off_U_locations[sample_point][0]], delimiter=',', skip_header=24)
             Id = np.genfromtxt(csv_files[off_I_locations[sample_point][0]], delimiter=',', skip_header=24)
+
+            Uds_raw_off = Uds_raw_off.append(Uds)
+            Id_raw_off = Id_raw_off.append(Id)
 
             sample_length = len(Uds)
             sample_interval = abs(Uds[1, 0] - Uds[2, 0])
@@ -4016,7 +4019,7 @@ def dpt_safe_data(measurement_dict: dict):
             Id_avg_max = 0
 
             ##############################
-            # Find the max. Ud2 in steady state
+            # Find the max. Id in steady state
             ##############################
             i = 0
             while i <= avg_interval:
@@ -4061,6 +4064,7 @@ def dpt_safe_data(measurement_dict: dict):
         ax1.set_xlabel("Id / A")
         ax1.set_ylabel("Eoff / µJ", color=color)
         ax1.plot(x, y, color=color)
+        plt.grid('both')
         plt.show()
 
     if measurement_dict['energies'] == 'E_on' or measurement_dict['energies'] is None:
@@ -4099,6 +4103,9 @@ def dpt_safe_data(measurement_dict: dict):
             # Load Uds and Id pairs in increasing order
             Uds = np.genfromtxt(csv_files[on_U_locations[sample_point][0]], delimiter=',', skip_header=24)
             Id = np.genfromtxt(csv_files[on_I_locations[sample_point][0]], delimiter=',', skip_header=24)
+
+            Uds_raw_on = Uds_raw_on.append(Uds)
+            Id_raw_on = Id_raw_on.append(Id)
 
             sample_length = len(Uds)
             sample_interval = abs(Uds[1, 0] - Uds[2, 0])
@@ -4152,6 +4159,7 @@ def dpt_safe_data(measurement_dict: dict):
         ax1.set_xlabel("Id / A")
         ax1.set_ylabel("Eon / µJ", color=color)
         ax1.plot(x, y, color=color)
+        plt.grid('both')
         plt.show()
 
     e_off_meas = {'dataset_type': 'graph_i_e',
@@ -4176,5 +4184,10 @@ def dpt_safe_data(measurement_dict: dict):
                  'r_g': r_g,
                  'graph_i_e': E_on}
 
-    dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas}
+    dpt_raw_data = {'dpt_on_Uds': Uds_raw_on,
+                    'dpt_on_Id': Id_raw_on,
+                    'dpt_off_Uds': Uds_raw_off,
+                    'dpt_off_Id': Id_raw_off}
+
+    dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'dpt_raw_data': dpt_raw_data}
     return dpt_dict
