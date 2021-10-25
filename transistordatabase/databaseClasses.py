@@ -23,6 +23,7 @@ from jinja2 import Environment, FileSystemLoader
 import base64
 import io
 import pathlib
+import constants as cnt
 
 class Transistor:
     """
@@ -426,7 +427,7 @@ class Transistor:
             if dataset_dict.get('type') not in supported_types:
                 raise ValueError(f"Transistor type currently not supported. 'type' must be in "
                                  f"{supported_types}")
-            text_file_dict = {'housing_type': 'housing_types.txt', 'manufacturer': 'module_manufacturers.txt'}
+            text_file_dict = {'manufacturer': 'module_manufacturers.txt', 'housing_type': 'housing_types.txt'}
             for key, filename in text_file_dict.items():
                 file = os.path.join(os.path.dirname(__file__), filename)
                 with open(file, "r") as file_txt:
@@ -438,8 +439,12 @@ class Transistor:
                     dataset_value = dataset_dict.get(key)
                     if re.sub(snub, "", dataset_value).lstrip().lower() not in alphanum_values:
                         name = key.capitalize().replace("_", " ")
-                        raise ValueError(f"{name} {dataset_value} is not allowed. See file {filename} for a "
-                                 f"list of supported types.")
+                        if name == 'Housing type':
+                            housing_file_path = pathlib.Path(os.path.join(os.path.dirname(__file__), 'housing_types.txt')).as_uri()
+                            raise ValueError('{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported housing types.'.format(name, dataset_value, name, alphanum_values, housing_file_path))
+                        elif name == 'Manufacturer':
+                            module_file_path = pathlib.Path(os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')).as_uri()
+                            raise ValueError('{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported module manufacturers.'.format(name, dataset_value, name, alphanum_values, module_file_path))
 
         if dict_type == 'SwitchEnergyData':
             if dataset_dict.get('dataset_type') not in ['single', 'graph_r_e', 'graph_i_e']:
@@ -848,25 +853,11 @@ class Transistor:
                 v_supply_chosen = i_e_object.v_supply
                 print("Invalid v_supply provided : v_supply = {0} and choosing v_supply = {1} ".format(v_supply, v_supply_chosen))
 
-            # generate copy
-            object_i_e_calc = i_e_object.graph_i_e.copy()
-
-            # calculate factor for new gate resistor to nominal gate resistor
-            loss_at_rg = np.interp(r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
-            loss_at_rgnom = np.interp(i_e_object.r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
-            factor_current = loss_at_rg / loss_at_rgnom
-
-            # current correction with factor
-            object_i_e_calc[1] = factor_current * object_i_e_calc[1]
-
-            # voltage correction, linear
-            object_i_e_calc[1] = v_supply_chosen / i_e_object.v_supply * object_i_e_calc[1]
-            # generate dictionary for class SwitchEnergyData
             args = {
                 'dataset_type': 'graph_i_e',
                 'r_g': r_g,
                 'v_supply': v_supply_chosen,
-                'graph_i_e': object_i_e_calc,
+                'graph_i_e': self.calc_i_e_curve_using_r_e_curve(i_e_object, r_e_object, r_g, v_supply_chosen),
                 't_j': i_e_object.t_j,
                 'v_g': i_e_object.v_g,
             }
@@ -878,6 +869,38 @@ class Transistor:
         except Exception as e:
             print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(e_on_off_rr, r_g, t_j, v_supply, e.args[0]))
             raise e
+
+    def calc_i_e_curve_using_r_e_curve(self, i_e_object, r_e_object, r_g, v_supply_chosen):
+        """
+        Calculates the loss energy curve at the provided gate resistance value based on the r_e_graph data
+
+        :param i_e_object: selected loss energy curve object of datatype = 'graph_i_e'
+        :type i_e_object: Transistor.SwitchEnergyData
+        :param r_e_object: associated loss energy curve object of datatype = 'graph_r_e'
+        :type r_e_object: Transistor.SwitchEnergyData
+        :param r_g: selected gate resistance for curve re-estimation
+        :type r_g: int
+        :param v_supply_chosen: selected supply voltage for curve re-estimation
+        :type v_supply_chosen: int
+
+        :return: numpy 2d data representing loss energy of datatype = 'graph_i_e'
+        :rtype: numpy 2d array
+        """
+        # generate copy
+        object_i_e_calc = i_e_object.graph_i_e.copy()
+
+        # calculate factor for new gate resistor to nominal gate resistor
+        loss_at_rg = np.interp(r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
+        loss_at_rgnom = np.interp(i_e_object.r_g, r_e_object.graph_r_e[0], r_e_object.graph_r_e[1])
+        factor_current = loss_at_rg / loss_at_rgnom
+
+        # current correction with factor
+        object_i_e_calc[1] = factor_current * object_i_e_calc[1]
+
+        # voltage correction, linear
+        object_i_e_calc[1] = v_supply_chosen / i_e_object.v_supply * object_i_e_calc[1]
+        # generate dictionary for class SwitchEnergyData
+        return object_i_e_calc
 
     def calc_lin_channel(self, t_j, v_g, i_channel, switch_or_diode):
         """
@@ -1008,7 +1031,7 @@ class Transistor:
         try:
             code = compile(f"self.{input_type}.thermal_foster", "<string>", "eval")
             foster_args = eval(code)
-            if foster_args.r_th_vector and len(foster_args.tau_vector) == len(foster_args.r_th_vector):
+            if not foster_args.r_th_vector is None and not foster_args.tau_vector is None and len(foster_args.tau_vector) == len(foster_args.r_th_vector):
                 foster_args.c_th_vector = [x/y for x, y in zip(foster_args.r_th_vector, foster_args.tau_vector)]
                 if foster_args.tau_total is None:
                     foster_args.tau_total = round(sum(foster_args.tau_vector), 4)
@@ -1019,13 +1042,13 @@ class Transistor:
                 if order > 5:
                     raise ValueError("Summation is limited to only n = 5")
                 if foster_args.graph_t_rthjc is not None and foster_args.graph_t_rthjc.any():
-                    rth = self.switch.thermal_foster.graph_t_rthjc[1]
-                    time = self.switch.thermal_foster.graph_t_rthjc[0]
+                    rth = foster_args.graph_t_rthjc[1]
+                    time = foster_args.graph_t_rthjc[0]
                     func = gen_exp_func(order)
-
+                    rth_max = max(rth)
                     def upper_limit(x):
-                        return {1: 1, 2: 0.5, 3: 0.3, 4: 0.1, 5: 0.1}.get(x, 1)
-                    popt, _ = curve_fit(func, time, rth, maxfev=5000, bounds=([0]*2*order, [upper_limit(order)]*2*order))
+                        return {1: 1, 2: 0.5, 3: 0.33, 4: 0.25, 5: 0.2}.get(x, 1)
+                    popt, _ = curve_fit(func, time, rth, maxfev=5000, bounds=([0] * 2 * order, [rth_max * upper_limit(order)] * 2 * order))
                     rth_op = func(time, *popt)
                     tau_values = popt[1::2]
                     rth_values = popt[0::2]
@@ -1054,7 +1077,7 @@ class Transistor:
                         plt.plot(time, func(time, *popt), 'r-', label="Fitted Curve")
                         plt.legend()
                         plt.show()
-                elif foster_args.r_th_total is not None:
+                elif foster_args.r_th_total is not None and foster_args.tau_total is not None:
                     foster_args.c_th_total = round(foster_args.tau_total / foster_args.r_th_total, 4)
                 else:
                     raise Exception(f"graph_t_rthjc in {input_type}'s foster thermal object is empty!")
@@ -1395,11 +1418,44 @@ class Transistor:
         sio.savemat(self.name.replace('-', '_') + '_Matlab.mat', {self.name.replace('-', '_'): transistor_clean_dict})
         print(f"Export files {self.name.replace('-', '_')}_Matlab.mat to {pathlib.Path.cwd().as_uri()}")
 
-    def export_geckocircuits(self, v_supply, v_g_on, v_g_off, r_g_on, r_g_off):
+    def collect_i_e_and_r_e_combination(self, switch_type, loss_type):
+        """
+        A function to gather the i_e and r_e graph combinations from the available energy curves which are futher used in gecko circuit exporter function
+
+        :param switch_type: argument to specify if either 'switch' or 'diode' energy curve to be considered
+        :type switch_type: str
+        :param loss_type: loss type 'e_on' and 'e_off' for switch type and 'e_rr' for diode type applicable
+        :type loss_type: str
+
+        :return: i_e, r_e indexes referencing to list[SwitchEnergyData] from the chosen switch_type
+        :rtype: list, list
+        """
+        r_e_indexes = list()
+        i_e_indexes = list()
+        code = compile(f"self.{switch_type}.{loss_type}", "<string>", "eval")
+        curves_set = eval(code)
+        for index, loss_curve in enumerate(curves_set):
+            for next_index in range(index+1, len(curves_set)):
+                if not curves_set[index].dataset_type == curves_set[next_index].dataset_type and curves_set[index].t_j == curves_set[next_index].t_j and curves_set[index].v_g == curves_set[next_index].v_g \
+                        and curves_set[index].v_supply == curves_set[next_index].v_supply:
+                    if curves_set[index].dataset_type == 'graph_i_e':
+                        i_e_indexes.append(index)
+                        r_e_indexes.append(next_index)
+                    else:
+                        i_e_indexes.append(next_index)
+                        r_e_indexes.append(index)
+        # If no combos available then providing indexes of only dataset_type == graph_i_e
+        if not any(i_e_indexes):
+            for index, loss_curve in enumerate(curves_set):
+                if curves_set[index].dataset_type == 'graph_i_e':
+                    i_e_indexes.append(index)
+        return i_e_indexes, r_e_indexes
+
+    def export_geckocircuits(self, recheck=True, v_supply=None, v_g_on=None, v_g_off=None, r_g_on=None, r_g_off=None):
         """
         Export transistor data to GeckoCIRCUITS
 
-        :param Transistor: choose the transistor to export
+        :param recheck: Default to set to true, to enable the neighbouring select feature of the exporter
         :param v_supply: supply voltage for turn-on/off losses
         :param v_g_on: gate turn-on voltage
         :param v_g_off: gate turn-off voltage
@@ -1413,7 +1469,7 @@ class Transistor:
         >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
         >>> transistor.export_geckocircuits(600, 15, -4, 2.5, 2.5)
 
-        .. note:: These .scl files are then imported into for geckoCIRCUITS
+        .. note:: These .scl files are then imported as semiconductor characteristics inside geckoCIRCUITS
         """
 
         # programming notes
@@ -1421,11 +1477,96 @@ class Transistor:
         # diode off losses:
         # diode on losses: these on losses must be generated, even if they are zero
         # diode channel: it is not allowed to use more than one current that is zero (otherwise geckocircuits can not calculate the losses)
+        # v_supply, v_g_on, v_g_off, r_g_on, r_g_off
+        rcmd_ron = 1.2    # to be replaced in future releases
+        rcmd_roff = 1.2   # to be replaced in future releases
+        v_supply = v_supply if v_supply else self.v_abs_max/2
+        defaults_list = get_gatedefaults(self.type)
 
-        amount_v_g_switch_cond = 0
-        amount_v_g_switch_sw = 0
-        amount_v_g_diode_cond = 0
-        amount_v_g_diode_sw = 0
+        v_d_channel = defaults_list[2] if v_g_off is None else v_g_off  # diode channel voltage
+        v_d_err = defaults_list[3] if v_g_on is None else v_g_on  # diode reverse recovery gate voltage
+        v_g_on = defaults_list[0] if v_g_on is None else v_g_on  # switch turn on gate voltage and channel voltage
+        v_g_off = defaults_list[1] if v_g_off is None else v_g_off  # switch turn off gate voltage
+        r_g_on = r_g_on if r_g_on else rcmd_ron
+        r_g_off = r_g_off if r_g_off else rcmd_roff
+
+        # In future re-estimated neighbouring values
+        switch_v_supply = v_supply
+        diode_v_supply = v_supply
+        switch_channel_vg = v_g_on             # initial set
+        diode_channel_vg = v_d_channel        # initial value
+
+        # get i_e and r_e curves combinations for neighbouring estimations
+        eon_i_e_indexes, eon_r_e_indexes = self.collect_i_e_and_r_e_combination('switch', 'e_on')
+        eoff_i_e_indexes, eoff_r_e_indexes = self.collect_i_e_and_r_e_combination('switch', 'e_off')
+        err_i_e_indexes, err_r_e_indexes = self.collect_i_e_and_r_e_combination('diode', 'e_rr')
+        # Find nearest neighbours for the recommended or provided defaults of v_supply, r_g, v_g
+        if recheck:
+            sw_selected_params = {'v_channel_gs': v_g_on, 'v_supply': switch_v_supply, 'v_g_on': v_g_on, 'v_g_off': v_g_off}
+            diode_selected_params = {'v_channel_gs': v_g_off, 'v_supply': diode_v_supply, 'v_d_off': v_g_on}
+            try:
+                switch_channel_vg, switch_v_supply, v_g_on, v_g_off = self.switch.find_next_gate_voltage(sw_selected_params, export_type='gecko', check_specific_curves=[eon_i_e_indexes, eoff_i_e_indexes])
+                diode_channel_vg, diode_v_supply, v_d_err = self.diode.find_next_gate_voltage(diode_selected_params, export_type='gecko', check_specific_curves=err_i_e_indexes)
+            except MissingDataError as e:
+                print(e.args[0], e.em[e.args[0]]+' .scl')
+
+        # Gather data
+        # Channel curves
+        sw_channel_curves = list()
+        for index, channel in enumerate(self.switch.channel):
+            if channel.v_g == switch_channel_vg:
+                sw_channel_curves.append(channel)
+
+        diode_channel_curves = list()
+        for index, channel in enumerate(self.diode.channel):
+            if (channel.v_g is None and diode_channel_vg == 0) or channel.v_g == diode_channel_vg:
+                diode_channel_curves.append(channel)
+
+        # Loss energy curves : From the computed neighbours and recheck for provided or recommended r_g, if not compute the energy curve
+        eon_curves = list()
+        mapped_set = dict(zip(eon_i_e_indexes, eon_r_e_indexes))    # empty dict if no r_e and i_e combinations exists
+        for index, curve in enumerate(self.switch.e_on):
+            if index in eon_i_e_indexes and curve.v_supply == switch_v_supply and curve.v_g == v_g_on:
+                if not curve.r_g == r_g_on and any(mapped_set):
+                    mapped_r_e_object = self.switch.e_on[mapped_set[index]]
+                    new_curve = curve.copy()
+                    new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_on, switch_v_supply)
+                    print('E_on curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_on, switch_v_supply))
+                    new_curve.r_g = r_g_on
+                    eon_curves.append(new_curve)
+                else:
+                    print('No r_g curve match found, exporting default E_on curves at the selected voltage parameters')
+                    eon_curves.append(self.switch.e_on[index])
+
+        eoff_curves = list()
+        mapped_set = dict(zip(eoff_i_e_indexes, eoff_r_e_indexes))   # empty dict if no r_e and i_e combinations exists
+        for index, curve in enumerate(self.switch.e_off):
+            if index in eoff_i_e_indexes and curve.v_supply == switch_v_supply and curve.v_g == v_g_off:
+                if not curve.r_g == r_g_off and any(mapped_set):
+                    mapped_r_e_object = self.switch.e_off[mapped_set[index]]
+                    new_curve = curve.copy()
+                    new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_off, switch_v_supply)
+                    print('E_off curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_off, switch_v_supply))
+                    new_curve.r_g = r_g_on
+                    eoff_curves.append(new_curve)
+                else:
+                    print('No r_g curve match found, exporting default E_off curves at the selected voltage parameters')
+                    eoff_curves.append(self.switch.e_off[index])
+
+        err_curves = list()
+        mapped_set = dict(zip(err_i_e_indexes, err_r_e_indexes))    # empty dict if no r_e and i_e combinations exists
+        for index, curve in enumerate(self.diode.e_rr):
+            if index in err_i_e_indexes and curve.v_supply == diode_v_supply and (0 if curve.v_g is None else curve.v_g) == v_d_err:
+                if not curve.r_g == r_g_on and any(mapped_set):
+                    mapped_r_e_object = self.diode.e_rr[mapped_set[index]]
+                    new_curve = curve.copy()
+                    new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_on, diode_v_supply)
+                    print('E_rr curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_on, diode_v_supply))
+                    new_curve.r_g = r_g_on
+                    err_curves.append(new_curve)
+                else:
+                    print('No r_g curve match found, exporting default Err curves at the selected voltage parameters')
+                    err_curves.append(self.diode.e_rr[index])
 
         # set numpy print options to inf, due to geckocircuits requests the data in one single line
         np.set_printoptions(linewidth=np.inf)
@@ -1433,29 +1574,27 @@ class Transistor:
         ########################
         # export file for switch
         ########################
-        file_switch = open(self.name + "_Switch.scl", "w")
+        if any(sw_channel_curves):
 
-        #### switch channel data
-        # count number of arrays with gate v_g == v_g_export
-        for n_channel in np.array(range(0, len(self.switch.channel))):
-            if self.switch.channel[n_channel].v_g == v_g_on:
-                amount_v_g_switch_cond += 1
+            file_switch = open(self.name + "_Switch.scl", "w")
 
-        file_switch.write("anzMesskurvenPvCOND " + str(amount_v_g_switch_cond) + "\n")
-        for n_channel in np.array(range(0, len(self.switch.channel))):
-            if self.switch.channel[n_channel].v_g == v_g_on:
+            #### switch channel data
 
-                voltage = self.switch.channel[n_channel].graph_v_i[0]
-                current = self.switch.channel[n_channel].graph_v_i[1]
+            file_switch.write("anzMesskurvenPvCOND " + str(len(sw_channel_curves)) + "\n")
+            for channel in sw_channel_curves:
+                voltage = channel.graph_v_i[0]
+                current = channel.graph_v_i[1]
 
                 # gecko can not work in case of to currents are zero
                 # so find the second current that is zero and replace it by a very small current
                 for i in range(len(current)):
                     if i > 0 and current[i] == 0:
                         current[i] = 0.001
+
                 if self.type.lower() == 'mosfet' or self.type.lower() == 'sic-mosfet':
                     # Note: Loss calculation in GeckoCIRCUITs will fail in case of reverse conducting
                     # Forward characteristic will be copied to backward-characteristic
+
                     voltage_reverse = voltage.copy()
                     voltage_reverse = voltage_reverse[voltage_reverse != 0]
                     voltage_reverse = np.flip(voltage_reverse)
@@ -1476,78 +1615,74 @@ class Transistor:
                 # for every loss curve, write
                 file_switch.write("<LeitverlusteMesskurve>\n")
                 file_switch.write(f"data[][] 2 {len(current)} {print_voltage} {print_current}")
-                file_switch.write(f"\ntj {self.switch.channel[n_channel].t_j}\n")
+                file_switch.write(f"\ntj {channel.t_j}\n")
                 file_switch.write("<\LeitverlusteMesskurve>\n")
 
-        #### switch switching loss
-        # check for availability of switching loss curves
-        # count number of arrays with gate v_g == v_g_export
-        for n_on in np.array(range(0, len(self.switch.e_on))):
-            if self.switch.e_on[n_on].v_g == v_g_on and self.switch.e_on[n_on].r_g == r_g_on and \
-                    self.switch.e_on[n_on].v_supply == v_supply:
-                amount_v_g_switch_sw += 1
+            #### switch switching loss
+            # check for availability of switching loss curves
+            # count number of arrays with gate v_g == v_g_export
 
-        file_switch.write(f"anzMesskurvenPvSWITCH {amount_v_g_switch_sw}\n")
+            file_switch.write(f"anzMesskurvenPvSWITCH {len(eon_curves) if len(eon_curves) else 1}\n")
 
-        for n_on in np.array(range(0, len(self.switch.e_on))):
-            if self.switch.e_on[n_on].v_g == v_g_on and self.switch.e_on[n_on].r_g == r_g_on and \
-                    self.switch.e_on[n_on].v_supply == v_supply:
-
-                on_current = self.switch.e_on[n_on].graph_i_e[0]
-                on_energy = self.switch.e_on[n_on].graph_i_e[1]
-
-                # search for off loss curves
-                for n_off in np.array(range(0, len(self.switch.e_off))):
-                    if self.switch.e_off[n_off].v_g == v_g_off and self.switch.e_off[n_off].r_g == r_g_off and \
-                            self.switch.e_off[n_off].v_supply == v_supply:
-                        # set off current and off energy
-                        off_current = self.switch.e_off[n_off].graph_i_e[0]
-                        off_energy = self.switch.e_off[n_off].graph_i_e[1]
-
-                interp_current = np.linspace(0, on_current[-1], 10)
-                interp_on_energy = np.interp(interp_current, on_current, on_energy)
-                interp_off_energy = np.interp(interp_current, off_current, off_energy)
-
-                print_current = np.array2string(interp_current, formatter={'float_kind': lambda x: "%.2f" % x})
-                print_current = print_current[1:-1]
-                print_on_energy = np.array2string(interp_on_energy, formatter={'float_kind': lambda x: "%.8f" % x})
-                print_on_energy = print_on_energy[1:-1]
-
-                print_off_energy = np.array2string(interp_off_energy, formatter={'float_kind': lambda x: "%.8f" % x})
-                print_off_energy = print_off_energy[1:-1]
-
-                # for every loss curve, write
+            if not any(eon_curves) or not any(eoff_curves):
                 file_switch.write("<SchaltverlusteMesskurve>\n")
-                file_switch.write(f"data[][] 3 {len(interp_current)} {print_current} {print_on_energy} {print_off_energy}")
-                file_switch.write(f"\ntj {self.switch.e_on[n_on].t_j}\n")
-                file_switch.write(f"uBlock {self.switch.e_on[n_on].v_supply}\n")
+                file_switch.write(f"data[][] 3 2 0 10 0 0 0 0")
+                file_switch.write(f"\ntj 25\n")
+                file_switch.write(f"uBlock 400\n")
                 file_switch.write("<\SchaltverlusteMesskurve>\n")
+            else:
+                for e_on in eon_curves:
+                    on_current = e_on.graph_i_e[0]
+                    on_energy = e_on.graph_i_e[1]
+                    # search for off loss curves
+                    for e_off in eoff_curves:
+                        if e_off.v_supply == switch_v_supply and e_off.v_g == v_g_off and e_off.r_g == r_g_off and e_off.t_j == e_on.t_j:
+                            # set off current and off energy
+                            off_current = e_off.graph_i_e[0]
+                            off_energy = e_off.graph_i_e[1]   # what the case if no matching off_energy found?
 
-        file_switch.close()
+                            interp_current = np.linspace(0, on_current[-1], 10)
+                            interp_on_energy = np.interp(interp_current, on_current, on_energy)
+                            interp_off_energy = np.interp(interp_current, off_current, off_energy)
+
+                            print_current = np.array2string(interp_current, formatter={'float_kind': lambda x: "%.2f" % x})
+                            print_current = print_current[1:-1]
+                            print_on_energy = np.array2string(interp_on_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                            print_on_energy = print_on_energy[1:-1]
+
+                            print_off_energy = np.array2string(interp_off_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                            print_off_energy = print_off_energy[1:-1]
+
+                            # for every loss curve, write
+                            file_switch.write("<SchaltverlusteMesskurve>\n")
+                            file_switch.write(f"data[][] 3 {len(interp_current)} {print_current} {print_on_energy} {print_off_energy}")
+                            file_switch.write(f"\ntj {e_on.t_j}\n")
+                            file_switch.write(f"uBlock {e_on.v_supply}\n")
+                            file_switch.write("<\SchaltverlusteMesskurve>\n")
+
+            file_switch.close()
+            print(f"Exported file {self.name}_Switch.scl  to {pathlib.Path.cwd().as_uri()}")
+        else:
+            print('\nGecko exporter switch failed: No channel curve available at the selected v_g \n Try by setting recheck = True if set to False')
 
         ########################
         # export file for diode
         ########################
+        if any(diode_channel_curves):
+            file_diode = open(self.name + "_Diode.scl", "w")
 
-        file_diode = open(self.name + "_Diode.scl", "w")
-        #### diode channel data
-        # count number of arrays for conducting behaviour
-        # in case of gan-transistor, search for v_g_off
-        # in case of mosfet or igbt use all available data
-        for n_channel in np.array(range(0, len(self.diode.channel))):
-            if (self.diode.channel[n_channel].v_g == v_g_off and self.type.lower() == 'gan-transistor') or self.type == 'MOSFET' or self.type == 'IGBT':
-                amount_v_g_diode_cond += 1
-
-        file_diode.write("anzMesskurvenPvCOND " + str(amount_v_g_diode_cond) + "\n")
-        # export conducting behaviour
-        for n_channel in np.array(range(0, len(self.diode.channel))):
-            # if v_g_diode is given, search for it. Else, use all data in Transistor.diode.channel
+            #### diode channel data
+            # count number of arrays for conducting behaviour
             # in case of gan-transistor, search for v_g_off
             # in case of mosfet or igbt use all available data
-            if (self.diode.channel[n_channel].v_g == v_g_off and self.type.lower() == 'gan-transistor') or self.type == 'MOSFET' or self.type == 'IGBT':
-
-                voltage = np.abs(self.diode.channel[n_channel].graph_v_i[0])
-                current = np.abs(self.diode.channel[n_channel].graph_v_i[1])
+            file_diode.write("anzMesskurvenPvCOND " + str(len(diode_channel_curves)) + "\n")
+            # export conducting behaviour
+            for n_channel in diode_channel_curves:
+                # if v_g_diode is given, search for it. Else, use all data in Transistor.diode.channel
+                # in case of gan-transistor, search for v_g_off
+                # in case of mosfet or igbt use all available data
+                voltage = np.abs(n_channel.graph_v_i[0])
+                current = np.abs(n_channel.graph_v_i[1])
 
                 # gecko can not work in case of to currents are zero
                 # so find the second current that is zero and replace it by a very small current
@@ -1563,89 +1698,49 @@ class Transistor:
                 # for every loss curve, write
                 file_diode.write("<LeitverlusteMesskurve>\n")
                 file_diode.write(f"data[][] 2 {len(current)} {print_voltage} {print_current}")
-                file_diode.write(f"\ntj {self.diode.channel[n_channel].t_j}\n")
+                file_diode.write(f"\ntj {n_channel.t_j}\n")
                 file_diode.write("<\LeitverlusteMesskurve>\n")
 
-        #### diode err loss
-        # check for availability of switching loss curves
-        # in case of no switching losses available, set curves to zero.
-        # if switching losses will not set to zero, geckoCIRCUITS will use inital values
-        if len(self.diode.e_rr) == 0:
-            file_diode.write(f"anzMesskurvenPvSWITCH 1\n")
-            file_diode.write("<SchaltverlusteMesskurve>\n")
-            file_diode.write(f"data[][] 3 2 0 10 0 0 0 0")
-            file_diode.write(f"\ntj 125\n")
-            file_diode.write(f"uBlock 400\n")
-            file_diode.write("<\SchaltverlusteMesskurve>\n")
-
-        # in case of available data
-        #
-        else:
-            # check for curves with the gate voltage
-            # count number of arrays with gate v_g == v_g_export
-            for n_rr in np.array(range(0, len(self.diode.e_rr))):
-                if self.diode.e_rr[n_rr].v_g == v_g_on and self.diode.e_rr[n_rr].r_g == r_g_on and \
-                        self.diode.e_rr[n_rr].v_supply == v_supply:
-                    amount_v_g_diode_sw += 1
-
-            # in case of no given v_g for diode (e.g. for igbts)
-            if amount_v_g_diode_sw == 0:
-                for n_rr in np.array(range(0, len(self.diode.e_rr))):
-                    if self.diode.e_rr[n_rr].v_g and self.diode.e_rr[n_rr].r_g == r_g_on and \
-                            self.diode.e_rr[n_rr].v_supply == v_supply:
-                        amount_v_g_diode_sw += 1
-
-                file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
-
-                for n_rr in np.array(range(0, len(self.diode.e_rr))):
-                    if self.diode.e_rr[n_rr].v_g and self.diode.e_rr[n_rr].r_g == r_g_on and self.diode.e_rr[n_rr].v_supply == v_supply:
-                        rr_current = self.diode.e_rr[n_rr].graph_i_e[0]
-                        rr_energy = self.diode.e_rr[n_rr].graph_i_e[1]
-
-                        # forward recovery losses set to zero
-                        fr_energy = np.zeros(len(rr_current))
-
-                        print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
-                        print_fr_energy = print_fr_energy[1:-1]
-
-                        print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
-                        print_current = print_current[1:-1]
-                        print_rr_energy = np.array2string(rr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
-                        print_rr_energy = print_rr_energy[1:-1]
-
-                        # for every loss curve, write
-                        file_diode.write("<SchaltverlusteMesskurve>\n")
-                        file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
-                        file_diode.write(f"\ntj {self.diode.e_rr[n_rr].t_j}\n")
-                        file_diode.write(f"uBlock {self.diode.e_rr[n_rr].v_supply}\n")
-                        file_diode.write("<\SchaltverlusteMesskurve>\n")
-
-              # in case of devices wich include a gate voltage (e.g. GaN-transistors)
+            #### diode err loss
+            # check for availability of switching loss curves
+            # in case of no switching losses available, set curves to zero.
+            # if switching losses will not set to zero, geckoCIRCUITS will use inital values
+            if len(err_curves) == 0:
+                file_diode.write(f"anzMesskurvenPvSWITCH 1\n")
+                file_diode.write("<SchaltverlusteMesskurve>\n")
+                file_diode.write(f"data[][] 3 2 0 10 0 0 0 0")
+                file_diode.write(f"\ntj 125\n")
+                file_diode.write(f"uBlock 400\n")
+                file_diode.write("<\SchaltverlusteMesskurve>\n")
             else:
-                file_diode.write(f"anzMesskurvenPvSWITCH {amount_v_g_diode_sw}\n")
-                for n_rr in np.array(range(0, len(self.diode.e_rr))):
-                    if self.diode.e_rr[n_rr].v_g == v_g_on and self.diode.e_rr[n_rr].r_g == r_g_on and \
-                            self.diode.e_rr[n_rr].v_supply == v_supply:
-                        rr_current = self.diode.e_rr[n_rr].graph_i_e[0]
-                        rr_energy = self.diode.e_rr[n_rr].graph_i_e[1]
-                        # forward recovery losses set to zero
-                        fr_energy = np.zeros(len(rr_current))
-                        print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
-                        print_fr_energy = print_fr_energy[1:-1]
-                        print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
-                        print_current = print_current[1:-1]
-                        print_rr_energy = np.array2string(rr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
-                        print_rr_energy = print_rr_energy[1:-1]
+                file_diode.write(f"anzMesskurvenPvSWITCH {len(err_curves)}\n")
+                for curve_rr in err_curves:
+                    rr_current = curve_rr.graph_i_e[0]
+                    rr_energy = curve_rr.graph_i_e[1]
 
-                        # for every loss curve, write
-                        file_diode.write("<SchaltverlusteMesskurve>\n")
-                        file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
-                        file_diode.write(f"\ntj {self.diode.e_rr[n_rr].t_j}\n")
-                        file_diode.write(f"uBlock {self.diode.e_rr[n_rr].v_supply}\n")
-                        file_diode.write("<\SchaltverlusteMesskurve>\n")
+                    # forward recovery losses set to zero
+                    fr_energy = np.zeros(len(rr_current))
 
-        file_diode.close()
-        print(f"Export files {self.name}_Switch.scl and {self.name}_Diode.scl to {pathlib.Path.cwd().as_uri()}")
+                    print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                    print_fr_energy = print_fr_energy[1:-1]
+
+                    print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
+                    print_current = print_current[1:-1]
+                    print_rr_energy = np.array2string(rr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                    print_rr_energy = print_rr_energy[1:-1]
+
+                    # for every loss curve, write
+                    file_diode.write("<SchaltverlusteMesskurve>\n")
+                    file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
+                    file_diode.write(f"\ntj {curve_rr.t_j}\n")
+                    file_diode.write(f"uBlock {curve_rr.v_supply}\n")
+                    file_diode.write("<\SchaltverlusteMesskurve>\n")
+
+            file_diode.close()
+            print(f"Exported file {self.name}_Diode.scl to {pathlib.Path.cwd().as_uri()}")
+        else:
+            print('\nGecko exporter diode failed: No channel curve available at the selected v_g \n Try by setting recheck = True if set to False')
+
         # set print options back to default
         np.set_printoptions(linewidth=75)
 
@@ -1947,35 +2042,75 @@ class Transistor:
             d['linearized_switch'] = [lsw.convert_to_dict() for lsw in self.linearized_switch]
             return d
 
-        def find_next_gate_voltage(self, v_on, v_off, SwitchEnergyData_dataset_type="graph_i_e"):
+        def find_next_gate_voltage(self, req_gate_vltgs, export_type, check_specific_curves=list(), switch_loss_dataset_type="graph_i_e"):
             """
-            Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets
+            Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets. Applicable to either plecs exporter or gecko exporter
 
-            :param v_on: gate turn on voltage/channel voltage
-            :param v_off: gate turn off voltage
-            :param SwitchEnergyData_dataset_type: dataset curve type to be specified
+            :param req_gate_vltgs: the provided gate voltages for find the nearest neighbour to the corresponding key-value pairs
+            :type req_gate_vltgs: dict
+            :param export_type: either 'gecko' or 'plecs'
+            :type export_type: str
+            :param check_specific_curves: indexes of chosen energy curve to be skipped are provided here
+            :type check_specific_curves: list(list, list)
+            :param switch_loss_dataset_type: dataset curve type to be specified
 
-            :return: v_g, v_g_on, v_g_off
+            :return: v_g_channel, v_supply, v_g_on, v_g_off
             :rtype: int
             """
+            check_keys(req_gate_vltgs, export_type, 'switch')
             # recheck channel characteristics curves at v_supply
             channel_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
-            v_g = min(channel_v_gs, key=lambda x: abs(x-v_on))
-            # recheck turn on energy loss curves at v_supply
-            if self.e_on:
-                e_ons = [e for e in self.e_on if e.dataset_type == SwitchEnergyData_dataset_type]
+            v_gs = min(channel_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_channel_gs']))
+            req_gate_vltgs['v_channel_gs'] = v_gs
+            #gather e_on loss curves at required dataset_type and check for none
+            e_ons = [e for i, e in enumerate(self.e_on) if e.dataset_type == switch_loss_dataset_type and (not any(check_specific_curves[0]) or i in check_specific_curves[0])]
+            if not e_ons:
+                raise MissingDataError(1102)
+            # gather e_off loss curves at required dataset_type and check for none
+            e_offs = [e for i, e in enumerate(self.e_off) if e.dataset_type == switch_loss_dataset_type and (not any(check_specific_curves[1]) or i in check_specific_curves[1])]
+            if not e_offs:
+                raise MissingDataError(1103)
+
+            if export_type == 'plecs':
+                # recheck turn on energy loss curves at v_on
                 e_on_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_ons])
-                v_on = min(e_on_v_gs, key=lambda x: abs(x-v_on))
-            # recheck turn off energy loss curves at v_supply
-            if self.e_off:
-                e_offs = [e for e in self.e_off if e.dataset_type == SwitchEnergyData_dataset_type]
+                v_on = min(e_on_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_g_on']))
+                req_gate_vltgs['v_g_on'] = v_on
+                # recheck turn off energy loss curves at v_off
                 e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_offs])
-                v_off = min(e_off_v_gs, key=lambda x: abs(x-v_off))
+                v_off = min(e_off_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_g_off']))
+                req_gate_vltgs['v_g_off'] = v_off
+                
+            if export_type == 'gecko':
+                # recheck turn on energy loss curves at v_on
+                e_on_v_gs = list()
+                for e in e_ons:
+                    if e.v_g is None:
+                        e.v_g = 0
+                    e_on_v_gs.append(e.v_g)
+                v_on = min(e_on_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_g_on']))
+                req_gate_vltgs['v_g_on'] = v_on
+                e_on_v_supply = [e.v_supply if e.v_g == v_on else None for e in e_ons]  # removed numpy array
+                v_on_supply = min(e_on_v_supply, key=lambda x: abs(x - req_gate_vltgs['v_supply']))
+                req_gate_vltgs['v_supply'] = v_on_supply
+
+                # recheck turn off energy loss curves at v_off
+                e_off_v_gs = list()
+                for e in e_offs:
+                    if e.v_g is None:
+                        e.v_g = 0
+                    e_off_v_gs.append(e.v_g)
+                v_off = min(e_off_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_g_off']))
+                req_gate_vltgs['v_g_off'] = v_off
+                e_off_v_supply = [e.v_supply if e.v_g == v_off else None for e in e_offs]
+                v_off_supply = min(e_off_v_supply, key=lambda x: abs(x - req_gate_vltgs['v_supply']))
+                if not req_gate_vltgs['v_supply'] == v_off_supply:
+                    raise ValueError("Not implemented: Mismatch in v_supply for the selected loss curves")
+
             print("--Switch Recheck--")
-            print(f"channel: v_g = {v_g} V")
-            print(f"e_on: v_g = {v_on} V")
-            print(f"e_off: v_g = {v_off} V")
-            return v_g, v_on, v_off
+            for key, value in req_gate_vltgs.items():
+                print(key + ': ', value)
+            return req_gate_vltgs.values()
 
         def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e"):
             """
@@ -2309,31 +2444,53 @@ class Transistor:
             d['linearized_diode'] = [ld.convert_to_dict() for ld in self.linearized_diode]
             return d
 
-        def find_next_gate_voltage(self, v_d, v_off, SwitchEnergyData_dataset_type="graph_i_e"):
+        def find_next_gate_voltage(self, req_gate_vltgs, export_type, check_specific_curves=list(), diode_loss_dataset_type="graph_i_e"):
             """
             Finds the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
             The diode has only turn-off gate voltage which is the switch turn-on gate voltage
 
-            :param v_on: gate turn on voltage/channel voltage
-            :param v_off: gate turn off voltage
-            :param SwitchEnergyData_dataset_type: dataset curve type to be specified
-            :param SwitchEnergyData_dataset_type: 'graph_i_e' or 'graph_r_e'
-            :return: v_d, v_off
+            :param req_gate_vltgs: the provided gate voltages to find the nearest neighbour to the corresponding key-value pairs
+            :type req_gate_vltgs: dict
+            :param export_type: either 'gecko' or 'plecs'
+            :type export_type: str
+            :param check_specific_curves: indexes of chosen energy curve to be skipped are provided here
+            :type check_specific_curves: list(list, list)
+            :param diode_loss_dataset_type: 'graph_i_e' or 'graph_r_e' dataset curve type to be specified
+            :type diode_loss_dataset_type: str
+
+            :return: v_d_channel, v_supply, v_d_off
             :rtype: int
             """
-
+            check_keys(req_gate_vltgs, export_type, 'diode')
             # recheck channel characteristics curves at v_supply
             channel_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
-            v_d = min(channel_v_gs, key=lambda x: abs(x-v_d))
-            # recheck turn off energy loss curves at v_supply
-            if self.e_rr:
-                e_rrs = [e for e in self.e_rr if e.dataset_type == SwitchEnergyData_dataset_type]
+            req_gate_vltgs['v_channel_gs'] = min(channel_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_channel_gs']))
+            # gather data for err curves of required dataset_type and check if empty
+            e_rrs = [e for i, e in enumerate(self.e_rr) if e.dataset_type == diode_loss_dataset_type and (not any(check_specific_curves) or i in check_specific_curves)]
+            if not e_rrs:
+                raise MissingDataError(1202)
+            if export_type == 'plecs':
+                 # recheck turn off energy loss curves at v_supply
                 e_rr_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_rrs])
-                v_off = min(e_rr_v_gs, key=lambda x: abs(x-v_off))
+                req_gate_vltgs['v_d_off'] = min(e_rr_v_gs, key=lambda x: abs(x-req_gate_vltgs['v_d_off']))
+
+            if export_type == 'gecko':
+                # recheck turn off loss energy characteristics curves at v_off, v_supply, r_g_off
+                e_rr_v_gs = list()
+                for e in e_rrs:
+                    if e.v_g is None:
+                        e.v_g = 0
+                    e_rr_v_gs.append(e.v_g)
+                v_d_off = min(e_rr_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_d_off']))
+                req_gate_vltgs['v_d_off'] = v_d_off
+                e_rr_v_supply = [e.v_supply if e.v_g == v_d_off else None for e in e_rrs]
+                v_supply = min(e_rr_v_supply, key=lambda x: abs(x - req_gate_vltgs['v_supply']))
+                req_gate_vltgs['v_supply'] = v_supply
+
             print("--Diode Recheck--")
-            print(f"channel: v_g = {v_d} V")
-            print(f"err: v_g = {v_off} V")
-            return v_d, v_off
+            for key, value in req_gate_vltgs.items():
+                print(key + ': ', value)
+            return req_gate_vltgs.values()
 
         def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, SwitchEnergyData_dataset_type="graph_i_e"):
             """
@@ -2411,7 +2568,6 @@ class Transistor:
                 else:
                     plt.show()
             return categorize_plots
-
 
         def plot_energy_data(self, buffer_req=False):
             """
@@ -2743,6 +2899,28 @@ class Transistor:
             plt.ylabel('Energy in J')
             plt.show()
 
+        def copy(self):
+            """
+            A method to copy the exsiting SwitchEnergyData object and create a new object of same type. Created to allow deep copy of object when using gecko exporter
+            
+            :return: SwitchEnergyData object
+            :rtype: SwitchEnergyData
+            """
+            args = {
+                'dataset_type': 'graph_i_e',
+                'v_supply': self.v_supply,
+                'graph_i_e': self.graph_i_e,
+                'graph_r_e' : self.graph_r_e,
+                'r_g': self.r_g,
+                'i_x': self.i_x,
+                'e_x': self.e_x,
+                't_j': self.t_j,
+                'v_g': self.v_g,
+            }
+            # check dictionary
+            Transistor.isvalid_dict(args, 'SwitchEnergyData')
+            return Transistor.SwitchEnergyData(args)
+
     class WP:
         """
          The WP class is intended for user calculations in Python. It is used to access transistor data in user-written programs.
@@ -2888,7 +3066,7 @@ class Transistor:
         :rtype: dict
         """
         transistor_dict = self.convert_to_dict()
-        codes = {'Switch': list(),'Diode': list()}
+        codes = {'Switch': list(), 'Diode': list()}
         if not transistor_dict['switch']['channel']:
             codes['Switch'].append(1101)
         if not transistor_dict['switch']['e_on']:
@@ -2945,7 +3123,8 @@ class Transistor:
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
             }
             if channel_recheck:
-                v_g, v_g_on, v_g_off = self.switch.find_next_gate_voltage(v_g_on, v_g_off)
+                near_to_voltages = {'v_channel_gs': v_g_on, 'v_g_on': v_g_on, 'v_g_off': v_g_off}
+                v_g, v_g_on, v_g_off = self.switch.find_next_gate_voltage(req_gate_vltgs=near_to_voltages, export_type='plecs')
             plecs_transistor = get_channel_data(transistor_dict['switch']['channel'], plecs_transistor, v_g, False, is_body_diode)
             # Check if channel information exists else throw exception and don't export transistor xml data
             if 'Channel' not in plecs_transistor['ConductionLoss']:
@@ -3001,7 +3180,7 @@ class Transistor:
                 plecs_transistor['TauElement'] = transistor_dict['switch']['thermal_foster']['tau_total'] if \
                 transistor_dict['switch']['thermal_foster']['tau_total'] else plecs_transistor['RElement']
         except MissingDataError as e:
-            print(e.args[0], e.em[e.args[0]])
+            print(e.args[0], e.em[e.args[0]] + '.scl')
         # Gather diode data to fill in plecs template exporter
         try:
             if 1201 in exception_codes['Diode']:
@@ -3021,7 +3200,8 @@ class Transistor:
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
             }
             if channel_recheck:
-                v_d, v_d_off = self.diode.find_next_gate_voltage(v_d_on, v_d_off)
+                near_to_voltages = {'v_channel_gs': v_d_on, 'v_d_off': v_d_off}
+                v_d, v_d_off = self.diode.find_next_gate_voltage(req_gate_vltgs=near_to_voltages, export_type='plecs')
             plecs_diode = get_channel_data(transistor_dict['diode']['channel'], plecs_diode, v_d, True, is_body_diode)
             if 'Channel' not in plecs_diode['ConductionLoss']:
                 raise MissingDataError(1211)
@@ -3057,13 +3237,21 @@ class Transistor:
                 plecs_diode['TauElement'] = transistor_dict['diode']['thermal_foster']['tau_total'] if \
                 transistor_dict['diode']['thermal_foster']['tau_total'] else plecs_diode['RElement']
         except MissingDataError as e:
-            print(e.args[0], e.em[e.args[0]])
+            print(e.args[0], e.em[e.args[0]]+ '.scl')
         return plecs_transistor if 'plecs_transistor' in locals() and 'Channel' in plecs_transistor['ConductionLoss'] \
                    else None, plecs_diode if 'plecs_diode' in locals() and 'Channel' in plecs_diode['ConductionLoss'] \
                    else None
 
 
 def gen_exp_func(order):
+    """
+    A helper function to calc_thermal_params method. Generates the required ordered function for curve fitting
+    
+    :param order: order of the function for approximation  with n ranging from 1 to 5 
+    :type order: int
+    
+    :return: A n ordered polynomial
+    """
     if order == 1:
         def func(t, rn, tau):
             return rn * (1-np.exp(-t/tau))
@@ -3439,10 +3627,10 @@ def get_gatedefaults(type):
 
     :return: default gate voltages [v_g_turn_on, v_g_turn_off, v_g_channel_blocks, v_g_channel_conducting]
     """
-    gate_voltages = {'sic-mosfet': [12, 0, 0, 12],
-                     'mosfet': [12, 0, 0, 12],
-                     'igbt': [15, -15, 0, 15],
-                     'gan': [5, 0, 0, 5]
+    gate_voltages = {'sic-mosfet': [cnt.SIC_MOS_VGS_ON, cnt.SIC_MOS_VGS_OFF, cnt.SIC_MOS_BD_VGS, cnt.SIC_MOS_BD_VG_ERR],
+                     'mosfet': [cnt.MOS_VGS_ON, cnt.MOS_VGS_OFF,  cnt.MOS_BD_VGS, cnt.MOS_BD_VG_ERR],
+                     'igbt': [cnt.IGBT_VG_ON, cnt.IGBT_VG_OFF, cnt.DIODE_VGS, cnt.DIODE_VG_ERR],
+                     'gan-transistor': [cnt.GAN_VGS_ON, cnt.GAN_VGS_OFF, cnt.GAN_BD_VGS, cnt.GAN_BD_VG_ERR]
                      }.get(type.lower(), [15, -15, 0, 15])
     return gate_voltages
 
@@ -3835,7 +4023,8 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     """
     return (v_gsth-v_driver_off)/i_off * (1 + c_ds/c_gd)
 
-#Export helper functions
+# Export helper functions
+
 def dict_clean(input_dict: dict) -> dict:
     """
     Cleans a python dict and makes it compatible with matlab
@@ -3854,6 +4043,7 @@ def dict_clean(input_dict: dict) -> dict:
             value = np.nan
         result[key] = value
     return result
+
 
 def compatibilityTest(Transistor, attribute):
     """
@@ -3880,17 +4070,48 @@ def compatibilityTest(Transistor, attribute):
     except AttributeError:
         return np.nan
 
+
+def check_keys(keys_to_check, req_type, switch_type):
+    """
+    A helper function for find_next_gate_voltage method of class type - switch and diode. Verifies if the required keys are available and their value types are valid for carrying out the export
+
+    :param keys_to_check: the dictionary which contains the essential keys for the corresponding exporter function
+    :type keys_to_check: dict
+    :param req_type: 'plecs' or 'gecko' type for passed during respective exporter function calls
+    :type req_type: str
+    :param switch_type: 'diode' or 'switch'
+    :type switch_type: str
+
+    :raises KeyError: when not all the required keys are available for the chosen exporter functions
+    :raises ValueError: if the key values are None
+
+    """
+    default_key_dict = {'plecs': ('v_channel_gs', 'v_d_off'),
+                        'gecko': ('v_channel_gs', 'v_supply', 'v_d_off')}.get(req_type) if switch_type == 'diode' else\
+                        {'plecs': ('v_channel_gs', 'v_g_on', 'v_g_off'),
+                        'gecko': ('v_channel_gs', 'v_supply', 'v_g_on', 'v_g_off')}.get(req_type)
+    if all(key in list(keys_to_check.keys()) for key in default_key_dict):
+        for value in keys_to_check.values():
+            if value is None:
+                raise ValueError
+            else:
+                check_realnum(value)
+    else:
+        raise KeyError("Not all keys exists for re-estimating gate voltages")
+
+
 class MissingDataError(Exception):
     """Custom exception class for plecs_exporter"""
 
     # define the error codes & messages here
-    em = {1101: "Switch conduction channel information is missing, cannot export to .xml",
-          1111: "Switch conduction channel information is missing at provided v_g, cannot export to .xml",
-          1102: "Switch turn on loss curves do not exists at every junction temperature, cannot export to .xml",
-          1103: "Switch turn off loss curves do not exists at every junction temperature, cannot export to .xml",
+    em = {1101: "Switch conduction channel information is missing, cannot export to",
+          1111: "Switch conduction channel information is missing at provided v_g, cannot export to",
+          1102: "Switch turn on loss curves do not exists at every junction temperature, cannot export to",
+          1103: "Switch turn off loss curves do not exists at every junction temperature, cannot export to",
           1104: "Switch turn on loss information is missing",
           1105: "Switch turn off loss information is missing",
-          1201: "Diode conduction channel information is missing, cannot export to .xml",
-          1211: "Diode conduction channel information is missing at provided v_g, cannot export to .xml",
+          1201: "Diode conduction channel information is missing, cannot export to",
+          1211: "Diode conduction channel information is missing at provided v_g, cannot export to",
           1202: "Diode reverse recovery loss information is missing",
-          1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
+          1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to"}
+

@@ -9,4 +9,4 @@ ON Semiconductor
 Vincotech
 Mitsubishi Electric
 Hitachi ABB
-
+GaN Systems

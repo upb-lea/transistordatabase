@@ -56,4 +56,4 @@ NX type
 NX type (press-fit)
 #Plecs importer
 PLECS Import
-
+GaNPX
