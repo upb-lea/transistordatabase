@@ -3104,7 +3104,25 @@ class Transistor:
 
         # Type of the dataset:
         # dpt_u_i: U/t I/t graph from double pulse measurements
-        dataset_type: str  #: dpt_u_i (Mandatory key)
+        dataset_type: str  #:  e.g. dpt_u_i (Mandatory key)
+        dpt_on_uds: ["np.ndarray[np.float64]", None]
+        dpt_on_id: ["np.ndarray[np.float64]", None]
+        dpt_off_uds: ["np.ndarray[np.float64]", None]
+        dpt_off_id: ["np.ndarray[np.float64]", None]
+
+        def __init__(self, args):
+            """
+            Initialization method for RawMeasurementData object
+
+            :param args: arguments to be passed for initialization
+            """
+
+            self.dataset_type = args.get('dataset_type')
+            if self.dataset_type == 'dpt_u_i':
+                self.dpt_on_uds = args.get('dpt_on_uds')
+                self.dpt_on_id = args.get('dpt_on_id')
+                self.dpt_off_uds = args.get('dpt_off_uds')
+                self.dpt_off_id = args.get('dpt_off_id')
 
 
 def get_xml_data(file):
@@ -4002,14 +4020,16 @@ def dpt_safe_data(measurement_dict: dict):
         sample_point = 0
         measurement_points = len(off_I_locations)
         E_off = []
+        Uds_raw_off = []
+        Id_raw_off = []
 
         while measurement_points > sample_point:
             # Load Uds and Id pairs in increasing order
             Uds = np.genfromtxt(csv_files[off_U_locations[sample_point][0]], delimiter=',', skip_header=24)
             Id = np.genfromtxt(csv_files[off_I_locations[sample_point][0]], delimiter=',', skip_header=24)
 
-            Uds_raw_off = Uds_raw_off.append(Uds)
-            Id_raw_off = Id_raw_off.append(Id)
+            Uds_raw_off.append(Uds)
+            Id_raw_off.append(Id)
 
             sample_length = len(Uds)
             sample_interval = abs(Uds[1, 0] - Uds[2, 0])
@@ -4098,14 +4118,16 @@ def dpt_safe_data(measurement_dict: dict):
         sample_point = 0
         measurement_points = len(on_I_locations)
         E_on = []
+        Uds_raw_on = []
+        Id_raw_on = []
 
         while measurement_points > sample_point:
             # Load Uds and Id pairs in increasing order
             Uds = np.genfromtxt(csv_files[on_U_locations[sample_point][0]], delimiter=',', skip_header=24)
             Id = np.genfromtxt(csv_files[on_I_locations[sample_point][0]], delimiter=',', skip_header=24)
 
-            Uds_raw_on = Uds_raw_on.append(Uds)
-            Id_raw_on = Id_raw_on.append(Id)
+            Uds_raw_on.append(Uds)
+            Id_raw_on.append(Id)
 
             sample_length = len(Uds)
             sample_interval = abs(Uds[1, 0] - Uds[2, 0])
