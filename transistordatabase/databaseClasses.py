@@ -58,6 +58,7 @@ class Transistor:
     # These are documented in their respective class definitions
     switch: "Switch"  #: Member instance for class type Switch (Mandatory key)
     diode: "Diode"  #: Member instance for class type Diode (Mandatory key)
+    raw_measurement_data: Union["RawMeasurementData", None]  #: Member instance for class type RawMeasurementData
     # Thermal data. See git for equivalent thermal_foster circuit diagram.
     r_th_cs: Union[float, None]  #: Module specific case to sink thermal resistance.  Units in K/W  (Optional key)
     r_th_switch_cs: Union[float, None]  #: Switch specific case to sink thermal resistance. Units in K/W  (Optional key)
@@ -231,6 +232,11 @@ class Transistor:
                     "Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
                     "are mandatory: 'name', 'type', 'author', 'manufacturer', 'housing_area', "
                     "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
+
+            self.raw_measurement_data = []
+            if Transistor.isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
+                # Only create RawMeausrementData objects from valid dicts
+                self.raw_measurement_data.append(Transistor.RawMeasurementData(transistor_args.get('raw_measurement_data')))
 
             self.diode = self.Diode(diode_args)
             self.switch = self.Switch(switch_args)
@@ -415,7 +421,12 @@ class Transistor:
                 'mandatory_keys': {'r_th_total'},
                 'str_keys': {},
                 'numeric_keys': {'r_th_total', 'c_th_total', 'tau_total'},
-                'array_keys': {'graph_t_rthjc'}}
+                'array_keys': {'graph_t_rthjc'}},
+            'RawMeasurementData': {
+                'mandatory_keys': {'dataset_type'},
+                'str_keys': {},
+                'numeric_keys': {},
+                'array_keys': {}}
         }
         if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
             return False  # Empty dataset. Can be valid depending on circumstances, hence no error.
@@ -3123,6 +3134,11 @@ class Transistor:
                 self.dpt_on_id = args.get('dpt_on_id')
                 self.dpt_off_uds = args.get('dpt_off_uds')
                 self.dpt_off_id = args.get('dpt_off_id')
+            else:
+                self.dpt_on_uds = []
+                self.dpt_on_id = []
+                self.dpt_off_uds = []
+                self.dpt_off_id = []
 
 
 def get_xml_data(file):
@@ -4212,10 +4228,11 @@ def dpt_safe_data(measurement_dict: dict):
                  'r_g': r_g,
                  'graph_i_e': np.array([E_on_0, E_on_1])}
 
-    dpt_raw_data = {'dpt_on_Uds': Uds_raw_on,
-                    'dpt_on_Id': Id_raw_on,
-                    'dpt_off_Uds': Uds_raw_off,
-                    'dpt_off_Id': Id_raw_off}
+    dpt_raw_data = {'dataset_type': 'dpt_u_i',
+                    'dpt_on_uds': Uds_raw_on,
+                    'dpt_on_id': Id_raw_on,
+                    'dpt_off_uds': Uds_raw_off,
+                    'dpt_off_id': Id_raw_off}
 
     dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'dpt_raw_data': dpt_raw_data}
     return dpt_dict
