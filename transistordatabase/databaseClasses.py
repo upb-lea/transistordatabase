@@ -1898,7 +1898,7 @@ class Transistor:
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('e_on_meas'), 'SwitchEnergyData'):
                     # Only create SwitchEnergyData objects from valid dicts
-                    self.e_on.append(Transistor.SwitchEnergyData(switch_args.get('e_on_meas')))
+                    self.e_on_meas.append(Transistor.SwitchEnergyData(switch_args.get('e_on_meas')))
 
                 self.e_off_meas = []  # Default case: Empty list
                 if isinstance(switch_args.get('e_off_meas'), list):
@@ -1915,7 +1915,7 @@ class Transistor:
                                           f"Switch-SwitchEnergyData dictionaries for e_off_meas: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('e_off_meas'), 'SwitchEnergyData'):
-                    self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off_meas')))
+                    self.e_off_meas.append(Transistor.SwitchEnergyData(switch_args.get('e_off_meas')))
 
                 self.linearized_switch = []  # Default case: Empty list
                 if isinstance(switch_args.get('linearized_switch'), list):
@@ -2682,14 +2682,14 @@ class Transistor:
         # graph_i_e: i_e is a 2-dim numpy array with two rows. r_g is a scalar. Given e.g. by an E vs I graph.
         dataset_type: str  #: Single, graph_r_e, graph_i_e (Mandatory key)
         # Additional measurement information.
-        measurement_date: "datetime.datetime"  #: Specifies the date and time at which the measurement was done.
-        measurement_testbench: str  #: Specifies the testbench used for the measurement.
+        measurement_date: Union["datetime.datetime", None]  #: Specifies the date and time at which the measurement was done.
+        measurement_testbench: Union[str, None]  #: Specifies the testbench used for the measurement.
         # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
         t_j: float  #: Junction temperature. Units in °C (Mandatory key)
         v_supply: float  #: Supply voltage. Units in V (Mandatory key)
         v_g: float  #: Gate voltage. Units in V (Mandatory key)
-        v_g_off: float  #: Gate voltage for turn off. Units in V
-        load_l: float  #: Load inductance. Units in µH
+        v_g_off: Union[float, None]  #: Gate voltage for turn off. Units in V
+        load_l: Union[float, None]  #: Load inductance. Units in µH
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
         e_x: Union[float, None]  #: Scalar dataset-parameter - switching energy. Units in J
         r_g: Union[float, None]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
@@ -4074,6 +4074,9 @@ def dpt_safe_data(measurement_dict: dict):
             E_off.append([off_I_locations[sample_point][1], E_off_temp])
             sample_point += 1
 
+        E_off_0 = [item[0] for item in E_off]
+        E_off_1 = [item[1] for item in E_off]
+
         ##############################
         # Plot Eoff
         ##############################
@@ -4170,6 +4173,9 @@ def dpt_safe_data(measurement_dict: dict):
             E_on.append([on_I_locations[sample_point][1], E_on_temp])
             sample_point += 1
 
+        E_on_0 = [item[0] for item in E_on]
+        E_on_1 = [item[1] for item in E_on]
+
         ##############################
         # Plot Eon
         ##############################
@@ -4193,7 +4199,7 @@ def dpt_safe_data(measurement_dict: dict):
                   'v_g': measurement_dict['v_g'],
                   'v_g_off': measurement_dict['v_g_off'],
                   'r_g': r_g,
-                  'graph_i_e': E_off}
+                  'graph_i_e': np.array([E_off_0, E_off_1])}
 
     e_on_meas = {'dataset_type': 'graph_i_e',
                  't_j': t_j,
@@ -4204,7 +4210,7 @@ def dpt_safe_data(measurement_dict: dict):
                  'v_g': measurement_dict['v_g'],
                  'v_g_off': measurement_dict['v_g_off'],
                  'r_g': r_g,
-                 'graph_i_e': E_on}
+                 'graph_i_e': np.array([E_on_0, E_on_1])}
 
     dpt_raw_data = {'dpt_on_Uds': Uds_raw_on,
                     'dpt_on_Id': Id_raw_on,
