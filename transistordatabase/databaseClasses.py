@@ -57,6 +57,9 @@ class Transistor:
     # These are documented in their respective class definitions
     switch: "Switch"   #: Member instance for class type Switch (Mandatory key)
     diode: "Diode"  #: Member instance for class type Diode (Mandatory key)
+    # Recommended gate resistors
+    r_g_on_recommended: Union[float, None]    #: Recommended turn on gate resistance of switch (Optional key)
+    r_g_off_recommended: Union[float, None]    #: Recommended turn off gate resistance of switch (Optional key)
     # Thermal data. See git for equivalent thermal_foster circuit diagram.
     r_th_cs: Union[float, None]  #: Module specific case to sink thermal resistance.  Units in K/W  (Optional key)
     r_th_switch_cs: Union[float, None]  #: Switch specific case to sink thermal resistance. Units in K/W  (Optional key)
@@ -119,6 +122,8 @@ class Transistor:
                 self.cooling_area = transistor_args.get('cooling_area')
                 self.t_c_max = transistor_args.get('t_c_max')
                 self.r_g_int = transistor_args.get('r_g_int')
+                self.r_g_on_recommended = transistor_args.get('r_g_on_recommended')
+                self.r_g_off_recommended = transistor_args.get('r_g_off_recommended')
                 self.c_oss_fix = transistor_args.get('c_oss_fix')
                 self.c_iss_fix = transistor_args.get('c_iss_fix')
                 self.c_rss_fix = transistor_args.get('c_rss_fix')
@@ -354,7 +359,7 @@ class Transistor:
                              'datasheet_version'},
                 'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
                                  'r_g_int', 'c_oss_fix', 'c_iss_fix', 'c_rss_fix', 'r_th_cs', 'r_th_switch_cs',
-                                 'r_th_diode_cs', 't_c_max'},
+                                 'r_th_diode_cs', 't_c_max', 'r_g_on_recommended', 'r_g_off_recommended'},
                 'array_keys': {'graph_v_ecoss'}},
             'Switch': {
                 'mandatory_keys': {'t_j_max'},
@@ -1481,8 +1486,6 @@ class Transistor:
         # diode on losses: these on losses must be generated, even if they are zero
         # diode channel: it is not allowed to use more than one current that is zero (otherwise geckocircuits can not calculate the losses)
         # v_supply, v_g_on, v_g_off, r_g_on, r_g_off
-        rcmd_ron = 1.2    # to be replaced in future releases
-        rcmd_roff = 1.2   # to be replaced in future releases
         v_supply = v_supply if v_supply else self.v_abs_max/2
         defaults_list = get_gatedefaults(self.type)
 
@@ -1490,8 +1493,9 @@ class Transistor:
         v_d_err = defaults_list[3] if v_g_on is None else v_g_on  # diode reverse recovery gate voltage
         v_g_on = defaults_list[0] if v_g_on is None else v_g_on  # switch turn on gate voltage and channel voltage
         v_g_off = defaults_list[1] if v_g_off is None else v_g_off  # switch turn off gate voltage
-        r_g_on = r_g_on if r_g_on else rcmd_ron
-        r_g_off = r_g_off if r_g_off else rcmd_roff
+        r_g_on = r_g_on if r_g_on else self.r_g_on_recommended
+        r_g_off = r_g_off if r_g_off else self.r_g_off_recommended
+        r_g_err = r_g_on
 
         # In future re-estimated neighbouring values
         switch_v_supply = v_supply
@@ -1530,7 +1534,8 @@ class Transistor:
         mapped_set = dict(zip(eon_i_e_indexes, eon_r_e_indexes))    # empty dict if no r_e and i_e combinations exists
         for index, curve in enumerate(self.switch.e_on):
             if index in eon_i_e_indexes and curve.v_supply == switch_v_supply and curve.v_g == v_g_on:
-                if not curve.r_g == r_g_on and any(mapped_set):
+                r_g_on = curve.r_g if r_g_on is None and len(mapped_set) else r_g_on  # if no r_g is provided and also recommended is None final resort to get a r_g
+                if not curve.r_g == r_g_on and len(mapped_set):
                     mapped_r_e_object = self.switch.e_on[mapped_set[index]]
                     new_curve = curve.copy()
                     new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_on, switch_v_supply)
@@ -1538,14 +1543,16 @@ class Transistor:
                     new_curve.r_g = r_g_on
                     eon_curves.append(new_curve)
                 else:
-                    print('No r_g curve match found, exporting default E_on curves at the selected voltage parameters')
+                    print('No r_g curve available, exporting default E_on curves at the selected voltage parameters\n Note: R_g specific e_on curves may or may not be found!')
                     eon_curves.append(self.switch.e_on[index])
+                    r_g_on = self.switch.e_on[index].r_g
 
         eoff_curves = list()
         mapped_set = dict(zip(eoff_i_e_indexes, eoff_r_e_indexes))   # empty dict if no r_e and i_e combinations exists
         for index, curve in enumerate(self.switch.e_off):
             if index in eoff_i_e_indexes and curve.v_supply == switch_v_supply and curve.v_g == v_g_off:
-                if not curve.r_g == r_g_off and any(mapped_set):
+                r_g_off = curve.r_g if r_g_off is None and len(mapped_set) else r_g_off
+                if not curve.r_g == r_g_off and len(mapped_set):
                     mapped_r_e_object = self.switch.e_off[mapped_set[index]]
                     new_curve = curve.copy()
                     new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_off, switch_v_supply)
@@ -1553,23 +1560,27 @@ class Transistor:
                     new_curve.r_g = r_g_on
                     eoff_curves.append(new_curve)
                 else:
-                    print('No r_g curve match found, exporting default E_off curves at the selected voltage parameters')
+                    print('No r_g curve available, exporting default E_off curves at the selected voltage parameters\n Note: R_g specific e_off curves may or may not be found!')
                     eoff_curves.append(self.switch.e_off[index])
+                    r_g_off = self.switch.e_off[index].r_g
 
         err_curves = list()
         mapped_set = dict(zip(err_i_e_indexes, err_r_e_indexes))    # empty dict if no r_e and i_e combinations exists
         for index, curve in enumerate(self.diode.e_rr):
             if index in err_i_e_indexes and curve.v_supply == diode_v_supply and (0 if curve.v_g is None else curve.v_g) == v_d_err:
-                if not curve.r_g == r_g_on and any(mapped_set):
+                r_g_err = curve.r_g if r_g_err is None and len(mapped_set) else r_g_err
+                if not curve.r_g == r_g_err and len(mapped_set):
                     mapped_r_e_object = self.diode.e_rr[mapped_set[index]]
                     new_curve = curve.copy()
-                    new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_on, diode_v_supply)
-                    print('E_rr curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_on, diode_v_supply))
-                    new_curve.r_g = r_g_on
+                    new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_err, diode_v_supply)
+                    print('E_rr curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_err, diode_v_supply))
+                    new_curve.r_g = r_g_err
                     err_curves.append(new_curve)
                 else:
-                    print('No r_g curve match found, exporting default Err curves at the selected voltage parameters')
+                    print('No r_g curve available, exporting default Err curves at the selected voltage parameters\n Note: R_g specific err curves may or may not be found!')
                     err_curves.append(self.diode.e_rr[index])
+                    r_g_err = self.diode.e_rr[index].r_g
+
 
         # set numpy print options to inf, due to geckocircuits requests the data in one single line
         np.set_printoptions(linewidth=np.inf)
@@ -1579,7 +1590,7 @@ class Transistor:
         ########################
         if any(sw_channel_curves):
 
-            file_switch = open(self.name + "_Switch.scl", "w")
+            file_switch = open(f"{self.name}_Switch(rg_on_{r_g_on})(rg_off_{r_g_off}).scl", "w")
 
             #### switch channel data
 
@@ -1628,6 +1639,7 @@ class Transistor:
             file_switch.write(f"anzMesskurvenPvSWITCH {len(eon_curves) if len(eon_curves) else 1}\n")
 
             if not any(eon_curves) or not any(eoff_curves):
+                print('Switch: No loss curves found!')
                 file_switch.write("<SchaltverlusteMesskurve>\n")
                 file_switch.write(f"data[][] 3 2 0 10 0 0 0 0")
                 file_switch.write(f"\ntj 25\n")
@@ -1664,7 +1676,7 @@ class Transistor:
                             file_switch.write("<\SchaltverlusteMesskurve>\n")
 
             file_switch.close()
-            print(f"Exported file {self.name}_Switch.scl  to {pathlib.Path.cwd().as_uri()}")
+            print(f"Exported file {self.name}_Switch(rg_on_{r_g_on})(rg_off_{r_g_off}).scl  to {pathlib.Path.cwd().as_uri()}")
         else:
             print('\nGecko exporter switch failed: No channel curve available at the selected v_g \n Try by setting recheck = True if set to False')
 
@@ -1672,7 +1684,7 @@ class Transistor:
         # export file for diode
         ########################
         if any(diode_channel_curves):
-            file_diode = open(self.name + "_Diode.scl", "w")
+            file_diode = open(f"{self.name}_Diode(rg_{r_g_err}).scl", "w")
 
             #### diode channel data
             # count number of arrays for conducting behaviour
@@ -1709,6 +1721,7 @@ class Transistor:
             # in case of no switching losses available, set curves to zero.
             # if switching losses will not set to zero, geckoCIRCUITS will use inital values
             if len(err_curves) == 0:
+                print('Diode: No loss curves found!')
                 file_diode.write(f"anzMesskurvenPvSWITCH 1\n")
                 file_diode.write("<SchaltverlusteMesskurve>\n")
                 file_diode.write(f"data[][] 3 2 0 10 0 0 0 0")
@@ -1718,29 +1731,30 @@ class Transistor:
             else:
                 file_diode.write(f"anzMesskurvenPvSWITCH {len(err_curves)}\n")
                 for curve_rr in err_curves:
-                    rr_current = curve_rr.graph_i_e[0]
-                    rr_energy = curve_rr.graph_i_e[1]
+                    if curve_rr.r_g == r_g_err:
+                        rr_current = curve_rr.graph_i_e[0]
+                        rr_energy = curve_rr.graph_i_e[1]
 
-                    # forward recovery losses set to zero
-                    fr_energy = np.zeros(len(rr_current))
+                        # forward recovery losses set to zero
+                        fr_energy = np.zeros(len(rr_current))
 
-                    print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
-                    print_fr_energy = print_fr_energy[1:-1]
+                        print_fr_energy = np.array2string(fr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                        print_fr_energy = print_fr_energy[1:-1]
 
-                    print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
-                    print_current = print_current[1:-1]
-                    print_rr_energy = np.array2string(rr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
-                    print_rr_energy = print_rr_energy[1:-1]
+                        print_current = np.array2string(rr_current, formatter={'float_kind': lambda x: "%.2f" % x})
+                        print_current = print_current[1:-1]
+                        print_rr_energy = np.array2string(rr_energy, formatter={'float_kind': lambda x: "%.8f" % x})
+                        print_rr_energy = print_rr_energy[1:-1]
 
-                    # for every loss curve, write
-                    file_diode.write("<SchaltverlusteMesskurve>\n")
-                    file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
-                    file_diode.write(f"\ntj {curve_rr.t_j}\n")
-                    file_diode.write(f"uBlock {curve_rr.v_supply}\n")
-                    file_diode.write("<\SchaltverlusteMesskurve>\n")
+                        # for every loss curve, write
+                        file_diode.write("<SchaltverlusteMesskurve>\n")
+                        file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
+                        file_diode.write(f"\ntj {curve_rr.t_j}\n")
+                        file_diode.write(f"uBlock {curve_rr.v_supply}\n")
+                        file_diode.write("<\SchaltverlusteMesskurve>\n")
 
             file_diode.close()
-            print(f"Exported file {self.name}_Diode.scl to {pathlib.Path.cwd().as_uri()}")
+            print(f"Exported file {self.name}_Diode(rg_{r_g_err}).scl to {pathlib.Path.cwd().as_uri()}")
         else:
             print('\nGecko exporter diode failed: No channel curve available at the selected v_g \n Try by setting recheck = True if set to False')
 
