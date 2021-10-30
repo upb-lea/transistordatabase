@@ -4010,10 +4010,12 @@ def dpt_safe_data(measurement_dict: dict):
 
     position_attribute_start = 'V_'
     position_attribute_end = 'A_'
+    label_x_plot = 'Id / A'
 
     if measurement_dict['dataset_type'] == 'graph_r_e':
         position_attribute_start = 'C_'
         position_attribute_end = 'R_'
+        label_x_plot = 'Ron / Ohm'
 
     if measurement_dict['energies'] == 'E_off' or measurement_dict['energies'] == 'both':
         off_I_locations = []
@@ -4098,7 +4100,12 @@ def dpt_safe_data(measurement_dict: dict):
             while Id[i - time_correction, 1] >= (Id_avg_max * off_is_limit):
                 E_off_temp = E_off_temp + (Uds[i, 1] * Id[i - time_correction, 1] * sample_interval)
                 i += 1
-            E_off.append([off_I_locations[sample_point][1], E_off_temp])
+
+            if measurement_dict['dataset_type'] == 'graph_r_e':
+                E_off.append([off_I_locations[sample_point][1], E_off_temp])
+            else:
+                E_off.append([Id_avg_max, E_off_temp])
+
             sample_point += 1
 
         E_off_0 = [item[0] for item in E_off]
@@ -4127,7 +4134,7 @@ def dpt_safe_data(measurement_dict: dict):
         y = [sub[1] * 1000000 for sub in E_off]
         fig, ax1 = plt.subplots()
         color = 'tab:red'
-        ax1.set_xlabel("Id / A")
+        ax1.set_xlabel(label_x_plot)
         ax1.set_ylabel("Eoff / µJ", color=color)
         ax1.plot(x, y, marker='o', color=color)
         plt.grid('both')
@@ -4213,7 +4220,12 @@ def dpt_safe_data(measurement_dict: dict):
             while Uds[i + time_correction, 1] >= (Uds_avg_max * on_vds_limit):
                 E_on_temp = E_on_temp + (Uds[i + time_correction, 1] * Id[i, 1] * sample_interval)
                 i += 1
-            E_on.append([on_I_locations[sample_point][1], E_on_temp])
+
+            if measurement_dict['dataset_type'] == 'graph_r_e':
+                E_on.append([on_I_locations[sample_point][1], E_on_temp])
+            else:
+                E_on.append([Id_avg_max, E_on_temp])
+
             sample_point += 1
 
         E_on_0 = [item[0] for item in E_on]
@@ -4243,7 +4255,7 @@ def dpt_safe_data(measurement_dict: dict):
         y = [sub[1] * 1000000 for sub in E_on]
         fig, ax1 = plt.subplots()
         color = 'tab:red'
-        ax1.set_xlabel("Id / A")
+        ax1.set_xlabel(label_x_plot)
         ax1.set_ylabel("Eon / µJ", color=color)
         ax1.plot(x, y, marker='o', color=color)
         plt.grid('both')
