@@ -4008,32 +4008,39 @@ def dpt_safe_data(measurement_dict: dict):
     e_off_meas = Union[dict, None]
     e_on_meas = Union[dict, None]
 
+    position_attribute_start = 'V_'
+    position_attribute_end = 'A_'
+
+    if measurement_dict['dataset_type'] == 'graph_r_e':
+        position_attribute_start = 'C_'
+        position_attribute_end = 'R_'
+
     if measurement_dict['energies'] == 'E_off' or measurement_dict['energies'] == 'both':
         off_I_locations = []
         off_U_locations = []
         csv_length = len(csv_files)
 
         ##############################
-        # Read all Turn-off current measurements and sort them by Id
+        # Read all Turn-off current measurements and sort them by Id or Rgon
         ##############################
         i = 0
         while csv_length > i:
             if csv_files[i].rfind("_OFF_I") != -1:
-                positionA = csv_files[i].rfind("A_")
-                positionV = csv_files[i].rfind("V_")
-                off_I_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
+                positionA = csv_files[i].rfind(position_attribute_end)
+                positionB = csv_files[i].rfind(position_attribute_start)
+                off_I_locations.append([i, int(csv_files[i][positionB + 2:positionA])])
             i += 1
         off_I_locations.sort(key=lambda x: x[1])
 
         ##############################
-        # Read all Turn-off voltage measurements and sort them by Uds
+        # Read all Turn-off voltage measurements and sort them by Id or Rgon
         ##############################
         i = 0
         while csv_length > i:
             if csv_files[i].rfind("_OFF_U") != -1:
-                positionA = csv_files[i].rfind("A_")
-                positionV = csv_files[i].rfind("V_")
-                off_U_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
+                positionA = csv_files[i].rfind(position_attribute_end)
+                positionB = csv_files[i].rfind(position_attribute_start)
+                off_U_locations.append([i, int(csv_files[i][positionB + 2:positionA])])
             i += 1
         off_U_locations.sort(key=lambda x: x[1])
 
@@ -4086,7 +4093,7 @@ def dpt_safe_data(measurement_dict: dict):
             time_correction = 0
 
             ##############################
-            # Integrate the power from 10% Uds_max to 10% Id_max
+            # Integrate the power with predefined integration limits
             ##############################
             while Id[i - time_correction, 1] >= (Id_avg_max * off_is_limit):
                 E_off_temp = E_off_temp + (Uds[i, 1] * Id[i - time_correction, 1] * sample_interval)
@@ -4107,6 +4114,7 @@ def dpt_safe_data(measurement_dict: dict):
                       'v_g_off': measurement_dict['v_g_off'],
                       'r_g': r_g,
                       'graph_i_e': np.array([E_off_0, E_off_1]),
+                      'graph_r_e': np.array([E_off_0, E_off_1]),
                       'e_x': float(E_off_1[0]),
                       'i_x': float(E_off_0[0])}
 
@@ -4131,25 +4139,25 @@ def dpt_safe_data(measurement_dict: dict):
         on_U_locations = []
         csv_length = len(csv_files)
         ##############################
-        # Read all Turn-on current measurements and sort them by Id
+        # Read all Turn-on current measurements and sort them by Id or Rgon
         ##############################
         while csv_length > i:
             if csv_files[i].rfind("_ON_I") != -1:
-                positionA = csv_files[i].rfind("A_")
-                positionV = csv_files[i].rfind("V_")
-                on_I_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
+                positionA = csv_files[i].rfind(position_attribute_end)
+                positionB = csv_files[i].rfind(position_attribute_start)
+                on_I_locations.append([i, int(csv_files[i][positionB + 2:positionA])])
             i += 1
         on_I_locations.sort(key=lambda x: x[1])
 
         ##############################
-        # Read all Turn-on voltage measurements and sort them by Id
+        # Read all Turn-on voltage measurements and sort them by Id or Rgon
         ##############################
         i = 0
         while csv_length > i:
             if csv_files[i].rfind("_ON_U") != -1:
-                positionA = csv_files[i].rfind("A_")
-                positionV = csv_files[i].rfind("V_")
-                on_U_locations.append([i, int(csv_files[i][positionV + 2:positionA])])
+                positionA = csv_files[i].rfind(position_attribute_end)
+                positionB = csv_files[i].rfind(position_attribute_start)
+                on_U_locations.append([i, int(csv_files[i][positionB + 2:positionA])])
             i += 1
         on_U_locations.sort(key=lambda x: x[1])
 
@@ -4200,7 +4208,7 @@ def dpt_safe_data(measurement_dict: dict):
 
             time_correction = 0
             ##############################
-            # Integrate the power from 10% Id_max to 10% Uds_max
+            # Integrate the power with predefined integration limits
             ##############################
             while Uds[i + time_correction, 1] >= (Uds_avg_max * on_vds_limit):
                 E_on_temp = E_on_temp + (Uds[i + time_correction, 1] * Id[i, 1] * sample_interval)
@@ -4221,6 +4229,7 @@ def dpt_safe_data(measurement_dict: dict):
                      'v_g_off': measurement_dict['v_g_off'],
                      'r_g': r_g,
                      'graph_i_e': np.array([E_on_0, E_on_1]),
+                     'graph_r_e': np.array([E_on_0, E_on_1]),
                      'e_x': float(E_on_1[0]),
                      'i_x': float(E_on_0[0])}
 
@@ -4239,7 +4248,6 @@ def dpt_safe_data(measurement_dict: dict):
         ax1.plot(x, y, marker='o', color=color)
         plt.grid('both')
         plt.show()
-
 
     dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'dpt_raw_data': dpt_raw_data}
     return dpt_dict
