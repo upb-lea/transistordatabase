@@ -4004,7 +4004,11 @@ def dpt_safe_data(measurement_dict: dict):
     position_v_supply_start = csv_files[1].rfind("_", 0, position_v_supply)
     v_supply = int(csv_files[1][position_v_supply_start + 1:position_v_supply])
 
-    if measurement_dict['energies'] == 'E_off' or measurement_dict['energies'] is None:
+    dpt_raw_data = {'dataset_type': 'dpt_u_i'}
+    e_off_meas = Union[dict, None]
+    e_on_meas = Union[dict, None]
+
+    if measurement_dict['energies'] == 'E_off' or measurement_dict['energies'] == 'both':
         off_I_locations = []
         off_U_locations = []
         csv_length = len(csv_files)
@@ -4093,6 +4097,21 @@ def dpt_safe_data(measurement_dict: dict):
         E_off_0 = [item[0] for item in E_off]
         E_off_1 = [item[1] for item in E_off]
 
+        e_off_meas = {'dataset_type': measurement_dict['dataset_type'],
+                      't_j': t_j,
+                      'load_l': measurement_dict['load_l'],
+                      'measurement_date': measurement_dict['measurement_date'],
+                      'measurement_testbench': measurement_dict['measurement_testbench'],
+                      'v_supply': v_supply,
+                      'v_g': measurement_dict['v_g'],
+                      'v_g_off': measurement_dict['v_g_off'],
+                      'r_g': r_g,
+                      'graph_i_e': np.array([E_off_0, E_off_1]),
+                      'e_x': float(E_off_1[0]),
+                      'i_x': float(E_off_0[0])}
+
+        dpt_raw_data |= {'dpt_off_uds': Uds_raw_off, 'dpt_off_id': Id_raw_off}
+
         ##############################
         # Plot Eoff
         ##############################
@@ -4102,11 +4121,11 @@ def dpt_safe_data(measurement_dict: dict):
         color = 'tab:red'
         ax1.set_xlabel("Id / A")
         ax1.set_ylabel("Eoff / µJ", color=color)
-        ax1.plot(x, y, color=color)
+        ax1.plot(x, y, marker='o', color=color)
         plt.grid('both')
         plt.show()
 
-    if measurement_dict['energies'] == 'E_on' or measurement_dict['energies'] is None:
+    if measurement_dict['energies'] == 'E_on' or measurement_dict['energies'] == 'both':
         i = 0
         on_I_locations = []
         on_U_locations = []
@@ -4192,6 +4211,21 @@ def dpt_safe_data(measurement_dict: dict):
         E_on_0 = [item[0] for item in E_on]
         E_on_1 = [item[1] for item in E_on]
 
+        e_on_meas = {'dataset_type': measurement_dict['dataset_type'],
+                     't_j': t_j,
+                     'load_l': measurement_dict['load_l'],
+                     'measurement_date': measurement_dict['measurement_date'],
+                     'measurement_testbench': measurement_dict['measurement_testbench'],
+                     'v_supply': v_supply,
+                     'v_g': measurement_dict['v_g'],
+                     'v_g_off': measurement_dict['v_g_off'],
+                     'r_g': r_g,
+                     'graph_i_e': np.array([E_on_0, E_on_1]),
+                     'e_x': float(E_on_1[0]),
+                     'i_x': float(E_on_0[0])}
+
+        dpt_raw_data |= {'dpt_on_uds': Uds_raw_on, 'dpt_on_id': Id_raw_on}
+
         ##############################
         # Plot Eon
         ##############################
@@ -4202,37 +4236,10 @@ def dpt_safe_data(measurement_dict: dict):
         color = 'tab:red'
         ax1.set_xlabel("Id / A")
         ax1.set_ylabel("Eon / µJ", color=color)
-        ax1.plot(x, y, color=color)
+        ax1.plot(x, y, marker='o', color=color)
         plt.grid('both')
         plt.show()
 
-    e_off_meas = {'dataset_type': 'graph_i_e',
-                  't_j': t_j,
-                  'load_l': measurement_dict['load_l'],
-                  'measurement_date': measurement_dict['measurement_date'],
-                  'measurement_testbench': measurement_dict['measurement_testbench'],
-                  'v_supply': v_supply,
-                  'v_g': measurement_dict['v_g'],
-                  'v_g_off': measurement_dict['v_g_off'],
-                  'r_g': r_g,
-                  'graph_i_e': np.array([E_off_0, E_off_1])}
-
-    e_on_meas = {'dataset_type': 'graph_i_e',
-                 't_j': t_j,
-                 'load_l': measurement_dict['load_l'],
-                 'measurement_date': measurement_dict['measurement_date'],
-                 'measurement_testbench': measurement_dict['measurement_testbench'],
-                 'v_supply': v_supply,
-                 'v_g': measurement_dict['v_g'],
-                 'v_g_off': measurement_dict['v_g_off'],
-                 'r_g': r_g,
-                 'graph_i_e': np.array([E_on_0, E_on_1])}
-
-    dpt_raw_data = {'dataset_type': 'dpt_u_i',
-                    'dpt_on_uds': Uds_raw_on,
-                    'dpt_on_id': Id_raw_on,
-                    'dpt_off_uds': Uds_raw_off,
-                    'dpt_off_id': Id_raw_off}
 
     dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'dpt_raw_data': dpt_raw_data}
     return dpt_dict
