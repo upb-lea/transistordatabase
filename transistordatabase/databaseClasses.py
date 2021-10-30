@@ -4127,7 +4127,7 @@ def dpt_safe_data(measurement_dict: dict):
                       'graph_i_e': np.array([E_off_0, E_off_1]),
                       'graph_r_e': np.array([E_off_0, E_off_1]),
                       'e_x': float(E_off_1[0]),
-                      'i_x': float(E_off_0[0])}
+                      'i_x': Id_avg_max}
 
         dpt_raw_data |= {'dpt_off_uds': Uds_raw_off, 'dpt_off_id': Id_raw_off}
 
@@ -4247,7 +4247,7 @@ def dpt_safe_data(measurement_dict: dict):
                      'graph_i_e': np.array([E_on_0, E_on_1]),
                      'graph_r_e': np.array([E_on_0, E_on_1]),
                      'e_x': float(E_on_1[0]),
-                     'i_x': float(E_on_0[0])}
+                     'i_x': Id_avg_max}
 
         dpt_raw_data |= {'dpt_on_uds': Uds_raw_on, 'dpt_on_id': Id_raw_on}
 
