@@ -2226,29 +2226,56 @@ class Transistor:
             """
 
             # ToDo: only 12(?) colors available. Change linestyle for more curves.
-            categorize_plots = {}
+            categorize_with_temp_plots = {}
+            categorize_with_vgs_plots = {}
+            categorized_plots = {}
             plt.figure()
-            if buffer_req and len(self.channel) > 5: # 5 - expecting only -40°,25°,50°,125°,175° curves at gate voltage 15V or 25° curves at 20,15,12,10,8V
+            if len(self.channel) > 5:   # 5 - expecting only -40°,25°,50°,125°,175° curves at gate voltage 15V or 25° curves at 20,15,12,10,8V
+                count = 0
                 for channel in self.channel:
                     try:
-                        categorize_plots[channel.t_j].append(channel)
+                        categorize_with_temp_plots[channel.t_j].append(channel)
                     except KeyError:
-                        categorize_plots[channel.t_j] = [channel]
-                for temp_key, curve_list in categorize_plots.items():
-                    for curve in curve_list:
-                        labelplot = "$V_{{g}}$ = {0} V ".format(curve.v_g)
-                        plt.plot(curve.graph_v_i[0], curve.graph_v_i[1], label=labelplot)
-                    plt.legend(fontsize=8)
-                    plt.xlabel('Voltage in V')
-                    plt.ylabel('Current in A')
-                    plt.title('$T_{{J}}$ = {0} °C'.format(temp_key))
-                    plt.grid()
-                    categorize_plots |= {temp_key: get_img_raw_data(plt)}
-                    plt.clf()
+                        categorize_with_temp_plots[channel.t_j] = [channel]
+                    try:
+                        categorize_with_vgs_plots[channel.v_g].append(channel)
+                    except KeyError:
+                        categorize_with_vgs_plots[channel.v_g] = [channel]
+                for key, curve_list in categorize_with_temp_plots.items():
+                    if len(curve_list) > 1:
+                        count += 1
+                        for curve in curve_list:
+                            plot_label = "$V_{{g}}$ = {0} V ".format(curve.v_g)
+                            plt.plot(curve.graph_v_i[0], curve.graph_v_i[1], label=plot_label)
+                        plt.legend(fontsize=8)
+                        plt.xlabel('Voltage in V')
+                        plt.ylabel('Current in A')
+                        plt.title('$T_{{J}}$ = {0} °C'.format(key))
+                        plt.grid()
+                        if buffer_req:
+                            categorized_plots |= {key: get_img_raw_data(plt)}
+                            plt.clf()
+                        else:
+                            plt.show()
+                for key, curve_list in categorize_with_vgs_plots.items():
+                    if len(curve_list) > count:
+                        for curve in curve_list:
+                            plot_label = "$T_{{j}}$ = {0} °C".format(curve.t_j)
+                            plt.plot(curve.graph_v_i[0], curve.graph_v_i[1], label=plot_label)
+                        plt.legend(fontsize=8)
+                        plt.xlabel('Voltage in V')
+                        plt.ylabel('Current in A')
+                        plt.title('$V_{{g}}$ = {0} V'.format(key))
+                        plt.grid()
+                        if buffer_req:
+                            categorized_plots |= {key: get_img_raw_data(plt)}
+                            plt.clf()
+                        else:
+                            plt.show()
             else:
                 for i_channel in np.array(range(0, len(self.channel))):
-                   labelplot = "$V_{{g}}$ = {0} V, $T_{{J}}$ = {1} °C".format(self.channel[i_channel].v_g, self.channel[i_channel].t_j)
-                   plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
+                    plot_label = "$V_{{g}}$ = {0} V, $T_{{J}}$ = {1} °C".format(self.channel[i_channel].v_g, self.channel[i_channel].t_j)
+                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=plot_label)
                 plt.legend(fontsize=8)
                 plt.xlabel('Voltage in V')
                 plt.ylabel('Current in A')
@@ -2257,7 +2284,7 @@ class Transistor:
                     return get_img_raw_data(plt)
                 else:
                     plt.show()
-            return categorize_plots
+            return categorized_plots
 
         def plot_energy_data(self, buffer_req=False):
             """
@@ -2267,28 +2294,40 @@ class Transistor:
 
             :return: Respective plots are displayed
             """
-            plt.figure()
-            # look for e_on losses
+            e_on_i_e_curve_count, e_off_i_e_curve_count = [0, 0]
             for i_energy_data in np.array(range(0, len(self.e_on))):
                 if self.e_on[i_energy_data].dataset_type == 'graph_i_e':
-                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].r_g)
-                    plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1],
-                             label=labelplot)
-
-            # look for e_off losses
+                    e_on_i_e_curve_count += 1
             for i_energy_data in np.array(range(0, len(self.e_off))):
                 if self.e_off[i_energy_data].dataset_type == 'graph_i_e':
-                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].r_g)
-                    plt.plot(self.e_off[i_energy_data].graph_i_e[0], self.e_off[i_energy_data].graph_i_e[1],
-                             label=labelplot)
-            plt.legend(fontsize=8)
-            plt.xlabel('Current in A')
-            plt.ylabel('Loss-energy in J')
-            plt.grid()
-            if buffer_req:
-                return get_img_raw_data(plt)
+                    e_off_i_e_curve_count += 1
+
+            if e_on_i_e_curve_count and e_on_i_e_curve_count == e_off_i_e_curve_count:
+                plt.figure()
+                # look for e_on losses
+                for i_energy_data in np.array(range(0, len(self.e_on))):
+                    if self.e_on[i_energy_data].dataset_type == 'graph_i_e':
+                        labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].r_g)
+                        plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1],
+                                 label=labelplot)
+
+                # look for e_off losses
+                for i_energy_data in np.array(range(0, len(self.e_off))):
+                    if self.e_off[i_energy_data].dataset_type == 'graph_i_e':
+                        labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].r_g)
+                        plt.plot(self.e_off[i_energy_data].graph_i_e[0], self.e_off[i_energy_data].graph_i_e[1],
+                                 label=labelplot)
+                plt.legend(fontsize=8)
+                plt.xlabel('Current in A')
+                plt.ylabel('Loss-energy in J')
+                plt.grid()
+                if buffer_req:
+                    return get_img_raw_data(plt)
+                else:
+                    plt.show()
             else:
-                plt.show()
+                print("Switch energy i_e curves are not available for the chosen transistor")
+                return None
 
         def plot_energy_data_r(self, buffer_req=False):
             """
@@ -2298,28 +2337,39 @@ class Transistor:
 
             :return: Respective plots are displayed
             """
-            plt.figure()
-            # look for e_on losses
+            e_on_r_e_curve_count, e_off_r_e_curve_count = [0, 0]
             for i_energy_data in np.array(range(0, len(self.e_on))):
                 if self.e_on[i_energy_data].dataset_type == 'graph_r_e':
-                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].i_x)
-                    plt.plot(self.e_on[i_energy_data].graph_r_e[0], self.e_on[i_energy_data].graph_r_e[1],
-                             label=labelplot)
-
-            # look for e_off losses
+                    e_on_r_e_curve_count +=1
             for i_energy_data in np.array(range(0, len(self.e_off))):
                 if self.e_off[i_energy_data].dataset_type == 'graph_r_e':
-                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].i_x)
-                    plt.plot(self.e_off[i_energy_data].graph_r_e[0], self.e_off[i_energy_data].graph_r_e[1],
-                             label=labelplot)
-            plt.legend(fontsize=8)
-            plt.xlabel('External Gate Resistor in Ohm')
-            plt.ylabel('Loss-energy in J')
-            plt.grid()
-            if buffer_req:
-                return get_img_raw_data(plt)
+                    e_off_r_e_curve_count +=1
+            if e_on_r_e_curve_count and e_on_r_e_curve_count == e_off_r_e_curve_count:
+                plt.figure()
+                # look for e_on losses
+                for i_energy_data in np.array(range(0, len(self.e_on))):
+                    if self.e_on[i_energy_data].dataset_type == 'graph_r_e':
+                        labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].i_x)
+                        plt.plot(self.e_on[i_energy_data].graph_r_e[0], self.e_on[i_energy_data].graph_r_e[1],
+                                 label=labelplot)
+
+                # look for e_off losses
+                for i_energy_data in np.array(range(0, len(self.e_off))):
+                    if self.e_off[i_energy_data].dataset_type == 'graph_r_e':
+                        labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].i_x)
+                        plt.plot(self.e_off[i_energy_data].graph_r_e[0], self.e_off[i_energy_data].graph_r_e[1],
+                                 label=labelplot)
+                plt.legend(fontsize=8)
+                plt.xlabel('External Gate Resistor in Ohm')
+                plt.ylabel('Loss-energy in J')
+                plt.grid()
+                if buffer_req:
+                    return get_img_raw_data(plt)
+                else:
+                    plt.show()
             else:
-                plt.show()
+                print("Switch energy r_e curves are not available for the chosen transistor")
+                return None
 
         def collect_data(self):
             """
@@ -2553,29 +2603,56 @@ class Transistor:
 
             :return: Respective plots are displayed
             """
-            categorize_plots = {}
+            categorize_with_temp_plots = {}
+            categorize_with_vgs_plots = {}
+            categorized_plots = {}
             plt.figure()
-            if buffer_req and len(self.channel) > 5:    # 5 - expecting only -40°,25°,50°,125°,175° curves at gate voltage 15V or 25° curves at 20,15,12,10,8V
-                for channel in self.channel:            # gate voltages. Greater than 5 channel curves means curves at multiple gate voltages, temp being specified.
+            if len(self.channel) > 5:  # 5 - expecting only -40°,25°,50°,125°,175° curves at gate voltage 15V or 25° curves at 20,15,12,10,8V
+                count = 0
+                for channel in self.channel:
                     try:
-                        categorize_plots[channel.t_j].append(channel)
+                        categorize_with_temp_plots[channel.t_j].append(channel)
                     except KeyError:
-                        categorize_plots[channel.t_j] = [channel]
-                for temp_key, curve_list in categorize_plots.items():
-                    for curve in curve_list:
-                        labelplot = "$V_{{g}}$ = {0} V ".format(curve.v_g)
-                        plt.plot(curve.graph_v_i[0], curve.graph_v_i[1], label=labelplot)
-                    plt.legend(fontsize=8)
-                    plt.xlabel('Voltage in V')
-                    plt.ylabel('Current in A')
-                    plt.title('$T_{{J}}$ = {0} °C'.format(temp_key))
-                    plt.grid()
-                    categorize_plots |= {temp_key: get_img_raw_data(plt)}
-                    plt.clf()
+                        categorize_with_temp_plots[channel.t_j] = [channel]
+                    try:
+                        categorize_with_vgs_plots[channel.v_g].append(channel)
+                    except KeyError:
+                        categorize_with_vgs_plots[channel.v_g] = [channel]
+                for key, curve_list in categorize_with_temp_plots.items():
+                    if len(curve_list) > 1:
+                        count += 1
+                        for curve in curve_list:
+                            plot_label = "$V_{{g}}$ = {0} V ".format(curve.v_g)
+                            plt.plot(curve.graph_v_i[0], curve.graph_v_i[1], label=plot_label)
+                        plt.legend(fontsize=8)
+                        plt.xlabel('Voltage in V')
+                        plt.ylabel('Current in A')
+                        plt.title('$T_{{J}}$ = {0} °C'.format(key))
+                        plt.grid()
+                        if buffer_req:
+                            categorized_plots |= {key: get_img_raw_data(plt)}
+                            plt.clf()
+                        else:
+                            plt.show()
+                for key, curve_list in categorize_with_vgs_plots.items():
+                    if len(curve_list) > count:
+                        for curve in curve_list:
+                            plot_label = "$T_{{j}}$ = {0} °C".format(curve.t_j)
+                            plt.plot(curve.graph_v_i[0], curve.graph_v_i[1], label=plot_label)
+                        plt.legend(fontsize=8)
+                        plt.xlabel('Voltage in V')
+                        plt.ylabel('Current in A')
+                        plt.title('$V_{{g}}$ = {0} V'.format(key))
+                        plt.grid()
+                        if buffer_req:
+                            categorized_plots |= {key: get_img_raw_data(plt)}
+                            plt.clf()
+                        else:
+                            plt.show()
             else:
                 for i_channel in np.array(range(0, len(self.channel))):
-                    labelplot = "$V_{{g}}$ = {0} V, $T_{{J}}$ = {1} °C".format(self.channel[i_channel].v_g, self.channel[i_channel].t_j)
-                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=labelplot)
+                    plot_label = "$V_{{g}}$ = {0} V, $T_{{J}}$ = {1} °C".format(self.channel[i_channel].v_g, self.channel[i_channel].t_j)
+                    plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1], label=plot_label)
                 plt.legend(fontsize=8)
                 plt.xlabel('Voltage in V')
                 plt.ylabel('Current in A')
@@ -2584,7 +2661,7 @@ class Transistor:
                     return get_img_raw_data(plt)
                 else:
                     plt.show()
-            return categorize_plots
+            return categorized_plots
 
         def plot_energy_data(self, buffer_req=False):
             """
@@ -2594,9 +2671,12 @@ class Transistor:
 
             :return: Respective plots are displayed
             """
-
+            e_rr_i_e_curve_count = 0
+            for i_energy_data in np.array(range(0, len(self.e_rr))):
+                if self.e_rr[i_energy_data].dataset_type == 'graph_i_e':
+                    e_rr_i_e_curve_count += 1
             # look for e_off losses
-            if len(self.e_rr) != 0:
+            if e_rr_i_e_curve_count > 0:
                 plt.figure()
                 for i_energy_data in np.array(range(0, len(self.e_rr))):
                     # check if data is available as 'graph_i_e'
@@ -2620,7 +2700,7 @@ class Transistor:
                 else:
                     plt.show()
             else:
-                print("No Diode switching energy data available (diode graph_i_e)")
+                print("Diode reverse recovery energy i_e curves are not available for the chosen transistor")
                 return None
 
         def plot_energy_data_r(self, buffer_req=False):
@@ -2631,15 +2711,18 @@ class Transistor:
 
             :return: Respective plots are displayed
             """
-
+            e_rr_r_e_curve_count = 0
+            for i_energy_data in np.array(range(0, len(self.e_rr))):
+                if self.e_rr[i_energy_data].dataset_type == 'graph_r_e':
+                    e_rr_r_e_curve_count += 1
             # look for e_off losses
-            if len(self.e_rr) != 0:
+            if e_rr_r_e_curve_count > 0:
                 plt.figure()
                 for i_energy_data in np.array(range(0, len(self.e_rr))):
                     # check if data is available as 'graph_i_e'
                     if self.e_rr[i_energy_data].dataset_type == 'graph_r_e':
                         # add label plot
-                        labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $I_{{ch}}$ = {2} Ohm".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j, self.e_rr[i_energy_data].i_x)
+                        labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $I_{{ch}}$ = {2} A".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j, self.e_rr[i_energy_data].i_x)
                         # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
                         # if ture, add gate-voltage to label
                         if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
@@ -2657,7 +2740,7 @@ class Transistor:
                 else:
                     plt.show()
             else:
-                print("No Diode switching energy data available (diode graph_r_e)")
+                print("Diode reverse recovery energy r_e curves are not available for the chosen transistor")
                 return None
 
         def collect_data(self):
@@ -2803,11 +2886,11 @@ class Transistor:
             """
             if ax:
                 label_plot = label+", $T_{{J}}$ = {0} °C".format(self.t_j)
-                return ax.plot(self.graph_v_c[0], self.graph_v_c[1], label=label_plot)
+                return ax.semilogy(self.graph_v_c[0], self.graph_v_c[1], label=label_plot)
             else:
                 plt.figure()  #needs rework because of this class being a list of transistor class members
                 label_plot = "$T_{{J}}$ = {0}".format(self.t_j)
-                plt.plot(self.graph_v_c[0], self.graph_v_c[1], label=label_plot)
+                plt.semilogy(self.graph_v_c[0], self.graph_v_c[1], label=label_plot)
                 plt.legend(fontsize=8)
                 plt.xlabel('Voltage in V')
                 plt.ylabel('Capacitance in F')
@@ -3385,6 +3468,7 @@ def get_xml_data(file):
     else:
         raise ImportError('Import of '+file+' Not possible: Only table type xml data are accepted')
 
+
 def import_xml_data(files):
     """
     A function feature of transistordatabase module to import switch and diode characteristics in plecs xml file format.
@@ -3448,6 +3532,7 @@ def import_xml_data(files):
     except ImportError as e:
         print(e.args[0])
 
+
 def attach_units(trans, devices):
     """
     The function will attach units for the virtual datasheet parameters when a call is made in export_datasheet() method.
@@ -3460,14 +3545,14 @@ def attach_units(trans, devices):
     :return: sorted data along with units to be displayed in transistor, diode, switch  section on virtual datasheet
     :rtype: dict, dict, dict
     """
-    standard_list = [('Author', 'Author', None), ('Name', 'Name', None), ('Manufacturer', 'Manufacturer', None), ('Type', 'Type', None), ('Datasheet_date', 'Datasheet date', None), ('Datasheet_hyperlink', 'Datasheet hyperlink', None)]
-    mechthermal_list = [('Housing_area', 'Housing area', 'sq.m'), ('Housing_type', 'Housing type', 'None'), ('Cooling_area', 'Cooling area', 'sq.m'), ('R_th_cs', 'R_th,cs', 'K/W'), ('R_th_total', 'R_th,total', 'K/W')]
+    standard_list = [('Author', 'Author', None), ('Name', 'Name', None), ('Manufacturer', 'Manufacturer', None), ('Type', 'Type', None), ('Datasheet_date', 'Datasheet date', None), ('Datasheet_hyperlink', 'Datasheet hyperlink', None), ('Datasheet_version', 'Datasheet version', None)]
+    mechthermal_list = [('Housing_area', 'Housing area', 'sq.m'), ('Housing_type', 'Housing type', 'None'), ('Cooling_area', 'Cooling area', 'sq.m'), ('R_th_cs', 'R_th,cs', 'K/W'), ('R_th_total', 'R_th,total', 'K/W'),  ('R_g_int', 'R_g,int', 'K/W'), ('C_th_total', 'C_th,total', 'F'), ('Tau_total', 'Tau_total', 'sec'), ('R_th_diode_cs', 'R_th,diode-cs', 'K/W'), ('R_th_switch_cs', 'R_th,switch-cs', 'K/W'), ('R_g_on_recommended', 'R_g,on-recommended', 'K/W'),('R_g_off_recommended', 'R_g,off-recommended', 'K/W')]
     maxratings_list = [('V_abs_max', 'V_abs,max', 'V'), ('I_abs_max', 'I_abs,max', 'A'), ('I_cont', 'I_cont', 'A'), ('T_j_max', 'T_j,max', '°C'), ('T_c_max', 'T_c,max', '°C')]
     cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F')]
     trans_sorted = {}
     diode_sorted = {}
     switch_sorted = {}
-    for list_unit in [standard_list, mechthermal_list, maxratings_list, cap_list]:
+    for list_unit in [maxratings_list, standard_list, mechthermal_list, cap_list]:
         for tuple_unit in list_unit:
             try:
                 trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
@@ -3479,8 +3564,11 @@ def attach_units(trans, devices):
     for list_unit in [mechthermal_list, maxratings_list]:
         for tuple_unit in list_unit:
             try:
-                diode_sorted.update({tuple_unit[1]: [devices['diode'].pop(tuple_unit[0]), tuple_unit[2]]})
                 switch_sorted.update({tuple_unit[1]: [devices['switch'].pop(tuple_unit[0]), tuple_unit[2]]})
+            except KeyError:
+                pass
+            try:
+                diode_sorted.update({tuple_unit[1]: [devices['diode'].pop(tuple_unit[0]), tuple_unit[2]]})
             except KeyError:
                 pass
     if len(devices['diode'].keys()) > 0:
@@ -3489,6 +3577,7 @@ def attach_units(trans, devices):
         switch_sorted.update(devices['switch'])
 
     return trans_sorted, diode_sorted, switch_sorted
+
 
 def get_img_raw_data(plot):
     """
@@ -3502,6 +3591,7 @@ def get_img_raw_data(plot):
     plot.savefig(buf, format='png')
     encoded_img_data = base64.b64encode(buf.getvalue())
     return encoded_img_data.decode('utf-8')
+
 
 def get_vc_plots(cap_data):
     """
@@ -3760,6 +3850,7 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
         array = np.abs(array)
 
     return np.transpose(array)
+
 
 def merge_curve(curve, curve_detail):
     """
@@ -4041,6 +4132,7 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     return (v_gsth-v_driver_off)/i_off * (1 + c_ds/c_gd)
 
 # Export helper functions
+
 
 def dict_clean(input_dict: dict) -> dict:
     """
