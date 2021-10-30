@@ -2730,7 +2730,11 @@ class Transistor:
             self.dataset_type = args.get('dataset_type')
             self.v_supply = args.get('v_supply')
             self.v_g = args.get('v_g')
+            self.v_g_off = args.get('v_g_off')
             self.t_j = args.get('t_j')
+            self.load_l = args.get('load_l')
+            self.measurement_date = args.get('measurement_date')
+            self.measurement_testbench = args.get('measurement_testbench')
             if self.dataset_type == 'single':
                 self.e_x = args.get('e_x')
                 self.r_g = args.get('r_g')
