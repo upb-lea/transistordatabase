@@ -13,7 +13,6 @@ from scipy.optimize import curve_fit
 from pymongo import MongoClient
 from pymongo import errors
 import json
-from git import Repo
 import git
 import shutil
 import stat
@@ -4045,7 +4044,7 @@ def update_from_fileexchange(collection: str ="local", overwrite: bool =True) ->
         module_file_path = pathlib.Path(__file__).parent.absolute()
         local_dir = os.path.join(module_file_path, "cloned_repo_TDB_File_Exchange")
         # Raises InvalidGitRepositoryError when not in a repo
-        repo = Repo(local_dir, search_parent_directories=False)
+        repo = git.Repo(local_dir, search_parent_directories=False)
         # check that the repository loaded correctly
         if not repo.bare:
             print('Repo at {} successfully loaded.'.format(repo.working_tree_dir))
@@ -4066,10 +4065,10 @@ def update_from_fileexchange(collection: str ="local", overwrite: bool =True) ->
                 for file in files:
                     os.chmod(os.path.join(root, file), stat.S_IRWXU)
             shutil.rmtree(local_dir)
-        Repo.clone_from(repo_url, local_dir)
+        git.Repo.clone_from(repo_url, local_dir)
     except git.exc.NoSuchPathError:
         # if local repository doesn't exits, clone from remote branch
-        Repo.clone_from(repo_url, local_dir)
+        git.Repo.clone_from(repo_url, local_dir)
 
     if collection == "local":
         collection = connect_local_TDB()
