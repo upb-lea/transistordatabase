@@ -1,5 +1,6 @@
 ## Table of contents
 * [Drawings](#1-dawings)
+* [Developer Installation](# 2-install-the-transistordatabase-as-a-pip-package-in-developer-mode)
 * [Write Code](#2-write-code)
 * [Write Tests](#3-write-pytest)
 * [Generate pip Package](#4-generate-pip-package)
