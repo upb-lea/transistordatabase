@@ -22,7 +22,8 @@ from jinja2 import Environment, FileSystemLoader
 import base64
 import io
 import pathlib
-import constants as cnt
+from .constants import *
+
 
 class Transistor:
     """
@@ -3733,10 +3734,10 @@ def get_gatedefaults(type):
 
     :return: default gate voltages [v_g_turn_on, v_g_turn_off, v_g_channel_blocks, v_g_channel_conducting]
     """
-    gate_voltages = {'sic-mosfet': [cnt.SIC_MOS_VGS_ON, cnt.SIC_MOS_VGS_OFF, cnt.SIC_MOS_BD_VGS, cnt.SIC_MOS_BD_VG_ERR],
-                     'mosfet': [cnt.MOS_VGS_ON, cnt.MOS_VGS_OFF,  cnt.MOS_BD_VGS, cnt.MOS_BD_VG_ERR],
-                     'igbt': [cnt.IGBT_VG_ON, cnt.IGBT_VG_OFF, cnt.DIODE_VGS, cnt.DIODE_VG_ERR],
-                     'gan-transistor': [cnt.GAN_VGS_ON, cnt.GAN_VGS_OFF, cnt.GAN_BD_VGS, cnt.GAN_BD_VG_ERR]
+    gate_voltages = {'sic-mosfet': [SIC_MOS_VGS_ON, SIC_MOS_VGS_OFF, SIC_MOS_BD_VGS, SIC_MOS_BD_VG_ERR],
+                     'mosfet': [MOS_VGS_ON, MOS_VGS_OFF,  MOS_BD_VGS, MOS_BD_VG_ERR],
+                     'igbt': [IGBT_VG_ON, IGBT_VG_OFF, DIODE_VGS, DIODE_VG_ERR],
+                     'gan-transistor': [GAN_VGS_ON, GAN_VGS_OFF, GAN_BD_VGS, GAN_BD_VG_ERR]
                      }.get(type.lower(), [15, -15, 0, 15])
     return gate_voltages
 

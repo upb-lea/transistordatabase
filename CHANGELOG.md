@@ -5,25 +5,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [0.2.14] - 2021-10-25
+
+
+## [0.2.14] - 2021-10-31
 ### Added
 - Helper function 'collect_i_e_and_r_e_combination' to find and associate i_e and r_e based SwitchEnergyData objects for usage in gecko exporter
 - Helper function 'check_keys' to validate the arguments provided to gecko exporter 
-- constants.py which dictates the default gate voltages for switch and diodes types based on the module type
+- constants.py: dictates the default gate voltages for switch and diodes types based on the module type
+- #50: Introduce new transitsor keys: r_g_on_recommended and r_g_off_recommended
 
 ### Updated
 - Docstrings
 - updated calc_thermal_params function to normalize the limit selections for curve fitting
 - update to module manufacturers list and housing type list
-- #27: Update gecko exporter according to latest working (like plecs exporter)
+- #27: Update gecko exporter according to latest working
 - remodelled gecko exporter with added feature to find the nearest neighbours to the given v_supply, v_g, r_g if the exact curves doestn't exists
 - remodelled gecko exporter with added feature to re-estimate the loss curves at given gate resistor
 - Added case to handle gecko exporter request to find nearest neighbours in find_next_gate_voltage method
 - update find_next_gate_voltage method to include the check_specific_curves parameter which now skips the curves while finding out nearest neighbours
 
-
 ### Bugfixes
-- #49: Print housing_list and manufacturer_list in case of not maching housings/manufacturers in isvaliddict
+- fix #48: export_datasheet fails when exporting a SiC-MOSFET
+- fix #49: Print housing_list and manufacturer_list in case of not maching housings/manufacturers in isvaliddict
 
 ## [0.2.13] - 2021-09-30
 ### Added
