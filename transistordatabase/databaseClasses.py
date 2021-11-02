@@ -11,6 +11,7 @@ from scipy import integrate
 from scipy.spatial import distance
 from pymongo import MongoClient
 from pymongo import errors
+from pymongo import UpdateOne
 import json
 from git import Repo
 import shutil
@@ -1971,6 +1972,8 @@ class Transistor:
             d['channel'] = [c.convert_to_dict() for c in self.channel]
             d['e_on'] = [e.convert_to_dict() for e in self.e_on]
             d['e_off'] = [e.convert_to_dict() for e in self.e_off]
+            d['e_on_meas'] = [e.convert_to_dict() for e in self.e_on_meas]
+            d['e_off_meas'] = [e.convert_to_dict() for e in self.e_off_meas]
             d['linearized_switch'] = [lsw.convert_to_dict() for lsw in self.linearized_switch]
             return d
 
@@ -3144,6 +3147,20 @@ class Transistor:
                 self.dpt_off_uds = []
                 self.dpt_off_id = []
 
+        def convert_to_dict(self):
+            """
+            The method converts RawMeasurementData object into dict datatype
+
+            :return: Switch object of dict type
+            :rtype: dict
+            """
+            d = dict(vars(self))
+            d['dpt_on_uds'] = [c.convert_to_dict() for c in self.dpt_on_uds]
+            d['dpt_on_id'] = [c.convert_to_dict() for c in self.dpt_on_id]
+            d['dpt_off_uds'] = [c.convert_to_dict() for c in self.dpt_off_uds]
+            d['dpt_off_id'] = [c.convert_to_dict() for c in self.dpt_off_id]
+            return d
+
 
 def get_xml_data(file):
     """
@@ -3775,11 +3792,21 @@ def load_from_db(db_dict: dict):
             switch_args['e_on'][i]['graph_r_e'] = np.array(switch_args['e_on'][i]['graph_r_e'])
         elif switch_args['e_on'][i]['dataset_type'] == 'graph_i_e':
             switch_args['e_on'][i]['graph_i_e'] = np.array(switch_args['e_on'][i]['graph_i_e'])
+    for i in range(len(switch_args['e_on_meas'])):
+        if switch_args['e_on_meas'][i]['dataset_type'] == 'graph_r_e':
+            switch_args['e_on_meas'][i]['graph_r_e'] = np.array(switch_args['e_on_meas'][i]['graph_r_e'])
+        elif switch_args['e_on_meas'][i]['dataset_type'] == 'graph_i_e':
+            switch_args['e_on_meas'][i]['graph_i_e'] = np.array(switch_args['e_on_meas'][i]['graph_i_e'])
     for i in range(len(switch_args['e_off'])):
         if switch_args['e_off'][i]['dataset_type'] == 'graph_r_e':
             switch_args['e_off'][i]['graph_r_e'] = np.array(switch_args['e_off'][i]['graph_r_e'])
         elif switch_args['e_off'][i]['dataset_type'] == 'graph_i_e':
             switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
+    for i in range(len(switch_args['e_off_meas'])):
+        if switch_args['e_off_meas'][i]['dataset_type'] == 'graph_r_e':
+            switch_args['e_off_meas'][i]['graph_r_e'] = np.array(switch_args['e_off_meas'][i]['graph_r_e'])
+        elif switch_args['e_off_meas'][i]['dataset_type'] == 'graph_i_e':
+            switch_args['e_off_meas'][i]['graph_i_e'] = np.array(switch_args['e_off_meas'][i]['graph_i_e'])
     # Convert diode_args
     diode_args = db_dict['diode']
     if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
@@ -4267,3 +4294,73 @@ def dpt_safe_data(measurement_dict: dict):
 
     dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'dpt_raw_data': dpt_raw_data}
     return dpt_dict
+
+
+def build_dummy(attribute_name, attribute_value):
+    name = 'Dummy-Transistor'
+    type = 'IGBT'
+    author = 'Dummy-Author'
+    manufacturer = 'Fuji Electric'
+    housing_area = 367e-6
+    cooling_area = 160e-6
+    housing_type = 'TO247'
+    v_abs_max = 200
+    i_abs_max = 200
+    i_cont = 200
+    r_g_int = 10
+    t_j_max = 175
+    r_th_switch_cs = 0
+    r_th_diode_cs = 0
+    r_th_cs = 0.05
+
+    switch_args = {'t_j_max': t_j_max,
+                   attribute_name: attribute_value}
+    diode_args = {'t_j_max': t_j_max,
+                  attribute_name: attribute_value}
+    transistor_args = {'name': name,
+                       'type': type,
+                       'author': author,
+                       'manufacturer': manufacturer,
+                       'housing_area': housing_area,
+                       'cooling_area': cooling_area,
+                       'housing_type': housing_type,
+                       'v_abs_max': v_abs_max,
+                       'i_abs_max': i_abs_max,
+                       'i_cont': i_cont,
+                       'r_g_int': r_g_int,
+                       'r_th_cs': r_th_cs,
+                       'r_th_switch_cs': r_th_switch_cs,
+                       'r_th_diode_cs': r_th_diode_cs,
+                       attribute_name: attribute_value}
+
+    dummy_transistor = Transistor(transistor_args, switch_args, diode_args)
+    return dummy_transistor
+
+
+def update_dpt_measurement(transistor_name, measurement_data):
+    transistor_loaded = load({'name': transistor_name})
+    collection = connect_local_TDB()
+    transistor_id = {'_id': transistor_loaded._id}
+
+    if measurement_data['e_off_meas'] is not None:
+        dummy_off = build_dummy('e_off_meas', measurement_data['e_off_meas'])
+        transistor_loaded.switch.e_off_meas.append(dummy_off.switch.e_off_meas[0])
+        transistor_dict = transistor_loaded.convert_to_dict()
+        new_value = {'$set': {'switch.e_off_meas': transistor_dict['switch']['e_off_meas']}}
+        #collection.update_one(transistor_id, new_value)
+
+    if measurement_data['e_on_meas'] is not None:
+        dummy_on = build_dummy('e_on_meas', measurement_data['e_on_meas'])
+        transistor_loaded.switch.e_on_meas.append(dummy_on.switch.e_on_meas[0])
+        transistor_dict = transistor_loaded.convert_to_dict()
+        new_value = {'$set': {'switch.e_on_meas': transistor_dict['switch']['e_on_meas']}}
+        #collection.update_one(transistor_id, new_value)
+
+    # if measurement_data['dpt_raw_data'] is not None:
+    #     dummy_raw = build_dummy('raw_measurement_data', measurement_data['dpt_raw_data'])
+    #     transistor_loaded.raw_measurement_data.append(dummy_raw.raw_measurement_data[0])
+    #     transistor_dict = transistor_loaded.convert_to_dict()
+    #     new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
+    #     collection.update_one(transistor_id, new_value)
+
+
