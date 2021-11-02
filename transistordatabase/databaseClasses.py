@@ -1543,7 +1543,7 @@ class Transistor:
                     new_curve.r_g = r_g_on
                     eon_curves.append(new_curve)
                 else:
-                    print('No r_g curve available, exporting default E_on curves at the selected voltage parameters\n Note: R_g specific e_on curves may or may not be found!')
+                    print('Exporting default E_on curves at the selected voltage parameters.->Either re-estimation not possible or r_g specific curve found!')
                     eon_curves.append(self.switch.e_on[index])
                     r_g_on = self.switch.e_on[index].r_g
 
@@ -1560,7 +1560,7 @@ class Transistor:
                     new_curve.r_g = r_g_on
                     eoff_curves.append(new_curve)
                 else:
-                    print('No r_g curve available, exporting default E_off curves at the selected voltage parameters\n Note: R_g specific e_off curves may or may not be found!')
+                    print('Exporting default E_off curves at the selected voltage parameters.->Either re-estimation not possible or r_g specific curve found!')
                     eoff_curves.append(self.switch.e_off[index])
                     r_g_off = self.switch.e_off[index].r_g
 
@@ -1577,7 +1577,7 @@ class Transistor:
                     new_curve.r_g = r_g_err
                     err_curves.append(new_curve)
                 else:
-                    print('No r_g curve available, exporting default Err curves at the selected voltage parameters\n Note: R_g specific err curves may or may not be found!')
+                    print('Exporting default E_rr curves at the selected voltage parameters.->Either re-estimation not possible or r_g specific curve found!')
                     err_curves.append(self.diode.e_rr[index])
                     r_g_err = self.diode.e_rr[index].r_g
 
@@ -1725,7 +1725,7 @@ class Transistor:
                 file_diode.write(f"anzMesskurvenPvSWITCH 1\n")
                 file_diode.write("<SchaltverlusteMesskurve>\n")
                 file_diode.write(f"data[][] 3 2 0 10 0 0 0 0")
-                file_diode.write(f"\ntj 125\n")
+                file_diode.write(f"\ntj 25\n")
                 file_diode.write(f"uBlock 400\n")
                 file_diode.write("<\SchaltverlusteMesskurve>\n")
             else:
