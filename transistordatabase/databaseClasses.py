@@ -234,7 +234,6 @@ class Transistor:
                     "are mandatory: 'name', 'type', 'author', 'manufacturer', 'housing_area', "
                     "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
 
-            self.raw_measurement_data = []
             if Transistor.isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
                 # Only create RawMeausrementData objects from valid dicts
                 self.raw_measurement_data.append(Transistor.RawMeasurementData(transistor_args.get('raw_measurement_data')))
@@ -331,6 +330,7 @@ class Transistor:
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
         d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
         d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
+        d['raw_measurement_data'] = [c.convert_to_dict() for c in self.raw_measurement_data]
         if isinstance(self.graph_v_ecoss, np.ndarray):
             d['graph_v_ecoss'] = self.graph_v_ecoss.tolist()
         return d
@@ -3126,7 +3126,7 @@ class Transistor:
         dpt_on_uds: ["np.ndarray[np.float64]", None]
         dpt_on_id: ["np.ndarray[np.float64]", None]
         dpt_off_uds: ["np.ndarray[np.float64]", None]
-        dpt_off_id: ["np.ndarray[np.float64]", None]
+        dpt_off_id: [float, None]
 
         def __init__(self, args):
             """
@@ -3155,10 +3155,10 @@ class Transistor:
             :rtype: dict
             """
             d = dict(vars(self))
-            d['dpt_on_uds'] = [c.convert_to_dict() for c in self.dpt_on_uds]
-            d['dpt_on_id'] = [c.convert_to_dict() for c in self.dpt_on_id]
-            d['dpt_off_uds'] = [c.convert_to_dict() for c in self.dpt_off_uds]
-            d['dpt_off_id'] = [c.convert_to_dict() for c in self.dpt_off_id]
+            # d['dpt_on_uds'] = [c.convert_to_dict() for c in self.dpt_on_uds]
+            # d['dpt_on_id'] = [c.convert_to_dict() for c in self.dpt_on_id]
+            # d['dpt_off_uds'] = [c.convert_to_dict() for c in self.dpt_off_uds]
+            # d['dpt_off_id'] = [c.convert_to_dict() for c in self.dpt_off_id]
             return d
 
 
@@ -3796,7 +3796,7 @@ def load_from_db(db_dict: dict):
         if switch_args['e_on_meas'][i]['dataset_type'] == 'graph_r_e':
             switch_args['e_on_meas'][i]['graph_r_e'] = np.array(switch_args['e_on_meas'][i]['graph_r_e'])
         elif switch_args['e_on_meas'][i]['dataset_type'] == 'graph_i_e':
-            switch_args['e_on_meas'][i]['graph_i_e'] = np.array(switch_args['e_on_meas'][i]['graph_i_e'])
+           switch_args['e_on_meas'][i]['graph_i_e'] = np.array(switch_args['e_on_meas'][i]['graph_i_e'])
     for i in range(len(switch_args['e_off'])):
         if switch_args['e_off'][i]['dataset_type'] == 'graph_r_e':
             switch_args['e_off'][i]['graph_r_e'] = np.array(switch_args['e_off'][i]['graph_r_e'])
@@ -3807,7 +3807,7 @@ def load_from_db(db_dict: dict):
             switch_args['e_off_meas'][i]['graph_r_e'] = np.array(switch_args['e_off_meas'][i]['graph_r_e'])
         elif switch_args['e_off_meas'][i]['dataset_type'] == 'graph_i_e':
             switch_args['e_off_meas'][i]['graph_i_e'] = np.array(switch_args['e_off_meas'][i]['graph_i_e'])
-    # Convert diode_args
+    #Convert diode_args
     diode_args = db_dict['diode']
     if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
         diode_args['thermal_foster']['graph_t_rthjc'] = np.array(diode_args['thermal_foster']['graph_t_rthjc'])
@@ -4156,7 +4156,7 @@ def dpt_safe_data(measurement_dict: dict):
                       'e_x': float(E_off_1[0]),
                       'i_x': Id_avg_max}
 
-        dpt_raw_data |= {'dpt_off_uds': Uds_raw_off, 'dpt_off_id': Id_raw_off}
+        dpt_raw_data |= {'dpt_off_uds': np.array(Uds_raw_off,dtype=object), 'dpt_off_id': np.array(Id_raw_off,dtype=object)}
 
         ##############################
         # Plot Eoff
@@ -4276,7 +4276,7 @@ def dpt_safe_data(measurement_dict: dict):
                      'e_x': float(E_on_1[0]),
                      'i_x': Id_avg_max}
 
-        dpt_raw_data |= {'dpt_on_uds': Uds_raw_on, 'dpt_on_id': Id_raw_on}
+        dpt_raw_data |= {'dpt_on_uds': np.array(Uds_raw_on, dtype=object), 'dpt_on_id': np.array(Id_raw_on, dtype=object)}
 
         ##############################
         # Plot Eon
@@ -4347,14 +4347,14 @@ def update_dpt_measurement(transistor_name, measurement_data):
         transistor_loaded.switch.e_off_meas.append(dummy_off.switch.e_off_meas[0])
         transistor_dict = transistor_loaded.convert_to_dict()
         new_value = {'$set': {'switch.e_off_meas': transistor_dict['switch']['e_off_meas']}}
-        #collection.update_one(transistor_id, new_value)
+        collection.update_one(transistor_id, new_value)
 
     if measurement_data['e_on_meas'] is not None:
         dummy_on = build_dummy('e_on_meas', measurement_data['e_on_meas'])
         transistor_loaded.switch.e_on_meas.append(dummy_on.switch.e_on_meas[0])
         transistor_dict = transistor_loaded.convert_to_dict()
         new_value = {'$set': {'switch.e_on_meas': transistor_dict['switch']['e_on_meas']}}
-        #collection.update_one(transistor_id, new_value)
+        collection.update_one(transistor_id, new_value)
 
     # if measurement_data['dpt_raw_data'] is not None:
     #     dummy_raw = build_dummy('raw_measurement_data', measurement_data['dpt_raw_data'])
