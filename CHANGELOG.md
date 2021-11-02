@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
-## [0.2.14] - 2021-10-31
+## [0.2.14] - 2021-11-02
 ### Added
 - Helper function 'collect_i_e_and_r_e_combination' to find and associate i_e and r_e based SwitchEnergyData objects for usage in gecko exporter
 - Helper function 'check_keys' to validate the arguments provided to gecko exporter 
@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Bugfixes
 - fix #48: export_datasheet fails when exporting a SiC-MOSFET
-- fix #49: Print housing_list and manufacturer_list in case of not maching housings/manufacturers in isvaliddict
+- fix #49: Print housing_list and manufacturer_list in case of not maching housings/manufacturers when creating a transistor
 
 ## [0.2.13] - 2021-09-30
 ### Added

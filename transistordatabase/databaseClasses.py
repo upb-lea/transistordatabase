@@ -4183,6 +4183,7 @@ def compatibilityTest(Transistor, attribute):
 def check_keys(keys_to_check, req_type, switch_type):
     """
     A helper function for find_next_gate_voltage method of class type - switch and diode. Verifies if the required keys are available and their value types are valid for carrying out the export
+    Used for export_gecko() and export_plecs()
 
     :param keys_to_check: the dictionary which contains the essential keys for the corresponding exporter function
     :type keys_to_check: dict

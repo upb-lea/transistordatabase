@@ -44,7 +44,8 @@ setup(
 					  'gitpython >=3.1.14',
                       'Jinja2 >= 3.0.1',
                       'packaging>=20.9', 
-                      'Pillow>=8.3.1'],
+                      'Pillow>=8.3.1',
+                      'pytest>=6.2.4'],
     license="GNU General Public License v3",
     long_description=readme + '\n\n' + history,
     long_description_content_type="text/markdown",
@@ -61,7 +62,7 @@ setup(
         "Documentation": "https://upb-lea.github.io/transistordatabase/main/transistordatabase.html",
         "Source Code": "https://github.com/upb-lea/transistordatabase",
     },
-    version='0.2.13',
+    version='0.2.14',
     zip_safe=False,
     data_files=[('', ['CHANGELOG.md'])]
 )
