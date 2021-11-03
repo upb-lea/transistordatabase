@@ -59,7 +59,7 @@ class Transistor:
     # These are documented in their respective class definitions
     switch: "Switch"  #: Member instance for class type Switch (Mandatory key)
     diode: "Diode"  #: Member instance for class type Diode (Mandatory key)
-    raw_measurement_data: Union["RawMeasurementData", None]  #: Member instance for class type RawMeasurementData
+    raw_measurement_data: Union[List["RawMeasurementData"], None]  #: Member instance for class type RawMeasurementData
     # Thermal data. See git for equivalent thermal_foster circuit diagram.
     r_th_cs: Union[float, None]  #: Module specific case to sink thermal resistance.  Units in K/W  (Optional key)
     r_th_switch_cs: Union[float, None]  #: Switch specific case to sink thermal resistance. Units in K/W  (Optional key)
@@ -225,6 +225,26 @@ class Transistor:
                     # Only create VoltageDependentCapacitance objects from valid dicts
                     self.c_rss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_rss')))
                 self.graph_v_ecoss = transistor_args.get('graph_v_ecoss')
+
+                self.raw_measurement_data = []
+                if isinstance(transistor_args.get('raw_measurement_data'), list):
+                    # Loop through list and check each dict for validity. Only create RawMeasuerementData objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in transistor_args.get('raw_measurement_data'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'RawMeasurementData'):
+                                self.raw_measurement_data.append(Transistor.RawMeasurementData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = transistor_args.get('raw_measurement_data')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] "
+                                          f"in list of raw_measurement_data "f"dictionaries: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
+                    # Only create RawMeasurementData objects from valid dicts
+                    self.raw_measurement_data.append(Transistor.RawMeasurementData(transistor_args.get('raw_measurement_data')))
             else:
                 # ToDo: Is this a value or a type error?
                 # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
@@ -234,9 +254,6 @@ class Transistor:
                     "are mandatory: 'name', 'type', 'author', 'manufacturer', 'housing_area', "
                     "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
 
-            if Transistor.isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
-                # Only create RawMeausrementData objects from valid dicts
-                self.raw_measurement_data.append(Transistor.RawMeasurementData(transistor_args.get('raw_measurement_data')))
 
             self.diode = self.Diode(diode_args)
             self.switch = self.Switch(switch_args)
@@ -3123,10 +3140,10 @@ class Transistor:
         # Type of the dataset:
         # dpt_u_i: U/t I/t graph from double pulse measurements
         dataset_type: str  #:  e.g. dpt_u_i (Mandatory key)
-        dpt_on_uds: ["np.ndarray[np.float64]", None]
-        dpt_on_id: ["np.ndarray[np.float64]", None]
-        dpt_off_uds: ["np.ndarray[np.float64]", None]
-        dpt_off_id: [float, None]
+        dpt_on_uds: [List["np.ndarray[np.float64]"], None]
+        dpt_on_id: [List["np.ndarray[np.float64]"], None]
+        dpt_off_uds: [List["np.ndarray[np.float64]"], None]
+        dpt_off_id: [List["np.ndarray[np.float64]"], None]
 
         def __init__(self, args):
             """
@@ -3155,10 +3172,10 @@ class Transistor:
             :rtype: dict
             """
             d = dict(vars(self))
-            # d['dpt_on_uds'] = [c.convert_to_dict() for c in self.dpt_on_uds]
-            # d['dpt_on_id'] = [c.convert_to_dict() for c in self.dpt_on_id]
-            # d['dpt_off_uds'] = [c.convert_to_dict() for c in self.dpt_off_uds]
-            # d['dpt_off_id'] = [c.convert_to_dict() for c in self.dpt_off_id]
+            d['dpt_on_uds'] = [c.tolist() for c in self.dpt_on_uds]
+            d['dpt_on_id'] = [c.tolist() for c in self.dpt_on_id]
+            d['dpt_off_uds'] = [c.tolist() for c in self.dpt_off_uds]
+            d['dpt_off_id'] = [c.tolist() for c in self.dpt_off_id]
             return d
 
 
@@ -3781,6 +3798,17 @@ def load_from_db(db_dict: dict):
     if 'graph_v_ecoss' in transistor_args:
         if transistor_args['graph_v_ecoss'] is not None:
             transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
+
+    for i in range(len(transistor_args['raw_measurement_data'])):
+        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_uds'])):
+            transistor_args['raw_measurement_data'][i]['dpt_on_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
+        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_id'])):
+            transistor_args['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
+        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_uds'])):
+            transistor_args['raw_measurement_data'][i]['dpt_off_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_uds'][u])
+        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_id'])):
+            transistor_args['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_id'][u])
+
     # Convert switch_args
     switch_args = db_dict['switch']
     if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
@@ -3972,7 +4000,7 @@ class MissingDataError(Exception):
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to .xml"}
 
 
-def dpt_safe_data(measurement_dict: dict):
+def dpt_save_data(measurement_dict: dict):
     """
         Imports double pulse measurements and calculates switching losses to each given working point.
 
@@ -4088,8 +4116,8 @@ def dpt_safe_data(measurement_dict: dict):
             Uds = np.genfromtxt(csv_files[off_U_locations[sample_point][0]], delimiter=',', skip_header=24)
             Id = np.genfromtxt(csv_files[off_I_locations[sample_point][0]], delimiter=',', skip_header=24)
 
-            Uds_raw_off.append(Uds)
-            Id_raw_off.append(Id)
+            Uds_raw_off.append(np.array(Uds))
+            Id_raw_off.append(np.array(Id))
 
             sample_length = len(Uds)
             sample_interval = abs(Uds[1, 0] - Uds[2, 0])
@@ -4156,7 +4184,7 @@ def dpt_safe_data(measurement_dict: dict):
                       'e_x': float(E_off_1[0]),
                       'i_x': Id_avg_max}
 
-        dpt_raw_data |= {'dpt_off_uds': np.array(Uds_raw_off,dtype=object), 'dpt_off_id': np.array(Id_raw_off,dtype=object)}
+        dpt_raw_data |= {'dpt_off_uds': Uds_raw_off, 'dpt_off_id': Id_raw_off}
 
         ##############################
         # Plot Eoff
@@ -4210,8 +4238,8 @@ def dpt_safe_data(measurement_dict: dict):
             Uds = np.genfromtxt(csv_files[on_U_locations[sample_point][0]], delimiter=',', skip_header=24)
             Id = np.genfromtxt(csv_files[on_I_locations[sample_point][0]], delimiter=',', skip_header=24)
 
-            Uds_raw_on.append(Uds)
-            Id_raw_on.append(Id)
+            Uds_raw_on.append(np.array(Uds))
+            Id_raw_on.append(np.array(Id))
 
             sample_length = len(Uds)
             sample_interval = abs(Uds[1, 0] - Uds[2, 0])
@@ -4276,7 +4304,7 @@ def dpt_safe_data(measurement_dict: dict):
                      'e_x': float(E_on_1[0]),
                      'i_x': Id_avg_max}
 
-        dpt_raw_data |= {'dpt_on_uds': np.array(Uds_raw_on, dtype=object), 'dpt_on_id': np.array(Id_raw_on, dtype=object)}
+        dpt_raw_data |= {'dpt_on_uds': Uds_raw_on, 'dpt_on_id': Id_raw_on}
 
         ##############################
         # Plot Eon
@@ -4356,11 +4384,11 @@ def update_dpt_measurement(transistor_name, measurement_data):
         new_value = {'$set': {'switch.e_on_meas': transistor_dict['switch']['e_on_meas']}}
         collection.update_one(transistor_id, new_value)
 
-    # if measurement_data['dpt_raw_data'] is not None:
-    #     dummy_raw = build_dummy('raw_measurement_data', measurement_data['dpt_raw_data'])
-    #     transistor_loaded.raw_measurement_data.append(dummy_raw.raw_measurement_data[0])
-    #     transistor_dict = transistor_loaded.convert_to_dict()
-    #     new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
-    #     collection.update_one(transistor_id, new_value)
+    if measurement_data['dpt_raw_data'] is not None:
+        dummy_raw = build_dummy('raw_measurement_data', measurement_data['dpt_raw_data'])
+        transistor_loaded.raw_measurement_data.append(dummy_raw.raw_measurement_data[0])
+        transistor_dict = transistor_loaded.convert_to_dict()
+        new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
+        collection.update_one(transistor_id, new_value)
 
 

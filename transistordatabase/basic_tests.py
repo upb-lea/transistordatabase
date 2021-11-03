@@ -49,7 +49,7 @@ from pytest import approx
 #@pytest.fixture()
 def my_transistor():
    # Values for basic example
-    name = 'Test-Transistor'
+    name = 'Test-Transistor-DPT-numpy'
     type = 'IGBT'
     v_abs_max = 200
     i_abs_max = 200
@@ -97,18 +97,18 @@ def my_transistor():
     e_coss = np.array([[1, 2, 4, 5, 6], [3, 4, 5, 6, 7]])
 
 
-    dpt_safe_dict = {
+    dpt_save_dict = {
         'path': 'C:/Users/Henning/Documents/Sciebo/Bachelorarbeit/Messungen DPT/Henning/ROHM/*.csv',
         'dataset_type': 'graph_i_e',
         'load_l': 750,
-        'measurement_date': 10092021,
+        'measurement_date': None,
         'measurement_testbench': 'LEA-UPB Testbench',
         'v_g': 18,
         'v_g_off': 0,
         'energies': 'both',
         'integration_interval': 'IEC 60747-8'}
 
-    dpt_energies_dict = dC.dpt_safe_data(dpt_safe_dict)
+    dpt_energies_dict = dC.dpt_save_data(dpt_save_dict)
 
     # Create dataset dictionaries
     switch_channel = {'t_j': t_j, 'graph_v_i': graph_v_i, 'v_g': v_g}
@@ -130,7 +130,7 @@ def my_transistor():
                        'r_th_switch_cs': r_th_switch_cs, 'raw_measurement_data': dpt_energies_dict['dpt_raw_data']}
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'channel': switch_channel, 'e_on': switchenergy, 'e_off': switchenergy,
-                   'e_off_meas': dpt_energies_dict['e_off_meas'], 'e_on_meas': dpt_energies_dict['e_on_meas'],
+                   'e_off_meas': dict(dpt_energies_dict['e_off_meas']), 'e_on_meas': dpt_energies_dict['e_on_meas'],
                    'thermal_foster': foster_args}
     diode_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                   'channel': [diode_channel], 'e_rr': switchenergy, 'thermal_foster': foster_args}
@@ -140,5 +140,6 @@ def my_transistor():
 transistor_args, switch_args, diode_args = my_transistor()
 print(switch_args)
 transistor = dC.Transistor(transistor_args, switch_args, diode_args)
+#transistor.save()
 
 print(transistor.switch.e_on_meas)
