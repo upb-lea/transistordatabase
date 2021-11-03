@@ -28,7 +28,7 @@ from .constants import *
 
 class Transistor:
     """
-    Transistor object which is the core class of transistordatabse module. Contains subclasses like Switch, Diode, FosterThermalModel etc, and other child classes
+    Transistor object which is the core class of transistordatabase module. Contains subclasses like Switch, Diode, FosterThermalModel etc, and other child classes
     using which all the features and functionalities of this module are based and developed.
 
     .. todo::
@@ -48,7 +48,7 @@ class Transistor:
     template_date: "datetime.datetime"  #: Specifies the date and time at which the template in created. (Mandatory/Automatic)
     creation_date: "datetime.datetime"  #: Specifies the date and time of the new transistor module that is created using template. (Mandatory/Automatic)
     # Manufacturer- and part-specific data
-    manufacturer: str  #: Provides information of the module maufacturer. (Mandatory key)
+    manufacturer: str  #: Provides information of the module manufacturer. (Mandatory key)
     datasheet_hyperlink: Union[str, None]  #: As the name specifies, provides the hyperlink of the datasheet that is being referred to. Should be a valid link if specified(Optional)
     datasheet_date: Union["datetime.datetime", None]  #: pymongo cannot encode date => always save as datetime. (Optional key)
     datasheet_version: Union[str, None]  #: Specifies the version of the module manufacturer datasheet. (Optional key)
@@ -64,15 +64,15 @@ class Transistor:
     # Thermal data. See git for equivalent thermal_foster circuit diagram.
     r_th_cs: Union[float, None]  #: Module specific case to sink thermal resistance.  Units in K/W  (Optional key)
     r_th_switch_cs: Union[float, None]  #: Switch specific case to sink thermal resistance. Units in K/W  (Optional key)
-    r_th_diode_cs: Union[float, None]  #: Diode specifc case to sink thermal resistance. Units in K/W  (Optional key)
+    r_th_diode_cs: Union[float, None]  #: Diode specific case to sink thermal resistance. Units in K/W  (Optional key)
     # Absolute maximum ratings
     v_abs_max: float  #: Absolute maximum voltage rating. Units in V  (Mandatory key)
     i_abs_max: float  #: Absolute maximum current rating. Units in A  (Mandatory key)
-    # Constant Capacitances
+    # Constant capacities
     c_oss_fix: Union[float, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
     c_iss_fix: Union[float, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
     c_rss_fix: Union[float, None]  #: Parasitic constant capacitance. Units in F  (Optional key)
-    # Voltage dependent capacitances
+    # Voltage dependent capacities
     c_oss: Union[List["VoltageDependentCapacitance"], None]  #: List of VoltageDependentCapacitance. (Optional key)
     c_iss: Union[List["VoltageDependentCapacitance"], None]  #: List of VoltageDependentCapacitance. (Optional key)
     c_rss: Union[List["VoltageDependentCapacitance"], None]  #: List of VoltageDependentCapacitance. (Optional key)
@@ -99,7 +99,7 @@ class Transistor:
         :type diode_args: dict
 
         :raises TypeError: Raised if isvalid_dict() return false
-        :raises ValueError: Raised if index based search for module_maufacturer or housing_type values fails
+        :raises ValueError: Raised if index based search for module_manufacturer or housing_type values fails
         """
         try:
             if self.isvalid_dict(transistor_args, 'Transistor'):
@@ -236,7 +236,7 @@ class Transistor:
             self.calc_thermal_params(input_type='diode')
             self.wp = self.WP()
         except Exception as e:
-            print('Exception occured: Selected datasheet or module could not be created or loaded\n'+str(e))
+            print('Exception occurred: Selected datasheet or module could not be created or loaded\n'+str(e))
             raise
 
     def __eq__(self, other) -> bool:
@@ -256,7 +256,7 @@ class Transistor:
         other_dict.pop('_id', None)
         return my_dict == other_dict
 
-    def save(self, collection: str ="local", overwrite: bool =None) -> None:
+    def save(self, collection: str = "local", overwrite: bool =None) -> None:
         """
         The method save the transistor object to local mongodb database.
         Currently receives the execution instructions from update_from_fileexchange(..)
@@ -291,7 +291,7 @@ class Transistor:
 
     def export_json(self, path: str = None) -> None:
         """
-        Exports the transistor object to .json file, e.g. to share this file on fileexchange on github
+        Exports the transistor object to .json file, e.g. to share this file on file exchange on github
 
         :param path: path to export
         :type path: str or None (default)
@@ -320,11 +320,11 @@ class Transistor:
         """
         Converts the transistor object in scope to a dictionary datatype
 
-        :return: Transitor object in dict type
+        :return: Transistor object in dict type
         :rtype: dict
         """
         d = dict(vars(self))
-        d.pop('wp', None)  # remove wp from convertig. wp will not be stored to .json files
+        d.pop('wp', None)  # remove wp from converting. wp will not be stored to .json files
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
@@ -518,7 +518,7 @@ class Transistor:
 
         :param t_j: junction temperature
         :param v_g: gate voltage
-        :param i_channel: channel current for linearisation
+        :param i_channel: channel current for linearization
         :param switch_or_diode: 'switch' or 'diode' or 'both'
         :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
         :return: None
@@ -553,7 +553,7 @@ class Transistor:
         Function to fill out the .wp-class by just one command 'quickstart_wp()'.
         Uses typical working points
 
-         - channel linearisation next to v_g = 15V, i_cont and t_j = t_j_abs_max - 25 degree
+         - channel linearization next to v_g = 15V, i_cont and t_j = t_j_abs_max - 25 degree
          - switching loss curves next to t_j = t_j_abs_max - 25 degree
 
         :return: None
@@ -836,11 +836,11 @@ class Transistor:
         """
         Calculate loss curves for other gate resistor than the standard one.
         This function uses i_e loss curve in combination with r_e loss curve, to calculate a new i_e loss curve for
-        a choosen gate restistor. Also voltage correction is implemented (e.g. half voltage compared to datasheet means half losses)
+        a chosen gate resistor. Also voltage correction is implemented (e.g. half voltage compared to datasheet means half losses)
 
         :param e_on_off_rr: 'e_on', 'e_off', 'e_rr'
         :param r_g: gate resistor of interest
-        :param t_j: juncntion temperature of interest
+        :param t_j: junction temperature of interest
         :param v_supply: supply voltage of interest
 
         :raises Exception: When given gate resistance exceeds the existing maximum
@@ -1434,7 +1434,7 @@ class Transistor:
 
     def collect_i_e_and_r_e_combination(self, switch_type, loss_type):
         """
-        A function to gather the i_e and r_e graph combinations from the available energy curves which are futher used in gecko circuit exporter function
+        A function to gather the i_e and r_e graph combinations from the available energy curves which are further used in gecko circuit exporter function
 
         :param switch_type: argument to specify if either 'switch' or 'diode' energy curve to be considered
         :type switch_type: str
@@ -1725,7 +1725,7 @@ class Transistor:
             #### diode err loss
             # check for availability of switching loss curves
             # in case of no switching losses available, set curves to zero.
-            # if switching losses will not set to zero, geckoCIRCUITS will use inital values
+            # if switching losses will not set to zero, geckoCIRCUITS will use initial values
             if len(err_curves) == 0:
                 print('Diode: No loss curves found!')
                 file_diode.write(f"anzMesskurvenPvSWITCH 1\n")
@@ -1828,10 +1828,10 @@ class Transistor:
         r_th_vector: Union[List[float], None]  #: Thermal resistances of RC-network (array). Units in K/W (Optional key)
         # Sum of thermal_foster resistances of n-pole RC-network (scalar).
         r_th_total: Union[float, None]  #: Sum of thermal_foster resistances of n-pole RC-network (scalar). Units in K/W  (Optional key)
-        # Thermal capacitances of n-pole RC-network (array).
-        c_th_vector: Union[List[float], None]  #: Thermal capacitances of n-pole RC-network (array). Units in J/K (Optional key)
-        # Sum of thermal_foster capacitances of n-pole low pass as (scalar).
-        c_th_total: Union[float, None]  #: Sum of thermal_foster capacitances of n-pole low pass as (scalar). Units in J/K  (Optional key)
+        # Thermal capacities of n-pole RC-network (array).
+        c_th_vector: Union[List[float], None]  #: Thermal capacities of n-pole RC-network (array). Units in J/K (Optional key)
+        # Sum of thermal_foster capacities of n-pole low pass as (scalar).
+        c_th_total: Union[float, None]  #: Sum of thermal_foster capacities of n-pole low pass as (scalar). Units in J/K  (Optional key)
         # Thermal time constants of n-pole RC-network (array).
         tau_vector: Union[List[float], None]  #: Thermal time constants of n-pole RC-network (array). Units in s  (Optional key)
         # Sum of thermal_foster time constants of n-pole RC-network (scalar).
@@ -1842,7 +1842,7 @@ class Transistor:
 
         def __init__(self, args):
             """
-            Initalization method of FosterThermalModel object
+            Initialization method of FosterThermalModel object
 
             :param args: argument to be passed for initialization
             :type args: dict
@@ -1911,7 +1911,7 @@ class Transistor:
 
         def collect_data(self):
             """
-            Collects foster data in form of dictionary for generating virtual datahseet
+            Collects foster data in form of dictionary for generating virtual datasheet
 
             :return: foster data in form of dictionary
             :rtype: dict
@@ -1925,7 +1925,7 @@ class Transistor:
             return foster_data
 
     class Switch:
-        """Contains data associated with the switchting-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
+        """Contains data associated with the switching-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
         channel-, e_on- and e_off-datasets. """
         # Metadata
         comment: Union[str, None]  #: Comment if any to be specified (Optional key)
@@ -1941,17 +1941,17 @@ class Transistor:
 
         def __init__(self, switch_args):
             """
-            Initalization method of Switch object
+            Initialization method of Switch object
 
             :param switch_args: argument to be passed for initialization
 
-            :raises KeyError: Expected during the channel\e_on\e_off instance initiaization
-            :raises ValueError: Expected during the channel\e_on\e_off instance initiaization
+            :raises KeyError: Expected during the channel\e_on\e_off instance initialization
+            :raises ValueError: Expected during the channel\e_on\e_off instance initialization
 
-            .. todo:: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
+            .. todo:: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
             """
             # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty attributes.
-            # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
+            # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
             self.thermal_foster = Transistor.FosterThermalModel(switch_args.get('thermal_foster'))
             if Transistor.isvalid_dict(switch_args, 'Switch'):
 
@@ -2379,7 +2379,7 @@ class Transistor:
 
         def collect_data(self):
             """
-            Collects switch data in form of dictionary for generating virtual datahseet
+            Collects switch data in form of dictionary for generating virtual datasheet
 
             :return: Switch data in form of dictionary
             :rtype: dict
@@ -2411,19 +2411,19 @@ class Transistor:
 
         def __init__(self, diode_args):
             """
-            Initalization method of Diode object
+            Initialization method of Diode object
 
             :param diode_args: argument to be passed for initialization
 
-            :raises KeyError: Expected during the channel\e_rr instance initiaization
-            :raises ValueError: Expected during the channel\e_rr instance initiaization
+            :raises KeyError: Expected during the channel\e_rr instance initialization
+            :raises ValueError: Expected during the channel\e_rr instance initialization
 
 
             """
             # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty
             # attributes.
 
-            # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty istead?
+            # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
             self.thermal_foster = Transistor.FosterThermalModel(diode_args.get('thermal_foster'))
             if Transistor.isvalid_dict(diode_args, 'Diode'):
                 self.comment = diode_args.get('comment')
@@ -2671,7 +2671,7 @@ class Transistor:
 
         def plot_energy_data(self, buffer_req=False):
             """
-            Plots all diode reverse recovery energy i-e characterisitic curves which are extracted from the manufacturer datasheet
+            Plots all diode reverse recovery energy i-e characteristic curves which are extracted from the manufacturer datasheet
 
             :param buffer_req: internally required for generating virtual datasheets
 
@@ -2751,7 +2751,7 @@ class Transistor:
 
         def collect_data(self):
             """
-            Collects diode data in form of dictionary for generating virtual datahseet
+            Collects diode data in form of dictionary for generating virtual datasheet
 
             :return: Diode data in form of dictionary
             :rtype: dict
@@ -2931,7 +2931,7 @@ class Transistor:
         graph_r_e: Union["np.ndarray[np.float64]", None]  #: Units for Row 1 = Ohm; Row 2 = J
 
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
-        # ToDo: Add additional class for linearized switching loss model with capacitances. (See infineon application
+        # ToDo: Add additional class for linearized switching loss model with capacities. (See infineon application
         #  note.)
         # ToDo: Option 1: Look up table like it's currently implemented.
         # ToDo: Option 2: https://application-notes.digchip.com/070/70-41484.pdf
@@ -3007,7 +3007,7 @@ class Transistor:
 
         def copy(self):
             """
-            A method to copy the exsiting SwitchEnergyData object and create a new object of same type. Created to allow deep copy of object when using gecko exporter
+            A method to copy the existing SwitchEnergyData object and create a new object of same type. Created to allow deep copy of object when using gecko exporter
             
             :return: SwitchEnergyData object
             :rtype: SwitchEnergyData
@@ -3224,7 +3224,7 @@ class Transistor:
                 'Comment': [
                     "This datasheet was created by {0} on {1} and was exported using transistordatabase.".format(
                         transistor_dict['author'], transistor_dict['datasheet_date'])
-                    , "Datsheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
+                    , "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
                     "File generated : {0}".format(datetime.datetime.today()),
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
             }
@@ -3301,7 +3301,7 @@ class Transistor:
                 'Comment': [
                     "This datasheet was created by {0} on {1} and was exported using transistordatabase.".format(
                         transistor_dict['author'], transistor_dict['datasheet_date'])
-                    , "Datsheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
+                    , "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
                     "File generated : {0}".format(datetime.datetime.today()),
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
             }
@@ -3514,7 +3514,7 @@ def import_xml_data(files):
         transistor_args = {'name': s_info['partnumber'],
                            'type': s_info['class'],
                            'author': 'XML importer',
-                           'comment': 'Generated using xml importer (unaccurate)',
+                           'comment': 'Generated using xml importer (inaccurate)',
                            'manufacturer': s_info['vendor'],
                            'datasheet_hyperlink': 'http://www.plexim.com/xml/semiconductors/'+s_info['partnumber'],
                            'datasheet_date': datetime.date.today(),
@@ -3626,7 +3626,7 @@ def get_channel_data(channel_data, plecs_holder, v_on, is_diode, has_body_diode)
     """
     A helper method to extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
 
-    :param channel_data: channel data taken from transitor class switch/diode object
+    :param channel_data: channel data taken from transistor class switch/diode object
     :type channel_data: list
     :param plecs_holder: dictionary to collect the channel data
     :type plecs_holder: dict
@@ -3655,7 +3655,7 @@ def get_channel_data(channel_data, plecs_holder, v_on, is_diode, has_body_diode)
                 plecs_holder['ConductionLoss']['CurrentAxis'] = interp_current.tolist()
                 plecs_holder['ConductionLoss']['Channel'] = list()
                 plecs_holder['ConductionLoss']['TemperatureAxis'] = list()
-            plecs_holder['ConductionLoss']['TemperatureAxis'].append(channel['t_j'])  # forward characteristics are defined only at one gate voltage and doesot depend on v_supply
+            plecs_holder['ConductionLoss']['TemperatureAxis'].append(channel['t_j'])  # forward characteristics are defined only at one gate voltage and does not depend on v_supply
             plecs_holder['ConductionLoss']['Channel'].append(channel_data.tolist())
     return plecs_holder
 
@@ -3735,7 +3735,7 @@ def get_gatedefaults(type):
     """
     Defines gate voltage defaults depending on the transistor type
 
-    :param type: transtior type, e.g. IGBT, MOSFET, SiC-MOSFET or GaN-Transistor
+    :param type: transistor type, e.g. IGBT, MOSFET, SiC-MOSFET or GaN-Transistor
     :type type: str
 
     :return: default gate voltages [v_g_turn_on, v_g_turn_off, v_g_channel_blocks, v_g_channel_conducting]
@@ -3820,9 +3820,9 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
         leaves the u axis on the u-point to zero. Otherwise there might be a very small (and negative) value of u.
     :type second_y_to_0: bool
     :param first_x_to_0: Set 'True' to set the first x-value to zero. This is interesting in
-        case of nonlinear input/output capacitances, e.g. c_oss, c_iss, c_rss
+        case of nonlinear input/output capacities, e.g. c_oss, c_iss, c_rss
     :type first_x_to_0: bool
-    :param mirror_xy_data: Takes the absolue() of both axis. Used for given mirrored data, e.g. some datasheet show diode data in the 3rd quadrand instead of the 1st quadrant
+    :param mirror_xy_data: Takes the absolute() of both axis. Used for given mirrored data, e.g. some datasheet show diode data in the 3rd quadrant instead of the 1st quadrant
     :type mirror_xy_data: bool
 
     :return: 2d array, ready to use in the transistor database
@@ -3975,7 +3975,7 @@ def load(dict_filter, collection="local"):
     """
     if collection == "local":
         collection = connect_local_TDB()
-    # ToDo: Implement case where different transistors fit the filter criterium.
+    # ToDo: Implement case where different transistors fit the filter criteria.
     return load_from_db(collection.find_one(dict_filter))
 
 
@@ -4035,7 +4035,7 @@ def load_from_db(db_dict: dict):
 
 def update_from_fileexchange(collection: str ="local", overwrite: bool =True) -> None:
     """
-    Update your local transitor database from transistordatabase-fileexchange from github
+    Update your local transistor database from transistordatabase-fileexchange from github
 
     :param collection: name of mongodb collection
     :type collection: str
@@ -4044,7 +4044,7 @@ def update_from_fileexchange(collection: str ="local", overwrite: bool =True) ->
 
     :return: None
     """
-    print(f"Note: Please make sure that you have installed the latest version of the transistor database, especially if the update_from_fileexchange()-method ends in an error. Find the lastest version here: https://pypi.org/project/transistordatabase/")
+    print(f"Note: Please make sure that you have installed the latest version of the transistor database, especially if the update_from_fileexchange()-method ends in an error. Find the latest version here: https://pypi.org/project/transistordatabase/")
     # Check if the local repository exists, if yes load the repo information
     try:
         repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
@@ -4117,11 +4117,11 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     'rapid channel turn-off' (rcto)
 
     Note: Input (e.g. i_off can also be a vector)
-    Source: D. Kübrich, T. Dürbraum, A. Bucher:
+    Source: D. Kübrich, T. Dürbaum, A. Bucher:
     'Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances'
     International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244
 
-    :param v_gsth: gate threshod voltage
+    :param v_gsth: gate threshold voltage
     :type v_gsth: float
     :param c_ds: equivalent drain-source capacitance
     :type c_ds: float
@@ -4132,7 +4132,7 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     :param v_driver_off: Driver voltage during turn-off
     :type v_driver_off: float
 
-    :return: r_g_max_rcto maxiumum gate resistor to achieve rapid channel turn-off
+    :return: r_g_max_rcto maximum gate resistor to achieve rapid channel turn-off
     :rtype: float
     """
     return (v_gsth-v_driver_off)/i_off * (1 + c_ds/c_gd)
