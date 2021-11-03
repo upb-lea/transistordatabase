@@ -244,9 +244,8 @@ def test_export_json(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
     transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
     with pytest.raises(TypeError):
-         transistor.export_json(123)
-    #with pytest.raises(FileNotFoundError)
-         transistor.export_json("/not/existing/path/")
+        transistor.export_json(123)
+        transistor.export_json("/not/existing/path/")
 
 
 

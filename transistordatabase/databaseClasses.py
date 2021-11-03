@@ -256,7 +256,7 @@ class Transistor:
         other_dict.pop('_id', None)
         return my_dict == other_dict
 
-    def save(self, collection: str = "local", overwrite: bool =None) -> None:
+    def save(self, collection: str = "local", overwrite: bool = None) -> None:
         """
         The method save the transistor object to local mongodb database.
         Currently receives the execution instructions from update_from_fileexchange(..)
@@ -490,7 +490,7 @@ class Transistor:
 
         if dict_type == 'Diode_ChannelData' or dict_type == 'Switch_ChannelData':
             for axis in dataset_dict.get('graph_v_i'):
-                if any(x<0 for x in axis) == True:
+                if any(x < 0 for x in axis) == True:
                     raise ValueError(" Negative values are not allowed, please include mirror_xy_data attribute")
 
         if dict_type not in instructions:
@@ -558,7 +558,7 @@ class Transistor:
 
         :return: None
         """
-        #ToDo: may separate data for IGBT, MOSFET, SiC-MOSFET and GaN-Transistor
+        # ToDo: may separate data for IGBT, MOSFET, SiC-MOSFET and GaN-Transistor
         self.update_wp(self.switch.t_j_max - 25, 15, self.i_cont)
 
     def calc_v_eoss(self):
@@ -794,7 +794,15 @@ class Transistor:
         """
         Function to get the loss graphs out of the transistor class, simplified version
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
+        :type e_on_off_rr: str
         :param t_j: junction temperature
+        :type t_j: float
+        :param v_g: gate voltage
+        :type v_g: float
+        :param normalize_t_to_v: factor t:v (junction-temperature divided by gate voltage)
+        :type normalize_t_to_v: float
+        :param v_supply: supply voltage
+        :type v_supply: float
 
         :return: e_on.graph_r_e or e_off.graph_r_e or e_rr.graph_r_e
         :rtype: list
@@ -1131,13 +1139,13 @@ class Transistor:
         d_v_vec = d_v_channel + d_r_channel * i_vec
 
         # insert zeros to start linearized curve from zero
-        i_vec = np.insert(i_vec ,0, 0)
-        s_v_vec = np.insert(s_v_vec,0, 0)
+        i_vec = np.insert(i_vec, 0, 0)
+        s_v_vec = np.insert(s_v_vec, 0, 0)
         d_v_vec = np.insert(d_v_vec, 0, 0)
 
         plt.figure()
         # generate switch curve
-        plt.subplot(1,2,1)
+        plt.subplot(1, 2, 1)
         plt.plot(switch_channel.graph_v_i[0], switch_channel.graph_v_i[1], label=f"Datasheet, t_j = {switch_channel.t_j} °C, v_g = {switch_channel.v_g} V")
         plt.plot(s_v_vec, i_vec,label=f"Linearized curve, t_j = {switch_channel.t_j} °C, v_g = {switch_channel.v_g} V")
         plt.xlabel('Voltage in V')
@@ -1167,6 +1175,7 @@ class Transistor:
 
         :Example:
 
+        >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
         >>> transistor.export_datasheet()
 
@@ -1210,7 +1219,6 @@ class Transistor:
         """
         Gather list data (e.g. channel/e_on/e_off/e_rr) and check for 'None'
 
-        :param transistor: transistor object
         :param attribute: attribute path to list
 
         :return: matlab compatible list of all attributes
@@ -1244,7 +1252,7 @@ class Transistor:
         :return: .mat file for import in matlab/simulink
 
         :Example:
-
+        >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
         >>> transistor.export_simulink_loss_model()
 
@@ -1269,7 +1277,6 @@ class Transistor:
             t_j_upper = 150
             v_g = 15
 
-            ### switch
             print("---------------------IGBT properties----------------------")
             switch_channel_object_lower, eon_object_lower, eoff_object_lower = self.switch.find_approx_wp(t_j_lower, v_g, normalize_t_to_v, SwitchEnergyData_dataset_type="graph_i_e")
             switch_channel_object_upper, eon_object_upper, eoff_object_upper = self.switch.find_approx_wp(t_j_upper, v_g, normalize_t_to_v, SwitchEnergyData_dataset_type="graph_i_e")
@@ -1341,7 +1348,6 @@ class Transistor:
                            'v_channel': np.double(switch_channel_array),
                            'i_vec': np.double(i_interp),
                            }
-            ### diode
             print("---------------------Diode properties----------------------")
             diode_channel_object_lower, err_object_lower = self.diode.find_approx_wp(t_j_lower, v_g)
             diode_channel_object_upper, err_object_upper = self.diode.find_approx_wp(t_j_upper, v_g)
@@ -1407,16 +1413,14 @@ class Transistor:
         except Exception as e:
             print("Simulink exporter failed: {0}".format(e))
 
-    def export_matlab(self):
+    def export_matlab(self) -> None:
         """
         Exports a transistor dictionary to a matlab dictionary
-
-        :param transistor: transistor object
 
         :return: File stored in current working path
 
         :Example:
-
+        >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
         >>> transistor.export_matlab()
         """
@@ -1479,7 +1483,7 @@ class Transistor:
         :return: Two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl created in the current working directory
 
         :Example:
-
+        >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
         >>> transistor.export_geckocircuits(600, 15, -4, 2.5, 2.5)
 
@@ -1586,7 +1590,6 @@ class Transistor:
                     print('Exporting default E_rr curves at the selected voltage parameters.->Either re-estimation not possible or r_g specific curve found!')
                     err_curves.append(self.diode.e_rr[index])
                     r_g_err = self.diode.e_rr[index].r_g
-
 
         # set numpy print options to inf, due to geckocircuits requests the data in one single line
         np.set_printoptions(linewidth=np.inf)
@@ -1777,10 +1780,12 @@ class Transistor:
         :return: Two output files: 'Transistor.name'_Switch.xml and 'Transistor.name'_Diode.xml created in the current working directory
 
         :Example:
-
+        >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
         >>> transistor.export_plecs([15, -15, 15, 0])
         """
+
+
         switch_xml_data, diode_xml_data = self.get_curve_data(recheck, gate_voltages)
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
@@ -2294,7 +2299,7 @@ class Transistor:
 
         def plot_energy_data(self, buffer_req=False):
             """
-            Plots all switch energy i-e characterisitic curves which are extracted from the manufacturer datasheet
+            Plots all switch energy i-e characteristic curves which are extracted from the manufacturer datasheet
 
             :param buffer_req: internally required for generating virtual datasheets
 
@@ -2604,7 +2609,6 @@ class Transistor:
             """
             Plot all diode channel characteristic curves
 
-            :param switch_type: switch type e.g Mosfet, SiC-Mosfet, IGBT
             :param buffer_req: internally required for generating virtual datasheets
 
             :return: Respective plots are displayed
@@ -3016,7 +3020,7 @@ class Transistor:
                 'dataset_type': 'graph_i_e',
                 'v_supply': self.v_supply,
                 'graph_i_e': self.graph_i_e,
-                'graph_r_e' : self.graph_r_e,
+                'graph_r_e': self.graph_r_e,
                 'r_g': self.r_g,
                 'i_x': self.i_x,
                 'e_x': self.e_x,
@@ -3134,7 +3138,6 @@ class Transistor:
         transistor_dict['switch']['thermal_foster']['c_th_vector'] is None else [x / count_parallels for x in
                                                                                  transistor_dict['switch'][
                                                                                      'thermal_foster']['c_th_vector']]
-
 
         if transistor_dict['switch']['thermal_foster']['graph_t_rthjc'] is not None:
             transistor_dict['switch']['thermal_foster']['graph_t_rthjc'][1] = [x / count_parallels for x in
@@ -3552,7 +3555,7 @@ def attach_units(trans, devices):
     :rtype: dict, dict, dict
     """
     standard_list = [('Author', 'Author', None), ('Name', 'Name', None), ('Manufacturer', 'Manufacturer', None), ('Type', 'Type', None), ('Datasheet_date', 'Datasheet date', None), ('Datasheet_hyperlink', 'Datasheet hyperlink', None), ('Datasheet_version', 'Datasheet version', None)]
-    mechthermal_list = [('Housing_area', 'Housing area', 'sq.m'), ('Housing_type', 'Housing type', 'None'), ('Cooling_area', 'Cooling area', 'sq.m'), ('R_th_cs', 'R_th,cs', 'K/W'), ('R_th_total', 'R_th,total', 'K/W'),  ('R_g_int', 'R_g,int', 'K/W'), ('C_th_total', 'C_th,total', 'F'), ('Tau_total', 'Tau_total', 'sec'), ('R_th_diode_cs', 'R_th,diode-cs', 'K/W'), ('R_th_switch_cs', 'R_th,switch-cs', 'K/W'), ('R_g_on_recommended', 'R_g,on-recommended', 'K/W'),('R_g_off_recommended', 'R_g,off-recommended', 'K/W')]
+    mechthermal_list = [('Housing_area', 'Housing area', 'sq.m'), ('Housing_type', 'Housing type', 'None'), ('Cooling_area', 'Cooling area', 'sq.m'), ('R_th_cs', 'R_th,cs', 'K/W'), ('R_th_total', 'R_th,total', 'K/W'),  ('R_g_int', 'R_g,int', 'K/W'), ('C_th_total', 'C_th,total', 'F'), ('Tau_total', 'Tau_total', 'sec'), ('R_th_diode_cs', 'R_th,diode-cs', 'K/W'), ('R_th_switch_cs', 'R_th,switch-cs', 'K/W'), ('R_g_on_recommended', 'R_g,on-recommended', 'K/W'), ('R_g_off_recommended', 'R_g,off-recommended', 'K/W')]
     maxratings_list = [('V_abs_max', 'V_abs,max', 'V'), ('I_abs_max', 'I_abs,max', 'A'), ('I_cont', 'I_cont', 'A'), ('T_j_max', 'T_j,max', '°C'), ('T_c_max', 'T_c,max', '°C')]
     cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F')]
     trans_sorted = {}
@@ -3869,7 +3872,7 @@ def merge_curve(curve, curve_detail):
     :return: merged curve
 
     :Example (e.g. merges c_oss curve from 0-200V and from 0-1000V):
-
+    >>> import transistordatabase as tdb
     >>> c_oss_normal = tdb.csv2array('transistor_c_oss.csv', first_x_to_0=True)
     >>> c_oss_detail = tdb.csv2array('transistor_c_oss_detail.csv', first_x_to_0=True)
     >>> c_oss_merged = tdb.merge_curve(c_oss_normal, c_oss_detail)
@@ -3902,7 +3905,7 @@ def print_TDB(filters: Optional[List[str]] = None, collection: str ="local") -> 
     :rtype: list
 
     :Example:
-
+    >>> import transistordatabase as tdb
     >>> tdb.print_TDB()
     >>> # or
     >>> tdb.print_TDB('type')
