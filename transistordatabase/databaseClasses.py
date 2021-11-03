@@ -12,6 +12,7 @@ from scipy.spatial import distance
 from scipy.optimize import curve_fit
 from pymongo import MongoClient
 from pymongo import errors
+from pymongo import UpdateOne
 import json
 import git
 import shutil
@@ -24,7 +25,7 @@ import io
 import pathlib
 import warnings
 from .constants import *
-
+import glob
 
 class Transistor:
     """
@@ -61,6 +62,7 @@ class Transistor:
     # Recommended gate resistors
     r_g_on_recommended: Union[float, None]    #: Recommended turn on gate resistance of switch (Optional key)
     r_g_off_recommended: Union[float, None]    #: Recommended turn off gate resistance of switch (Optional key)
+    raw_measurement_data: Union[List["RawMeasurementData"], None]  #: Member instance for class type RawMeasurementData
     # Thermal data. See git for equivalent thermal_foster circuit diagram.
     r_th_cs: Union[float, None]  #: Module specific case to sink thermal resistance.  Units in K/W  (Optional key)
     r_th_switch_cs: Union[float, None]  #: Switch specific case to sink thermal resistance. Units in K/W  (Optional key)
@@ -222,6 +224,26 @@ class Transistor:
                     # Only create VoltageDependentCapacitance objects from valid dicts
                     self.c_rss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_rss')))
                 self.graph_v_ecoss = transistor_args.get('graph_v_ecoss')
+
+                self.raw_measurement_data = []
+                if isinstance(transistor_args.get('raw_measurement_data'), list):
+                    # Loop through list and check each dict for validity. Only create RawMeasuerementData objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in transistor_args.get('raw_measurement_data'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'RawMeasurementData'):
+                                self.raw_measurement_data.append(Transistor.RawMeasurementData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = transistor_args.get('raw_measurement_data')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] "
+                                          f"in list of raw_measurement_data "f"dictionaries: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
+                    # Only create RawMeasurementData objects from valid dicts
+                    self.raw_measurement_data.append(Transistor.RawMeasurementData(transistor_args.get('raw_measurement_data')))
             else:
                 # ToDo: Is this a value or a type error?
                 # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
@@ -330,6 +352,7 @@ class Transistor:
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
         d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
         d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
+        d['raw_measurement_data'] = [c.convert_to_dict() for c in self.raw_measurement_data]
         if isinstance(self.graph_v_ecoss, np.ndarray):
             d['graph_v_ecoss'] = self.graph_v_ecoss.tolist()
         return d
@@ -421,7 +444,12 @@ class Transistor:
                 'mandatory_keys': {'r_th_total'},
                 'str_keys': {},
                 'numeric_keys': {'r_th_total', 'c_th_total', 'tau_total'},
-                'array_keys': {'graph_t_rthjc'}}
+                'array_keys': {'graph_t_rthjc'}},
+            'RawMeasurementData': {
+                'mandatory_keys': {'dataset_type'},
+                'str_keys': {},
+                'numeric_keys': {},
+                'array_keys': {}}
         }
         if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
             return False  # Empty dataset. Can be valid depending on circumstances, hence no error.
@@ -511,7 +539,7 @@ class Transistor:
                 all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
             return True
 
-    def update_wp(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str ="both", normalize_t_to_v=10):
+    def update_wp(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str = "both", normalize_t_to_v=10):
         """
         Fills the .wp-class, a temporary storage for self-written user-programs
         Searches for the input values and fills the .wp-class with data next to this points
@@ -1941,6 +1969,8 @@ class Transistor:
         channel: Union[List["ChannelData"], None]  #: Switch channel voltage and current data.
         e_on: Union[List["SwitchEnergyData"], None]  #: Switch on energy data.
         e_off: Union[List["SwitchEnergyData"], None]  #: Switch of energy data.
+        e_on_meas: Union[List["SwitchEnergyData"], None]  #: Switch on energy data.
+        e_off_meas: Union[List["SwitchEnergyData"], None]  #: Switch on energy data.
         linearized_switch: Union[List["LinearizedModel"], None]  #: Static data valid for a specific operating point.
         t_j_max: float  #: Maximum junction temperature. Units in °C (Mandatory key)
 
@@ -2026,6 +2056,43 @@ class Transistor:
                 elif Transistor.isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
                     self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off')))
 
+                self.e_on_meas = []  # Default case: Empty list
+                if isinstance(switch_args.get('e_on_meas'), list):
+                    # Loop through list and check each dict for validity. Only create SwitchEnergyData objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in switch_args.get('e_on_meas'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                                self.e_on_meas.append(Transistor.SwitchEnergyData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('e_on_meas')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(switch_args.get('e_on_meas'), 'SwitchEnergyData'):
+                    # Only create SwitchEnergyData objects from valid dicts
+                    self.e_on_meas.append(Transistor.SwitchEnergyData(switch_args.get('e_on_meas')))
+
+                self.e_off_meas = []  # Default case: Empty list
+                if isinstance(switch_args.get('e_off_meas'), list):
+                    for dataset in switch_args.get('e_off_meas'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                                self.e_off_meas.append(Transistor.SwitchEnergyData(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('e_off_meas')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-SwitchEnergyData dictionaries for e_off_meas: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(switch_args.get('e_off_meas'), 'SwitchEnergyData'):
+                    self.e_off_meas.append(Transistor.SwitchEnergyData(switch_args.get('e_off_meas')))
+
                 self.linearized_switch = []  # Default case: Empty list
                 if isinstance(switch_args.get('linearized_switch'), list):
                     # Loop through list and check each dict for validity. Only create LinearizedModel objects from
@@ -2053,6 +2120,8 @@ class Transistor:
                 self.channel = []
                 self.e_on = []
                 self.e_off = []
+                self.e_on_meas = []
+                self.e_off_meas = []
                 self.linearized_switch = []
 
         def convert_to_dict(self):
@@ -2067,6 +2136,8 @@ class Transistor:
             d['channel'] = [c.convert_to_dict() for c in self.channel]
             d['e_on'] = [e.convert_to_dict() for e in self.e_on]
             d['e_off'] = [e.convert_to_dict() for e in self.e_off]
+            d['e_on_meas'] = [e.convert_to_dict() for e in self.e_on_meas]
+            d['e_off_meas'] = [e.convert_to_dict() for e in self.e_off_meas]
             d['linearized_switch'] = [lsw.convert_to_dict() for lsw in self.linearized_switch]
             return d
 
@@ -2108,7 +2179,7 @@ class Transistor:
                 e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_offs])
                 v_off = min(e_off_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_g_off']))
                 req_gate_vltgs['v_g_off'] = v_off
-                
+
             if export_type == 'gecko':
                 # recheck turn on energy loss curves at v_on
                 e_on_v_gs = list()
@@ -2922,10 +2993,15 @@ class Transistor:
         # graph_r_e: r_e is a 2-dim numpy array with two rows. i_x is a scalar. Given e.g. by an E vs R graph.
         # graph_i_e: i_e is a 2-dim numpy array with two rows. r_g is a scalar. Given e.g. by an E vs I graph.
         dataset_type: str  #: Single, graph_r_e, graph_i_e (Mandatory key)
+        # Additional measurement information.
+        measurement_date: Union["datetime.datetime", None]  #: Specifies the date and time at which the measurement was done.
+        measurement_testbench: Union[str, None]  #: Specifies the testbench used for the measurement.
         # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
         t_j: float  #: Junction temperature. Units in °C (Mandatory key)
         v_supply: float  #: Supply voltage. Units in V (Mandatory key)
         v_g: float  #: Gate voltage. Units in V (Mandatory key)
+        v_g_off: Union[float, None]  #: Gate voltage for turn off. Units in V
+        load_l: Union[float, None]  #: Load inductance. Units in µH
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
         e_x: Union[float, None]  #: Scalar dataset-parameter - switching energy. Units in J
         r_g: Union[float, None]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
@@ -2955,7 +3031,11 @@ class Transistor:
             self.dataset_type = args.get('dataset_type')
             self.v_supply = args.get('v_supply')
             self.v_g = args.get('v_g')
+            self.v_g_off = args.get('v_g_off')
             self.t_j = args.get('t_j')
+            self.load_l = args.get('load_l')
+            self.measurement_date = args.get('measurement_date')
+            self.measurement_testbench = args.get('measurement_testbench')
             if self.dataset_type == 'single':
                 self.e_x = args.get('e_x')
                 self.r_g = args.get('r_g')
@@ -3012,7 +3092,7 @@ class Transistor:
         def copy(self):
             """
             A method to copy the existing SwitchEnergyData object and create a new object of same type. Created to allow deep copy of object when using gecko exporter
-            
+
             :return: SwitchEnergyData object
             :rtype: SwitchEnergyData
             """
@@ -3351,14 +3431,61 @@ class Transistor:
                    else None, plecs_diode if 'plecs_diode' in locals() and 'Channel' in plecs_diode['ConductionLoss'] \
                    else None
 
+    class RawMeasurementData:
+        """
+                - Contains RAW measurement data. e.g. for voltage and current graphs from a double pulse test.
+                """
+
+        # Type of the dataset:
+        # dpt_u_i: U/t I/t graph from double pulse measurements
+        dataset_type: str  #:  e.g. dpt_u_i (Mandatory key)
+        dpt_on_uds: [List["np.ndarray[np.float64]"], None]
+        dpt_on_id: [List["np.ndarray[np.float64]"], None]
+        dpt_off_uds: [List["np.ndarray[np.float64]"], None]
+        dpt_off_id: [List["np.ndarray[np.float64]"], None]
+
+        def __init__(self, args):
+            """
+            Initialization method for RawMeasurementData object
+
+            :param args: arguments to be passed for initialization
+            """
+
+            self.dataset_type = args.get('dataset_type')
+            if self.dataset_type == 'dpt_u_i':
+                self.dpt_on_uds = args.get('dpt_on_uds')
+                self.dpt_on_id = args.get('dpt_on_id')
+                self.dpt_off_uds = args.get('dpt_off_uds')
+                self.dpt_off_id = args.get('dpt_off_id')
+            else:
+                self.dpt_on_uds = []
+                self.dpt_on_id = []
+                self.dpt_off_uds = []
+                self.dpt_off_id = []
+
+        def convert_to_dict(self):
+            """
+            The method converts RawMeasurementData object into dict datatype
+
+            :return: Switch object of dict type
+            :rtype: dict
+            """
+            d = dict(vars(self))
+            d['dpt_on_uds'] = [c.tolist() for c in self.dpt_on_uds]
+            d['dpt_on_id'] = [c.tolist() for c in self.dpt_on_id]
+            d['dpt_off_uds'] = [c.tolist() for c in self.dpt_off_uds]
+            d['dpt_off_id'] = [c.tolist() for c in self.dpt_off_id]
+            return d
+
+
 
 def gen_exp_func(order):
     """
     A helper function to calc_thermal_params method. Generates the required ordered function for curve fitting
-    
-    :param order: order of the function for approximation  with n ranging from 1 to 5 
+
+    :param order: order of the function for approximation  with n ranging from 1 to 5
     :type order: int
-    
+
     :return: A n ordered polynomial
     """
     if order == 1:
@@ -4006,6 +4133,17 @@ def load_from_db(db_dict: dict):
     if 'graph_v_ecoss' in transistor_args:
         if transistor_args['graph_v_ecoss'] is not None:
             transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
+
+    for i in range(len(transistor_args['raw_measurement_data'])):
+        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_uds'])):
+            transistor_args['raw_measurement_data'][i]['dpt_on_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
+        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_id'])):
+            transistor_args['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
+        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_uds'])):
+            transistor_args['raw_measurement_data'][i]['dpt_off_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_uds'][u])
+        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_id'])):
+            transistor_args['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_id'][u])
+
     # Convert switch_args
     switch_args = db_dict['switch']
     if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
@@ -4017,12 +4155,22 @@ def load_from_db(db_dict: dict):
             switch_args['e_on'][i]['graph_r_e'] = np.array(switch_args['e_on'][i]['graph_r_e'])
         elif switch_args['e_on'][i]['dataset_type'] == 'graph_i_e':
             switch_args['e_on'][i]['graph_i_e'] = np.array(switch_args['e_on'][i]['graph_i_e'])
+    for i in range(len(switch_args['e_on_meas'])):
+        if switch_args['e_on_meas'][i]['dataset_type'] == 'graph_r_e':
+            switch_args['e_on_meas'][i]['graph_r_e'] = np.array(switch_args['e_on_meas'][i]['graph_r_e'])
+        elif switch_args['e_on_meas'][i]['dataset_type'] == 'graph_i_e':
+           switch_args['e_on_meas'][i]['graph_i_e'] = np.array(switch_args['e_on_meas'][i]['graph_i_e'])
     for i in range(len(switch_args['e_off'])):
         if switch_args['e_off'][i]['dataset_type'] == 'graph_r_e':
             switch_args['e_off'][i]['graph_r_e'] = np.array(switch_args['e_off'][i]['graph_r_e'])
         elif switch_args['e_off'][i]['dataset_type'] == 'graph_i_e':
             switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
-    # Convert diode_args
+    for i in range(len(switch_args['e_off_meas'])):
+        if switch_args['e_off_meas'][i]['dataset_type'] == 'graph_r_e':
+            switch_args['e_off_meas'][i]['graph_r_e'] = np.array(switch_args['e_off_meas'][i]['graph_r_e'])
+        elif switch_args['e_off_meas'][i]['dataset_type'] == 'graph_i_e':
+            switch_args['e_off_meas'][i]['graph_i_e'] = np.array(switch_args['e_off_meas'][i]['graph_i_e'])
+    #Convert diode_args
     diode_args = db_dict['diode']
     if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
         diode_args['thermal_foster']['graph_t_rthjc'] = np.array(diode_args['thermal_foster']['graph_t_rthjc'])
@@ -4233,4 +4381,418 @@ class MissingDataError(Exception):
           1211: "Diode conduction channel information is missing at provided v_g, cannot export to",
           1202: "Diode reverse recovery loss information is missing",
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to"}
+
+
+def dpt_save_data(measurement_dict: dict):
+    """
+        Imports double pulse measurements and calculates switching losses to each given working point.
+
+        [1] options for the integration interval are based on following paper:
+        Link: https://ieeexplore.ieee.org/document/8515553
+
+        :param path: path to double pulse measurements
+        :type path: str
+        :param energies: defines which switching energies should be calculated
+        :type energies: str
+        :param safe_RAW_data: safe the double pulse measurements to the db
+        :type safe_RAW_data: bool
+        :param time_correction: defines wheather a runtime correction process should be done
+        :type time_correction: bool
+        :param integration_interval: gives the integration interval as stated in [1]
+        :type integration_interval: str
+        :param v_g: Gate-Sourve Voltage
+        :type integration_interval: int
+        :param measurement_dict: dictionary with above mentioned parameters
+        :type measurement_dict: dict
+
+        """
+
+    if measurement_dict['integration_interval'] == 'IEC 60747-8' or 'integration_interval' in measurement_dict is None:
+        off_vds_limit = 0.1
+        off_is_limit = 0.1
+        on_vds_limit = 0.1
+        on_is_limit = 0.1
+    elif measurement_dict['integration_interval'] == 'IEC 60747-9':
+        off_vds_limit = 0.1
+        off_is_limit = 0.02
+        on_vds_limit = 0.02
+        on_is_limit = 0.1
+    elif measurement_dict['integration_interval'] == 'Mitsubishi':
+        off_vds_limit = 0.1
+        off_is_limit = 0.1
+        on_vds_limit = 0.1
+        on_is_limit = 0.1
+    elif measurement_dict['integration_interval'] == 'Infineon':
+        off_vds_limit = 0.1
+        off_is_limit = 0.02
+        on_vds_limit = 0.02
+        on_is_limit = 0.1
+    elif measurement_dict['integration_interval'] == 'Wolfspeed':
+        off_vds_limit = 0
+        off_is_limit = -0.1
+        on_vds_limit = -0.1
+        on_is_limit = 0
+
+    # Get a list of all the csv files
+    csv_files = glob.glob(measurement_dict['path'])
+
+    position_t_j = csv_files[1].rfind("C_")
+    position_t_j_start = csv_files[1].rfind("_", 0, position_t_j)
+    t_j = int(csv_files[1][position_t_j_start + 1:position_t_j])
+
+    position_r_g = csv_files[1].rfind("R_")
+    position_r_g_start = csv_files[1].rfind("_", 0, position_r_g)
+    r_g = int(csv_files[1][position_r_g_start + 1:position_r_g])
+
+    position_v_supply = csv_files[1].rfind("V_")
+    position_v_supply_start = csv_files[1].rfind("_", 0, position_v_supply)
+    v_supply = int(csv_files[1][position_v_supply_start + 1:position_v_supply])
+
+    dpt_raw_data = {'dataset_type': 'dpt_u_i'}
+    e_off_meas = Union[dict, None]
+    e_on_meas = Union[dict, None]
+
+    position_attribute_start = 'V_'
+    position_attribute_end = 'A_'
+    label_x_plot = 'Id / A'
+
+    if measurement_dict['dataset_type'] == 'graph_r_e':
+        position_attribute_start = 'C_'
+        position_attribute_end = 'R_'
+        label_x_plot = 'Ron / Ohm'
+
+    if measurement_dict['energies'] == 'E_off' or measurement_dict['energies'] == 'both':
+        off_I_locations = []
+        off_U_locations = []
+        csv_length = len(csv_files)
+
+        ##############################
+        # Read all Turn-off current measurements and sort them by Id or Rgon
+        ##############################
+        i = 0
+        while csv_length > i:
+            if csv_files[i].rfind("_OFF_I") != -1:
+                positionA = csv_files[i].rfind(position_attribute_end)
+                positionB = csv_files[i].rfind(position_attribute_start)
+                off_I_locations.append([i, int(csv_files[i][positionB + 2:positionA])])
+            i += 1
+        off_I_locations.sort(key=lambda x: x[1])
+
+        ##############################
+        # Read all Turn-off voltage measurements and sort them by Id or Rgon
+        ##############################
+        i = 0
+        while csv_length > i:
+            if csv_files[i].rfind("_OFF_U") != -1:
+                positionA = csv_files[i].rfind(position_attribute_end)
+                positionB = csv_files[i].rfind(position_attribute_start)
+                off_U_locations.append([i, int(csv_files[i][positionB + 2:positionA])])
+            i += 1
+        off_U_locations.sort(key=lambda x: x[1])
+
+        sample_point = 0
+        measurement_points = len(off_I_locations)
+        E_off = []
+        Uds_raw_off = []
+        Id_raw_off = []
+
+        while measurement_points > sample_point:
+            # Load Uds and Id pairs in increasing order
+            Uds = np.genfromtxt(csv_files[off_U_locations[sample_point][0]], delimiter=',', skip_header=24)
+            Id = np.genfromtxt(csv_files[off_I_locations[sample_point][0]], delimiter=',', skip_header=24)
+
+            Uds_raw_off.append(np.array(Uds))
+            Id_raw_off.append(np.array(Id))
+
+            sample_length = len(Uds)
+            sample_interval = abs(Uds[1, 0] - Uds[2, 0])
+            avg_interval = int(sample_length * 0.05)
+
+            Uds_avg_max = 0
+            Id_avg_max = 0
+
+            ##############################
+            # Find the max. Id in steady state
+            ##############################
+            i = 0
+            while i <= avg_interval:
+                Id_avg_max = Id_avg_max + Id[i, 1] / avg_interval
+                i += 1
+
+            ##############################
+            # Find the max. Uds in steady state
+            ##############################
+            i = 0
+            while i <= avg_interval:
+                Uds_avg_max = Uds_avg_max + Uds[(sample_length - 1 - i), 1] / avg_interval
+                i += 1
+
+            ##############################
+            # Find the starting point of the Eoff integration
+            # i equals the lower integration limit
+            ##############################
+            i = 0
+            E_off_temp = 0
+            while Uds[i, 1] < (Uds_avg_max * off_vds_limit):
+                i += 1
+
+            time_correction = 0
+
+            ##############################
+            # Integrate the power with predefined integration limits
+            ##############################
+            while Id[i - time_correction, 1] >= (Id_avg_max * off_is_limit):
+                E_off_temp = E_off_temp + (Uds[i, 1] * Id[i - time_correction, 1] * sample_interval)
+                i += 1
+
+            if measurement_dict['dataset_type'] == 'graph_r_e':
+                E_off.append([off_I_locations[sample_point][1], E_off_temp])
+            else:
+                E_off.append([Id_avg_max, E_off_temp])
+
+            sample_point += 1
+
+        E_off_0 = [item[0] for item in E_off]
+        E_off_1 = [item[1] for item in E_off]
+
+        e_off_meas = {'dataset_type': measurement_dict['dataset_type'],
+                      't_j': t_j,
+                      'load_l': measurement_dict['load_l'],
+                      'measurement_date': measurement_dict['measurement_date'],
+                      'measurement_testbench': measurement_dict['measurement_testbench'],
+                      'v_supply': v_supply,
+                      'v_g': measurement_dict['v_g'],
+                      'v_g_off': measurement_dict['v_g_off'],
+                      'r_g': r_g,
+                      'graph_i_e': np.array([E_off_0, E_off_1]),
+                      'graph_r_e': np.array([E_off_0, E_off_1]),
+                      'e_x': float(E_off_1[0]),
+                      'i_x': Id_avg_max}
+
+        dpt_raw_data |= {'dpt_off_uds': Uds_raw_off, 'dpt_off_id': Id_raw_off}
+
+        ##############################
+        # Plot Eoff
+        ##############################
+        x = [sub[0] for sub in E_off]
+        y = [sub[1] * 1000000 for sub in E_off]
+        fig, ax1 = plt.subplots()
+        color = 'tab:red'
+        ax1.set_xlabel(label_x_plot)
+        ax1.set_ylabel("Eoff / µJ", color=color)
+        ax1.plot(x, y, marker='o', color=color)
+        plt.grid('both')
+        plt.show()
+
+    if measurement_dict['energies'] == 'E_on' or measurement_dict['energies'] == 'both':
+        i = 0
+        on_I_locations = []
+        on_U_locations = []
+        csv_length = len(csv_files)
+        ##############################
+        # Read all Turn-on current measurements and sort them by Id or Rgon
+        ##############################
+        while csv_length > i:
+            if csv_files[i].rfind("_ON_I") != -1:
+                positionA = csv_files[i].rfind(position_attribute_end)
+                positionB = csv_files[i].rfind(position_attribute_start)
+                on_I_locations.append([i, int(csv_files[i][positionB + 2:positionA])])
+            i += 1
+        on_I_locations.sort(key=lambda x: x[1])
+
+        ##############################
+        # Read all Turn-on voltage measurements and sort them by Id or Rgon
+        ##############################
+        i = 0
+        while csv_length > i:
+            if csv_files[i].rfind("_ON_U") != -1:
+                positionA = csv_files[i].rfind(position_attribute_end)
+                positionB = csv_files[i].rfind(position_attribute_start)
+                on_U_locations.append([i, int(csv_files[i][positionB + 2:positionA])])
+            i += 1
+        on_U_locations.sort(key=lambda x: x[1])
+
+        sample_point = 0
+        measurement_points = len(on_I_locations)
+        E_on = []
+        Uds_raw_on = []
+        Id_raw_on = []
+
+        while measurement_points > sample_point:
+            # Load Uds and Id pairs in increasing order
+            Uds = np.genfromtxt(csv_files[on_U_locations[sample_point][0]], delimiter=',', skip_header=24)
+            Id = np.genfromtxt(csv_files[on_I_locations[sample_point][0]], delimiter=',', skip_header=24)
+
+            Uds_raw_on.append(np.array(Uds))
+            Id_raw_on.append(np.array(Id))
+
+            sample_length = len(Uds)
+            sample_interval = abs(Uds[1, 0] - Uds[2, 0])
+            avg_interval = int(sample_length * 0.05)
+            Uds_avg_max = 0
+            Id_avg_max = 0
+
+            ##############################
+            # Find the max. Id in steady state
+            ##############################
+            i = 0
+            while i <= avg_interval:
+                Id_avg_max = Id_avg_max + (Id[(sample_length - 3 - i), 1] / avg_interval)
+                i += 1
+
+            ##############################
+            # Find the max. Uds in steady state
+            ##############################
+            i = 0
+            while i <= avg_interval:
+                Uds_avg_max = Uds_avg_max + (Uds[i, 1] / avg_interval)
+                i += 1
+
+            ##############################
+            # Find the starting point of the Eon integration
+            # i equals the lower integration limit
+            ##############################
+            i = 0
+            E_on_temp = 0
+            while Id[i, 1] < (Id_avg_max * on_is_limit):
+                i += 1
+
+            time_correction = 0
+            ##############################
+            # Integrate the power with predefined integration limits
+            ##############################
+            while Uds[i + time_correction, 1] >= (Uds_avg_max * on_vds_limit):
+                E_on_temp = E_on_temp + (Uds[i + time_correction, 1] * Id[i, 1] * sample_interval)
+                i += 1
+
+            if measurement_dict['dataset_type'] == 'graph_r_e':
+                E_on.append([on_I_locations[sample_point][1], E_on_temp])
+            else:
+                E_on.append([Id_avg_max, E_on_temp])
+
+            sample_point += 1
+
+        E_on_0 = [item[0] for item in E_on]
+        E_on_1 = [item[1] for item in E_on]
+
+        e_on_meas = {'dataset_type': measurement_dict['dataset_type'],
+                     't_j': t_j,
+                     'load_l': measurement_dict['load_l'],
+                     'measurement_date': measurement_dict['measurement_date'],
+                     'measurement_testbench': measurement_dict['measurement_testbench'],
+                     'v_supply': v_supply,
+                     'v_g': measurement_dict['v_g'],
+                     'v_g_off': measurement_dict['v_g_off'],
+                     'r_g': r_g,
+                     'graph_i_e': np.array([E_on_0, E_on_1]),
+                     'graph_r_e': np.array([E_on_0, E_on_1]),
+                     'e_x': float(E_on_1[0]),
+                     'i_x': Id_avg_max}
+
+        dpt_raw_data |= {'dpt_on_uds': Uds_raw_on, 'dpt_on_id': Id_raw_on}
+
+        ##############################
+        # Plot Eon
+        ##############################
+        # ToDo Plot for different Rgs,Uds
+        x = [sub[0] for sub in E_on]
+        y = [sub[1] * 1000000 for sub in E_on]
+        fig, ax1 = plt.subplots()
+        color = 'tab:red'
+        ax1.set_xlabel(label_x_plot)
+        ax1.set_ylabel("Eon / µJ", color=color)
+        ax1.plot(x, y, marker='o', color=color)
+        plt.grid('both')
+        plt.show()
+
+    dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'dpt_raw_data': dpt_raw_data}
+    return dpt_dict
+
+
+def build_dummy(attribute_name, attribute_value):
+    """
+            This function creates an dummy transistor which is usually used by update_dpt_measurement to append
+            new values to a existing transistor.
+
+            :param attribute_name: Name of the attribute you want to change.
+            :type attribute_name: str
+            :param attribute_value: Dict of data you want to add to given attribute.
+            :type attribute_value: dict
+            """
+
+    name = 'Dummy-Transistor'
+    type = 'IGBT'
+    author = 'Dummy-Author'
+    manufacturer = 'Fuji Electric'
+    housing_area = 367e-6
+    cooling_area = 160e-6
+    housing_type = 'TO247'
+    v_abs_max = 200
+    i_abs_max = 200
+    i_cont = 200
+    r_g_int = 10
+    t_j_max = 175
+    r_th_switch_cs = 0
+    r_th_diode_cs = 0
+    r_th_cs = 0.05
+
+    switch_args = {'t_j_max': t_j_max,
+                   attribute_name: attribute_value}
+    diode_args = {'t_j_max': t_j_max,
+                  attribute_name: attribute_value}
+    transistor_args = {'name': name,
+                       'type': type,
+                       'author': author,
+                       'manufacturer': manufacturer,
+                       'housing_area': housing_area,
+                       'cooling_area': cooling_area,
+                       'housing_type': housing_type,
+                       'v_abs_max': v_abs_max,
+                       'i_abs_max': i_abs_max,
+                       'i_cont': i_cont,
+                       'r_g_int': r_g_int,
+                       'r_th_cs': r_th_cs,
+                       'r_th_switch_cs': r_th_switch_cs,
+                       'r_th_diode_cs': r_th_diode_cs,
+                       attribute_name: attribute_value}
+
+    dummy_transistor = Transistor(transistor_args, switch_args, diode_args)
+    return dummy_transistor
+
+
+def update_dpt_measurement(transistor_name, measurement_data):
+    """
+                This function loads a transistor from the database and adds new measurement data.
+
+                :param transistor_name: Name of the transistor to be loaded.
+                :type transistor_name: str
+                :param measurement_data: Dict of data you want to add to given attribute.
+                :type measurement_data: dict
+                """
+
+    transistor_loaded = load({'name': transistor_name})
+    collection = connect_local_TDB()
+    transistor_id = {'_id': transistor_loaded._id}
+
+    if measurement_data['e_off_meas'] is not None:
+        dummy_off = build_dummy('e_off_meas', measurement_data['e_off_meas'])
+        transistor_loaded.switch.e_off_meas.append(dummy_off.switch.e_off_meas[0])
+        transistor_dict = transistor_loaded.convert_to_dict()
+        new_value = {'$set': {'switch.e_off_meas': transistor_dict['switch']['e_off_meas']}}
+        collection.update_one(transistor_id, new_value)
+
+    if measurement_data['e_on_meas'] is not None:
+        dummy_on = build_dummy('e_on_meas', measurement_data['e_on_meas'])
+        transistor_loaded.switch.e_on_meas.append(dummy_on.switch.e_on_meas[0])
+        transistor_dict = transistor_loaded.convert_to_dict()
+        new_value = {'$set': {'switch.e_on_meas': transistor_dict['switch']['e_on_meas']}}
+        collection.update_one(transistor_id, new_value)
+
+    if measurement_data['dpt_raw_data'] is not None:
+        dummy_raw = build_dummy('raw_measurement_data', measurement_data['dpt_raw_data'])
+        transistor_loaded.raw_measurement_data.append(dummy_raw.raw_measurement_data[0])
+        transistor_dict = transistor_loaded.convert_to_dict()
+        new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
+        collection.update_one(transistor_id, new_value)
+
 
