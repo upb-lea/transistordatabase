@@ -4005,7 +4005,7 @@ def dpt_save_data(measurement_dict: dict):
         Imports double pulse measurements and calculates switching losses to each given working point.
 
         [1] options for the integration interval are based on following paper:
-        Link:
+        Link: https://ieeexplore.ieee.org/document/8515553
 
         :param path: path to double pulse measurements
         :type path: str
@@ -4019,6 +4019,8 @@ def dpt_save_data(measurement_dict: dict):
         :type integration_interval: str
         :param v_g: Gate-Sourve Voltage
         :type integration_interval: int
+        :param measurement_dict: dictionary with above mentioned parameters
+        :type measurement_dict: dict
 
         """
 
@@ -4325,6 +4327,16 @@ def dpt_save_data(measurement_dict: dict):
 
 
 def build_dummy(attribute_name, attribute_value):
+    """
+            This function creates an dummy transistor which is usually used by update_dpt_measurement to append
+            new values to a existing transistor.
+
+            :param attribute_name: Name of the attribute you want to change.
+            :type attribute_name: str
+            :param attribute_value: Dict of data you want to add to given attribute.
+            :type attribute_value: dict
+            """
+
     name = 'Dummy-Transistor'
     type = 'IGBT'
     author = 'Dummy-Author'
@@ -4366,6 +4378,15 @@ def build_dummy(attribute_name, attribute_value):
 
 
 def update_dpt_measurement(transistor_name, measurement_data):
+    """
+                This function loads a transistor from the database and adds new measurement data.
+
+                :param transistor_name: Name of the transistor to be loaded.
+                :type transistor_name: str
+                :param measurement_data: Dict of data you want to add to given attribute.
+                :type measurement_data: dict
+                """
+
     transistor_loaded = load({'name': transistor_name})
     collection = connect_local_TDB()
     transistor_id = {'_id': transistor_loaded._id}
