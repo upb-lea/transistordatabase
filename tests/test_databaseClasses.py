@@ -235,3 +235,18 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
         assert 'switch' not in actual_data
         assert 'diode' not in actual_data
     assert True
+
+def test_export_json(my_transistor):
+    """
+    pytest for export_json() function.
+    Test for incorrect inputs.
+    """
+    transistor_args, switch_args, diode_args = my_transistor
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    with pytest.raises(TypeError):
+         transistor.export_json(123)
+    #with pytest.raises(FileNotFoundError)
+         transistor.export_json("/not/existing/path/")
+
+
+

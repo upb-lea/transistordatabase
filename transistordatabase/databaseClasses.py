@@ -22,6 +22,7 @@ from jinja2 import Environment, FileSystemLoader
 import base64
 import io
 import pathlib
+import warnings
 from .constants import *
 
 
@@ -288,27 +289,32 @@ class Transistor:
         else:
             collection.insert_one(transistor_dict)
 
-    def export_json(self, path: str =None) -> None:
+    def export_json(self, path: str = None) -> None:
         """
         Exports the transistor object to .json file, e.g. to share this file on fileexchange on github
 
         :param path: path to export
-        :type path: str or None
+        :type path: str or None (default)
 
         :raises TypeError: Raised if the provided path is not a string type
         """
         transistor_dict = self.convert_to_dict()
-        if path is None:
-            display_path = pathlib.Path.cwd()
-            with open(transistor_dict['name'] + '.json', 'w') as fp:
-                json.dump(transistor_dict, fp, default=json_util.default)
-            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {display_path.as_uri()}")
-        elif isinstance(path, str):
-            with open(os.path.join(path, transistor_dict['name'] + '.json'), 'w') as fp:
-                json.dump(transistor_dict, fp, default=json_util.default)
-            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {display_path.as_uri()}")
+        try:
+            save_path = pathlib.Path(path)
+        except:
+            if path is None:
+                save_path = pathlib.Path.cwd()
+                with open(save_path.joinpath(transistor_dict['name'] + '.json'), 'w') as fp:
+                    json.dump(transistor_dict, fp, default=json_util.default)
+                print(f"Saved json-file {transistor_dict['name'] + '.json'} to {save_path.as_uri()}")
+            else:
+                raise TypeError(f"{path = } ist not a string.")
         else:
-            TypeError(f"{path = } ist not a string.")
+            if path is None:
+                save_path = pathlib.Path.cwd()
+            with open(save_path.joinpath(transistor_dict['name'] + '.json'), 'w') as fp:
+                json.dump(transistor_dict, fp, default=json_util.default)
+            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {save_path.as_uri()}")
 
     def convert_to_dict(self):
         """
