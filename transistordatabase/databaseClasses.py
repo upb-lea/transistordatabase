@@ -4134,15 +4134,16 @@ def load_from_db(db_dict: dict):
         if transistor_args['graph_v_ecoss'] is not None:
             transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
 
-    for i in range(len(transistor_args['raw_measurement_data'])):
-        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_uds'])):
-            transistor_args['raw_measurement_data'][i]['dpt_on_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
-        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_id'])):
-            transistor_args['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
-        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_uds'])):
-            transistor_args['raw_measurement_data'][i]['dpt_off_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_uds'][u])
-        for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_id'])):
-            transistor_args['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_id'][u])
+    if 'raw_measurement_data' in transistor_args:
+        for i in range(len(transistor_args['raw_measurement_data'])):
+            for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_uds'])):
+                transistor_args['raw_measurement_data'][i]['dpt_on_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
+            for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_id'])):
+                transistor_args['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
+            for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_uds'])):
+                transistor_args['raw_measurement_data'][i]['dpt_off_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_uds'][u])
+            for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_id'])):
+                transistor_args['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_id'][u])
 
     # Convert switch_args
     switch_args = db_dict['switch']
@@ -4155,21 +4156,23 @@ def load_from_db(db_dict: dict):
             switch_args['e_on'][i]['graph_r_e'] = np.array(switch_args['e_on'][i]['graph_r_e'])
         elif switch_args['e_on'][i]['dataset_type'] == 'graph_i_e':
             switch_args['e_on'][i]['graph_i_e'] = np.array(switch_args['e_on'][i]['graph_i_e'])
-    for i in range(len(switch_args['e_on_meas'])):
-        if switch_args['e_on_meas'][i]['dataset_type'] == 'graph_r_e':
-            switch_args['e_on_meas'][i]['graph_r_e'] = np.array(switch_args['e_on_meas'][i]['graph_r_e'])
-        elif switch_args['e_on_meas'][i]['dataset_type'] == 'graph_i_e':
-           switch_args['e_on_meas'][i]['graph_i_e'] = np.array(switch_args['e_on_meas'][i]['graph_i_e'])
+    if 'e_on_meas' in switch_args:
+        for i in range(len(switch_args['e_on_meas'])):
+            if switch_args['e_on_meas'][i]['dataset_type'] == 'graph_r_e':
+                switch_args['e_on_meas'][i]['graph_r_e'] = np.array(switch_args['e_on_meas'][i]['graph_r_e'])
+            elif switch_args['e_on_meas'][i]['dataset_type'] == 'graph_i_e':
+               switch_args['e_on_meas'][i]['graph_i_e'] = np.array(switch_args['e_on_meas'][i]['graph_i_e'])
     for i in range(len(switch_args['e_off'])):
         if switch_args['e_off'][i]['dataset_type'] == 'graph_r_e':
             switch_args['e_off'][i]['graph_r_e'] = np.array(switch_args['e_off'][i]['graph_r_e'])
         elif switch_args['e_off'][i]['dataset_type'] == 'graph_i_e':
             switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
-    for i in range(len(switch_args['e_off_meas'])):
-        if switch_args['e_off_meas'][i]['dataset_type'] == 'graph_r_e':
-            switch_args['e_off_meas'][i]['graph_r_e'] = np.array(switch_args['e_off_meas'][i]['graph_r_e'])
-        elif switch_args['e_off_meas'][i]['dataset_type'] == 'graph_i_e':
-            switch_args['e_off_meas'][i]['graph_i_e'] = np.array(switch_args['e_off_meas'][i]['graph_i_e'])
+    if 'e_off_meas' in switch_args:
+        for i in range(len(switch_args['e_off_meas'])):
+            if switch_args['e_off_meas'][i]['dataset_type'] == 'graph_r_e':
+                switch_args['e_off_meas'][i]['graph_r_e'] = np.array(switch_args['e_off_meas'][i]['graph_r_e'])
+            elif switch_args['e_off_meas'][i]['dataset_type'] == 'graph_i_e':
+                switch_args['e_off_meas'][i]['graph_i_e'] = np.array(switch_args['e_off_meas'][i]['graph_i_e'])
     #Convert diode_args
     diode_args = db_dict['diode']
     if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
