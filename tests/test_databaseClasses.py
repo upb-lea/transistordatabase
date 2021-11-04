@@ -71,7 +71,7 @@ def my_transistor():
                        'datasheet_version': datasheet_version, 'housing_area': housing_area,
                        'cooling_area': cooling_area, 'housing_type': housing_type, 'v_abs_max': v_abs_max,
                        'i_abs_max': i_abs_max, 'i_cont': i_cont, 'c_oss_fix': c_oss_fix, 'c_iss_fix': c_iss_fix,
-                       'c_rss': c_rss_fix, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
+                       'c_rss_fix': c_rss_fix, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
                        'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs}
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'channel': switch_channel,
@@ -79,6 +79,38 @@ def my_transistor():
     diode_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                   'channel': [diode_channel], 'e_rr': switchenergy, 'thermal_foster': foster_args}
     return transistor_args, switch_args, diode_args
+
+def test_transistor(my_transistor):
+    transistor_args, switch_args, diode_args = my_transistor
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    # transistor_args test
+    assert transistor.name == transistor_args['name']
+    assert transistor.type == transistor_args['type']
+    assert transistor.author == transistor_args['author']
+    assert transistor.comment == transistor_args['comment']
+    assert transistor.manufacturer == transistor_args['manufacturer']
+    assert transistor.datasheet_hyperlink == transistor_args['datasheet_hyperlink']
+    assert transistor.datasheet_date == transistor_args['datasheet_date']
+    assert transistor.datasheet_version == transistor_args['datasheet_version']
+    assert transistor.v_abs_max == transistor_args['v_abs_max']
+    assert transistor.i_abs_max == transistor_args['i_abs_max']
+    assert transistor.i_cont == transistor_args['i_cont']
+    assert transistor.housing_area == transistor_args['housing_area']
+    assert transistor.cooling_area == transistor_args['cooling_area']
+    assert transistor.housing_type == transistor_args['housing_type']
+    assert transistor.r_th_cs == transistor_args['r_th_cs']
+    assert transistor.r_th_switch_cs == transistor_args['r_th_switch_cs']
+    assert transistor.r_th_diode_cs == transistor_args['r_th_diode_cs']
+    assert transistor.r_g_int == transistor_args['r_g_int']
+    assert transistor.c_oss_fix == transistor_args['c_oss_fix']
+    assert transistor.c_iss_fix == transistor_args['c_iss_fix']
+    assert transistor.c_rss_fix == transistor_args['c_rss_fix']
+
+    # switch_args test
+
+    # diode_args test
+
+
 
 
 def test_calc_thermal_params(my_transistor):
