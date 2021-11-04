@@ -3242,7 +3242,7 @@ class Transistor:
                                                                                       'thermal_foster'][
                                                                                       'graph_t_rthjc'][1]]
 
-        return load_from_db(transistor_dict)
+        return convert_dict_to_transistor_object(transistor_dict)
 
     def validate_transistor(self):
         """
@@ -4106,18 +4106,22 @@ def load(dict_filter, collection="local"):
     if collection == "local":
         collection = connect_local_TDB()
     # ToDo: Implement case where different transistors fit the filter criteria.
-    return load_from_db(collection.find_one(dict_filter))
+    return convert_dict_to_transistor_object(collection.find_one(dict_filter))
 
 
-def load_from_db(db_dict: dict):
+def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
     """
-    Loads a transistor object from the database
+    Converts a dictionary to a transistor object.
+    This is a helper function of the following functions:
+    - parallel_transistors()
+    - load()
+    - import_json()
 
-    .. todo: This function might needs to be renamed, e.g. 'convert_dict_to_object'
+    :param db_dict: transistor dictionary
+    :type db_dict: dict
 
-    :param db_dict:
-
-    :return: transistorobject
+    :return: Transistor object
+    :rtype: Transistor object
     """
     # Convert transistor_args
     transistor_args = db_dict
@@ -4257,7 +4261,7 @@ def import_json(path: str) -> dict:
     if isinstance(path, str):
         with open(path, 'r') as myfile:
             data = myfile.read()
-        return load_from_db(json_util.loads(data))
+        return convert_dict_to_transistor_object(json_util.loads(data))
     else:
         TypeError(f"{path = } ist not a string.")
 
