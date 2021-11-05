@@ -1249,7 +1249,6 @@ class Transistor:
 
 
     # export function start from here
-
     def buildList(self, attribute):
         """
         Gather list data (e.g. channel/e_on/e_off/e_rr) and check for 'None'
