@@ -23,7 +23,7 @@
 <!-- *************************************************************************************************************************************************** -->
 
 												<!-- ********** transistor specifications table ************* -->
-	<div style="border: 3px solid; height:257mm">
+	<div style="border: 3px solid; height:242mm">
 	<br>
 	  <table class="tableCSS">
 	  <tr>
@@ -58,7 +58,7 @@
 	</div>
 
 												<!-- ********** Switch and diode specifications table ************* -->
-	<div style="page-break-before:always; border: 3px solid; height:297mm">
+	<div style="page-break-before:always;" class="pageCSS">
 	  <br>
 	  <br>
 		<!-- ********** switch specifications table ************* -->
@@ -119,8 +119,8 @@
 
 	{% if switch['channel_plots'] is mapping and switch['channel_plots']|length > 0 %}
 		<!-- ********** switch plots count greater than 5 ************* -->
-		<div style="page-break-before:always;  border: 3px solid; height:297mm">
-	  <h3 style="text-align:center"> {{trans["Type"][0]}} Characteristic Plots </h3>
+		<div style="page-break-before:always;" class="pageCSS">
+	  <h3 class="textalign"> {{trans["Type"][0]}} Characteristic Plots </h3>
 	  <div class="container">
 		   <div class="row">
 				{% if trans['c_plots'] is not none %}
@@ -143,8 +143,8 @@
 		</div>
 	</div>
 		{% if sPlotCnt != 0 %}
-		<div style="page-break-before:always;  border: 3px solid; height:297mm">
-	  <h3 style="text-align:center"> {{trans["Type"][0]}} Characteristic Plots (..contd)</h3>
+		<div style="page-break-before:always;" class="pageCSS">
+	  <h3 class="textalign"> {{trans["Type"][0]}} Characteristic Plots (..contd)</h3>
 	  <div class="container">
 		   <div class="row">
 				{% if switch['energy_plots'] is not none %}
@@ -171,8 +171,8 @@
 		{% endif %}
 	{% else %}
 		<!-- ********** switch plots count not more than 5 ************* -->
-		<div style="page-break-before:always;  border: 3px solid; height:297mm">
-	  <h3 style="text-align:center"> {{trans["Type"][0]}} Characteristic Plots </h3>
+	<div style="page-break-before:always;" class="pageCSS">
+	  <h3 class="textalign"> {{trans["Type"][0]}} Characteristic Plots </h3>
 	  <div class="container">
 		   <div class="row">
 			   {% if switch['channel_plots'] is mapping %}
@@ -220,8 +220,8 @@
 
 	{% if diode['channel_plots'] is mapping and diode['channel_plots']|length > 0 %}
 		<!-- ********** diode plot count greater than 5 ************* -->
-		<div style="page-break-before:always; border: 3px solid; height:297mm">
-	   <h3 style="text-align:center"> Diode Characteristic Plots </h3>
+		<div style="page-break-before:always;" class="pageCSS">
+	   <h3 class="textalign"> Diode Characteristic Plots </h3>
 	   <div class="container">
 		   <div class="row">
 				{% for key, value in diode['channel_plots'].items() %}
@@ -244,8 +244,8 @@
 	   </div>
 	</div>
 		{% if dPlotCnt != 0 %}
-		<div style="page-break-before:always; border: 3px solid; height:297mm">
-	   <h3 style="text-align:center"> Diode Characteristic Plots </h3>
+		<div style="page-break-before:always;" class="pageCSS">
+	   <h3 class="textalign"> Diode Characteristic Plots </h3>
 	   <div class="container">
 			<div class="row">
 				{% if diode['energy_plots_r'] is not none %}
@@ -266,8 +266,8 @@
 		{% endif %}
 	{% else %}
 		<!-- ********** diode plot count not more than 5 ************* -->
-		<div style="page-break-before:always; border: 3px solid; height:297mm">
-	   <h3 style="text-align:center"> Diode Characteristic Plots </h3>
+		<div style="page-break-before:always;" class="pageCSS">
+	   <h3 class="textalign"> Diode Characteristic Plots </h3>
 	   <div class="container">
 			<div class="row">
 				<div class="thumb">

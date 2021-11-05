@@ -15,9 +15,9 @@
 		padding-bottom: 14px;
 		padding-left: 30px;
 		}
-	  .headerClass{
-		overflow: hidden;
-		min-width: 799px;
+	   .headerClass{
+	    overflow: hidden;
+	  	width:770px;
 		display: inline-block;
 		border-bottom: solid;
 	  }
@@ -36,6 +36,7 @@
 	  }
 	  .tableCSS {
 		  width:80%;
+		  font-size: 13px;
 		  margin-left: auto;
 		  margin-right: auto;
 	  }
@@ -62,6 +63,16 @@
 		  border : solid 1px;
 		  overflow : hidden;
 	  }
+	  .pageCSS {
+		  border: 2px solid;
+		  height: 280mm;
+		  margin-top:10px;
+	  }
+	  h3.textalign {
+	  text-align:center;
+	  margin-top:10px !important;
+	  color: blue;
+	  }
 	  .img {
 			max-width:400px ;
 			max-height :350px;
@@ -78,11 +89,11 @@
         border-collapse: collapse;
       }
 		th.spec,td.spec {
-		min-width : 30%
+		min-width : 30%;
 		max-width : 30%
 		}
 		th.unit,td.unit  {
-		 min-width: 20%
+		 min-width: 20%;
 		 max-width : 30%
 		}
 		th.value,td.value  {
@@ -92,10 +103,10 @@
 	  body {
 		background-color: #FFFFFF;
 		}
-		
+
 		.pagebreak { ´
 		break-after: page; } /* page-break-after works, as well */
-		
+
 	  footer {
 		  text-align: center;
 		  padding: 3px;
@@ -125,29 +136,28 @@
 	</div>
 	</div>
       {% block content %}{% endblock %}
-	  <div style="text-align:center">
     </div>
-	
-	
+
+
 	<footer>
 		<table style="font-size: 9px;margin-left: 4px;">
 		<tr>
 		  <td style="padding: 0 2px;">Note:</td>
   		  <td style="padding: 0 2px;">This document is not the official datasheet!</td>
 
-		</tr> 
+		</tr>
 		<tr>
 		  <td style="padding: 0 2px;">Generated using:</td>
 		  <td style="font-style:italic;padding: 0 2px;"><a href="https://github.com/upb-lea/transistordatabase">transistordatabase</a></td>
-		</tr>  
+		</tr>
 		<tr>
 		  <td style="padding: 0 2px;">Developed by:</td>
 		  <td style="padding: 0 2px;"><a href="https://ei.uni-paderborn.de/lea">LEA - Power Electronic and Electrical Drives</a>
 		  </td>
 		</tr>
-	    </table>	  
+	    </table>
 	</footer>
-    
+
 	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   </body>

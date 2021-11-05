@@ -25,6 +25,9 @@ import io
 import pathlib
 import warnings
 from .constants import *
+from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
+import sys
+from .constants import *
 import glob
 
 class Transistor:
@@ -1227,22 +1230,26 @@ class Transistor:
         imageBinaryBytes = imageFileObj.read()
         buf = io.BytesIO(imageBinaryBytes)
         encoded_img_data = base64.b64encode(buf.getvalue())
-        client_img = encoded_img_data.decode('utf-8')
+        client_img = encoded_img_data.decode('UTF-8')
 
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
         template = env.get_template('VirtualDatasheet_TransistorTemplate.html')
         html = template.render(trans=trans, switch=switch, diode=diode, image=client_img)
         # ToDo: to save the results to html   --- need to convert it to pdf in future
-        pdfname = trans['Name'][0]+".html"
-        datasheetpath = pathlib.Path.cwd() / pdfname
-        with open(trans['Name'][0]+".html", "w") as fh:
-            fh.write(html)
-        print(f"Export virtual datasheet {self.name}.html to {pathlib.Path.cwd().as_uri()}")
-        print(f"Open Datasheet here: {datasheetpath.as_uri()}")
-        return html
+        pdfname = trans['Name'][0] + ".pdf"
+        datasheetpath = os.path.join(os.getcwd(), pdfname)
+        html_to_pdf(html, datasheetpath, pdfname)
+        # pdfname = trans['Name'][0] + ".html"
+        # datasheetpath = pathlib.Path.cwd() / pdfname
+        # with open(trans['Name'][0] + ".html", "w") as fh:
+        #     fh.write(html)
+        # print(f"Export virtual datasheet {self.name}.html to {pathlib.Path.cwd().as_uri()}")
+        # print(f"Open Datasheet here: {datasheetpath.as_uri()}")
+
 
     # export function start from here
+
     def buildList(self, attribute):
         """
         Gather list data (e.g. channel/e_on/e_off/e_rr) and check for 'None'
@@ -2383,7 +2390,6 @@ class Transistor:
             for i_energy_data in np.array(range(0, len(self.e_off))):
                 if self.e_off[i_energy_data].dataset_type == 'graph_i_e':
                     e_off_i_e_curve_count += 1
-
             if e_on_i_e_curve_count and e_on_i_e_curve_count == e_off_i_e_curve_count:
                 plt.figure()
                 # look for e_on losses
@@ -2392,14 +2398,17 @@ class Transistor:
                         labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].r_g)
                         plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1],
                                  label=labelplot)
-
+                        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+                        plt.yticks(rotation=90)
                 # look for e_off losses
                 for i_energy_data in np.array(range(0, len(self.e_off))):
                     if self.e_off[i_energy_data].dataset_type == 'graph_i_e':
                         labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].r_g)
                         plt.plot(self.e_off[i_energy_data].graph_i_e[0], self.e_off[i_energy_data].graph_i_e[1],
                                  label=labelplot)
-                plt.legend(fontsize=8)
+                        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+                        plt.yticks(rotation=90)
+                plt.legend(fontsize=5)
                 plt.xlabel('Current in A')
                 plt.ylabel('Loss-energy in J')
                 plt.grid()
@@ -2434,14 +2443,15 @@ class Transistor:
                         labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].i_x)
                         plt.plot(self.e_on[i_energy_data].graph_r_e[0], self.e_on[i_energy_data].graph_r_e[1],
                                  label=labelplot)
-
+                        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
                 # look for e_off losses
                 for i_energy_data in np.array(range(0, len(self.e_off))):
                     if self.e_off[i_energy_data].dataset_type == 'graph_r_e':
                         labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].i_x)
                         plt.plot(self.e_off[i_energy_data].graph_r_e[0], self.e_off[i_energy_data].graph_r_e[1],
                                  label=labelplot)
-                plt.legend(fontsize=8)
+                        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+                plt.legend(fontsize=5)
                 plt.xlabel('External Gate Resistor in Ohm')
                 plt.ylabel('Loss-energy in J')
                 plt.grid()
@@ -2768,11 +2778,11 @@ class Transistor:
                         # if ture, add gate-voltage to label
                         if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
                             labelplot = labelplot + ", $v_{{g}}$ = {0} V".format(self.e_rr[i_energy_data].v_g)
-
                         # plot
                         plt.plot(self.e_rr[i_energy_data].graph_i_e[0], self.e_rr[i_energy_data].graph_i_e[1],
                                  label=labelplot)
-                plt.legend(fontsize=8)
+                        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+                plt.legend(fontsize=5)
                 plt.xlabel('Current in A')
                 plt.ylabel('Loss-energy in J')
                 plt.grid()
@@ -2812,7 +2822,8 @@ class Transistor:
                         # plot
                         plt.plot(self.e_rr[i_energy_data].graph_r_e[0], self.e_rr[i_energy_data].graph_r_e[1],
                                  label=labelplot)
-                plt.legend(fontsize=8)
+                        plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+                plt.legend(fontsize=5)
                 plt.xlabel('External Gate Resistor in Ohm')
                 plt.ylabel('Loss-energy in J')
                 plt.grid()
@@ -3559,6 +3570,27 @@ class Transistor:
             collection.update_one(transistor_id, new_value)
 
 
+def html_to_pdf(html, pdf, name):
+    app = QtWidgets.QApplication(sys.argv)
+    page = QtWebEngineWidgets.QWebEnginePage()
+
+    def handle_print_finished(filename, status):
+        print(f"Export virtual datasheet {name} to {pathlib.Path.cwd().as_uri()}")
+        print(f"Open Datasheet here: {pathlib.Path(filename).as_uri()}")
+        app.exit(0)
+
+    def handle_load_finished(status):
+        if status:
+            page.printToPdf(pdf)
+        else:
+            print("Failed")
+            app.exit(0)
+
+    page.pdfPrintingFinished.connect(handle_print_finished)
+    page.loadFinished.connect(handle_load_finished)
+    page.setHtml(html)
+    app.exec_()
+
 
 def gen_exp_func(order):
     """
@@ -3805,9 +3837,10 @@ def get_img_raw_data(plot):
     :return: decoded raw image data to utf-8
     """
     buf = io.BytesIO()
-    plot.savefig(buf, format='png')
+    plot.gcf().set_size_inches(3.5, 2.7)
+    plot.savefig(buf, format='png', bbox_inches='tight')
     encoded_img_data = base64.b64encode(buf.getvalue())
-    return encoded_img_data.decode('utf-8')
+    return encoded_img_data.decode('UTF-8')
 
 
 def get_vc_plots(cap_data):
@@ -3822,6 +3855,7 @@ def get_vc_plots(cap_data):
         return None
     fig = plt.figure()
     ax = fig.add_subplot(111)
+    fig.set_size_inches(3.5, 2.7)
     for key, item in cap_data.items():
         if isinstance(item, list) and item:
             for cap_curve in item:
