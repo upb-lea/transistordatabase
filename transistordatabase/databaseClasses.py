@@ -3477,6 +3477,87 @@ class Transistor:
             d['dpt_off_id'] = [c.tolist() for c in self.dpt_off_id]
             return d
 
+    def add_dpt_measurement(self, measurement_data):
+        """
+                    This method adds new measurement data to the transistor object and saves changes to the database.
+
+                    :param measurement_data: Dict of data you want to add to given attribute.
+                    :type measurement_data: dict
+                    """
+
+        collection = connect_local_TDB()
+        transistor_id = {'_id': self._id}
+
+        if measurement_data['e_off_meas'] is not None:
+            if isinstance(measurement_data.get('e_off_meas'), list):
+                for dataset in measurement_data.get('e_off_meas'):
+                    try:
+                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.switch.e_off_meas.append(Transistor.SwitchEnergyData(dataset))
+                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                    except KeyError as error:
+                        dict_list = measurement_data.get('e_off_meas')
+                        if not error.args:
+                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                      f"Switch-SwitchEnergyData dictionaries for e_off_meas: ",) + error.args
+                        raise
+            elif Transistor.isvalid_dict(measurement_data.get('e_off_meas'), 'SwitchEnergyData'):
+                self.switch.e_off_meas.append(Transistor.SwitchEnergyData(measurement_data.get('e_off_meas')))
+
+            transistor_dict = self.switch.convert_to_dict()
+            new_value = {'$set': {'switch.e_off_meas': transistor_dict['e_off_meas']}}
+            collection.update_one(transistor_id, new_value)
+
+        if measurement_data['e_on_meas'] is not None:
+            if isinstance(measurement_data.get('e_on_meas'), list):
+                # Loop through list and check each dict for validity. Only create SwitchEnergyData objects from
+                # valid dicts. 'None' and empty dicts are ignored.
+                for dataset in measurement_data.get('e_on_meas'):
+                    try:
+                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.switch.e_on_meas.append(Transistor.SwitchEnergyData(dataset))
+                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                    except KeyError as error:
+                        dict_list = measurement_data.get('e_on_meas')
+                        if not error.args:
+                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                      f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
+                        raise
+            elif Transistor.isvalid_dict(measurement_data.get('e_on_meas'), 'SwitchEnergyData'):
+                # Only create SwitchEnergyData objects from valid dicts
+                self.switch.e_on_meas.append(Transistor.SwitchEnergyData(measurement_data.get('e_on_meas')))
+
+            transistor_dict = self.switch.convert_to_dict()
+            new_value = {'$set': {'switch.e_on_meas': transistor_dict['e_on_meas']}}
+            collection.update_one(transistor_id, new_value)
+
+        if measurement_data['raw_measurement_data'] is not None:
+            if isinstance(measurement_data.get('raw_measurement_data'), list):
+                # Loop through list and check each dict for validity. Only create RawMeasuerementData objects from
+                # valid dicts. 'None' and empty dicts are ignored.
+                for dataset in measurement_data.get('raw_measurement_data'):
+                    try:
+                        if Transistor.isvalid_dict(dataset, 'RawMeasurementData'):
+                            self.raw_measurement_data.append(Transistor.RawMeasurementData(dataset))
+                    # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                    except KeyError as error:
+                        dict_list = measurement_data.get('raw_measurement_data')
+                        if not error.args:
+                            error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                        error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] "
+                                      f"in list of raw_measurement_data "f"dictionaries: ",) + error.args
+                        raise
+            elif Transistor.isvalid_dict(measurement_data.get('raw_measurement_data'), 'RawMeasurementData'):
+                # Only create RawMeasurementData objects from valid dicts
+                self.raw_measurement_data.append(
+                    Transistor.RawMeasurementData(measurement_data.get('raw_measurement_data')))
+
+            transistor_dict = self.convert_to_dict()
+            new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
+            collection.update_one(transistor_id, new_value)
+
 
 
 def gen_exp_func(order):
@@ -4712,7 +4793,7 @@ def dpt_save_data(measurement_dict: dict):
         plt.grid('both')
         plt.show()
 
-    dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'dpt_raw_data': dpt_raw_data}
+    dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'raw_measurement_data': dpt_raw_data}
     return dpt_dict
 
 
