@@ -24,8 +24,7 @@ import base64
 import io
 import pathlib
 import warnings
-from .constants import *
-from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
+from PyQt5 import QtWidgets, QtWebEngineWidgets
 import sys
 from .constants import *
 import glob
