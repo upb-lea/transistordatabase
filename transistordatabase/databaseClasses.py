@@ -1803,7 +1803,7 @@ class Transistor:
         # set print options back to default
         np.set_printoptions(linewidth=75)
 
-    def export_plecs(self, recheck=True, gate_voltages=list()):
+    def export_plecs(self, recheck=True, gate_voltages=None):
         """
         Generates and exports the switch and diode .xmls files to be imported into plecs simulator
 
@@ -1817,8 +1817,8 @@ class Transistor:
         >>> transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
         >>> transistor.export_plecs([15, -15, 15, 0])
         """
-
-
+        if gate_voltages is None:
+            gate_voltages = []
         switch_xml_data, diode_xml_data = self.get_curve_data(recheck, gate_voltages)
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
