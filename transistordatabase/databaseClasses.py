@@ -1274,10 +1274,10 @@ class Transistor:
         """
         Exports a simulation model for simulink inverter loss models, see https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
 
-        :param transistor: transistor object
         :param r_g_on: gate turn on resistance, optional
         :param r_g_off: gate turn off resistance, optional
         :param v_supply: switch supply voltage, optional
+        :param normalize_t_to_v: a normalize value used in computing cartesian distance
 
         :raises Exception: Re-raised excception by calling calc_object_i_e(..)
         :raises ValueError: Raised when the switch type is other than IGBT
@@ -1285,10 +1285,10 @@ class Transistor:
         :return: .mat file for import in matlab/simulink
 
         :Example:
+
         >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
         >>> transistor.export_simulink_loss_model()
-
 
         .. note::
          - temperature next to 25 and 150 degree at 15V gate voltage will be used for channel and switching loss
@@ -1453,6 +1453,7 @@ class Transistor:
         :return: File stored in current working path
 
         :Example:
+
         >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
         >>> transistor.export_matlab()
@@ -1516,6 +1517,7 @@ class Transistor:
         :return: Two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl created in the current working directory
 
         :Example:
+
         >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
         >>> transistor.export_geckocircuits(600, 15, -4, 2.5, 2.5)
@@ -1813,6 +1815,7 @@ class Transistor:
         :return: Two output files: 'Transistor.name'_Switch.xml and 'Transistor.name'_Diode.xml created in the current working directory
 
         :Example:
+
         >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
         >>> transistor.export_plecs([15, -15, 15, 0])
@@ -3003,21 +3006,21 @@ class Transistor:
         # graph_i_e: i_e is a 2-dim numpy array with two rows. r_g is a scalar. Given e.g. by an E vs I graph.
         dataset_type: str  #: Single, graph_r_e, graph_i_e (Mandatory key)
         # Additional measurement information.
-        measurement_date: Union["datetime.datetime", None]  #: Specifies the date and time at which the measurement was done.
-        measurement_testbench: Union[str, None]  #: Specifies the testbench used for the measurement.
+        measurement_date: Optional["datetime.datetime"]  #: Specifies the date and time at which the measurement was done.
+        measurement_testbench: Optional[str]  #: Specifies the testbench used for the measurement.
         # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
         t_j: float  #: Junction temperature. Units in °C (Mandatory key)
         v_supply: float  #: Supply voltage. Units in V (Mandatory key)
         v_g: float  #: Gate voltage. Units in V (Mandatory key)
-        v_g_off: Union[float, None]  #: Gate voltage for turn off. Units in V
-        load_l: Union[float, None]  #: Load inductance. Units in µH
+        v_g_off: Optional[float]  #: Gate voltage for turn off. Units in V
+        load_l: Optional[float]  #: Load inductance. Units in µH
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
-        e_x: Union[float, None]  #: Scalar dataset-parameter - switching energy. Units in J
-        r_g: Union[float, None]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
-        i_x: Union[float, None]  #: Scalar dataset-parameter - current rating. Units in A
+        e_x: Optional[float]  #: Scalar dataset-parameter - switching energy. Units in J
+        r_g: Optional[float]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
+        i_x: Optional[float]  #: Scalar dataset-parameter - current rating. Units in A
         # Dataset. Only one of these is allowed. The other should be 'None'.
-        graph_i_e: Union["np.ndarray[np.float64]", None]  #: Units for Row 1 = A; Row 2 = J
-        graph_r_e: Union["np.ndarray[np.float64]", None]  #: Units for Row 1 = Ohm; Row 2 = J
+        graph_i_e: Optional["np.ndarray[np.float64]"]  #: Units for Row 1 = A; Row 2 = J
+        graph_r_e: Optional["np.ndarray[np.float64]"]  #: Units for Row 1 = Ohm; Row 2 = J
 
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
         # ToDo: Add additional class for linearized switching loss model with capacities. (See infineon application
@@ -4112,6 +4115,7 @@ def merge_curve(curve, curve_detail):
     :return: merged curve
 
     :Example (e.g. merges c_oss curve from 0-200V and from 0-1000V):
+
     >>> import transistordatabase as tdb
     >>> c_oss_normal = tdb.csv2array('transistor_c_oss.csv', first_x_to_0=True)
     >>> c_oss_detail = tdb.csv2array('transistor_c_oss_detail.csv', first_x_to_0=True)
@@ -4145,6 +4149,7 @@ def print_TDB(filters: Optional[List[str]] = None, collection: str ="local") -> 
     :rtype: list
 
     :Example:
+
     >>> import transistordatabase as tdb
     >>> tdb.print_TDB()
     >>> # or
