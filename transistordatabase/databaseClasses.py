@@ -2,6 +2,7 @@ from __future__ import annotations
 import datetime
 import xml.etree.ElementTree as et
 import numpy as np
+import numpy.typing as npt
 import re
 import os
 from typing import List, Union, Optional
@@ -82,7 +83,7 @@ class Transistor:
     c_iss: Optional[List["VoltageDependentCapacitance"]]  #: List of VoltageDependentCapacitance. (Optional key)
     c_rss: Optional[List["VoltageDependentCapacitance"]]  #: List of VoltageDependentCapacitance. (Optional key)
     # Energy stored in c_oss
-    graph_v_ecoss: Optional[np.ndarray[np.float64]]  #: Member instance for storing the voltage dependant capacitance graph in the form of 2D numpy array. Units of Row 1 = V; Row 2 = J  (Optional key)
+    graph_v_ecoss: Optional[npt.NDArray[np.float64]]  #: Member instance for storing the voltage dependant capacitance graph in the form of 2D numpy array. Units of Row 1 = V; Row 2 = J  (Optional key)
 
     # Rated operation region
 
@@ -1888,7 +1889,7 @@ class Transistor:
         tau_total: Optional[float]  #: Sum of thermal_foster time constants of n-pole RC-network (scalar). Units in s (Optional key)
         # Transient data for extraction of the thermal_foster parameters specified above.
         # Represented as a 2xm Matrix where row 1 is the time and row 2 the temperature.
-        graph_t_rthjc: Optional["np.ndarray[np.float64]"]  #: Transient data for extraction of the thermal_foster parameters specified above. Units of Row 1 in s; Row 2 in K/W  (Optional key)
+        graph_t_rthjc: Optional[npt.NDArray[np.float64]]  #: Transient data for extraction of the thermal_foster parameters specified above. Units of Row 1 in s; Row 2 in K/W  (Optional key)
 
         def __init__(self, args):
             """
@@ -2918,7 +2919,7 @@ class Transistor:
         t_j: float  #: Junction temperature of switch\diode. (Mandatory key)
         v_g: float  #: Switch: Mandatory key, Diode: optional (standard diode useless, for GaN 'diode' necessary
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
-        graph_v_i: "np.ndarray[np.float64]"  #: Represented as a numpy 2D array where row 1 is the voltage and row 2 the current. Units of Row 1 = V; Row 2 = A (Mandatory key)
+        graph_v_i: npt.NDArray[np.float64]  #: Represented as a numpy 2D array where row 1 is the voltage and row 2 the current. Units of Row 1 = V; Row 2 = A (Mandatory key)
 
         def __init__(self, args):
             """
@@ -2967,7 +2968,7 @@ class Transistor:
         # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
         t_j: float  #: Junction temperature (Mandatory key)
         # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the capacitance.
-        graph_v_c: "np.ndarray[np.float64]"  #: Represented as a 2D numpy array where row 1 is the voltage and row 2 the capacitance. Units of Row 1 = V; Row 2 = A  (Mandatory key)
+        graph_v_c: npt.NDArray[np.float64]  #: Represented as a 2D numpy array where row 1 is the voltage and row 2 the capacitance. Units of Row 1 = V; Row 2 = A  (Mandatory key)
 
         def __init__(self, args):
             """
@@ -3044,8 +3045,8 @@ class Transistor:
         r_g: Optional[float]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
         i_x: Optional[float]  #: Scalar dataset-parameter - current rating. Units in A
         # Dataset. Only one of these is allowed. The other should be 'None'.
-        graph_i_e: Optional["np.ndarray[np.float64]"]  #: Units for Row 1 = A; Row 2 = J
-        graph_r_e: Optional["np.ndarray[np.float64]"]  #: Units for Row 1 = Ohm; Row 2 = J
+        graph_i_e: Optional[npt.NDArray[np.float64]]  #: Units for Row 1 = A; Row 2 = J
+        graph_r_e: Optional[npt.NDArray[np.float64]]  #: Units for Row 1 = Ohm; Row 2 = J
 
         # ToDo: Add MOSFET capacitance. Discuss with Philipp.
         # ToDo: Add additional class for linearized switching loss model with capacities. (See infineon application
@@ -3163,12 +3164,12 @@ class Transistor:
         # type hints
         v_channel: Optional[float]
         r_channel: Optional[float]
-        e_on: Optional["np.ndarray[np.float64]"]  #: Units: Row 1: A; Row 2: J
-        e_off: Optional["np.ndarray[np.float64]"]  #: Units: Row 1: A; Row 2: J
-        e_rr: Optional["np.ndarray[np.float64]"]  #: Units: Row 1: A; Row 2: J
+        e_on: Optional[npt.NDArray[np.float64]]  #: Units: Row 1: A; Row 2: J
+        e_off: Optional[npt.NDArray[np.float64]]  #: Units: Row 1: A; Row 2: J
+        e_rr: Optional[npt.NDArray[np.float64]]  #: Units: Row 1: A; Row 2: J
         v_switching_ref: Optional[float]  #: Unit: V
-        e_oss: Optional["np.ndarray[np.float64]"]  #: Units: Row 1: V; Row 2: J
-        q_oss: Optional["np.ndarray[np.float64]"]  #: Units: Row 1: V; Row 2: C
+        e_oss: Optional[npt.NDArray[np.float64]]  #: Units: Row 1: V; Row 2: J
+        q_oss: Optional[npt.NDArray[np.float64]]  #: Units: Row 1: V; Row 2: C
         parallel_transistors: Optional[float]  #: Unit: Number
 
         def __init__(self):
@@ -3478,10 +3479,10 @@ class Transistor:
         # Type of the dataset:
         # dpt_u_i: U/t I/t graph from double pulse measurements
         dataset_type: str  #:  e.g. dpt_u_i (Mandatory key)
-        dpt_on_uds: [List["np.ndarray[np.float64]"], None]
-        dpt_on_id: [List["np.ndarray[np.float64]"], None]
-        dpt_off_uds: [List["np.ndarray[np.float64]"], None]
-        dpt_off_id: [List["np.ndarray[np.float64]"], None]
+        dpt_on_uds: [List[npt.NDArray[np.float64]], None]
+        dpt_on_id: [List[npt.NDArray[np.float64]], None]
+        dpt_off_uds: [List[npt.NDArray[np.float64]], None]
+        dpt_off_id: [List[npt.NDArray[np.float64]], None]
 
         def __init__(self, args):
             """
@@ -3664,6 +3665,10 @@ def get_xml_data(file):
     are_variables_defined = package.find('plecs:Variables', namespaces).text
     if not are_variables_defined:
         semiconductor_data = package.find('plecs:SemiconductorData', namespaces)
+        energy_on_list = []
+        energy_off_list = []
+        channel_list = []
+        foster_args = {}
         for character_node in semiconductor_data:
             if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOnLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
                 axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
@@ -3674,7 +3679,6 @@ def get_xml_data(file):
                 temperature_axis = [float(x) for x in axis_string.split()]
                 energy_node = character_node.find('plecs:Energy', namespaces)
                 scale = float(energy_node.attrib['scale'])
-                energy_on_list = []
                 for tdx, temp_node in enumerate(energy_node.findall('plecs:Temperature', namespaces)):
                     for vdx, vltg_node in enumerate(temp_node.findall('plecs:Voltage', namespaces)):
                         if not voltage_axis[vdx]:
@@ -3698,7 +3702,6 @@ def get_xml_data(file):
                 temperature_axis = [float(x) for x in axis_string.split()]
                 energy_node = character_node.find('plecs:Energy', namespaces)
                 scale = float(energy_node.attrib['scale'])
-                energy_off_list = []
                 for tdx, temp_node in enumerate(energy_node.findall('plecs:Temperature', namespaces)):
                     for vdx, vltg_node in enumerate(temp_node.findall('plecs:Voltage', namespaces)):
                         if not voltage_axis[vdx]:
@@ -3720,7 +3723,6 @@ def get_xml_data(file):
                 temperature_axis = [float(x) for x in axis_string.split()]
                 voltage_drop_node = character_node.find('plecs:VoltageDrop', namespaces)
                 scale = float(voltage_drop_node.attrib['scale'])
-                channel_list = []
                 for tdx, temp_node in enumerate(voltage_drop_node.findall('plecs:Temperature', namespaces)):
                     channel_dict = {}
                     channel_data = [float(x) * scale for x in temp_node.text.split()]
@@ -3730,7 +3732,7 @@ def get_xml_data(file):
                     channel_list.append(channel_dict)
         thermal_data = package.find('plecs:ThermalModel', namespaces)
         if thermal_data[0].attrib['type'] == 'Foster':
-            foster_args, r_par, tau_par = dict(), list(), list()
+            r_par, tau_par = list(), list()
             for attr in thermal_data[0].findall('plecs:RTauElement', namespaces):
                 r_par.append(float(attr.attrib['R']))
                 tau_par.append(float(attr.attrib['Tau']) if attr.attrib['Tau'] else None)
@@ -3951,16 +3953,14 @@ def get_loss_curves(loss_data, plecs_holder, loss_type, v_g, is_recovery_loss):
     :rtype: dict
     """
     for energy_dict in loss_data:
-        if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict[
-            'graph_i_e'] is not None:
+        if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict['graph_i_e'] is not None:
             try:
                 if limit_current and limit_current > max(energy_dict['graph_i_e'][0]):
                     limit_current = max(energy_dict['graph_i_e'][0])
             except NameError:
                 limit_current = max(energy_dict['graph_i_e'][0])
     for energy_dict in loss_data:
-        if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict[
-            'graph_i_e'] is not None:
+        if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict['graph_i_e'] is not None:
             interp_current = np.linspace(0, limit_current, 20)
             loss_energy = np.interp(interp_current, energy_dict['graph_i_e'][0], energy_dict['graph_i_e'][1])
             if 'Energy' not in plecs_holder[loss_type]:
@@ -4179,7 +4179,7 @@ def print_TDB(filters: Optional[List[str]] = None, collection: str = "local") ->
     >>> import transistordatabase as tdb
     >>> tdb.print_TDB()
     >>> # or
-    >>> tdb.print_TDB('type')
+    >>> tdb.print_TDB(collection = 'type')
     """
     # Note: Never use mutable default arguments
     # see https://florimond.dev/en/posts/2018/08/python-mutable-defaults-are-the-source-of-all-evil/
@@ -4397,7 +4397,7 @@ def update_from_fileexchange(collection: str = "local", overwrite: bool = True) 
                     print(f"Update Transistor: {transistor.name}")
 
 
-def import_json(path: str) -> dict:
+def import_json(path: str) -> Transistor:
     """
     Import a json-file to your local transistor database
 
