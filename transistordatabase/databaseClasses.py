@@ -871,7 +871,7 @@ class Transistor:
                              "A list of available operating points is printed above.")
         return dataset
 
-    def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply, normalize_t_to_v):
+    def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply, normalize_t_to_v) -> Transistor.SwitchEnergyData:
         """
         Calculate loss curves for other gate resistor than the standard one.
         This function uses i_e loss curve in combination with r_e loss curve, to calculate a new i_e loss curve for
@@ -2683,9 +2683,9 @@ class Transistor:
                 nodes = np.array([e_rr_t_js / normalize_t_to_v, e_rr_v_gs]).transpose()
                 index_e_rr = distance.cdist([node], nodes).argmin()
 
-                print(f"run diode.find_approx_wp: closest working point for {t_j = } °C and {v_g = } V:")
-                print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
-                print(f"err:     t_j = {e_rrs[index_e_rr].t_j} °C and v_g = {e_rrs[index_e_rr].v_g} V")
+                print("run diode.find_approx_wp: closest working point for t_j = {0} °C and v_g = {1} V:".format(t_j, v_g))
+                print("channel: t_j = {0} °C and v_g = {1} V".format(self.channel[index_channeldata].t_j, self.channel[index_channeldata].v_g))
+                print("err:     t_j = {0} °C and v_g = {1} V".format(e_rrs[index_e_rr].t_j, e_rrs[index_e_rr].v_g))
 
             return self.channel[index_channeldata], e_rrs[index_e_rr]
 
