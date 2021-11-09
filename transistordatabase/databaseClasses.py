@@ -3479,10 +3479,19 @@ class Transistor:
         # Type of the dataset:
         # dpt_u_i: U/t I/t graph from double pulse measurements
         dataset_type: str  #:  e.g. dpt_u_i (Mandatory key)
-        dpt_on_uds: [List[npt.NDArray[np.float64]], None]
-        dpt_on_id: [List[npt.NDArray[np.float64]], None]
-        dpt_off_uds: [List[npt.NDArray[np.float64]], None]
-        dpt_off_id: [List[npt.NDArray[np.float64]], None]
+        dpt_on_uds: Optional[List[npt.NDArray[np.float64]]]
+        dpt_on_id: Optional[List[npt.NDArray[np.float64]]]
+        dpt_off_uds: Optional[List[npt.NDArray[np.float64]]]
+        dpt_off_id: Optional[List[npt.NDArray[np.float64]]]
+        measurement_date: Optional["datetime.datetime"]  #: Specifies the date and time at which the measurement was done.
+        measurement_testbench: Optional[str]  #: Specifies the testbench used for the measurement.
+        # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
+        t_j: Optional[float]  #: Junction temperature. Units in °C
+        v_supply: Optional[float]  #: Supply voltage. Units in V
+        v_g: Optional[float]  #: Gate voltage. Units in V
+        v_g_off: Optional[float]  #: Gate voltage for turn off. Units in V
+        r_g: Optional[float]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
+        load_l: Optional[float]  #: Load inductance. Units in µH
 
         def __init__(self, args):
             """
@@ -3497,6 +3506,14 @@ class Transistor:
                 self.dpt_on_id = args.get('dpt_on_id')
                 self.dpt_off_uds = args.get('dpt_off_uds')
                 self.dpt_off_id = args.get('dpt_off_id')
+                self.v_supply = args.get('v_supply')
+                self.v_g = args.get('v_g')
+                self.v_g_off = args.get('v_g_off')
+                self.t_j = args.get('t_j')
+                self.load_l = args.get('load_l')
+                self.r_g = args.get('r_g')
+                self.measurement_date = args.get('measurement_date')
+                self.measurement_testbench = args.get('measurement_testbench')
             else:
                 self.dpt_on_uds = []
                 self.dpt_on_id = []
@@ -3516,6 +3533,235 @@ class Transistor:
             d['dpt_off_uds'] = [c.tolist() for c in self.dpt_off_uds]
             d['dpt_off_id'] = [c.tolist() for c in self.dpt_off_id]
             return d
+
+        def dpt_calculate_energies(self, integration_interval: str, dataset_type: str, energies: str):
+            """
+                Imports double pulse measurements and calculates switching losses to each given working point.
+
+                [1] options for the integration interval are based on following paper:
+                Link: https://ieeexplore.ieee.org/document/8515553
+
+                :param integration_interval: calculation standards for switching losses
+                :type integration_interval: str
+                :param dataset_type: defines what measurement set should should be calculated
+                :type dataset_type: str
+                :param energies: defines which switching energies should be calculated
+                :type energies: str
+
+
+                """
+
+            if integration_interval == 'IEC 60747-9':
+                off_vds_limit = 0.1
+                off_is_limit = 0.02
+                on_vds_limit = 0.02
+                on_is_limit = 0.1
+            elif integration_interval == 'Mitsubishi':
+                off_vds_limit = 0.1
+                off_is_limit = 0.1
+                on_vds_limit = 0.1
+                on_is_limit = 0.1
+            elif integration_interval == 'Infineon':
+                off_vds_limit = 0.1
+                off_is_limit = 0.02
+                on_vds_limit = 0.02
+                on_is_limit = 0.1
+            elif integration_interval == 'Wolfspeed':
+                off_vds_limit = 0
+                off_is_limit = -0.1
+                on_vds_limit = -0.1
+                on_is_limit = 0
+            else:
+                off_vds_limit = 0.1
+                off_is_limit = 0.1
+                on_vds_limit = 0.1
+                on_is_limit = 0.1
+
+            e_off_meas = Union[dict, None]
+            e_on_meas = Union[dict, None]
+            label_x_plot = 'Id / A'
+
+            if dataset_type == 'graph_r_e':
+                label_x_plot = 'Ron / Ohm'
+
+            if energies == 'E_off' or energies == 'both':
+
+                sample_point = 0
+                measurement_points = len(self.dpt_off_id)
+                e_off = []
+
+                while measurement_points > sample_point:
+                    # Load Uds and Id pairs in increasing order
+                    vds_temp = self.dpt_off_uds[sample_point]
+                    id_temp = self.dpt_off_id[sample_point]
+
+                    sample_length = len(vds_temp)
+                    sample_interval = abs(vds_temp[1, 0] - vds_temp[2, 0])
+                    avg_interval = int(sample_length * 0.05)
+
+                    vds_avg_max = 0
+                    id_avg_max = 0
+
+                    ##############################
+                    # Find the max. Id in steady state
+                    ##############################
+                    i = 0
+                    while i <= avg_interval:
+                        id_avg_max = id_avg_max + id_temp[i, 1] / avg_interval
+                        i += 1
+
+                    ##############################
+                    # Find the max. Uds in steady state
+                    ##############################
+                    i = 0
+                    while i <= avg_interval:
+                        vds_avg_max = vds_avg_max + vds_temp[(sample_length - 1 - i), 1] / avg_interval
+                        i += 1
+
+                    ##############################
+                    # Find the starting point of the Eoff integration
+                    # i equals the lower integration limit
+                    ##############################
+                    i = 0
+                    e_off_temp = 0
+                    while vds_temp[i, 1] < (vds_avg_max * off_vds_limit):
+                        i += 1
+
+                    time_correction = 0
+
+                    ##############################
+                    # Integrate the power with predefined integration limits
+                    ##############################
+                    while id_temp[i - time_correction, 1] >= (id_avg_max * off_is_limit):
+                        e_off_temp = e_off_temp + (vds_temp[i, 1] * id_temp[i - time_correction, 1] * sample_interval)
+                        i += 1
+
+                    if dataset_type == 'graph_r_e':
+                        e_off.append([self.dpt_off_id[sample_point][1], e_off_temp])
+                    else:
+                        e_off.append([id_avg_max, e_off_temp])
+
+                    sample_point += 1
+
+                e_off_0 = [item[0] for item in e_off]
+                e_off_1 = [item[1] for item in e_off]
+
+                e_off_meas = {'dataset_type': dataset_type,
+                              't_j': self.t_j,
+                              'load_l': self.load_l,
+                              'measurement_date': self.measurement_date,
+                              'measurement_testbench': self.measurement_testbench,
+                              'v_supply': self.v_supply,
+                              'v_g': self.v_g,
+                              'v_g_off': self.v_g_off,
+                              'r_g': self.r_g,
+                              'graph_i_e': np.array([e_off_0, e_off_1]),
+                              'graph_r_e': np.array([e_off_0, e_off_1]),
+                              'e_x': float(e_off_1[0]),
+                              'i_x': id_avg_max}
+
+                ##############################
+                # Plot Eoff
+                ##############################
+                x = [sub[0] for sub in e_off]
+                y = [sub[1] * 1000000 for sub in e_off]
+                fig, ax1 = plt.subplots()
+                color = 'tab:red'
+                ax1.set_xlabel(label_x_plot)
+                ax1.set_ylabel("Eoff / µJ", color=color)
+                ax1.plot(x, y, marker='o', color=color)
+                plt.grid('both')
+                plt.show()
+
+            if energies == 'E_on' or energies == 'both':
+
+                sample_point = 0
+                measurement_points = len(self.dpt_on_id)
+                e_on = []
+
+                while measurement_points > sample_point:
+                    # Load Uds and Id pairs in increasing order
+                    vds_temp = self.dpt_on_uds[sample_point]
+                    id_temp = self.dpt_on_id[sample_point]
+
+                    sample_length = len(vds_temp)
+                    sample_interval = abs(vds_temp[1, 0] - vds_temp[2, 0])
+                    avg_interval = int(sample_length * 0.05)
+                    vds_avg_max = 0
+                    id_avg_max = 0
+
+                    ##############################
+                    # Find the max. Id in steady state
+                    ##############################
+                    i = 0
+                    while i <= avg_interval:
+                        id_avg_max = id_avg_max + (id_temp[(sample_length - 3 - i), 1] / avg_interval)
+                        i += 1
+
+                    ##############################
+                    # Find the max. Uds in steady state
+                    ##############################
+                    i = 0
+                    while i <= avg_interval:
+                        vds_avg_max = vds_avg_max + (vds_temp[i, 1] / avg_interval)
+                        i += 1
+
+                    ##############################
+                    # Find the starting point of the Eon integration
+                    # i equals the lower integration limit
+                    ##############################
+                    i = 0
+                    e_on_temp = 0
+                    while id_temp[i, 1] < (id_avg_max * on_is_limit):
+                        i += 1
+
+                    time_correction = 0
+                    ##############################
+                    # Integrate the power with predefined integration limits
+                    ##############################
+                    while vds_temp[i + time_correction, 1] >= (vds_avg_max * on_vds_limit):
+                        e_on_temp = e_on_temp + (vds_temp[i + time_correction, 1] * id_temp[i, 1] * sample_interval)
+                        i += 1
+
+                    if dataset_type == 'graph_r_e':
+                        e_on.append([self.dpt_on_id[sample_point][1], e_on_temp])
+                    else:
+                        e_on.append([id_avg_max, e_on_temp])
+
+                    sample_point += 1
+
+                e_on_0 = [item[0] for item in e_on]
+                e_on_1 = [item[1] for item in e_on]
+
+                e_on_meas = {'dataset_type': dataset_type,
+                             't_j': self.t_j,
+                             'load_l': self.load_l,
+                             'measurement_date': self.measurement_date,
+                             'measurement_testbench': self.measurement_testbench,
+                             'v_supply': self.v_supply,
+                             'v_g': self.v_g,
+                             'v_g_off': self.v_g_off,
+                             'r_g': self.r_g,
+                             'graph_i_e': np.array([e_on_0, e_on_1]),
+                             'graph_r_e': np.array([e_on_0, e_on_1]),
+                             'e_x': float(e_on_1[0]),
+                             'i_x': id_avg_max}
+
+                ##############################
+                # Plot Eon
+                ##############################
+                x = [sub[0] for sub in e_on]
+                y = [sub[1] * 1000000 for sub in e_on]
+                fig, ax1 = plt.subplots()
+                color = 'tab:red'
+                ax1.set_xlabel(label_x_plot)
+                ax1.set_ylabel("Eon / µJ", color=color)
+                ax1.plot(x, y, marker='o', color=color)
+                plt.grid('both')
+                plt.show()
+
+            dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas}
+            return dpt_dict
 
     def add_dpt_measurement(self, measurement_data):
         """
@@ -4289,7 +4535,7 @@ def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
     if 'raw_measurement_data' in transistor_args:
         for i in range(len(transistor_args['raw_measurement_data'])):
             for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_uds'])):
-                transistor_args['raw_measurement_data'][i]['dpt_on_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
+                transistor_args['raw_measurement_data'][i]['dpt_on_uds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_uds'][u])
             for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_id'])):
                 transistor_args['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
             for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_uds'])):
