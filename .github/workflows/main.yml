@@ -34,5 +34,5 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-          python3 tests/tests_databaseClasses.py
+          python3 tests/test_databaseClasses.py
           
