@@ -3199,8 +3199,8 @@ class Transistor:
         :return: transistor object with parallel transistors
 
         :Example:
-
-        >>> transistor = load({'name': 'Infineon_FF200R12KE3'})
+        >>> import transistordatabase as tdb
+        >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
         >>> parallel_transistorobject = transistor.parallel_transistors(3)
 
         """
@@ -4162,20 +4162,19 @@ def merge_curve(curve, curve_detail):
     return merged_curve
 
 
-def print_TDB(filters: Optional[List[str]] = None, collection: str = "local") -> List[str]:
+def print_TDB(filters: Optional[List[str]] = None, collection_name: str = "local") -> List[str]:
     """
     Print all transistorelements stored in the local database
 
     :param filters: filters for searching the database, e.g. 'name' or 'type'
     :type filters: List[str]
-    :param collection: Choose database name in local mongodb client. Default name is "collection"
-    :type collection: str
+    :param collection_name: Choose database name in local mongodb client. Default name is "collection"
+    :type collection_name: str
 
     :return: Return a list with all transistor objects fitting to the search-filter
     :rtype: list
 
     :Example:
-
     >>> import transistordatabase as tdb
     >>> tdb.print_TDB()
     >>> # or
@@ -4186,8 +4185,8 @@ def print_TDB(filters: Optional[List[str]] = None, collection: str = "local") ->
     # This is the better solution
     filters = filters or []
 
-    if collection == "local":
-        collection = connect_local_TDB()
+    if collection_name == "local":
+        mongodb_collection = connect_local_TDB()
     if not isinstance(filters, list):
         if isinstance(filters, str):
             filters = [filters]
@@ -4199,7 +4198,7 @@ def print_TDB(filters: Optional[List[str]] = None, collection: str = "local") ->
         filters.append("name")
     """Filters must be specified according to the respective objects they're associated with. 
     e.g. 'type' for type of Transistor or 'diode.technology' for technology of Diode."""
-    returned_cursor = collection.find({}, filters)
+    returned_cursor = mongodb_collection.find({}, filters)
     name_list = []
     for tran in returned_cursor:
         print(tran)
@@ -4223,8 +4222,10 @@ def connect_TDB(host):
 
 def connect_local_TDB():
     """
-    A method for establishing connection with transistordatabase_exchange. Internally used by update_from_fileexchange() method to sync the local with
-    transistordatabase_File_Exchange and load() methods for saving and loading the transistor object to local mongodb-database.
+    A method for establishing connection with transistordatabase_exchange.
+    Internally used by
+      - update_from_fileexchange() method to sync the local with transistordatabase_File_Exchange
+      - load() methods for saving and loading the transistor object to local mongodb-database.
 
     :return: transistor_database collection
 
@@ -4234,20 +4235,23 @@ def connect_local_TDB():
     return myclient.transistor_database.collection
 
 
-def load(dict_filter, collection="local"):
+def load(dict_filter: dict, collection_name: str = "local"):
     """
     load a transistor from your local mongodb-database
 
     :param dict_filter: element filter, see example
-    :param collection: mongodb connection, predefined value
+    :type dict_filter: dict
+    :param collection_name: mongodb connection, predefined value
+    :type collection_name: str
 
-    :return: transistor
+    :return: transistor object
+    :rtype: Transistor
 
     :Example:
-
-    >>> transistor_imported = import_json('CREE_C3M0016120K.json')
+    >>> import transistordatabase as tdb
+    >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
     """
-    if collection == "local":
+    if collection_name == "local":
         collection = connect_local_TDB()
     # ToDo: Implement case where different transistors fit the filter criteria.
     return convert_dict_to_transistor_object(collection.find_one(dict_filter))
@@ -4405,6 +4409,10 @@ def import_json(path: str) -> Transistor:
     :type path: str
 
     :return: transistor dictionary, loaded from the .json-file
+
+    :Example:
+    >>> import transistordatabase as tdb
+    >>> transistor_imported = tdb.import_json('CREE_C3M0016120K.json')
     """
     if isinstance(path, str):
         with open(path, 'r') as myfile:
