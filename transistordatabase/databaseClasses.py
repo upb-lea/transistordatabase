@@ -4551,29 +4551,12 @@ def dpt_save_data(measurement_dict: dict):
         [1] options for the integration interval are based on following paper:
         Link: https://ieeexplore.ieee.org/document/8515553
 
-        :param path: path to double pulse measurements
-        :type path: str
-        :param energies: defines which switching energies should be calculated
-        :type energies: str
-        :param safe_RAW_data: safe the double pulse measurements to the db
-        :type safe_RAW_data: bool
-        :param time_correction: defines wheather a runtime correction process should be done
-        :type time_correction: bool
-        :param integration_interval: gives the integration interval as stated in [1]
-        :type integration_interval: str
-        :param v_g: Gate-Sourve Voltage
-        :type integration_interval: int
         :param measurement_dict: dictionary with above mentioned parameters
         :type measurement_dict: dict
 
         """
 
-    if measurement_dict['integration_interval'] == 'IEC 60747-8' or 'integration_interval' in measurement_dict is None:
-        off_vds_limit = 0.1
-        off_is_limit = 0.1
-        on_vds_limit = 0.1
-        on_is_limit = 0.1
-    elif measurement_dict['integration_interval'] == 'IEC 60747-9':
+    if measurement_dict['integration_interval'] == 'IEC 60747-9':
         off_vds_limit = 0.1
         off_is_limit = 0.02
         on_vds_limit = 0.02
@@ -4593,6 +4576,11 @@ def dpt_save_data(measurement_dict: dict):
         off_is_limit = -0.1
         on_vds_limit = -0.1
         on_is_limit = 0
+    else:
+        off_vds_limit = 0.1
+        off_is_limit = 0.1
+        on_vds_limit = 0.1
+        on_is_limit = 0.1
 
     # Get a list of all the csv files
     csv_files = glob.glob(measurement_dict['path'])
