@@ -1,3 +1,4 @@
+.. sectnum::
 
 ###########################
 Why the transistordatabase?
@@ -5,7 +6,7 @@ Why the transistordatabase?
 
 When developing electronics, you need to calculate and simulate your schematic before building up the hardware. When it comes to the point of choosing a transistor, there is typically a lot of trouble with different programs. In typical cases, you use more than one program for your calculation, e.g. a self-written program for a first guess, and a schematic simulator to verify your results. Your colleague is working on another electronics topology, may using two other programs. Both of you have stored a few transistor-files on your computers. But due to other programs and another way of using them in a self-written program, your transistors will never be compatible with your colleagures program. If he want's to use your transistors, he needs to generate them compleatly new from the datasheets to be compatible with his programs. Sharing programs and transistors will result in frustraction. This happens also in the same office (university / company / students).
 
-The transistordatabase counteracts this problem. By a defined file format, you can handle these objects, export it to some propretery simulation software and share it by a .json-file to your colleagues or share it with the world by using the `transistor database file exchange git repository <https://github.com/upblea/transistordatabase_File_Exchange>`_.
+The transistordatabase counteracts this problem. By a defined file format, you can handle these objects, export it to some propretery simulation software and share it by a .json-file to your colleagues or share it with the world by using the `transistor database file exchange git repository <https://github.com/upblea/transistordatabase_File_Exchange>`__.
 
 .. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Why_transistordatabase.png
     :align: center
@@ -219,7 +220,7 @@ Use your local generated transistor, load it into your workspace and export it, 
     transistor_loaded = load({'name': 'CREE_C3M0016120K'})
     transistor_loaded.export_json()
 
-You can upload this file to the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`_  by generating a pull request.
+You can upload this file to the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`__  by generating a pull request.
 
 if you don't want to create a github account, you can also send the .json file to this :email:`email address <tdb@lea.upb.de>`.
 

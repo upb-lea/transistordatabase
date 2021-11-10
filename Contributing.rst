@@ -1,5 +1,6 @@
 .. contents:: **Table of Contents**
     :depth: 1
+    :local:
 
 Drawings
 ********
@@ -237,3 +238,7 @@ generate sphinx documentation on github pages
     # clean up old build data
     cd sphinx
     make clean
+
+.. |br| raw:: html
+
+      <br>
