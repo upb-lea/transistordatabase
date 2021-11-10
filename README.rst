@@ -86,14 +86,15 @@ Ubuntu
 
 All Operating systems: Install the transistor database
 ******************************************************
-Inside pycharm, create a new project. Select 'new environment using' -> 'Virtualenv'.
-As a base interpreter, select 'C:\Users\xxxxxx\AppData\Local\Programs\Python\Python39\Python.exe'. Click on create.
-Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package'
+Inside pycharm, create a new project. Select 'new environment using' -> 'Virtualenv'. |br|
+As a base interpreter, select 'C:\Users\xxxxxx\AppData\Local\Programs\Python\Python39\Python.exe'. Click on create.|br|
+Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package'|br|
 
 
 Complete minimal python example
 *******************************
 Copy this example to a new pycharm project.
+
 .. code-block::
 
     # load the python package
@@ -133,14 +134,14 @@ Transistor |br|
 +-Metadata |br|
 | |br|
 +-Switch |br|
-| +-Switch Metadata |br|
-| +-Channel Data |br|
-| +-Switching Data |br|
+    | +-Switch Metadata |br|
+    | +-Channel Data |br|
+    | +-Switching Data |br|
 | |br|
 +-Diode |br|
-| +-Diode Metadata |br|
-| +-Channel Data |br|
-| +-Switching Data |br|
+    | +-Diode Metadata |br|
+    | +-Channel Data |br|
+    | +-Switching Data |br|
 | |br|
 +-wp (temporary storage for further calculations) |br|
 
@@ -299,8 +300,8 @@ This function exports a virtual datasheet to see stored data in the database. Fu
 
 .. code-block::
 
-transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
-transistor.export_datasheet()
+    transistor = tdb.load({'name's: 'Fuji_2MBI100XAA120-50'})
+    transistor.export_datasheet()
 
 .. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Virtual_Datasheet.png
     :align: center
