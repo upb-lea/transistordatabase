@@ -2428,7 +2428,7 @@ class Transistor:
                         plt.yticks(rotation=90)
                 plt.legend(fontsize=5)
                 plt.xlabel('Current in A')
-                plt.ylabel('Loss-energy in J')
+                plt.ylabel('Loss energy in J')
                 plt.grid()
                 if buffer_req:
                     return get_img_raw_data(plt)
@@ -2476,7 +2476,7 @@ class Transistor:
                         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
                 plt.legend(fontsize=5)
                 plt.xlabel('External Gate Resistor in Ohm')
-                plt.ylabel('Loss-energy in J')
+                plt.ylabel('Loss energy in J')
                 plt.grid()
                 if buffer_req:
                     return get_img_raw_data(plt)
@@ -2810,7 +2810,7 @@ class Transistor:
                         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
                 plt.legend(fontsize=5)
                 plt.xlabel('Current in A')
-                plt.ylabel('Loss-energy in J')
+                plt.ylabel('Loss energy in J')
                 plt.grid()
                 if buffer_req:
                     return get_img_raw_data(plt)
@@ -2852,7 +2852,7 @@ class Transistor:
                         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
                 plt.legend(fontsize=5)
                 plt.xlabel('External Gate Resistor in Ohm')
-                plt.ylabel('Loss-energy in J')
+                plt.ylabel('Loss energy in J')
                 plt.grid()
                 if buffer_req:
                     return get_img_raw_data(plt)
