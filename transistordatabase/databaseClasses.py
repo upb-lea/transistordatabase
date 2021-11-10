@@ -3490,7 +3490,7 @@ class Transistor:
         v_supply: Optional[float]  #: Supply voltage. Units in V
         v_g: Optional[float]  #: Gate voltage. Units in V
         v_g_off: Optional[float]  #: Gate voltage for turn off. Units in V
-        r_g: Optional[float]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
+        r_g: Optional[List[npt.NDArray[np.float64]], float]  #: gate resistance. Units in Ohm
         load_l: Optional[float]  #: Load inductance. Units in µH
 
         def __init__(self, args):
@@ -3501,7 +3501,7 @@ class Transistor:
             """
 
             self.dataset_type = args.get('dataset_type')
-            if self.dataset_type == 'dpt_u_i':
+            if self.dataset_type == 'dpt_u_i' or self.dataset_type == 'dpt_u_i_r':
                 self.dpt_on_uds = args.get('dpt_on_uds')
                 self.dpt_on_id = args.get('dpt_on_id')
                 self.dpt_off_uds = args.get('dpt_off_uds')
@@ -3637,7 +3637,7 @@ class Transistor:
                         i += 1
 
                     if dataset_type == 'graph_r_e':
-                        e_off.append([self.dpt_off_id[sample_point][1], e_off_temp])
+                        e_off.append([self.r_g[sample_point], e_off_temp])
                     else:
                         e_off.append([id_avg_max, e_off_temp])
 
@@ -3671,7 +3671,7 @@ class Transistor:
                 ax1.set_ylabel("Eoff / µJ", color=color)
                 ax1.plot(x, y, marker='o', color=color)
                 plt.grid('both')
-                plt.show()
+                plt.show(block=True)
 
             if energies == 'E_on' or energies == 'both':
 
@@ -3724,7 +3724,7 @@ class Transistor:
                         i += 1
 
                     if dataset_type == 'graph_r_e':
-                        e_on.append([self.dpt_on_id[sample_point][1], e_on_temp])
+                        e_on.append([self.r_g[sample_point], e_on_temp])
                     else:
                         e_on.append([id_avg_max, e_on_temp])
 
@@ -3758,7 +3758,7 @@ class Transistor:
                 ax1.set_ylabel("Eon / µJ", color=color)
                 ax1.plot(x, y, marker='o', color=color)
                 plt.grid('both')
-                plt.show()
+                plt.show(block=True)
 
             dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas}
             return dpt_dict
@@ -4843,7 +4843,7 @@ def dpt_save_data(measurement_dict: dict):
     position_v_supply_start = csv_files[1].rfind("_", 0, position_v_supply)
     v_supply = int(csv_files[1][position_v_supply_start + 1:position_v_supply])
 
-    dpt_raw_data = {'dataset_type': 'dpt_u_i'}
+    dpt_raw_data = {}
     e_off_meas = Union[dict, None]
     e_on_meas = Union[dict, None]
 
@@ -4855,6 +4855,7 @@ def dpt_save_data(measurement_dict: dict):
         position_attribute_start = 'C_'
         position_attribute_end = 'R_'
         label_x_plot = 'Ron / Ohm'
+        r_g_on_list = []
 
     if measurement_dict['energies'] == 'E_off' or measurement_dict['energies'] == 'both':
         off_I_locations = []
@@ -4942,6 +4943,7 @@ def dpt_save_data(measurement_dict: dict):
 
             if measurement_dict['dataset_type'] == 'graph_r_e':
                 E_off.append([off_I_locations[sample_point][1], E_off_temp])
+                r_g_on_list.append(off_I_locations[sample_point][1])
             else:
                 E_off.append([Id_avg_max, E_off_temp])
 
@@ -4977,7 +4979,7 @@ def dpt_save_data(measurement_dict: dict):
         ax1.set_ylabel("Eoff / µJ", color=color)
         ax1.plot(x, y, marker='o', color=color)
         plt.grid('both')
-        plt.show()
+        plt.show(block=True)
 
     if measurement_dict['energies'] == 'E_on' or measurement_dict['energies'] == 'both':
         i = 0
@@ -5065,6 +5067,9 @@ def dpt_save_data(measurement_dict: dict):
             else:
                 E_on.append([Id_avg_max, E_on_temp])
 
+            if measurement_dict['dataset_type'] == 'graph_r_e' and measurement_dict['energies'] != 'both':
+                r_g_on_list.append(on_I_locations[sample_point][1])
+
             sample_point += 1
 
         E_on_0 = [item[0] for item in E_on]
@@ -5089,7 +5094,6 @@ def dpt_save_data(measurement_dict: dict):
         ##############################
         # Plot Eon
         ##############################
-        # ToDo Plot for different Rgs,Uds
         x = [sub[0] for sub in E_on]
         y = [sub[1] * 1000000 for sub in E_on]
         fig, ax1 = plt.subplots()
@@ -5098,8 +5102,22 @@ def dpt_save_data(measurement_dict: dict):
         ax1.set_ylabel("Eon / µJ", color=color)
         ax1.plot(x, y, marker='o', color=color)
         plt.grid('both')
-        plt.show()
+        plt.show(block=True)
 
+    dpt_raw_data |= {'t_j': t_j,
+                     'load_l': measurement_dict['load_l'],
+                     'measurement_date': measurement_dict['measurement_date'],
+                     'measurement_testbench': measurement_dict['measurement_testbench'],
+                     'v_supply': v_supply,
+                     'v_g': measurement_dict['v_g'],
+                     'v_g_off': measurement_dict['v_g_off']}
+
+    if measurement_dict['dataset_type'] == 'graph_r_e':
+        dpt_raw_data |= {'dataset_type': 'dpt_u_i_r',
+                         'r_g': r_g_on_list}
+    else:
+        dpt_raw_data |= {'dataset_type': 'dpt_u_i',
+                         'r_g': r_g}
     dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'raw_measurement_data': dpt_raw_data}
     return dpt_dict
 
