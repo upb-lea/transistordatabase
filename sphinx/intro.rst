@@ -1,5 +1,13 @@
+.. sectnum::
+
 ############
 Introduction
 ############
 
-.. include:: ../README
+.. include:: ../README.rst
+
+############
+Contributing
+############
+
+.. include:: ../Contributing.rst

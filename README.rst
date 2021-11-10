@@ -1,8 +1,3 @@
-.. sectnum::
-
-############
-Readme
-############
 
 Why the transistordatabase?
 *****************************
@@ -36,7 +31,7 @@ Functionality examples:
 
 Complete documentation
 **********************
-The complete documentation can be found `here <https://upb-lea.github.io/transistordatabase/main/transistordatabase.html>`_.
+The complete documentation can be found `here <https://upb-lea.github.io/transistordatabase/main/transistordatabase.html>`__.
 
 
 ############
@@ -48,7 +43,7 @@ Windows
 
 Install Mongodb
 ---------------
-For the first usage, you need to install mongodb. Install with standard settings. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`_.
+For the first usage, you need to install mongodb. Install with standard settings. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`__.
 
 Install git
 ---------------
@@ -60,7 +55,7 @@ If you already have git installed, make sure you are using the latest version.
 
 Install Python
 --------------
-Install latest Python version: `Link <https://www.python.org/>`_.
+Install latest Python version: `Link <https://www.python.org/>`__.
 
 Install Pycharm
 ---------------
@@ -225,7 +220,7 @@ Use your local generated transistor, load it into your workspace and export it, 
 
 You can upload this file to the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`_  by generating a pull request.
 
-if you don't want to create a github account, you can also send the .json file to this `email address <mailto:tdb@lea.upb.de>.`_.
+if you don't want to create a github account, you can also send the .json file to this :email:`email address <tdb@lea.upb.de>`.
 
 Usage of Transistor.wp. in your programs
 *********************************************
@@ -377,6 +372,7 @@ Output is a .mat-file, you can load in your matlab program to simulate. Now, you
 Export to Matlab/Octave
 ***********************
 Python dictionary can be exported to Matlab, see the following example:
+
 .. code-block::
 
     transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
@@ -391,6 +387,7 @@ A .mat-file is generated, the exporting path will be displayed in the python con
 #######
 Others
 #######
+
 Roadmap
 *******
 Planned features in 2021
@@ -409,7 +406,7 @@ Please use the issues report button within github to report bugs.
 
 Changelog
 ---------
-Find the changelog `here <https://github.com/upb-lea/transistordatabase/blob/main/CHANGELOG.md>`_
+Find the changelog `here <https://github.com/upb-lea/transistordatabase/blob/main/CHANGELOG.md>`__.
 
 Contributing
 ------------

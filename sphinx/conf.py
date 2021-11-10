@@ -29,7 +29,7 @@ release = '0.2.14'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 sys.path.insert(0, os.path.abspath('_extensions'))
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.todo', 'sphinx_multiversion', 'sphinx_rtd_theme']
+extensions = ['sphinxcontrib.email', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.todo', 'sphinx_multiversion', 'sphinx_rtd_theme']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -79,9 +79,9 @@ html_theme_options = {
 
 html_context = {
     'display_github': True,
-    'github_user': 'Mohan Nagella',
-    'github_repo': 'transistordatabse',
-    'github_version': 'main/docs/',
+    'github_user': 'upb-lea',
+    'github_repo': 'transistordatabase',
+    'github_version': 'database-edits/sphinx/',
 }
 
 templates_path = ["_templates"]
