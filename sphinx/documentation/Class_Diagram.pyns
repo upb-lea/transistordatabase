@@ -1,0 +1,23 @@
+# PynSource Version 1.2
+{'type':'meta', 'info1':'Lorem ipsum dolor sit amet, consectetur adipiscing elit is latin. Comments are saved.'}
+{'type':'umlshape', 'id':'Transistor', 'x':412, 'y':10, 'width':218, 'height':1050, 'attrs': '_id|author|c_iss|c_iss_fix|c_oss|c_oss_fix|c_rss|c_rss_fix|comment|cooling_area|creation_date|datasheet_date|datasheet_hyperlink|datasheet_version|diode|graph_v_ecoss|housing_area|housing_type|i_abs_max|i_cont|last_modified|manufacturer|name|r_g_int|r_th_cs|r_th_diode_cs|r_th_switch_cs|switch|t_c_max|technology|template_date|template_version|type|v_abs_max|wp', 'meths': '__eq__|__init__|buildList|calc_lin_channel|calc_object_i_e|calc_v_eoss|calc_v_qoss|convert_to_dict|export_datasheet|export_geckocircuits|export_json|export_matlab|export_plecs|export_simulink_loss_model|get_curve_data|get_object_i_e|get_object_i_e_simplified|get_object_r_e_simplified|get_object_v_i|isvalid_dict|parallel_transistors|plot_v_eoss|plot_v_qoss|quickstart_wp|save|update_wp|validate_transistor'}
+{'type':'umlshape', 'id':'FosterThermalModel', 'x':1368, 'y':455, 'width':190, 'height':234, 'attrs': 'c_th_total|c_th_vector|graph_t_rthjc|r_th_total|r_th_vector|tau_total|tau_vector', 'meths': '__init__|collect_data|convert_to_dict|get_plots'}
+{'type':'umlshape', 'id':'Switch', 'x':976, 'y':21, 'width':186, 'height':362, 'attrs': 'channel|comment|e_off|e_on|linearized_switch|manufacturer|t_j_max|technology|thermal_foster', 'meths': '__init__|collect_data|convert_to_dict|find_approx_wp|find_next_gate_voltage|plot_all_channel_data|plot_channel_data_temp|plot_channel_data_vge|plot_energy_data|plot_energy_data_r'}
+{'type':'umlshape', 'id':'Diode', 'x':973, 'y':750, 'width':186, 'height':314, 'attrs': 'channel|comment|e_rr|linearized_diode|manufacturer|t_j_max|technology|thermal_foster', 'meths': '__init__|collect_data|convert_to_dict|find_approx_wp|find_next_gate_voltage|plot_all_channel_data|plot_energy_data|plot_energy_data_r'}
+{'type':'umlshape', 'id':'LinearizedModel', 'x':1156, 'y':482, 'width':160, 'height':170, 'attrs': 'i_channel|r_channel|t_j|v0_channel|v_g', 'meths': '__init__|convert_to_dict'}
+{'type':'umlshape', 'id':'ChannelData', 'x':997, 'y':485, 'width':130, 'height':154, 'attrs': 'graph_v_i|t_j|v_g', 'meths': '__init__|convert_to_dict|plot_graph'}
+{'type':'umlshape', 'id':'VoltageDependentCapacitance', 'x':29, 'y':408, 'width':280, 'height':138, 'attrs': 'graph_v_c|t_j', 'meths': '__init__|convert_to_dict|get_plots'}
+{'type':'umlshape', 'id':'SwitchEnergyData', 'x':794, 'y':440, 'width':170, 'height':250, 'attrs': 'dataset_type|e_x|graph_i_e|graph_r_e|i_x|r_g|t_j|v_g|v_supply', 'meths': '__init__|convert_to_dict|plot_graph'}
+{'type':'umlshape', 'id':'WP', 'x':68, 'y':620, 'width':170, 'height':282, 'attrs': 'diode_r_channel|diode_v_channel|e_off|e_on|e_oss|e_rr|parallel_transistors|q_oss|r_channel|switch_r_channel|switch_v_channel|v_channel|v_switching_ref', 'meths': '__init__'}
+{'type':'edge', 'id':'Switch_to_Transistor', 'source':'Switch', 'target':'Transistor', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Diode_to_Transistor', 'source':'Diode', 'target':'Transistor', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ChannelData_to_Switch', 'source':'ChannelData', 'target':'Switch', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'SwitchEnergyData_to_Diode', 'source':'SwitchEnergyData', 'target':'Diode', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'SwitchEnergyData_to_Switch', 'source':'SwitchEnergyData', 'target':'Switch', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ChannelData_to_Diode', 'source':'ChannelData', 'target':'Diode', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'LinearizedModel_to_Switch', 'source':'LinearizedModel', 'target':'Switch', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'LinearizedModel_to_Diode', 'source':'LinearizedModel', 'target':'Diode', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'FosterThermalModel_to_Switch', 'source':'FosterThermalModel', 'target':'Switch', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'FosterThermalModel_to_Diode', 'source':'FosterThermalModel', 'target':'Diode', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'VoltageDependentCapacitance_to_Transistor', 'source':'VoltageDependentCapacitance', 'target':'Transistor', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'WP_to_Transistor', 'source':'WP', 'target':'Transistor', 'uml_edge_type': 'composition'}
