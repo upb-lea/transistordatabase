@@ -1,15 +1,7 @@
-.. sectnum::
 
-#################
-Table of contents
-#################
-
-* Drawings
-* Developer Installation 
-* Write Code
-* Write Tests 
-* Generate pip Package
-
+.. contents:: **Table of Contents**
+    :depth: 1
+.. section-numbering::
 
 ########
 Drawings
