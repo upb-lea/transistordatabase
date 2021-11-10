@@ -12,18 +12,14 @@ When developing electronics, you need to calculate and simulate your schematic b
 The transistordatabase counteracts this problem. By a defined file format, you can handle these objects, export it to some propretery simulation software and share it by a .json-file to your colleagues or share it with the world by using the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`_.
 
 .. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Why_transistordatabase.png
-    :width: 500px
     :align: center
-    :height: 200px
     :alt: Why transistor database?
 
 Functionality overview
 ***********************
 
 .. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Workflow.png
-    :width: 650px
     :align: center
-    :height: 350px
     :alt: Workflow
 
 Functionality examples:
@@ -87,8 +83,8 @@ Ubuntu
 All Operating systems: Install the transistor database
 ******************************************************
 Inside pycharm, create a new project. Select 'new environment using' -> 'Virtualenv'. |br|
-As a base interpreter, select 'C:\Users\xxxxxx\AppData\Local\Programs\Python\Python39\Python.exe'. Click on create.|br|
-Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package'|br|
+As a base interpreter, select 'C:\Users\xxxxxx\AppData\Local\Programs\Python\Python39\Python.exe'. Click on create. |br|
+Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package' |br|
 
 
 Complete minimal python example
@@ -134,14 +130,14 @@ Transistor |br|
 +-Metadata |br|
 | |br|
 +-Switch |br|
-    | +-Switch Metadata |br|
-    | +-Channel Data |br|
-    | +-Switching Data |br|
+| +-Switch Metadata |br|
+| +-Channel Data |br|
+| +-Switching Data |br|
 | |br|
 +-Diode |br|
-    | +-Diode Metadata |br|
-    | +-Channel Data |br|
-    | +-Switching Data |br|
+| +-Diode Metadata |br|
+| +-Channel Data |br|
+| +-Switching Data |br|
 | |br|
 +-wp (temporary storage for further calculations) |br|
 
