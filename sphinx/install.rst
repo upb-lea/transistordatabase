@@ -12,10 +12,18 @@ For the first usage, you need to install mongodb. Install with standard settings
 Install git
 ---------------
 `Git Installation file <https://git-scm.com/download/win>`_.
+If you already have git installed, make sure you are using the latest version.
+
+.. note::
+    During installation, you will be asked 'Which editor would you like Git to use?'. Default is 'Vim', but it is one of the most complex one for beginners. Switch to 'Notepad++', 'Nano' or another one.
+
+Install Python
+--------------
+Install latest Python version: `Link <https://www.python.org/>`_.
 
 Install Pycharm
 ---------------
-`PyCharm Installation file <https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC>`_.
+`Installation file <https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC>`_.
 
 Linux
 *****
@@ -38,10 +46,14 @@ Ubuntu
 
 All Operating systems: Install the transistor database
 ******************************************************
-Using Pycharm: Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package'
+Inside pycharm, create a new project. Select 'new environment using' -> 'Virtualenv'.
+As a base interpreter, select 'C:\Users\xxxxxx\AppData\Local\Programs\Python\Python39\Python.exe'. Click on create.
+Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package'
+
 
 Complete minimal python example
 *******************************
+Copy this example to a new pycharm project.
 .. code-block::
 
     # load the python package
@@ -59,3 +71,4 @@ Complete minimal python example
     # export a virtual datasheet
     transistor_loaded.export_datasheet()
 
+On the output line, you should see a message which links to the datasheet file. Click on it to view the datasheet in your browser. If this works, you have set up the transistor database correctly.

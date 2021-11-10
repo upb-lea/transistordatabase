@@ -6,20 +6,22 @@ Using transistors within pyhton you have already seen. Now we want to take a clo
 
 Export a Virtual datasheet
 ***************************
-This function exports a virtual datasheet to see stored data in the database. Function display the output path of .html-file, which can be opened in your prefered browser.
-
-.. image:: /images/Virtual_Datasheet.png
-    :align: center
-    :alt: Generated virtual datasheet example
+This function exports a virtual datasheet to see stored data in the database. Function display the output path of .html-file, which can be opened in your preferred browser.
 
 .. code-block::
 
 transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
 transistor.export_datasheet()
 
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Virtual_Datasheet.png
+    :align: center
+    :alt: Generated virtual datasheet example
+
 Export to GeckoCIRCUITS
 ***********************
-GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct `download link <http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip>`_. At the moment you need to know the exporting parameters like gate resistor, gate-voltage and switching voltage. This will be simplified in the near future.
+GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct `download link <http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip>`_.
+At the moment you need to know the exporting parameters like gate resistor, gate-voltage and switching voltage. This will be simplified in the near future.
+
 .. code-block::
 
     transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
@@ -27,7 +29,7 @@ GeckoCIRCUITS is an open source multi platform schematic simulator. Java require
 
 From now on, you can load the model into your GeckoCIRCUITS schematic.
 
-.. image:: /images/Example_Gecko_Exporter.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/documentation/Example_Gecko_Exporter.png
     :align: center
     :alt: GeckoExporter usage example
 
@@ -52,7 +54,7 @@ Outputs are xml files - one for switch and one for diode (if available), which c
 
 Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.
 
-.. image:: /images/PLECS_thermal_editor.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/PLECS_thermal_editor.png
     :align: center
     :alt: PLECS thermal exporter usage example
 
@@ -77,7 +79,7 @@ Output is a .mat-file, you can load in your matlab program to simulate. Now, you
         Transistor = Transistor_array(i_Transistor);
         out = sim('YourSimulinkSimulationHere');
 
-.. image:: /images/Example_Simulink_Exporter.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Example_Simulink_Exporter.png
     :align: center
     :alt: Simulink exporter usage example
 
@@ -91,6 +93,6 @@ Python dictionary can be exported to Matlab, see the following example:
 
 A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.
 
-.. image:: /images/Matlab.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Matlab.png
     :align: center
     :alt: Matlab .mat exporter usage example

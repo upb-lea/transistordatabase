@@ -35,20 +35,20 @@ For reading datasheet curves, use the tool `WebPlotDigitizer <https://git-scm.co
 
 Channel data for switch and diode always needs to be positive. Some Manufacturers give diode data in the 3rd quadrant. Here is an example how to set the axes and export the data inside WebPlotDigitizer:
 
-.. image:: /images/Diode_channel_data_negative.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Diode_channel_data_negative.png
     :align: center
     :alt: diode channel data negative
 
 Use the template to generate a new transistor object
 ----------------------------------------------------
 
-After digizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the template
+After digitizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the  `template </template_example/template_example.py>`_.
 
 Some values need to follow some rules, e.g. due to different spelling versions, the manufacturers name or housing types must be written as in the lists below. Some general hints to fill the template:
 
     * `List of manufacturers <https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/module_manufacturers.txt>`_
-    * `List of housing types <https://git-scm.com/download/win>`_
-    * `Fuji housing overview <https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/housing_types.txt>`_
+    * `List of housing types <https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/housing_types.txt>`_
+    * `Fuji housing overview <https://www.fujielectric.com/products/semiconductor/model/igbt/2pack.html>`_
 
 In many cases, two capacity curves are specified in the data sheets. One curve for the full voltage range, and one with zoom to a small voltage range. To represent the stored curves in the best possible way, both curves can be read in and then merged.
 
@@ -106,7 +106,9 @@ Use your local generated transistor, load it into your workspace and export it, 
     transistor_loaded = load({'name': 'CREE_C3M0016120K'})
     transistor_loaded.export_json()
 
-You can upload this file to the `transistor database file exchange <https://github.com/upb-lea/transistordatabase_File_Exchange>`_ git repository by generating a pull request.
+You can upload this file to the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`_  by generating a pull request.
+
+if you don't want to create a github account, you can also send the .json file to this `email address <mailto:tdb@lea.upb.de>.`_.
 
 Usage of Transistor.wp. in your programs
 *********************************************
