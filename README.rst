@@ -1,7 +1,7 @@
 .. sectnum::
 
 ############
-Introduction
+Readme
 ############
 
 Why the transistordatabase?
@@ -413,7 +413,7 @@ Find the changelog `here <https://github.com/upb-lea/transistordatabase/blob/mai
 
 Contributing
 ------------
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. For contributing, please refer to this `section <https://github.com/upb-lea/transistordatabase/blob/main/Contributing.md>`_.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. For contributing, please refer to this `section <https://github.com/upb-lea/transistordatabase/blob/main/Contributing.rst>`_.
 
 About
 *****
