@@ -2175,7 +2175,7 @@ class Transistor:
             :rtype: int
             """
             if check_specific_curves is None:
-                check_specific_curves = []
+                check_specific_curves = [[], []]
             check_keys(req_gate_vltgs, export_type, 'switch')
             # recheck channel characteristics curves at v_supply
             channel_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
