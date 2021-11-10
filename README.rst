@@ -34,6 +34,11 @@ Functionality examples:
 .. note::
     Development status: Alpha
 
+Complete documentation
+**********************
+The complete documentation can be found `here <https://upb-lea.github.io/transistordatabase/main/transistordatabase.html>`_.
+
+
 ############
 Installation
 ############
