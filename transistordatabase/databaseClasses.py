@@ -74,6 +74,9 @@ class Transistor:
     # Absolute maximum ratings
     v_abs_max: float  #: Absolute maximum voltage rating. Units in V  (Mandatory key)
     i_abs_max: float  #: Absolute maximum current rating. Units in A  (Mandatory key)
+    # Time and Energy related capacitance
+    c_oss_er: Optional[EffectiveOutputCapacitance]
+    c_oss_tr: Optional[EffectiveOutputCapacitance]
     # Constant capacities
     c_oss_fix: Optional[float]  #: Parasitic constant capacitance. Units in F  (Optional key)
     c_iss_fix: Optional[float]  #: Parasitic constant capacitance. Units in F  (Optional key)
@@ -134,6 +137,20 @@ class Transistor:
                 self.c_oss_fix = transistor_args.get('c_oss_fix')
                 self.c_iss_fix = transistor_args.get('c_iss_fix')
                 self.c_rss_fix = transistor_args.get('c_rss_fix')
+                self.c_oss_er = None
+                self.c_oss_tr = None
+                try:
+                    if Transistor.isvalid_dict(transistor_args.get('c_oss_er'), 'EffectiveOutputCapacitance'):
+                        # Only create EffectiveOutputCapacitance objects from valid dicts
+                        self.c_oss_er = Transistor.EffectiveOutputCapacitance(transistor_args.get('c_oss_er'))
+                except (TypeError, KeyError) as e:
+                    print(e.args[0])
+                try:
+                    if Transistor.isvalid_dict(transistor_args.get('c_oss_tr'), 'EffectiveOutputCapacitance'):
+                        # Only create EffectiveOutputCapacitance objects from valid dicts
+                        self.c_oss_tr = Transistor.EffectiveOutputCapacitance(transistor_args.get('c_oss_tr'))
+                except (TypeError, KeyError) as e:
+                    print(e.args[0])
                 # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
                 # Import list of valid housing types from "housing_types.txt"
                 # add housing types to the working direction
@@ -255,7 +272,6 @@ class Transistor:
                 raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
                                 "are mandatory: 'name', 'type', 'author', 'manufacturer', 'housing_area', "
                                 "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
-
             self.diode = self.Diode(diode_args)
             self.switch = self.Switch(switch_args)
             self.calc_thermal_params(input_type='switch')
@@ -352,6 +368,8 @@ class Transistor:
         d.pop('wp', None)  # remove wp from converting. wp will not be stored to .json files
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
+        d['c_oss_er'] = self.c_oss_er.convert_to_dict()
+        d['c_oss_tr'] = self.c_oss_tr.convert_to_dict()
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
         d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
         d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
@@ -452,6 +470,11 @@ class Transistor:
                 'mandatory_keys': {'dataset_type'},
                 'str_keys': {},
                 'numeric_keys': {},
+                'array_keys': {}},
+            'EffectiveOutputCapacitance': {
+                'mandatory_keys': {'c_o', 'v_gs', 'v_ds'},
+                'str_keys': {},
+                'numeric_keys': {'c_o', 'v_gs', 'v_ds'},
                 'array_keys': {}}
         }
         if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
@@ -1223,7 +1246,7 @@ class Transistor:
         # listV = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         pdfData = {}
         devices = {}
-        skipIds = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss']
+        skipIds = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
         pdfData['c_plots'] = get_vc_plots(cap_plots)
         for attr in dir(self):
@@ -1232,11 +1255,13 @@ class Transistor:
                     devices[attr] = getattr(self, attr).collect_data()
                 elif attr not in skipIds and getattr(self, attr):
                     pdfData[attr.capitalize()] = getattr(self, attr)
+                elif (attr == 'c_oss_er' or attr == 'c_oss_tr') and getattr(self, attr) is not None:   # to be modified for boundary case
+                    pdfData[attr.capitalize()] = getattr(self, attr).c_o
         trans, diode, switch = attach_units(pdfData, devices)
-        imgpath = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
-        imageFileObj = open(imgpath, "rb")
-        imageBinaryBytes = imageFileObj.read()
-        buf = io.BytesIO(imageBinaryBytes)
+        img_path = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
+        image_file_obj = open(img_path, "rb")
+        image_binary_bytes = image_file_obj.read()
+        buf = io.BytesIO(image_binary_bytes)
         encoded_img_data = base64.b64encode(buf.getvalue())
         client_img = encoded_img_data.decode('UTF-8')
 
@@ -3185,6 +3210,49 @@ class Transistor:
             self.q_oss = None
             self.parallel_transistors = None
 
+    class EffectiveOutputCapacitance:
+        """
+        The class EffectiveOutputCapacitance is used to record energy related or time related output capacitance of the switch.
+        """
+        c_o: float  #: Value of the fixed output capacitance. Units in F
+        v_gs: float  #: Gate to source voltage of the switch. Units in V
+        v_ds: float  #: Drain to source voltage of the switch ex: V_DS = (0-400V) i.e v_ds=400 (max value, min assumed a 0). Units in V
+
+        def __init__(self, args):
+            """
+            Initialization method for EffectiveOutputCapacitance object
+
+            :param args: arguments to be passed for initialization
+            """
+            # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
+            # checked again here.
+            self.c_o = args.get('c_o')
+            self.v_gs = args.get('v_gs')
+            self.v_ds = args.get('v_ds')
+
+        def convert_to_dict(self):
+            """
+            The method converts EffectiveOutputCapacitance object into dict datatype
+
+            :return: EffectiveOutputCapacitance object of dict type
+            :rtype: dict
+            """
+            d = dict(vars(self))
+            for att_key in d:
+                if isinstance(d[att_key], np.ndarray):
+                    d[att_key] = d[att_key].tolist()
+            return d
+
+        # ToDO: To be implemented for future boundary conditions in virtual datasheet
+        def collect_data(self):
+            c_oss_related = {}
+            skipIds = []
+            for attr in dir(self):
+                if attr not in skipIds and not callable(getattr(self, attr)) and not attr.startswith("__") and not isinstance(getattr(self, attr), (list, dict)) \
+                        and (not getattr(self, attr) is None):
+                    c_oss_related[attr.capitalize()] = getattr(self, attr)
+            return c_oss_related
+
     def parallel_transistors(self, count_parallels=2):
         """
 
@@ -3645,7 +3713,6 @@ def gen_exp_func(order):
         return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4, rn5, tau5: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4)) + rn5 * (1 - np.exp(-t / tau5))
 
 
-
 def get_xml_data(file):
     """
     A helper function to import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data.
@@ -3829,7 +3896,7 @@ def attach_units(trans, devices):
                         ('R_th_diode_cs', 'R_th,diode-cs', 'K/W'), ('R_th_switch_cs', 'R_th,switch-cs', 'K/W'), ('R_g_on_recommended', 'R_g,on-recommended', 'K/W'),
                         ('R_g_off_recommended', 'R_g,off-recommended', 'K/W')]
     maxratings_list = [('V_abs_max', 'V_abs,max', 'V'), ('I_abs_max', 'I_abs,max', 'A'), ('I_cont', 'I_cont', 'A'), ('T_j_max', 'T_j,max', '°C'), ('T_c_max', 'T_c,max', '°C')]
-    cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F')]
+    cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F'), ('C_oss_er', 'C_oss,er', 'F'), ('C_oss_tr', 'C_oss,tr', 'F')]
     trans_sorted = {}
     diode_sorted = {}
     switch_sorted = {}
