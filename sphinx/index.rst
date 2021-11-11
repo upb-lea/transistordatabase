@@ -11,6 +11,7 @@ transistordatabase(TDB)
    :caption: Contents:
 
    intro
+   contribute
    transistordatabase
 
 

@@ -3187,8 +3187,10 @@ class Transistor:
 
     def parallel_transistors(self, count_parallels=2):
         """
+
         Connect [count_parallels] transistors in parallel
         The returned transistor object behaves like a single transistor.
+
         - name will be modified by adding _[count_parallels]_parallel
         - channel characteristics will be modified
         - e_on/e_off/e_rr characteristics will be modified
@@ -3199,6 +3201,7 @@ class Transistor:
         :return: transistor object with parallel transistors
 
         :Example:
+
         >>> import transistordatabase as tdb
         >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
         >>> parallel_transistorobject = transistor.parallel_transistors(3)
@@ -4175,6 +4178,7 @@ def print_TDB(filters: Optional[List[str]] = None, collection_name: str = "local
     :rtype: list
 
     :Example:
+
     >>> import transistordatabase as tdb
     >>> tdb.print_TDB()
     >>> # or
@@ -4224,6 +4228,7 @@ def connect_local_TDB():
     """
     A method for establishing connection with transistordatabase_exchange.
     Internally used by
+
       - update_from_fileexchange() method to sync the local with transistordatabase_File_Exchange
       - load() methods for saving and loading the transistor object to local mongodb-database.
 
@@ -4248,6 +4253,7 @@ def load(dict_filter: dict, collection_name: str = "local"):
     :rtype: Transistor
 
     :Example:
+
     >>> import transistordatabase as tdb
     >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
     """
@@ -4261,6 +4267,7 @@ def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
     """
     Converts a dictionary to a transistor object.
     This is a helper function of the following functions:
+    
     - parallel_transistors()
     - load()
     - import_json()
@@ -4411,6 +4418,7 @@ def import_json(path: str) -> Transistor:
     :return: transistor dictionary, loaded from the .json-file
 
     :Example:
+
     >>> import transistordatabase as tdb
     >>> transistor_imported = tdb.import_json('CREE_C3M0016120K.json')
     """
