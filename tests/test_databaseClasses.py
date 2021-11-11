@@ -63,6 +63,8 @@ def my_transistor():
     foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
                    'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
                    'graph_t_rthjc': graph_t_rthjc}
+    c_oss_er = {'c_o': 73e-12, 'v_gs': 0, 'v_ds': 400}
+    c_oss_tr = None
 
     # Create argument dictionaries
     transistor_args = {'name': name, 'type': type, 'author': author, 'comment': comment,
@@ -72,7 +74,7 @@ def my_transistor():
                        'cooling_area': cooling_area, 'housing_type': housing_type, 'v_abs_max': v_abs_max,
                        'i_abs_max': i_abs_max, 'i_cont': i_cont, 'c_oss_fix': c_oss_fix, 'c_iss_fix': c_iss_fix,
                        'c_rss_fix': c_rss_fix, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
-                       'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs}
+                       'c_oss_er': c_oss_er, 'c_oss_tr': c_oss_tr, 'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs}
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'channel': switch_channel,
                    'e_on': switchenergy, 'e_off': switchenergy, 'thermal_foster': foster_args}

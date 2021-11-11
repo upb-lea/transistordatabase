@@ -368,8 +368,8 @@ class Transistor:
         d.pop('wp', None)  # remove wp from converting. wp will not be stored to .json files
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
-        d['c_oss_er'] = self.c_oss_er.convert_to_dict()
-        d['c_oss_tr'] = self.c_oss_tr.convert_to_dict()
+        d['c_oss_er'] = self.c_oss_er.convert_to_dict() if self.c_oss_er is not None else None
+        d['c_oss_tr'] = self.c_oss_tr.convert_to_dict() if self.c_oss_tr is not None else None
         d['c_oss'] = [c.convert_to_dict() for c in self.c_oss]
         d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
         d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
