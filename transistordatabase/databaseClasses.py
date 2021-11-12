@@ -4477,12 +4477,14 @@ def update_from_fileexchange(collection: str = "local", overwrite: bool = True) 
 
 def import_json(path: str) -> Transistor:
     """
-    Import a json-file to your local transistor database
+    Import a json-file and return a transistor class object.
+    Note: The transistor is NOT stored in your local database!
 
     :param path: path to the .json-file
     :type path: str
 
     :return: transistor dictionary, loaded from the .json-file
+    :rtype: Transistor
 
     :Example:
 
@@ -4490,9 +4492,9 @@ def import_json(path: str) -> Transistor:
     >>> transistor_imported = tdb.import_json('CREE_C3M0016120K.json')
     """
     if isinstance(path, str):
-        with open(path, 'r') as myfile:
-            data = myfile.read()
-        return convert_dict_to_transistor_object(json_util.loads(data))
+        with open(path, 'r') as transistor_json_file:
+            transistor_dict = transistor_json_file.read()
+        return convert_dict_to_transistor_object(json_util.loads(transistor_dict))
     else:
         TypeError("path = {0} ist not a string.".format(path))
 
