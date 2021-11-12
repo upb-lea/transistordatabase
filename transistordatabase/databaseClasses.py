@@ -75,8 +75,8 @@ class Transistor:
     v_abs_max: float  #: Absolute maximum voltage rating. Units in V  (Mandatory key)
     i_abs_max: float  #: Absolute maximum current rating. Units in A  (Mandatory key)
     # Time and Energy related capacitance
-    c_oss_er: Optional[EffectiveOutputCapacitance]
-    c_oss_tr: Optional[EffectiveOutputCapacitance]
+    c_oss_er: Optional[EffectiveOutputCapacitance]  #: Energy related effective output capacitance. Units in F (Optional key)
+    c_oss_tr: Optional[EffectiveOutputCapacitance]  #: Time related effective output capacitance. Units in F (Optional key)
     # Constant capacities
     c_oss_fix: Optional[float]  #: Parasitic constant capacitance. Units in F  (Optional key)
     c_iss_fix: Optional[float]  #: Parasitic constant capacitance. Units in F  (Optional key)
