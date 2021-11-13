@@ -3619,7 +3619,7 @@ class Transistor:
             d['dpt_off_id'] = [c.tolist() for c in self.dpt_off_id]
             return d
 
-        def dpt_calculate_energies(self, integration_interval: str, dataset_type: str, energies: str):
+        def dpt_calculate_energies(self, integration_interval: str, dataset_type: str, energies: str, mode: str):
             """
                 Imports double pulse measurements and calculates switching losses to each given working point.
 
@@ -3674,6 +3674,8 @@ class Transistor:
                 sample_point = 0
                 measurement_points = len(self.dpt_off_id)
                 e_off = []
+                time_correction = 0
+                time_input = 0
 
                 while measurement_points > sample_point:
                     # Load Uds and Id pairs in increasing order
@@ -3712,7 +3714,7 @@ class Transistor:
                     while vds_temp[i, 1] < (vds_avg_max * off_vds_limit):
                         i += 1
 
-                    time_correction = 0
+                    lower_integration_limit = i
 
                     ##############################
                     # Integrate the power with predefined integration limits
@@ -3720,6 +3722,37 @@ class Transistor:
                     while id_temp[i - time_correction, 1] >= (id_avg_max * off_is_limit):
                         e_off_temp = e_off_temp + (vds_temp[i, 1] * id_temp[i - time_correction, 1] * sample_interval)
                         i += 1
+
+                    upper_integration_limit = i
+
+                    if mode == 'analyze':
+                        text1 = f"E_off = {(e_off_temp * 1000000).round(2)} µJ, time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
+                        text2 = f"Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                        fig, ax1 = plt.subplots()
+                        ax1.set_xlabel("t / ns")
+                        ax1.set_ylabel("Id / A", color='r')
+                        ax1.plot(((id_temp[:, 0] * 1000000000) + int(time_input)), id_temp[:, 1], color='r')
+                        plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
+                                    linewidth=2)
+                        plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
+                                    linewidth=2)
+                        props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                        ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
+                                 verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                        ax1.text(0.02, .5, text2, transform=ax1.transAxes, fontsize=12,
+                                 verticalalignment='center', horizontalalignment='left', bbox=props)
+                        plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
+                        ax2 = ax1.twinx()
+                        ax2.set_ylabel('Uds / V', color='b')
+                        ax2.plot(vds_temp[:, 0] * 1000000000, vds_temp[:, 1], color='b')
+                        plt.show()
+                        time_input = input('Please give a value for time correction in ns')
+                        if time_input.isnumeric():
+                            time_correction = int(int(time_input) / (sample_interval * 1000000000))
+                            continue
+                        else:
+                            time_correction = 0
+                            time_input = 0
 
                     if dataset_type == 'graph_r_e':
                         e_off.append([self.r_g[sample_point], e_off_temp])
@@ -3767,6 +3800,8 @@ class Transistor:
                 sample_point = 0
                 measurement_points = len(self.dpt_on_id)
                 e_on = []
+                time_correction = 0
+                time_input = 0
 
                 while measurement_points > sample_point:
                     # Load Uds and Id pairs in increasing order
@@ -3804,13 +3839,45 @@ class Transistor:
                     while id_temp[i, 1] < (id_avg_max * on_is_limit):
                         i += 1
 
-                    time_correction = 0
+                    lower_integration_limit = i
+
                     ##############################
                     # Integrate the power with predefined integration limits
                     ##############################
-                    while vds_temp[i + time_correction, 1] >= (vds_avg_max * on_vds_limit):
-                        e_on_temp = e_on_temp + (vds_temp[i + time_correction, 1] * id_temp[i, 1] * sample_interval)
+                    while vds_temp[i - time_correction, 1] >= (vds_avg_max * on_vds_limit):
+                        e_on_temp = e_on_temp + (vds_temp[i - time_correction, 1] * id_temp[i, 1] * sample_interval)
                         i += 1
+
+                    upper_integration_limit = i
+
+                    if mode == 'analyze':
+                        text1 = f"E_on = {(e_on_temp * 1000000).round(2)} µJ, time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
+                        text2 = f"Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                        fig, ax1 = plt.subplots()
+                        ax1.set_xlabel("t / ns")
+                        ax1.set_ylabel("Id / A", color='r')
+                        ax1.plot(id_temp[:, 0] * 1000000000, id_temp[:, 1], color='r')
+                        plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
+                                    linewidth=2)
+                        plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
+                                    linewidth=2)
+                        props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                        ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
+                                 verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                        ax1.text(0.02, .5, text2, transform=ax1.transAxes, fontsize=12,
+                                 verticalalignment='center', horizontalalignment='left', bbox=props)
+                        plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
+                        ax2 = ax1.twinx()
+                        ax2.set_ylabel('Uds / V', color='b')
+                        ax2.plot(vds_temp[:, 0] * 1000000000 + int(time_input), vds_temp[:, 1], color='b')
+                        plt.show()
+                        time_input = input('Please give a value for time correction in ns')
+                        if time_input.isnumeric():
+                            time_correction = int(int(time_input) / (sample_interval * 1000000000))
+                            continue
+                        else:
+                            time_correction = 0
+                            time_input = 0
 
                     if dataset_type == 'graph_r_e':
                         e_on.append([self.r_g[sample_point], e_on_temp])
@@ -4991,36 +5058,37 @@ def dpt_save_data(measurement_dict: dict):
         vds_raw_off = []
         id_raw_off = []
         time_correction = 0
+        time_input = 0
 
         while measurement_points > sample_point:
-            # Load vds and Id pairs in increasing order
-            vds = np.genfromtxt(csv_files[off_v_locations[sample_point][0]], delimiter=',', skip_header=24)
-            Id = np.genfromtxt(csv_files[off_i_locations[sample_point][0]], delimiter=',', skip_header=24)
+            # Load vds_temp and id_temp pairs in increasing order
+            vds_temp = np.genfromtxt(csv_files[off_v_locations[sample_point][0]], delimiter=',', skip_header=24)
+            id_temp = np.genfromtxt(csv_files[off_i_locations[sample_point][0]], delimiter=',', skip_header=24)
 
-            vds_raw_off.append(np.array(vds))
-            id_raw_off.append(np.array(Id))
+            vds_raw_off.append(np.array(vds_temp))
+            id_raw_off.append(np.array(id_temp))
 
-            sample_length = len(vds)
-            sample_interval = abs(vds[1, 0] - vds[2, 0])
+            sample_length = len(vds_temp)
+            sample_interval = abs(vds_temp[1, 0] - vds_temp[2, 0])
             avg_interval = int(sample_length * 0.05)
 
             vds_avg_max = 0
             id_avg_max = 0
 
             ##############################
-            # Find the max. Id in steady state
+            # Find the max. id_temp in steady state
             ##############################
             i = 0
             while i <= avg_interval:
-                id_avg_max = id_avg_max + Id[i, 1] / avg_interval
+                id_avg_max = id_avg_max + id_temp[i, 1] / avg_interval
                 i += 1
 
             ##############################
-            # Find the max. vds in steady state
+            # Find the max. vds_temp in steady state
             ##############################
             i = 0
             while i <= avg_interval:
-                vds_avg_max = vds_avg_max + vds[(sample_length - 1 - i), 1] / avg_interval
+                vds_avg_max = vds_avg_max + vds_temp[(sample_length - 1 - i), 1] / avg_interval
                 i += 1
 
             ##############################
@@ -5029,7 +5097,7 @@ def dpt_save_data(measurement_dict: dict):
             ##############################
             i = 0
             e_off_temp = 0
-            while vds[i, 1] < (vds_avg_max * off_vds_limit):
+            while vds_temp[i, 1] < (vds_avg_max * off_vds_limit):
                 i += 1
 
             lower_integration_limit = i
@@ -5037,11 +5105,38 @@ def dpt_save_data(measurement_dict: dict):
             ##############################
             # Integrate the power with predefined integration limits
             ##############################
-            while Id[i - time_correction, 1] >= (id_avg_max * off_is_limit):
-                e_off_temp = e_off_temp + (vds[i, 1] * Id[i - time_correction, 1] * sample_interval)
+            while id_temp[i - time_correction, 1] >= (id_avg_max * off_is_limit):
+                e_off_temp = e_off_temp + (vds_temp[i, 1] * id_temp[i - time_correction, 1] * sample_interval)
                 i += 1
 
             upper_integration_limit = i
+
+            if measurement_dict['mode'] == 'analyze':
+                text1 = f"E_off = {(e_off_temp * 1000000).round(2)} µJ, time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
+                text2 = f"Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                fig, ax1 = plt.subplots()
+                ax1.set_xlabel("t / ns")
+                ax1.set_ylabel("Id / A", color='r')
+                ax1.plot(((id_temp[:, 0] * 1000000000) + int(time_input)), id_temp[:, 1], color='r')
+                plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
+                plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
+                props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
+                         verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                ax1.text(0.02, .5, text2, transform=ax1.transAxes, fontsize=12,
+                         verticalalignment='center', horizontalalignment='left', bbox=props)
+                plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
+                ax2 = ax1.twinx()
+                ax2.set_ylabel('Uds / V', color='b')
+                ax2.plot(vds_temp[:, 0] * 1000000000, vds_temp[:, 1], color='b')
+                plt.show()
+                time_input = input('Please give a value for time correction in ns')
+                if time_input.isnumeric():
+                    time_correction = int(int(time_input) / (sample_interval * 1000000000))
+                    continue
+                else:
+                    time_correction = 0
+                    time_input = 0
 
             if measurement_dict['dataset_type'] == 'graph_r_e':
                 e_off.append([off_i_locations[sample_point][1], e_off_temp])
@@ -5120,35 +5215,37 @@ def dpt_save_data(measurement_dict: dict):
         e_on = []
         vds_raw_on = []
         id_raw_on = []
+        time_correction = 0
+        time_input = 0
 
         while measurement_points > sample_point:
-            # Load vds and Id pairs in increasing order
-            vds = np.genfromtxt(csv_files[on_v_locations[sample_point][0]], delimiter=',', skip_header=24)
-            Id = np.genfromtxt(csv_files[on_i_locations[sample_point][0]], delimiter=',', skip_header=24)
+            # Load vds_temp and id_temp pairs in increasing order
+            vds_temp = np.genfromtxt(csv_files[on_v_locations[sample_point][0]], delimiter=',', skip_header=24)
+            id_temp = np.genfromtxt(csv_files[on_i_locations[sample_point][0]], delimiter=',', skip_header=24)
 
-            vds_raw_on.append(np.array(vds))
-            id_raw_on.append(np.array(Id))
+            vds_raw_on.append(np.array(vds_temp))
+            id_raw_on.append(np.array(id_temp))
 
-            sample_length = len(vds)
-            sample_interval = abs(vds[1, 0] - vds[2, 0])
+            sample_length = len(vds_temp)
+            sample_interval = abs(vds_temp[1, 0] - vds_temp[2, 0])
             avg_interval = int(sample_length * 0.05)
             vds_avg_max = 0
             id_avg_max = 0
 
             ##############################
-            # Find the max. Id in steady state
+            # Find the max. id_temp in steady state
             ##############################
             i = 0
             while i <= avg_interval:
-                id_avg_max = id_avg_max + (Id[(sample_length - 3 - i), 1] / avg_interval)
+                id_avg_max = id_avg_max + (id_temp[(sample_length - 3 - i), 1] / avg_interval)
                 i += 1
 
             ##############################
-            # Find the max. vds in steady state
+            # Find the max. vds_temp in steady state
             ##############################
             i = 0
             while i <= avg_interval:
-                vds_avg_max = vds_avg_max + (vds[i, 1] / avg_interval)
+                vds_avg_max = vds_avg_max + (vds_temp[i, 1] / avg_interval)
                 i += 1
 
             ##############################
@@ -5157,16 +5254,46 @@ def dpt_save_data(measurement_dict: dict):
             ##############################
             i = 0
             e_on_temp = 0
-            while Id[i, 1] < (id_avg_max * on_is_limit):
+            while id_temp[i, 1] < (id_avg_max * on_is_limit):
                 i += 1
 
-            time_correction = 0
+            lower_integration_limit = i
+
             ##############################
             # Integrate the power with predefined integration limits
             ##############################
-            while vds[i + time_correction, 1] >= (vds_avg_max * on_vds_limit):
-                e_on_temp = e_on_temp + (vds[i + time_correction, 1] * Id[i, 1] * sample_interval)
+            while vds_temp[i - time_correction, 1] >= (vds_avg_max * on_vds_limit):
+                e_on_temp = e_on_temp + (vds_temp[i - time_correction, 1] * id_temp[i, 1] * sample_interval)
                 i += 1
+
+            upper_integration_limit = i
+
+            if measurement_dict['mode'] == 'analyze':
+                text1 = f"E_off = {(e_on_temp * 1000000).round(2)} µJ, time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
+                text2 = f"Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                fig, ax1 = plt.subplots()
+                ax1.set_xlabel("t / ns")
+                ax1.set_ylabel("Id / A", color='r')
+                ax1.plot(id_temp[:, 0] * 1000000000, id_temp[:, 1], color='r')
+                plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
+                plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
+                props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
+                         verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                ax1.text(0.02, .5, text2, transform=ax1.transAxes, fontsize=12,
+                         verticalalignment='center', horizontalalignment='left', bbox=props)
+                plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
+                ax2 = ax1.twinx()
+                ax2.set_ylabel('Uds / V', color='b')
+                ax2.plot(vds_temp[:, 0] * 1000000000 + int(time_input), vds_temp[:, 1], color='b')
+                plt.show()
+                time_input = input('Please give a value for time correction in ns')
+                if time_input.isnumeric():
+                    time_correction = int(int(time_input) / (sample_interval * 1000000000))
+                    continue
+                else:
+                    time_correction = 0
+                    time_input = 0
 
             if measurement_dict['dataset_type'] == 'graph_r_e':
                 e_on.append([on_i_locations[sample_point][1], e_on_temp])
