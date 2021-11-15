@@ -59,7 +59,7 @@ def my_transistor():
     switch_channel = {'t_j': t_j, 'graph_v_i': graph_v_i, 'v_g': v_g}
     diode_channel = {'t_j': t_j, 'graph_v_i': graph_v_i}
     switchenergy = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
-                     'r_g': r_g,  'graph_i_e': graph_i_e} #'e_x': e_x, 'i_x': i_x,
+                    'r_g': r_g, 'graph_i_e': graph_i_e}  # 'e_x': e_x, 'i_x': i_x,
     foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
                    'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
                    'graph_t_rthjc': graph_t_rthjc}
@@ -81,6 +81,7 @@ def my_transistor():
     diode_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                   'channel': [diode_channel], 'e_rr': [switchenergy], 'thermal_foster': foster_args}
     return transistor_args, switch_args, diode_args
+
 
 def test_transistor(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
@@ -115,7 +116,6 @@ def test_transistor(my_transistor):
     assert transistor.c_oss_er.v_ds == transistor_args['c_oss_er']['v_ds']
     assert transistor.c_oss_tr == transistor_args['c_oss_tr']
 
-
     # switch_args test
     assert transistor.switch.t_j_max == switch_args['t_j_max']
     assert transistor.switch.comment == switch_args['comment']
@@ -138,7 +138,15 @@ def test_transistor(my_transistor):
     assert transistor.diode.e_rr[0].graph_i_e.any() == diode_args['e_rr'][0]['graph_i_e'].any()
 
 
-
+def test_get_gatedefaults():
+    igbt_expected_list = [15, -15, 0, 15]
+    mos_expected_list = [10, 0, 0, 10]
+    sic_expected_list = [15, -4, 0, 15]
+    gan_expected_list = [6, -3, 0, 6]
+    sw_type = {'123': igbt_expected_list, 'igbt': igbt_expected_list, 'mosfet': mos_expected_list, 'sic-mosfet': sic_expected_list, 'gan-transistor': gan_expected_list}
+    for key, value in sw_type.items():
+        return_list = tdb.get_gatedefaults(key)
+        assert return_list == value
 
 
 def test_calc_thermal_params(my_transistor):
@@ -227,13 +235,13 @@ def data_setup_for_gecko_exporter(request):
     actual_data['case'] = request.param['case']
     transistor_test_data = tdb.import_json(request.param['file'])
     if request.param['case'] == 2:
-        for index in range(len(transistor_test_data.switch.e_on)-1, -1, -1):
+        for index in range(len(transistor_test_data.switch.e_on) - 1, -1, -1):
             if transistor_test_data.switch.e_on[index].dataset_type == 'graph_r_e':
                 del transistor_test_data.switch.e_on[index]
-        for index in range(len(transistor_test_data.switch.e_off)-1, -1, -1):
+        for index in range(len(transistor_test_data.switch.e_off) - 1, -1, -1):
             if transistor_test_data.switch.e_off[index].dataset_type == 'graph_r_e':
                 del transistor_test_data.switch.e_off[index]
-        for index in range(len(transistor_test_data.diode.e_rr)-1, -1, -1):
+        for index in range(len(transistor_test_data.diode.e_rr) - 1, -1, -1):
             if transistor_test_data.diode.e_rr[index].dataset_type == 'graph_r_e':
                 del transistor_test_data.diode.e_rr[index]
     if request.param['case'] == 3:
@@ -241,8 +249,8 @@ def data_setup_for_gecko_exporter(request):
         transistor_test_data.switch.e_on = []
 
     transistor_test_data.export_geckocircuits(recheck=request.param['recheck'], r_g_on=request.param['r_g_on'], r_g_off=request.param['r_g_off'],
-                                                        v_g_on=request.param['v_g_on'], v_g_off=request.param['v_g_off'],
-                                                        v_supply=request.param['v_supply'])
+                                              v_g_on=request.param['v_g_on'], v_g_off=request.param['v_g_off'],
+                                              v_supply=request.param['v_supply'])
     for file in os.listdir():
         # Check whether file is in text format or not
         if file.endswith(".scl"):
@@ -286,7 +294,7 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
         expected_string = '\ndata[][] 3 2 0 10 0 0 0 0\ntj 25\nuBlock 400\n'
         diode_data = actual_data['diode']
         switch_data = actual_data['switch']
-        actual_err = diode_data[diode_data.find(start := '<SchaltverlusteMesskurve>')+len(start):diode_data.find('<\SchaltverlusteMesskurve>')]
+        actual_err = diode_data[diode_data.find(start := '<SchaltverlusteMesskurve>') + len(start):diode_data.find('<\SchaltverlusteMesskurve>')]
         actual_eon_eoff = switch_data[switch_data.find(start := '<SchaltverlusteMesskurve>') + len(start):switch_data.find('<\SchaltverlusteMesskurve>')]
         assert actual_err == expected_string
         assert actual_eon_eoff == expected_string
@@ -295,6 +303,7 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
         assert 'switch' not in actual_data
         assert 'diode' not in actual_data
     assert True
+
 
 def test_export_json(my_transistor):
     """
@@ -307,5 +316,12 @@ def test_export_json(my_transistor):
         transistor.export_json(123)
         transistor.export_json("/not/existing/path/")
 
+
+def test_export_plecs():
+    assert True
+
+
+def test_get_curve_data():
+    assert True
 
 
