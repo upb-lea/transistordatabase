@@ -4575,7 +4575,7 @@ def connect_local_TDB():
     return myclient.transistor_database.collection
 
 
-def load(transistor: str, collection_name: str = "local"):
+def load(transistor: [str, dict], collection_name: str = "local"):
     """
     load a transistor from your local mongodb-database
 
@@ -4592,11 +4592,11 @@ def load(transistor: str, collection_name: str = "local"):
     >>> import transistordatabase as tdb
     >>> transistor_loaded = tdb.load('Infineon_FF200R12KE3')
     """
-    find_filer = {'name': transistor}
+    find_filter = {'name': transistor} if type(transistor) == str else transistor
     if collection_name == "local":
         collection = connect_local_TDB()
     # ToDo: Implement case where different transistors fit the filter criteria.
-    return convert_dict_to_transistor_object(collection.find_one(find_filer))
+    return convert_dict_to_transistor_object(collection.find_one(find_filter))
 
 
 def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
