@@ -4160,9 +4160,9 @@ def attach_units(trans, devices):
     standard_list = [('Author', 'Author', None), ('Name', 'Name', None), ('Manufacturer', 'Manufacturer', None), ('Type', 'Type', None), ('Datasheet_date', 'Datasheet date', None),
                      ('Datasheet_hyperlink', 'Datasheet hyperlink', None), ('Datasheet_version', 'Datasheet version', None)]
     mechthermal_list = [('Housing_area', 'Housing area', 'sq.m'), ('Housing_type', 'Housing type', 'None'), ('Cooling_area', 'Cooling area', 'sq.m'), ('R_th_cs', 'R_th,cs', 'K/W'),
-                        ('R_th_total', 'R_th,total', 'K/W'), ('R_g_int', 'R_g,int', 'K/W'), ('C_th_total', 'C_th,total', 'F'), ('Tau_total', 'Tau_total', 'sec'),
-                        ('R_th_diode_cs', 'R_th,diode-cs', 'K/W'), ('R_th_switch_cs', 'R_th,switch-cs', 'K/W'), ('R_g_on_recommended', 'R_g,on-recommended', 'K/W'),
-                        ('R_g_off_recommended', 'R_g,off-recommended', 'K/W')]
+                        ('R_th_total', 'R_th,total', 'K/W'), ('R_g_int', 'R_g,int', 'Ohms'), ('C_th_total', 'C_th,total', 'F'), ('Tau_total', 'Tau_total', 'sec'),
+                        ('R_th_diode_cs', 'R_th,diode-cs', 'K/W'), ('R_th_switch_cs', 'R_th,switch-cs', 'K/W'), ('R_g_on_recommended', 'R_g,on-recommended', 'Ohms'),
+                        ('R_g_off_recommended', 'R_g,off-recommended', 'Ohms')]
     maxratings_list = [('V_abs_max', 'V_abs,max', 'V'), ('I_abs_max', 'I_abs,max', 'A'), ('I_cont', 'I_cont', 'A'), ('T_j_max', 'T_j,max', '°C'), ('T_c_max', 'T_c,max', '°C')]
     cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F'), ('C_oss_er', 'C_oss,er', 'F'), ('C_oss_tr', 'C_oss,tr', 'F')]
     trans_sorted = {}
