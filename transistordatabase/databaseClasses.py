@@ -1238,7 +1238,7 @@ class Transistor:
         :Example:
 
         >>> import transistordatabase as tdb
-        >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
+        >>> transistor = tdb.load('Fuji_2MBI100XAA120-50')
         >>> transistor.export_datasheet()
 
         .. todo:: Instead of html file, generating a pdf file without third party requirements is a better option
@@ -1320,7 +1320,7 @@ class Transistor:
         :Example:
 
         >>> import transistordatabase as tdb
-        >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
+        >>> transistor = tdb.load('Infineon_FF200R12KE3')
         >>> transistor.export_simulink_loss_model()
 
         .. note::
@@ -1488,7 +1488,7 @@ class Transistor:
         :Example:
 
         >>> import transistordatabase as tdb
-        >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
+        >>> transistor = tdb.load('Fuji_2MBI100XAA120-50')
         >>> transistor.export_matlab()
         """
         transistor_dict = self.convert_to_dict()
@@ -1553,7 +1553,7 @@ class Transistor:
         :Example:
 
         >>> import transistordatabase as tdb
-        >>> transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
+        >>> transistor = tdb.load('Fuji_2MBI100XAA120-50')
         >>> transistor.export_geckocircuits(True, v_supply=600, v_g_on=15, v_g_off=-4, r_g_on=2.5, r_g_off=2.5)
 
         .. note:: These .scl files are then imported as semiconductor characteristics inside geckoCIRCUITS
@@ -1852,7 +1852,7 @@ class Transistor:
         :Example:
 
         >>> import transistordatabase as tdb
-        >>> transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
+        >>> transistor = tdb.load('Fuji_2MBI200XAA065-50')
         >>> transistor.export_plecs(recheck=True, gate_voltages=[15, -15, 15, 0])
         """
         if gate_voltages is None:
@@ -3277,7 +3277,7 @@ class Transistor:
         :Example:
 
         >>> import transistordatabase as tdb
-        >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
+        >>> transistor = tdb.load('Infineon_FF200R12KE3')
         >>> parallel_transistorobject = transistor.parallel_transistors(3)
 
         """
@@ -4575,12 +4575,12 @@ def connect_local_TDB():
     return myclient.transistor_database.collection
 
 
-def load(dict_filter: dict, collection_name: str = "local"):
+def load(transistor: str, collection_name: str = "local"):
     """
     load a transistor from your local mongodb-database
 
-    :param dict_filter: element filter, see example
-    :type dict_filter: dict
+    :param transistor: transistor name that needs to be loaded, see example
+    :type transistor: str
     :param collection_name: mongodb connection, predefined value
     :type collection_name: str
 
@@ -4590,12 +4590,13 @@ def load(dict_filter: dict, collection_name: str = "local"):
     :Example:
 
     >>> import transistordatabase as tdb
-    >>> transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
+    >>> transistor_loaded = tdb.load('Infineon_FF200R12KE3')
     """
+    find_filer = {'name': transistor}
     if collection_name == "local":
         collection = connect_local_TDB()
     # ToDo: Implement case where different transistors fit the filter criteria.
-    return convert_dict_to_transistor_object(collection.find_one(dict_filter))
+    return convert_dict_to_transistor_object(collection.find_one(find_filer))
 
 
 def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
@@ -5285,15 +5286,16 @@ def build_dummy(attribute_name, attribute_value):
 
 def update_dpt_measurement(transistor_name, measurement_data):
     """
-                This function loads a transistor from the database and adds new measurement data.
+        This function loads a transistor from the database and adds new measurement data.
 
-                :param transistor_name: Name of the transistor to be loaded.
-                :type transistor_name: str
-                :param measurement_data: Dict of data you want to add to given attribute.
-                :type measurement_data: dict
-                """
+        :param transistor_name: Name of the transistor to be loaded.
+        :type transistor_name: str
+        :param measurement_data: Dict of data you want to add to given attribute.
+        :type measurement_data: dict
 
-    transistor_loaded = load({'name': transistor_name})
+        """
+
+    transistor_loaded = load(transistor_name)
     collection = connect_local_TDB()
     transistor_id = {'_id': transistor_loaded._id}
 
