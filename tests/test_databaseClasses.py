@@ -48,6 +48,9 @@ def my_transistor():
 
     graph_t_r = np.array([[-48.61961104, -29.94016048, - 16.23147015, - 2.52277982,  11.18591051, 24.89460084,  38.60329117,  52.3119815,   65.69427445,  79.07656739, 92.78525772, 105.51475588, 116.93866449, 128.03617571, 139.13368693, 147.29362165],
                 [0.89684619, 1.14140658, 1.33157082, 1.52997052,   1.75270226, 1.98628983,   2.22811286 ,  2.50212905,   2.81644284,   3.14224884, 3.46530345,  3.79703024,   4.12598987, 4.45476966,  4.78863606, 5.03701277]])
+    graph_q_v = np.array([[0.00000000e+00, 3.12612221e-10, 5.21272373e-10, 7.29932526e-10,  9.47664859e-10, 1.16539719e-09, 1.46477915e-09, 1.84581073e-09,  2.22684231e-09, 2.78591544e-09, 2.94354458e-09, 3.22478217e-09,  3.49694759e-09, 3.76911301e-09, 4.04127842e-09, 4.31344384e-09,  4.49488745e-09],
+                          [0.00000000e+0, 7.34864824e-01, 1.20581561e+00, 1.67976883e+00,  2.17153141e+00, 2.66423762e+00, 2.98759885e+00, 2.99104052e+00,  2.98962929e+00, 2.99726445e+00, 3.19787364e+00, 3.67892685e+00,  4.14972822e+00, 4.61675511e+00, 5.08453690e+00, 5.55307359e+00,  5.86870259e+00]])
+
     technology = 'IGBT3'
     r_g_int = 10
     c_oss_fix = 1
@@ -76,6 +79,14 @@ def my_transistor():
         'r_channel_nominal': 67,
         'graph_t_r': graph_t_r
     }
+    switch_gate_charge = {
+        'i_channel': 12.3,
+        't_j': 25,
+        'v_supply': 400,
+        'i_g': None,
+        'graph_q_v': graph_q_v
+    }
+
     # Create argument dictionaries
     transistor_args = {'name': name, 'type': type, 'author': author, 'comment': comment,
                        'manufacturer': manufacturer, 'datasheet_hyperlink': datasheet_hyperlink,
@@ -87,7 +98,7 @@ def my_transistor():
                        'c_oss_er': c_oss_er, 'c_oss_tr': c_oss_tr, 'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs}
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'channel': [switch_channel],
-                   'e_on': [switchenergy], 'e_off': [switchenergy], 'thermal_foster': foster_args, 'r_channel_th': switch_ron_args}
+                   'e_on': [switchenergy], 'e_off': [switchenergy], 'thermal_foster': foster_args, 'r_channel_th': switch_ron_args, 'charge_curve': switch_gate_charge}
     diode_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                   'channel': [diode_channel], 'e_rr': [switchenergy], 'thermal_foster': foster_args}
     return transistor_args, switch_args, diode_args
@@ -137,6 +148,7 @@ def test_transistor(my_transistor):
     assert transistor.switch.e_on[0].graph_i_e.any() == switch_args['e_on'][0]['graph_i_e'].any()
     assert transistor.switch.e_off[0].graph_i_e.any() == switch_args['e_off'][0]['graph_i_e'].any()
     assert transistor.switch.r_channel_th[0].graph_t_r.any() == switch_args['r_channel_th']['graph_t_r'].any()
+    assert transistor.switch.charge_curve[0].graph_q_v.any() == switch_args['charge_curve']['graph_q_v'].any()
 
     # diode_args test
     assert transistor.diode.t_j_max == diode_args['t_j_max']
