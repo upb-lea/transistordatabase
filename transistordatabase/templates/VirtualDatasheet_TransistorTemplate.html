@@ -23,6 +23,9 @@
 {% if switch['r_channel_th_plot'] is not none %}
 {% set sPlotCnt = sPlotCnt + 1 %}
 {% endif %}
+{% if switch['charge_curve'] is not none %}
+{% set sPlotCnt = sPlotCnt + 1 %}
+{% endif %}
 <!-- *************************************************************************************************************************************************** -->
 
 												<!-- ********** transistor specifications table ************* -->
@@ -70,7 +73,7 @@
 			<th colspan=3><h4 style="text-align:center">{{trans["Type"][0]}} Specifications</h4></th>
 		  </tr>
 		  {% for key, value in switch.items() %}
-		  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'energy_plots_r' or key == 'imp_plot' or key == 'r_channel_th_plot') %}
+		  {% if not (key == 'channel_plots' or key == 'energy_plots' or key == 'energy_plots_r' or key == 'imp_plot' or key == 'r_channel_th_plot' or key == 'charge_curve') %}
 		  <tr>
 			   {% set split_list = key.split('_') %}
 				<td class="spec" style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
@@ -153,19 +156,19 @@
 				  <div class="container">
 					   <div class="row">
 							{% if switch['energy_plots'] is not none %}
-							<div class="thumb">
+								<div class="thumb">
 							  <div class="imgCaption">Current vs Energy curves</div>
 							  <img id="ienergy_pic_more" src="data:image/png;base64,{{ switch['energy_plots'] }}" class="img">
 							</div>
 							{% endif %}
 							{% if switch['energy_plots_r'] is not none %}
-							<div class="thumb">
+								<div class="thumb">
 								<div class="imgCaption">Rg vs Energy curves</div>
 								<img id="renergy_pic_more" src="data:image/png;base64,{{ switch['energy_plots_r'] }}" class="img">
 							</div>
 							{% endif %}
 							{% if switch['imp_plot'] is not none %}
-								<div class="thumb">
+						   		<div class="thumb">
 									<div class="imgCaption">Impedance plots</div>
 									<img id="imp_pic_more" src="data:image/png;base64,{{ switch['imp_plot'] }}" class="img">
 								</div>
@@ -174,6 +177,12 @@
 								<div class="thumb">
 									<div class="imgCaption">On Resistance plots</div>
 									<img id="res_pic_more" src="data:image/png;base64,{{ switch['r_channel_th_plot'] }}" class="img">
+								</div>
+						   {% endif %}
+						   {% if switch['charge_curve'] is not none %}
+								<div class="thumb">
+									<div class="imgCaption">Gate charge,Q<sub>g</sub> Characteristic</div>
+									<img id="charge_pic_more" src="data:image/png;base64,{{switch['charge_curve']}}" class="img">
 								</div>
 							{% endif %}
 					   </div>
@@ -224,6 +233,12 @@
 						<div class="thumb">
 						  <div class="imgCaption">On Resistance plots</div>
 						  <img id="res_pic_less" src="data:image/png;base64,{{ switch['r_channel_th_plot'] }}" class="img">
+						</div>
+				   {% endif %}
+				   {% if switch['charge_curve'] is not none %}
+						<div class="thumb">
+						  <div class="imgCaption">Gate charge, Q<sub>g</sub> Characteristic</div>
+						  <img id="charge_pic_less" src="data:image/png;base64,{{ switch['charge_curve'] }}" class="img">
 						</div>
 				   {% endif %}
 				   {% if trans['c_plots'] is not none %}

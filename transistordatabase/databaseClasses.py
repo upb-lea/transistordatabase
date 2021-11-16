@@ -480,7 +480,13 @@ class Transistor:
                 'mandatory_keys': {'i_channel', 'v_g', 'dataset_type', 'graph_t_r'},
                 'str_keys': {'dataset_type'},
                 'numeric_keys': {'i_channel', 'v_g', 'r_channel_nominal'},
-                'array_keys': {'graph_t_r'}}
+                'array_keys': {'graph_t_r'}},
+            'GateChargeCurve': {
+                'mandatory_keys': {'i_channel', 't_j', 'v_supply', 'graph_q_v'},
+                'str_keys': {},
+                'numeric_keys': {'i_channel', 't_j', 'v_supply', 'i_g'},
+                'array_keys': {'graph_q_v'}}
+
         }
         if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
             return False  # Empty dataset. Can be valid depending on circumstances, hence no error.
@@ -2025,6 +2031,7 @@ class Transistor:
         e_off_meas: Optional[List[Transistor.SwitchEnergyData]]  #: Switch on energy data.
         linearized_switch: Optional[List[Transistor.LinearizedModel]]  #: Static data valid for a specific operating point.
         r_channel_th: Optional[List[Transistor.TemperatureDependResistance]]  #: Temperature dependant on resistance.
+        charge_curve: Optional[List[Transistor.GateChargeCurve]]  #: Gate voltage dependant charge characteristics
         t_j_max: float  #: Maximum junction temperature. Units in °C (Mandatory key)
 
         def __init__(self, switch_args):
@@ -2167,7 +2174,7 @@ class Transistor:
 
                 self.r_channel_th = []  # Default case: Empty list
                 if isinstance(switch_args.get('r_channel_th'), list):
-                    # Loop through list and check each dict for validity. Only create SwitchEnergyData objects from
+                    # Loop through list and check each dict for validity. Only create TemperatureDependResistance objects from
                     # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in switch_args.get('r_channel_th'):
                         try:
@@ -2182,8 +2189,28 @@ class Transistor:
                                           f"Switch-TemperatureDependResistance dictionaries for r_channel_th: ",) + error.args
                             raise
                 elif Transistor.isvalid_dict(switch_args.get('r_channel_th'), 'TemperatureDependResistance'):
-                    # Only create SwitchEnergyData objects from valid dicts
+                    # Only create TemperatureDependResistance objects form valid dicts
                     self.r_channel_th.append(Transistor.TemperatureDependResistance(switch_args.get('r_channel_th')))
+
+                self.charge_curve = []  # Default case: Empty list
+                if isinstance(switch_args.get('charge_curve'), list):
+                    # Loop through list and check each dict for validity. Only create GateChargeCurve objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in switch_args.get('charge_curve'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'GateChargeCurve'):
+                                self.charge_curve.append(Transistor.GateChargeCurve(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('charge_curve')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-GateChargeCurve dictionaries for charge_curve: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(switch_args.get('charge_curve'), 'GateChargeCurve'):
+                    # Only create GateChargeCurve objects form valid dicts
+                    self.charge_curve.append(Transistor.GateChargeCurve(switch_args.get('charge_curve')))
 
             else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
                 self.comment = None
@@ -2196,6 +2223,7 @@ class Transistor:
                 self.e_off_meas = []
                 self.linearized_switch = []
                 self.r_channel_th = []
+                self.charge_curve = []
 
         def convert_to_dict(self):
             """
@@ -2213,6 +2241,7 @@ class Transistor:
             d['e_off_meas'] = [e.convert_to_dict() for e in self.e_off_meas]
             d['linearized_switch'] = [lsw.convert_to_dict() for lsw in self.linearized_switch]
             d['r_channel_th'] = [tr.convert_to_dict() for tr in self.r_channel_th]
+            d['charge_curve'] = [q_v.convert_to_dict() for q_v in self.charge_curve]
             return d
 
         def find_next_gate_voltage(self, req_gate_vltgs, export_type, check_specific_curves=None, switch_loss_dataset_type="graph_i_e"):
@@ -2575,6 +2604,40 @@ class Transistor:
             else:
                 plt.show()
 
+        def plot_all_charge_curves(self, buffer_req=False):
+            """
+            A helper function to plot and convert gate emitter/source voltage dependant gate charge plots in raw data format.
+
+            :param buffer_req: internally required for generating virtual datasheets
+
+            :return: Respective plots are displayed
+            """
+            if not all(self.charge_curve):
+                return None
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            fig.set_size_inches(3.5, 2.7)
+            if isinstance(self.charge_curve, list) and self.charge_curve:
+                for curve in self.charge_curve:
+                    line1, = curve.get_plots(ax)
+            plt.xlabel('Gate Charge, $Q_{G} [nC]$')
+            plt.ylabel('Gate source Voltage, $V_{gs} [V]$')
+            props = dict(fill=False, edgecolor='black', linewidth=1)
+            if len(self.charge_curve) == 1:
+                charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel), "$V_{{supply}}$= {0} [V]".format(self.charge_curve[0].v_supply),
+                                              "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j), "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g)+' [A]'))])
+                ax.text(0.05, 0.95, charge_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='top')
+            else:
+                plt.legend(fontsize=8)
+                charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel),  "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
+                                              "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g)+' [A]'))])
+                ax.text(0.65, 0.1, charge_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='bottom')
+            plt.grid()
+            if buffer_req:
+                return get_img_raw_data(plt)
+            else:
+                plt.show()
+
         def collect_data(self):
             """
             Collects switch data in form of dictionary for generating virtual datasheet
@@ -2582,7 +2645,8 @@ class Transistor:
             :return: Switch data in form of dictionary
             :rtype: dict
             """
-            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True), 'r_channel_th_plot': self.plot_all_on_resistance_curves(True)}
+            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True),
+                           'r_channel_th_plot': self.plot_all_on_resistance_curves(True), 'charge_curve': self.plot_all_charge_curves(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     switch_data.update(getattr(self, attr).collect_data())
@@ -3339,7 +3403,7 @@ class Transistor:
 
             :param args: arguments to be passed for initialization
             """
-            # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
+            # Validity of args is checked in the constructor of Switch class and thus does not need to be
             # checked again here.
             self.i_channel = args.get('i_channel')
             self.v_g = args.get('v_g')
@@ -3382,6 +3446,63 @@ class Transistor:
                 plt.grid()
                 plt.show()
 
+    class GateChargeCurve:
+
+        """ A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class"""
+
+        v_supply: float  #: same as drain-to-source (v_ds)/ collector-emitter (v_ce) voltages
+        t_j: float  #: junction temperature
+        i_channel: float  #: channel current at which the graph is recorded
+        i_g: Optional[float]  #: gate to source/emitter current
+        graph_q_v: npt.NDArray[np.float64]   #: a 2D numpy array to store gate charge dependant on gate to source voltage
+
+        def __init__(self, args):
+            """
+            Initialization method for GateChargeCurve object
+
+            :param args: arguments to be passed for initialization
+            """
+            # Validity of args is checked in the constructor of Switch class and thus does not need to be
+            # checked again here.
+            self.i_channel = args.get('i_channel')
+            self.v_supply = args.get('v_supply')
+            self.t_j = args.get('t_j')
+            self.i_g = args.get('i_g')
+            self.graph_q_v = args.get('graph_q_v')
+
+        def convert_to_dict(self):
+            """
+            The method converts GateChargeCurve object into dict datatype
+
+            :return: GateChargeCurve object of dict type
+            :rtype: dict
+            """
+            d = dict(vars(self))
+            for att_key in d:
+                if isinstance(d[att_key], np.ndarray):
+                    d[att_key] = d[att_key].tolist()
+            return d
+
+        def get_plots(self, ax=None):
+            """
+            Plots gate charge vs gate source/ gate emitter voltage of switch type mosfet and igbt respectively
+
+            :param ax: figure axes to append the curves
+
+            :return: Respective plots are displayed if available else None is returned
+            """
+            if ax:
+                label_plot = "$V_{{supply}}$ = {0} V".format(self.v_supply)
+                return ax.plot(self.graph_q_v[0], self.graph_q_v[1], label=label_plot)
+            else:
+                plt.figure()  # needs rework because of this class being a list of transistor class members
+                label_plot = " $V_{{supply}}$ = {0} V".format(self.v_supply)
+                plt.plot(self.graph_q_v[0], self.graph_q_v[1], label=label_plot)
+                plt.legend(fontsize=8)
+                plt.xlabel('Gate Charge, $Q_{G} [nC]$')
+                plt.ylabel('Gate source Voltage, $V_{gs} [V]$')
+                plt.grid()
+                plt.show()
 
     def parallel_transistors(self, count_parallels=2):
         """
