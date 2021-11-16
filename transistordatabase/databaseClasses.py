@@ -475,7 +475,12 @@ class Transistor:
                 'mandatory_keys': {'c_o', 'v_gs', 'v_ds'},
                 'str_keys': {},
                 'numeric_keys': {'c_o', 'v_gs', 'v_ds'},
-                'array_keys': {}}
+                'array_keys': {}},
+            'TemperatureDependResistance': {
+                'mandatory_keys': {'i_channel', 'v_g', 'dataset_type', 'graph_t_r'},
+                'str_keys': {'dataset_type'},
+                'numeric_keys': {'i_channel', 'v_g', 'r_channel_nominal'},
+                'array_keys': {'graph_t_r'}}
         }
         if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
             return False  # Empty dataset. Can be valid depending on circumstances, hence no error.
@@ -549,6 +554,10 @@ class Transistor:
             for axis in dataset_dict.get('graph_v_i'):
                 if any(x < 0 for x in axis) == True:
                     raise ValueError(" Negative values are not allowed, please include mirror_xy_data attribute")
+                
+        if dict_type == 'TemperatureDependResistance':
+            if dataset_dict.get('dataset_type') == 't_factor':
+                instructions[dict_type]['mandatory_keys'].add('r_channel_nominal')
 
         if dict_type not in instructions:
             raise KeyError(f"No instructions available for validity check of argument dictionary with dict_type "
@@ -2015,6 +2024,7 @@ class Transistor:
         e_on_meas: Optional[List[Transistor.SwitchEnergyData]]  #: Switch on energy data.
         e_off_meas: Optional[List[Transistor.SwitchEnergyData]]  #: Switch on energy data.
         linearized_switch: Optional[List[Transistor.LinearizedModel]]  #: Static data valid for a specific operating point.
+        r_channel_th: Optional[List[Transistor.TemperatureDependResistance]]  #: Temperature dependant on resistance.
         t_j_max: float  #: Maximum junction temperature. Units in °C (Mandatory key)
 
         def __init__(self, switch_args):
@@ -2032,7 +2042,6 @@ class Transistor:
             # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
             self.thermal_foster = Transistor.FosterThermalModel(switch_args.get('thermal_foster'))
             if Transistor.isvalid_dict(switch_args, 'Switch'):
-
                 self.t_j_max = switch_args.get('t_j_max')
                 self.comment = switch_args.get('comment')
                 self.manufacturer = switch_args.get('manufacturer')
@@ -2156,6 +2165,26 @@ class Transistor:
                     # Only create LinearizedModel objects from valid dicts
                     self.linearized_switch.append(Transistor.LinearizedModel(switch_args.get('linearized_switch')))
 
+                self.r_channel_th = []  # Default case: Empty list
+                if isinstance(switch_args.get('r_channel_th'), list):
+                    # Loop through list and check each dict for validity. Only create SwitchEnergyData objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in switch_args.get('r_channel_th'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'TemperatureDependResistance'):
+                                self.r_channel_th.append(Transistor.TemperatureDependResistance(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = switch_args.get('r_channel_th')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
+                                          f"Switch-TemperatureDependResistance dictionaries for r_channel_th: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(switch_args.get('r_channel_th'), 'TemperatureDependResistance'):
+                    # Only create SwitchEnergyData objects from valid dicts
+                    self.r_channel_th.append(Transistor.TemperatureDependResistance(switch_args.get('r_channel_th')))
+
             else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
                 self.comment = None
                 self.manufacturer = None
@@ -2166,6 +2195,7 @@ class Transistor:
                 self.e_on_meas = []
                 self.e_off_meas = []
                 self.linearized_switch = []
+                self.r_channel_th = []
 
         def convert_to_dict(self):
             """
@@ -2182,6 +2212,7 @@ class Transistor:
             d['e_on_meas'] = [e.convert_to_dict() for e in self.e_on_meas]
             d['e_off_meas'] = [e.convert_to_dict() for e in self.e_off_meas]
             d['linearized_switch'] = [lsw.convert_to_dict() for lsw in self.linearized_switch]
+            d['r_channel_th'] = [tr.convert_to_dict() for tr in self.r_channel_th]
             return d
 
         def find_next_gate_voltage(self, req_gate_vltgs, export_type, check_specific_curves=None, switch_loss_dataset_type="graph_i_e"):
@@ -2511,6 +2542,39 @@ class Transistor:
                 print("Switch energy r_e curves are not available for the chosen transistor")
                 return None
 
+        def plot_all_on_resistance_curves(self, buffer_req=False):
+            """
+            A helper function to plot and convert Temperature dependant on resistance plots in raw data format.
+
+            :param buffer_req: internally required for generating virtual datasheets
+
+            :return: Respective plots are displayed
+            """
+            if not all(self.r_channel_th):
+                return None
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            fig.set_size_inches(3.5, 2.7)
+            if isinstance(self.r_channel_th, list) and self.r_channel_th:
+                for curve in self.r_channel_th:
+                    line1, = curve.get_plots(ax)
+            plt.xlabel('Junction Temperature [C°]')
+            y_label = 'On Resistance [Ohm]' if self.r_channel_th[0].dataset_type == 't_r' else 'On Resistance [Ohm]- Normalized'
+            plt.ylabel(y_label)
+            props = dict(fill=False, edgecolor='black', linewidth=1)
+            if len(self.r_channel_th) == 1:
+                r_on_condition = '\n'.join(["conditions: ", "$V_{g}$ = " + str(self.r_channel_th[0].v_g) + " V", "$I_{channel}$= " + str(self.r_channel_th[0].i_channel) + " A"])
+                ax.text(0.1, 0.9, r_on_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='top')
+            else:
+                plt.legend(fontsize=8)
+                r_on_condition = '\n'.join(["conditions: ", "$I_{channel} $ =" + str(self.r_channel_th[0].i_channel) + " A"])
+                ax.text(0.65, 0.1, r_on_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='bottom')
+            plt.grid()
+            if buffer_req:
+                return get_img_raw_data(plt)
+            else:
+                plt.show()
+
         def collect_data(self):
             """
             Collects switch data in form of dictionary for generating virtual datasheet
@@ -2518,7 +2582,7 @@ class Transistor:
             :return: Switch data in form of dictionary
             :rtype: dict
             """
-            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True)}
+            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True), 'r_channel_th_plot': self.plot_all_on_resistance_curves(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     switch_data.update(getattr(self, attr).collect_data())
@@ -3258,6 +3322,66 @@ class Transistor:
                         and (not getattr(self, attr) is None):
                     c_oss_related[attr.capitalize()] = getattr(self, attr)
             return c_oss_related
+
+    class TemperatureDependResistance:
+        """
+        class to store temperature dependant resistance curve
+        """
+        i_channel: float  #: channel current at which the graph is recorded
+        v_g: float  #: gate voltage
+        dataset_type: str  #: curve datatype, can be either 't_r' or 't_factor'. 't_factor' is used to denote normalized gate curves
+        graph_t_r: npt.NDArray[np.float64]   #: a 2D numpy array to store the temperature related channel on resistance
+        r_channel_nominal: Optional[float]  #: a mandatory field if the dataset_type is 't_factor'
+
+        def __init__(self, args):
+            """
+            Initialization method for TemperatureDependResistance object
+
+            :param args: arguments to be passed for initialization
+            """
+            # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
+            # checked again here.
+            self.i_channel = args.get('i_channel')
+            self.v_g = args.get('v_g')
+            self.dataset_type = args.get('dataset_type')
+            self.r_channel_nominal = args.get('r_channel_nominal')
+            self.graph_t_r = args.get('graph_t_r')
+
+        def convert_to_dict(self):
+            """
+            The method converts TemperatureDependResistance object into dict datatype
+
+            :return: TemperatureDependResistance object of dict type
+            :rtype: dict
+            """
+            d = dict(vars(self))
+            for att_key in d:
+                if isinstance(d[att_key], np.ndarray):
+                    d[att_key] = d[att_key].tolist()
+            return d
+
+        def get_plots(self, ax=None):
+            """
+            Plots On resistance vs Junction temperature
+
+            :param ax: figure axes to append the curves
+
+            :return: Respective plots are displayed if available else None is returned
+            """
+            if ax:
+                label_plot = "$V_{{G}}$ = {0} V".format(self.v_g)
+                return ax.plot(self.graph_t_r[0], self.graph_t_r[1], label=label_plot)
+            else:
+                plt.figure()  # needs rework because of this class being a list of transistor class members
+                label_plot = " $V_{{G}}$ = {0} V".format(self.v_g)
+                plt.plot(self.graph_t_r[0], self.graph_t_r[1], label=label_plot)
+                plt.legend(fontsize=8)
+                plt.xlabel('Junction Temperature [C°]')
+                y_label = 'On Resistance [Ohm]' if self.dataset_type == 't_factor' else 'On Resistance'
+                plt.ylabel(y_label)
+                plt.grid()
+                plt.show()
+
 
     def parallel_transistors(self, count_parallels=2):
         """
