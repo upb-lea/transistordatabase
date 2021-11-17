@@ -307,5 +307,25 @@ def test_export_json(my_transistor):
         transistor.export_json(123)
         transistor.export_json("/not/existing/path/")
 
+def test_check_realnum():
+    assert tdb.check_realnum(123)
+    assert tdb.check_realnum(12.3)
+    assert tdb.check_realnum(None)
+    with pytest.raises(TypeError):
+        tdb.check_realnum('döner')
 
 
+def test_check_2d_dataset():
+    assert tdb.check_2d_dataset(None)
+    assert tdb.check_2d_dataset(np.array([[1, 2, 3], [4, 5, 6]]))
+    with pytest.raises(TypeError):
+        tdb.check_2d_dataset('Döner')
+        tdb.check_2d_dataset(5)
+
+def test_check_str():
+    assert tdb.check_str('Hello')
+    assert tdb.check_str(None)
+    with pytest.raises(TypeError):
+        tdb.check_str(5)
+        tdb.check_str(np.array([[1, 2],[3, 4]]))
+        tdb.check_str([1, 2, 3])
