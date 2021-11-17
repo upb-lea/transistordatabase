@@ -234,7 +234,7 @@ class Transistor:
 
                 self.raw_measurement_data = []
                 if isinstance(transistor_args.get('raw_measurement_data'), list):
-                    # Loop through list and check each dict for validity. Only create RawMeasuerementData objects from
+                    # Loop through list and check each dict for validity. Only create RawMeasurementData objects from
                     # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in transistor_args.get('raw_measurement_data'):
                         try:
@@ -324,6 +324,8 @@ class Transistor:
         :param overwrite: Indicates whether to overwrite the existing transistor object in the local database if a match is found
         :type overwrite: bool or None
 
+        :return: None
+        :rtype: None
         """
         if collection == "local":
             collection = connect_local_TDB()
@@ -580,9 +582,9 @@ class Transistor:
 
         if dict_type == 'Diode_ChannelData' or dict_type == 'Switch_ChannelData':
             for axis in dataset_dict.get('graph_v_i'):
-                if any(x < 0 for x in axis) == True:
+                if any(x < 0 for x in axis):
                     raise ValueError(" Negative values are not allowed, please include mirror_xy_data attribute")
-                
+
         if dict_type == 'TemperatureDependResistance':
             if dataset_dict.get('dataset_type') == 't_factor':
                 instructions[dict_type]['mandatory_keys'].add('r_channel_nominal')
@@ -605,17 +607,23 @@ class Transistor:
                 all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
             return True
 
-    def update_wp(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str = "both", normalize_t_to_v=10):
+    def update_wp(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str = "both", normalize_t_to_v=10) -> None:
         """
         Fills the .wp-class, a temporary storage for self-written user-programs
         Searches for the input values and fills the .wp-class with data next to this points
 
         :param t_j: junction temperature
+        :type t_j: float
         :param v_g: gate voltage
+        :type v_g: float
         :param i_channel: channel current for linearization
+        :type i_channel: float
         :param switch_or_diode: 'switch' or 'diode' or 'both'
+        :type switch_or_diode: str
         :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
+        :type normalize_t_to_v: float
         :return: None
+        :rtype: None
         """
         if switch_or_diode in ["diode", "both"]:
             diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
@@ -655,33 +663,37 @@ class Transistor:
         # ToDo: may separate data for IGBT, MOSFET, SiC-MOSFET and GaN-Transistor
         self.update_wp(self.switch.t_j_max - 25, 15, self.i_cont)
 
-    def calc_v_eoss(self):
+    def calc_v_eoss(self) -> np.array:
         """
         Calculates e_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
 
         :return: e_oss numpy array
+        :rtype: np.array
         """
         # energy_cumtrapz = np.zeros_like(self.c_oss[0].graph_v_c[1], dtype=np.float32)
         energy_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[0] * self.c_oss[0].graph_v_c[1],
                                                          self.c_oss[0].graph_v_c[0], initial=0)
         return np.array([self.c_oss[0].graph_v_c[0], energy_cumtrapz])
 
-    def calc_v_qoss(self):
+    def calc_v_qoss(self) -> np.array:
         """
         Calculates q_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
 
         :return: q_oss numpy array
+        :rtype: np.array
         """
         charge_cumtrapz = integrate.cumulative_trapezoid(self.c_oss[0].graph_v_c[1], self.c_oss[0].graph_v_c[0],
                                                          initial=0)
 
         return np.array([self.c_oss[0].graph_v_c[0], charge_cumtrapz])
 
-    def plot_v_eoss(self, buffer_req=False):
+    def plot_v_eoss(self, buffer_req: bool = False):
         """
         Plots v_eoss with method calc_v_eoss
 
         :param buffer_req: Internally required for generating virtual datasheets
+        :type buffer_req: bool
+
         :return: Respective plots are displayed
         """
         v_eoss = self.calc_v_eoss()
@@ -695,11 +707,12 @@ class Transistor:
         else:
             plt.show()
 
-    def plot_v_qoss(self, buffer_req=False):
+    def plot_v_qoss(self, buffer_req: bool = False):
         """
         Plots v_qoss with method calc_v_qoss
 
         :param buffer_req: Internally required for generating virtual datasheets
+        :type buffer_req: bool
 
         :return: Respective plots are displayed
         """
@@ -744,13 +757,16 @@ class Transistor:
         else:
             plt.show()
 
-    def get_object_v_i(self, switch_or_diode, t_j, v_g):
+    def get_object_v_i(self, switch_or_diode: str, t_j: float, v_g: float) -> list:
         """
         Used for getting a channel curve including boundary conditions
 
         :param switch_or_diode: 'switch' or 'diode'
+        :type switch_or_diode: float
         :param t_j: junction temperature
+        :type t_j: float
         :param v_g: gate voltage
+        :type v_g: float
 
         :raises ValueError: When no data is available
         :return: v_i-object (channel curve including boundary conditions)
@@ -804,15 +820,20 @@ class Transistor:
 
         return dataset
 
-    def get_object_i_e(self, e_on_off_rr, t_j, v_g, v_supply, r_g):
+    def get_object_i_e(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, r_g: float) -> list:
         """
         Function to get the loss graphs out of the transistor class
 
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
+        :type e_on_off_rr: str
         :param t_j: junction temperature
+        :type t_j: float
         :param v_g: gate voltage at turn-on / turn-off
+        :type v_g: float
         :param v_supply: dc link voltage
+        :type v_supply: float
         :param r_g: gate resistor
+        :type r_g: float
 
         :return: e_on.graph_i_e or e_off.graph_i_e or e_rr.graph_i_e
         :rtype: list
@@ -864,12 +885,15 @@ class Transistor:
             dataset = candidate_datasets[0]
         return dataset
 
-    def get_object_i_e_simplified(self, e_on_off_rr, t_j):
+    @staticmethod
+    def get_object_i_e_simplified(e_on_off_rr: str, t_j: float):
         """
         Function to get the loss graphs out of the transistor class, simplified version
 
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
+        :type e_on_off_rr: str
         :param t_j: junction temperature
+        :type t_j: float
 
         :raises ValueError: Raised when no graph_i_e information is available at the given operating point
         :return: e_on.graph_i_e or e_off.graph_i_e or e_rr.graph_i_e, e_on.graph_r_e or e_off.graph_r_e or e_rr.graph_r_e
@@ -915,7 +939,8 @@ class Transistor:
             i_e_dataset = ie_datasets[0]
         return i_e_dataset, r_e_dataset
 
-    def get_object_r_e_simplified(self, e_on_off_rr, t_j, v_g, v_supply, normalize_t_to_v):
+    @staticmethod
+    def get_object_r_e_simplified(e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, normalize_t_to_v: float) -> list:
         """
         Function to get the loss graphs out of the transistor class, simplified version
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
@@ -965,17 +990,23 @@ class Transistor:
                              "A list of available operating points is printed above.")
         return dataset
 
-    def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply, normalize_t_to_v) -> Transistor.SwitchEnergyData:
+    def calc_object_i_e(self, e_on_off_rr: str, r_g: float, t_j: float, v_supply: float, normalize_t_to_v: float) \
+            -> SwitchEnergyData:
         """
         Calculate loss curves for other gate resistor than the standard one.
         This function uses i_e loss curve in combination with r_e loss curve, to calculate a new i_e loss curve for
         a chosen gate resistor. Also voltage correction is implemented (e.g. half voltage compared to datasheet means half losses)
 
         :param e_on_off_rr: 'e_on', 'e_off', 'e_rr'
+        :type e_on_off_rr: str
         :param r_g: gate resistor of interest
+        :type r_g: float
         :param t_j: junction temperature of interest
+        :type t_j: float
         :param v_supply: supply voltage of interest
+        :type v_supply: float
         :param normalize_t_to_v: a normalize value used to evalute cartesian distance
+        :type normalize_t_to_v: float
 
         :raises Exception: When given gate resistance exceeds the existing maximum
 
@@ -1015,7 +1046,8 @@ class Transistor:
             print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(e_on_off_rr, r_g, t_j, v_supply, e.args[0]))
             raise e
 
-    def calc_i_e_curve_using_r_e_curve(self, i_e_object: Transistor.SwitchEnergyData, r_e_object: Transistor.SwitchEnergyData, r_g: float, v_supply_chosen: float):
+    def calc_i_e_curve_using_r_e_curve(self, i_e_object: SwitchEnergyData, r_e_object: SwitchEnergyData,
+                                       r_g: float, v_supply_chosen: float) -> np.array:
         """
         Calculates the loss energy curve at the provided gate resistance value based on the r_e_graph data
 
@@ -1029,7 +1061,7 @@ class Transistor:
         :type v_supply_chosen: int
 
         :return: numpy 2d data representing loss energy of datatype = 'graph_i_e'
-        :rtype: numpy 2d array
+        :rtype: np.array
         """
         # generate copy
         object_i_e_calc = i_e_object.graph_i_e.copy()
@@ -1047,20 +1079,24 @@ class Transistor:
         # generate dictionary for class SwitchEnergyData
         return object_i_e_calc
 
-    def calc_lin_channel(self, t_j, v_g, i_channel, switch_or_diode):
+    def calc_lin_channel(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str) -> tuple[float, float]:
         """
         Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
         the desired current, the equivalent parameters for u_channel and r_channel are returned
 
         :param t_j: junction temperature
+        :type t_j: float
         :param v_g: gate voltage
+        :type v_g: float
         :param i_channel: current to linearize the channel
+        :type i_channel: float
         :param switch_or_diode: 'switch' or 'diode'
+        :type switch_or_diode: str
 
         :raises ValueError: Raised when the given arguments either exceed the maximum values or not the expected values
 
         :return: Linearized parameters for v_channel, r_channel
-        :rtype: float
+        :rtype: tuple[float, float]
 
         .. todo::
             - rethink method name. May include switch or diode as a parameter and use one global function
@@ -1146,7 +1182,7 @@ class Transistor:
                              "linearization.")
         return round(v_channel, 6), round(r_channel, 9)
 
-    def calc_thermal_params(self, input_type=None, order=4, plotbit=False):
+    def calc_thermal_params(self, input_type: str = None, order: int = 4, plotbit: bool = False) -> None:
         """
         A method to generate thermal parameters like Rth_total, tau_total, Cth_total and vectors like Rth_vector, tau_vector, Cth_vector based
         on data availability passed by the user while creating a new transistor object.
@@ -1172,6 +1208,7 @@ class Transistor:
         :type plotbit: bool
 
         :return: Foster object filled with missing parameters within the input_type object of transistor object
+        :rtype: None
         """
         try:
             code = compile(f"self.{input_type}.thermal_foster", "<string>", "eval")
@@ -1237,15 +1274,20 @@ class Transistor:
             exec(f"self.{input_type}.thermal_foster = foster_args")
             print(input_type, ':Thermal parameters re-assigned to foster object')
 
-    def compare_channel_linearized(self, i_channel, t_j=150, v_g=15):
+    def compare_channel_linearized(self, i_channel: float, t_j: float = 150, v_g: float = 15) -> None:
         """
         Shows channel plots for switch and diode comparing the linearized graph and the original graph.
         This function searches for the closest available curves for given arguments t_j and v_g
 
         :param i_channel: current to linearize the channel
+        :type i_channel: float
         :param t_j: junction temperature of interest, default set to 150 degree
+        :type t_j: float
         :param v_g: gate voltage of interest, default set to 15V
+        :type v_g: float
 
+        :return: Plot, showing original channel data and linearized channel data
+        :rtype: None
         """
 
         # search for closest objects
@@ -1295,11 +1337,12 @@ class Transistor:
         # plt.tight_layout()
         plt.show()
 
-    def export_datasheet(self):
+    def export_datasheet(self) -> None:
         """
         Generates and exports the virtual datasheet in form of html page
 
         :return: pdf file is created in the current working directory
+        :rtype: None
 
         :Example:
 
@@ -1356,8 +1399,9 @@ class Transistor:
         :return: matlab compatible list of all attributes
         :rtype: list
         """
+        #TODO: Seems to be this function is not used!
 
-        if compatibilityTest(self, attribute) is not np.nan:
+        if matlab_compatibility_test(self, attribute) is not np.nan:
             ListData = eval(attribute)
             Dataset = np.empty((len(ListData),), dtype=np.object)
             for i in range(len(ListData)):
@@ -1369,19 +1413,25 @@ class Transistor:
             Dataset = np.nan
         return Dataset
 
-    def export_simulink_loss_model(self, r_g_on=None, r_g_off=None, v_supply=None, normalize_t_to_v=10):
+    def export_simulink_loss_model(self, r_g_on: float = None, r_g_off: float = None, v_supply: float = None,
+                                   normalize_t_to_v: float = 10) -> None:
         """
         Exports a simulation model for simulink inverter loss models, see https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
 
         :param r_g_on: gate turn on resistance, optional
+        :type r_g_on: float
         :param r_g_off: gate turn off resistance, optional
+        :type r_g_off: float
         :param v_supply: switch supply voltage, optional
+        :type v_supply: float
         :param normalize_t_to_v: a normalize value used in computing cartesian distance
+        :type normalize_t_to_v: float
 
         :raises Exception: Re-raised excception by calling calc_object_i_e(..)
         :raises ValueError: Raised when the switch type is other than IGBT
 
         :return: .mat file for import in matlab/simulink
+        :rtype: None
 
         :Example:
 
@@ -1471,7 +1521,7 @@ class Transistor:
             switch_dict = {'T_j_channel': np.double([switch_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
                            'T_j_ref_on': np.double([eon_object_lower.t_j, temp_t_j_eon_upper]),
                            'T_j_ref_off': np.double([eoff_object_lower.t_j, temp_t_j_eoff_upper]),
-                           'R_th_total': compatibilityTest(self, 'Transistor.switch.thermal_foster.r_th_total') if self.switch.thermal_foster.r_th_total != 0 else 1e-6,
+                           'R_th_total': matlab_compatibility_test(self, 'Transistor.switch.thermal_foster.r_th_total') if self.switch.thermal_foster.r_th_total != 0 else 1e-6,
                            'C_th_total': np.double(1),
                            'V_ref_on': np.double(eon_object_upper.v_supply),
                            'V_ref_off': np.double(eon_object_upper.v_supply),
@@ -1518,7 +1568,7 @@ class Transistor:
             diode_dict = {
                 'T_j_channel': np.double([diode_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
                 'T_j_ref_rr': np.double([err_object_lower.t_j, temp_t_j_err_upper]),
-                'R_th_total': compatibilityTest(self, 'Transistor.diode.thermal_foster.r_th_total') if self.diode.thermal_foster.r_th_total != 0 else 1e-6,
+                'R_th_total': matlab_compatibility_test(self, 'Transistor.diode.thermal_foster.r_th_total') if self.diode.thermal_foster.r_th_total != 0 else 1e-6,
                 'C_th_total': np.double(1),
                 'V_ref_rr': np.double(err_object_lower.v_supply),
                 'v_channel': np.double(diode_channel_array),
@@ -1527,10 +1577,10 @@ class Transistor:
 
             }
 
-            transistor_dict = {'Name': compatibilityTest(self, 'Transistor.name'),
-                               'R_th_CS': compatibilityTest(self, 'Transistor.r_th_cs') if self.r_th_cs != 0 else 1e-6,
-                               'R_th_Switch_CS': compatibilityTest(self, 'Transistor.r_th_switch_cs') if self.r_th_switch_cs != 0 else 1e-6,
-                               'R_th_Diode_CS': compatibilityTest(self, 'Transistor.r_th_diode_cs') if self.r_th_diode_cs != 0 else 1e-6,
+            transistor_dict = {'Name': matlab_compatibility_test(self, 'Transistor.name'),
+                               'R_th_CS': matlab_compatibility_test(self, 'Transistor.r_th_cs') if self.r_th_cs != 0 else 1e-6,
+                               'R_th_Switch_CS': matlab_compatibility_test(self, 'Transistor.r_th_switch_cs') if self.r_th_switch_cs != 0 else 1e-6,
+                               'R_th_Diode_CS': matlab_compatibility_test(self, 'Transistor.r_th_diode_cs') if self.r_th_diode_cs != 0 else 1e-6,
                                'Switch': switch_dict,
                                'Diode': diode_dict,
                                'file_generated': f"{datetime.datetime.today()}",
@@ -1550,6 +1600,7 @@ class Transistor:
         Exports a transistor dictionary to a matlab dictionary
 
         :return: File stored in current working path
+        :rtype: None
 
         :Example:
 
@@ -1569,7 +1620,7 @@ class Transistor:
         sio.savemat(self.name.replace('-', '_') + '_Matlab.mat', {self.name.replace('-', '_'): transistor_clean_dict})
         print(f"Export files {self.name.replace('-', '_')}_Matlab.mat to {pathlib.Path.cwd().as_uri()}")
 
-    def collect_i_e_and_r_e_combination(self, switch_type, loss_type):
+    def collect_i_e_and_r_e_combination(self, switch_type: str, loss_type: str) -> tuple[list, list]:
         """
         A function to gather the i_e and r_e graph combinations from the available energy curves which are further used in gecko circuit exporter function
 
@@ -1603,18 +1654,26 @@ class Transistor:
                     i_e_indexes.append(index)
         return i_e_indexes, r_e_indexes
 
-    def export_geckocircuits(self, recheck=True, v_supply=None, v_g_on=None, v_g_off=None, r_g_on=None, r_g_off=None):
+    def export_geckocircuits(self, recheck: bool = True, v_supply: float = None, v_g_on: float = None,
+                             v_g_off: float = None, r_g_on: float = None, r_g_off: float = None) -> None:
         """
         Export transistor data to GeckoCIRCUITS
 
         :param recheck: Default to set to true, to enable the neighbouring select feature of the exporter
+        :type recheck: bool
         :param v_supply: supply voltage for turn-on/off losses
+        :type v_supply: float
         :param v_g_on: gate turn-on voltage
+        :type v_g_on: float
         :param v_g_off: gate turn-off voltage
+        :type v_g_off: float
         :param r_g_on: gate resistor for turn-on
+        :type r_g_on: float
         :param r_g_off: gate resistor for turn-off
+        :type r_g_off: float
 
         :return: Two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl created in the current working directory
+        :rtype: None
 
         :Example:
 
@@ -1737,7 +1796,7 @@ class Transistor:
 
             file_switch = open(f"{self.name}_Switch(rg_on_{r_g_on})(rg_off_{r_g_off}).scl", "w")
 
-            #### switch channel data
+            # switch channel data
 
             file_switch.write("anzMesskurvenPvCOND " + str(len(sw_channel_curves)) + "\n")
             for channel in sw_channel_curves:
@@ -1777,7 +1836,7 @@ class Transistor:
                 file_switch.write(f"\ntj {channel.t_j}\n")
                 file_switch.write("<\LeitverlusteMesskurve>\n")
 
-            #### switch switching loss
+            # switch switching loss
             # check for availability of switching loss curves
             # count number of arrays with gate v_g == v_g_export
 
@@ -1831,7 +1890,7 @@ class Transistor:
         if any(diode_channel_curves):
             file_diode = open(f"{self.name}_Diode(rg_{r_g_err}).scl", "w")
 
-            #### diode channel data
+            # diode channel data
             # count number of arrays for conducting behaviour
             # in case of gan-transistor, search for v_g_off
             # in case of mosfet or igbt use all available data
@@ -1861,7 +1920,7 @@ class Transistor:
                 file_diode.write(f"\ntj {n_channel.t_j}\n")
                 file_diode.write("<\LeitverlusteMesskurve>\n")
 
-            #### diode err loss
+            # diode err loss
             # check for availability of switching loss curves
             # in case of no switching losses available, set curves to zero.
             # if switching losses will not set to zero, geckoCIRCUITS will use initial values
@@ -1906,14 +1965,16 @@ class Transistor:
         # set print options back to default
         np.set_printoptions(linewidth=75)
 
-    def export_plecs(self, recheck=True, gate_voltages=None):
+    def export_plecs(self, recheck: bool = True, gate_voltages=None) -> None:
         """
         Generates and exports the switch and diode .xmls files to be imported into plecs simulator
 
         :param recheck: enables the selection of gate voltages near to the provided values if not found
+        :type recheck: bool
         :param gate_voltages: gate voltage like v_g_on, v_g_off, v_d_on, v_d_off
 
         :return: Two output files: 'Transistor.name'_Switch.xml and 'Transistor.name'_Diode.xml created in the current working directory
+        :rtype: None
 
         :Example:
 
@@ -2008,7 +2069,7 @@ class Transistor:
                 self.tau_vector = None
                 self.graph_t_rthjc = None
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts FosterThermalModel object into dict datatype
 
@@ -2021,11 +2082,12 @@ class Transistor:
                     d[att_key] = d[att_key].tolist()
             return d
 
-        def get_plots(self, buffer_req=False):
+        def get_plots(self, buffer_req: bool = False):
             """
             Plots tau vs rthjc
 
             :param buffer_req: Internally required for generating virtual datasheets
+            :type buffer_req: bool
 
             :return: Respective plots are displayed if available else None is returned
             """
@@ -2051,7 +2113,7 @@ class Transistor:
             else:
                 plt.show()
 
-        def collect_data(self):
+        def collect_data(self) -> dict:
             """
             Collects foster data in form of dictionary for generating virtual datasheet
 
@@ -2091,8 +2153,8 @@ class Transistor:
 
             :param switch_args: argument to be passed for initialization
 
-            :raises KeyError: Expected during the channel\e_on\e_off instance initialization
-            :raises ValueError: Expected during the channel\e_on\e_off instance initialization
+            :raises KeyError: Expected during the channel/e_on/e_off instance initialization
+            :raises ValueError: Expected during the channel/e_on/e_off instance initialization
 
             .. todo:: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
             """
@@ -2276,7 +2338,7 @@ class Transistor:
                 self.r_channel_th = []
                 self.charge_curve = []
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts Switch object into dict datatype
 
@@ -2295,7 +2357,8 @@ class Transistor:
             d['charge_curve'] = [q_v.convert_to_dict() for q_v in self.charge_curve]
             return d
 
-        def find_next_gate_voltage(self, req_gate_vltgs, export_type, check_specific_curves=None, switch_loss_dataset_type="graph_i_e"):
+        def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list = None,
+                                   switch_loss_dataset_type: str = "graph_i_e") -> int:
             """
             Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets. Applicable to either plecs exporter or gecko exporter
 
@@ -2367,18 +2430,25 @@ class Transistor:
                 print(key + ': ', value)
             return req_gate_vltgs.values()
 
-        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, switch_energy_dataset_type="graph_i_e") -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData, Transistor.SwitchEnergyData]:
+        def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
+                switch_energy_dataset_type: str = "graph_i_e") \
+                -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData, Transistor.SwitchEnergyData]:
             """
             This function looks for the smallest distance to stored object value and returns this working point
 
             :param t_j: junction temperature
+            :type t_j: float
             :param v_g: gate voltage
+            :type v_g: float
             :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
+            :type normalize_t_to_v: float
             :param switch_energy_dataset_type: preferred dataset_type (single, graph_r_e, graph_i_e) for e_on and e_off
+            :type switch_energy_dataset_type: str
 
             :raises KeyError: Raised when there no data for the specified SwitchEnergyData_dataset_type
 
             :return: channel-object, e_on-object, e_off-object
+            :rtype: tuple[Transistor.ChannelData, Transistor.SwitchEnergyData, Transistor.SwitchEnergyData]
             """
             # Normalize t_j to v_g for distance metric
             node = np.array([t_j / normalize_t_to_v, v_g])
@@ -2386,7 +2456,7 @@ class Transistor:
             channeldata_t_js = np.array([chan.t_j for chan in self.channel])
             channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             nodes = np.array([channeldata_t_js / normalize_t_to_v, channeldata_v_gs]).transpose()
-            index_channeldata = distance.cdist(node, nodes).argmin()
+            index_channeldata = distance.cdist([node], nodes).argmin()
 
             # Find closest e_on
             e_ons = [e for e in self.e_on if e.dataset_type == switch_energy_dataset_type]
@@ -2395,7 +2465,7 @@ class Transistor:
             e_on_t_js = np.array([e.t_j for e in e_ons])
             e_on_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_ons])
             nodes = np.array([e_on_t_js / normalize_t_to_v, e_on_v_gs]).transpose()
-            index_e_on = distance.cdist(node, nodes).argmin()
+            index_e_on = distance.cdist([node], nodes).argmin()
             # Find closest e_off
             e_offs = [e for e in self.e_off if e.dataset_type == switch_energy_dataset_type]
             if not e_offs:
@@ -2403,7 +2473,7 @@ class Transistor:
             e_off_t_js = np.array([e.t_j for e in e_offs])
             e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_offs])
             nodes = np.array([e_off_t_js / normalize_t_to_v, e_off_v_gs]).transpose()
-            index_e_off = distance.cdist(node, nodes).argmin()
+            index_e_off = distance.cdist([node], nodes).argmin()
             print("run switch.find_approx_wp: closest working point for t_j = {0} °C and v_g = {1} V:".format(t_j, v_g))
             print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
             print(f"eon:     t_j = {e_ons[index_e_on].t_j} °C and v_g = {e_ons[index_e_on].v_g} V")
@@ -2416,8 +2486,10 @@ class Transistor:
             Plot channel data with a chosen gate-voltage
 
             :param gatevoltage: gatevoltage at which the channel curves are selected and plotted
+            :type gatevoltage: float
 
             :return: Respective plots are displayed
+            :rtype: None
             """
             plt.figure()
             for i_channel in np.array(range(0, len(self.channel))):
@@ -2432,13 +2504,15 @@ class Transistor:
             plt.grid()
             plt.show()
 
-        def plot_channel_data_temp(self, temperature):
+        def plot_channel_data_temp(self, temperature: float) -> None:
             """
             Plot channel data with chosen temperature
 
             :param temperature: junction temperature at which the channel curves are selected and plotted
+            :param temperature: float
 
             :return: Respective plots are displayed
+            :rtype: None
             """
 
             plt.figure()
@@ -2454,11 +2528,12 @@ class Transistor:
             plt.grid()
             plt.show()
 
-        def plot_all_channel_data(self, buffer_req=False):
+        def plot_all_channel_data(self, buffer_req: bool = False):
             """
             Plot all switch channel characteristic curves
 
             :param buffer_req: internally required for generating virtual datasheets
+            :param buffer_req: bool
 
             :return: Respective plots are displayed
             """
@@ -2524,11 +2599,12 @@ class Transistor:
                     plt.show()
             return categorized_plots
 
-        def plot_energy_data(self, buffer_req=False):
+        def plot_energy_data(self, buffer_req: bool = False):
             """
             Plots all switch energy i-e characteristic curves which are extracted from the manufacturer datasheet
 
             :param buffer_req: internally required for generating virtual datasheets
+            :param buffer_req: bool
 
             :return: Respective plots are displayed
             """
@@ -2574,11 +2650,12 @@ class Transistor:
                 print("Switch energy i_e curves are not available for the chosen transistor")
                 return None
 
-        def plot_energy_data_r(self, buffer_req=False):
+        def plot_energy_data_r(self, buffer_req: bool = False):
             """
              Plots all switch energy r-e characteristic curves
 
             :param buffer_req: internally required for generating virtual datasheets
+            :param buffer_req: bool
 
             :return: Respective plots are displayed
             """
@@ -2689,7 +2766,7 @@ class Transistor:
             else:
                 plt.show()
 
-        def collect_data(self):
+        def collect_data(self) -> dict:
             """
             Collects switch data in form of dictionary for generating virtual datasheet
 
@@ -2728,8 +2805,8 @@ class Transistor:
 
             :param diode_args: argument to be passed for initialization
 
-            :raises KeyError: Expected during the channel\e_rr instance initialization
-            :raises ValueError: Expected during the channel\e_rr instance initialization
+            :raises KeyError: Expected during the channel/e_rr instance initialization
+            :raises ValueError: Expected during the channel/e_rr instance initialization
 
 
             """
@@ -2815,7 +2892,7 @@ class Transistor:
                 self.e_rr = []
                 self.linearized_diode = []
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts Diode object into dict datatype
 
@@ -2830,7 +2907,8 @@ class Transistor:
             d['linearized_diode'] = [ld.convert_to_dict() for ld in self.linearized_diode]
             return d
 
-        def find_next_gate_voltage(self, req_gate_vltgs, export_type, check_specific_curves=None, diode_loss_dataset_type="graph_i_e"):
+        def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list=None,
+                                   diode_loss_dataset_type: str = "graph_i_e"):
             """
             Finds the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
             The diode has only turn-off gate voltage which is the switch turn-on gate voltage
@@ -2880,15 +2958,22 @@ class Transistor:
                 print(key + ': ', value)
             return req_gate_vltgs.values()
 
-        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, switch_energy_dataset_type="graph_i_e") -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData]:
+        def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
+                           switch_energy_dataset_type: str = "graph_i_e") \
+                -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData]:
             """
             This function looks for the smallest distance to stored object value and returns this working point
 
             :param t_j: junction temperature
+            :type t_j: float
             :param v_g: gate voltage
+            :type v_g: float
             :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
+            :type normalize_t_to_v: float
             :param switch_energy_dataset_type: 'graph_i_e' or 'graph_r_e'
+            :type switch_energy_dataset_type: str
             :return: channel-object, e_rr-object
+            :rtype: tuple[Transistor.ChannelData, Transistor.SwitchEnergyData]
             """
             # Normalize t_j to v_g for distance metric
             node = np.array([t_j / normalize_t_to_v, v_g])
@@ -2896,7 +2981,7 @@ class Transistor:
             channeldata_t_js = np.array([chan.t_j for chan in self.channel])
             channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             nodes = np.array([channeldata_t_js / normalize_t_to_v, channeldata_v_gs]).transpose()
-            index_channeldata = distance.cdist(node, nodes).argmin()
+            index_channeldata = distance.cdist([node], nodes).argmin()
             # Find closest e_rr
             e_rrs = [e for e in self.e_rr if e.dataset_type == switch_energy_dataset_type]
             if not e_rrs:
@@ -2915,11 +3000,12 @@ class Transistor:
 
             return self.channel[index_channeldata], e_rrs[index_e_rr]
 
-        def plot_all_channel_data(self, buffer_req=False):
+        def plot_all_channel_data(self, buffer_req: bool = False):
             """
             Plot all diode channel characteristic curves
 
             :param buffer_req: internally required for generating virtual datasheets
+            :param buffer_req: bool
 
             :return: Respective plots are displayed
             """
@@ -2983,13 +3069,15 @@ class Transistor:
                     plt.show()
             return categorized_plots
 
-        def plot_energy_data(self, buffer_req=False):
+        def plot_energy_data(self, buffer_req: bool = False):
             """
             Plots all diode reverse recovery energy i-e characteristic curves which are extracted from the manufacturer datasheet
 
             :param buffer_req: internally required for generating virtual datasheets
+            :type buffer_req: bool
 
             :return: Respective plots are displayed
+
             """
             e_rr_i_e_curve_count = 0
             for i_energy_data in np.array(range(0, len(self.e_rr))):
@@ -3024,11 +3112,12 @@ class Transistor:
                 print("Diode reverse recovery energy i_e curves are not available for the chosen transistor")
                 return None
 
-        def plot_energy_data_r(self, buffer_req=False):
+        def plot_energy_data_r(self, buffer_req: bool = False):
             """
              Plots all diode energy r-e characteristic curves
 
             :param buffer_req: internally required for generating virtual datasheets
+            :type buffer_req: bool
 
             :return: Respective plots are displayed
             """
@@ -3066,7 +3155,7 @@ class Transistor:
                 print("Diode reverse recovery energy r_e curves are not available for the chosen transistor")
                 return None
 
-        def collect_data(self):
+        def collect_data(self) -> dict:
             """
             Collects diode data in form of dictionary for generating virtual datasheet
 
@@ -3103,7 +3192,7 @@ class Transistor:
             self.r_channel = args.get('r_channel')
             self.v0_channel = args.get('v0_channel')
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts LinearizedModel object into dict datatype
 
@@ -3137,7 +3226,7 @@ class Transistor:
             self.graph_v_i = args.get('graph_v_i')
             self.v_g = args.get('v_g')
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts ChannelData object into dict datatype
 
@@ -3150,11 +3239,12 @@ class Transistor:
                     d[att_key] = d[att_key].tolist()
             return d
 
-        def plot_graph(self):
+        def plot_graph(self) -> None:
             """
             Plots the channel curve v_i characteristics called by using any ChannelData object
 
             :return: Respective plots are displayed
+            :rtype: None
             """
             plt.figure()
             label = f"v_g = {self.v_g} V, t_j = {self.t_j} °C"
@@ -3185,7 +3275,7 @@ class Transistor:
             self.t_j = args.get('t_j')
             self.graph_v_c = args.get('graph_v_c')
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts VoltageDependentCapacitance object into dict datatype
 
@@ -3303,7 +3393,7 @@ class Transistor:
                 self.graph_i_e = None
                 self.graph_r_e = args.get('graph_r_e')
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
               The method converts SwitchEnergyData object into dict datatype
 
@@ -3316,11 +3406,12 @@ class Transistor:
                     d[att_key] = d[att_key].tolist()
             return d
 
-        def plot_graph(self):
+        def plot_graph(self) -> None:
             """
-            Plots switch\diode energy curve characteristics (either from graph_i_e or graph_r_e dataset)
+            Plots switch / diode energy curve characteristics (either from graph_i_e or graph_r_e dataset)
 
             :return: Respective plots are displayed
+            :rtype: None
             """
             plt.figure()
             if self.dataset_type == 'graph_i_e':
@@ -3415,7 +3506,7 @@ class Transistor:
             self.v_gs = args.get('v_gs')
             self.v_ds = args.get('v_ds')
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts EffectiveOutputCapacitance object into dict datatype
 
@@ -3608,7 +3699,7 @@ class Transistor:
                 plt.grid()
                 plt.show()
 
-    def parallel_transistors(self, count_parallels=2):
+    def parallel_transistors(self, count_parallels: int = 2) -> Transistor:
         """
 
         Connect [count_parallels] transistors in parallel
@@ -3620,8 +3711,10 @@ class Transistor:
         - thermal behaviour will be modified
 
         :param count_parallels: count of parallel transistors of same type, default = 2
-        
+        :type count_parallels: int
+
         :return: transistor object with parallel transistors
+        :rtype: Transistor
 
         :Example:
 
@@ -3708,7 +3801,7 @@ class Transistor:
 
         return convert_dict_to_transistor_object(transistor_dict)
 
-    def validate_transistor(self):
+    def validate_transistor(self) -> dict:
         """
         A helper function for plecs exporter. Checks if curve characteristics and thermal network parameters of both switch and diode to be None or empty
         Appends corresponding codes for further verification in get_curve_data(..) method
@@ -3736,7 +3829,7 @@ class Transistor:
             codes['Diode'].append(202)
         return codes
 
-    def get_curve_data(self, channel_recheck, gate_voltages):
+    def get_curve_data(self, channel_recheck: bool, gate_voltages: list) -> dict:
         """
          Collects the available information of switch and diode from transistor object and passes it to plecs_exporter(..) for generating the diode and switch .xml files
 
@@ -3849,7 +3942,7 @@ class Transistor:
                 'TurnOffLoss': {},
                 'Comment': [
                     "This datasheet was created by {0} on {1} and was exported using transistordatabase.".format(
-                        transistor_dict['author'], transistor_dict['datasheet_date'])
+                       transistor_dict['author'], transistor_dict['datasheet_date'])
                     , "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
                     "File generated : {0}".format(datetime.datetime.today()),
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
@@ -3894,8 +3987,8 @@ class Transistor:
         except MissingDataError as e:
             print(e.args[0], e.em[e.args[0]] + '.scl')
         return plecs_transistor if plecs_transistor is not None and 'Channel' in plecs_transistor['ConductionLoss'] \
-                   else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
-                   else None
+            else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
+            else None
 
     class RawMeasurementData:
         """
@@ -3904,12 +3997,12 @@ class Transistor:
 
         # Type of the dataset:
         # dpt_u_i: U/t I/t graph from double pulse measurements
-        dataset_type: str  #:  e.g. dpt_u_i (Mandatory key)
+        dataset_type: str  #: e.g. dpt_u_i (Mandatory key)
         dpt_on_vds: Optional[List[npt.NDArray[np.float64]]]   #: measured Vds data at turn on event. Units in V and s
         dpt_on_id: Optional[List[npt.NDArray[np.float64]]]  #: measured Id data at turn on event. Units in A and s
         dpt_off_vds: Optional[List[npt.NDArray[np.float64]]]   #: measured Vds data at turn off event. Units in V and s
-        dpt_off_id: Optional[List[npt.NDArray[np.float64]]] #: measured Vds data at turn off event. Units in A and s
-        measurement_date: Optional["datetime.datetime"]  #: Specifies the date and time at which the measurement was done.
+        dpt_off_id: Optional[List[npt.NDArray[np.float64]]]  #: measured Vds data at turn off event. Units in A and s
+        measurement_date: Optional["datetime.datetime"]  #: Specifies the measurements date and time
         measurement_testbench: Optional[str]  #: Specifies the testbench used for the measurement.
         commutation_device: Optional[str]  #: Second device used in half-bridge test condition
         comment: Optional[str]  #: Comment for additional information e.g. on who made these measurements
@@ -3954,7 +4047,7 @@ class Transistor:
                 self.dpt_off_vds = []
                 self.dpt_off_id = []
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts RawMeasurementData object into dict datatype
 
@@ -4263,7 +4356,7 @@ class Transistor:
 
         if measurement_data['raw_measurement_data'] is not None:
             if isinstance(measurement_data.get('raw_measurement_data'), list):
-                # Loop through list and check each dict for validity. Only create RawMeasuerementData objects from
+                # Loop through list and check each dict for validity. Only create RawMeasurementData objects from
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in measurement_data.get('raw_measurement_data'):
                     try:
@@ -4290,7 +4383,7 @@ class Transistor:
         """
         A transistor method to add the soa class object to the loaded transistor object.
         .. note:: Transistor object must be loaded first before calling this method
-        
+
         :param soa_data: argument represents the soa dictionaries objects that needs to be added to transistor object
         :type soa_data: dict or list
         :param clear: set to true if to clear the existing soa curves on the transistor object
@@ -4317,7 +4410,7 @@ class Transistor:
                     raise
         elif Transistor.isvalid_dict(soa_data, 'SOA'):
             self.soa.append(Transistor.SOA(soa_data))
-            
+
         soa_list = []
         for soa_item in self.soa:
             soa_list.append(soa_item.convert_to_dict())
@@ -4347,7 +4440,7 @@ def html_to_pdf(html, pdf, name):
     app.exec_()
 
 
-def gen_exp_func(order):
+def gen_exp_func(order: int):
     """
     A helper function to calc_thermal_params method. Generates the required ordered function for curve fitting
 
@@ -4368,7 +4461,7 @@ def gen_exp_func(order):
         return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4, rn5, tau5: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4)) + rn5 * (1 - np.exp(-t / tau5))
 
 
-def get_xml_data(file):
+def get_xml_data(file: str) -> dict:
     """
     A helper function to import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data.
 
@@ -4468,7 +4561,7 @@ def get_xml_data(file):
         raise ImportError('Import of ' + file + ' Not possible: Only table type xml data are accepted')
 
 
-def import_xml_data(files):
+def import_xml_data(files: dict) -> Transistor:
     """
     A function feature of transistordatabase module to import switch and diode characteristics in plecs xml file format.
 
@@ -4532,7 +4625,7 @@ def import_xml_data(files):
         print(e.args[0])
 
 
-def attach_units(trans, devices):
+def attach_units(trans: dict, devices: dict):
     """
     The function will attach units for the virtual datasheet parameters when a call is made in export_datasheet() method.
 
@@ -4597,11 +4690,12 @@ def get_img_raw_data(plot):
     return encoded_img_data.decode('UTF-8')
 
 
-def get_vc_plots(cap_data):
+def get_vc_plots(cap_data: dict):
     """
     A helper function to plot and convert voltage dependant capacitance plots in raw data format. Invoked internally by export_datasheet() method.
 
     :param cap_data: dictionary holding capacitance information of type list (self.c_oss, self.c_iss, self.c_rss)
+    :type cap_data: dict
 
     :return: decoded raw image data to utf-8
     """
@@ -4621,7 +4715,7 @@ def get_vc_plots(cap_data):
     return get_img_raw_data(plt)
 
 
-def get_channel_data(channel_data, plecs_holder, v_on, is_diode, has_body_diode):
+def get_channel_data(channel_data: list, plecs_holder: dict, v_on: int, is_diode: bool, has_body_diode: bool) -> dict:
     """
     A helper method to extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
 
@@ -4659,7 +4753,7 @@ def get_channel_data(channel_data, plecs_holder, v_on, is_diode, has_body_diode)
     return plecs_holder
 
 
-def get_loss_curves(loss_data, plecs_holder, loss_type, v_g, is_recovery_loss):
+def get_loss_curves(loss_data: list, plecs_holder: dict, loss_type: str, v_g: int, is_recovery_loss: bool) -> dict:
     """
     A helper method to extract loss information of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
 
@@ -4701,7 +4795,7 @@ def get_loss_curves(loss_data, plecs_holder, loss_type, v_g, is_recovery_loss):
     return plecs_holder
 
 
-def negate_and_append(voltage, current):
+def negate_and_append(voltage: list, current: list) -> tuple[list, np.array]:
     """
     A helper function to negate the channel current x-axis data for the transistors of type mosfet.
     Generates third quadrant curve characteristics for mosfet.
@@ -4712,7 +4806,7 @@ def negate_and_append(voltage, current):
     :type current: list
 
     :return: the negated channel axis information is appended to the exists axis and returned
-    :rtype: list, list
+    :rtype: tuple[list, np.array]
     """
     current_reverse = np.array(current)
     current_reverse = current_reverse[current_reverse != 0]
@@ -4728,78 +4822,86 @@ def negate_and_append(voltage, current):
     return voltage, current
 
 
-def get_gatedefaults(type):
+def get_gatedefaults(transistor_type: str) -> list:
     """
     Defines gate voltage defaults depending on the transistor type
 
-    :param type: transistor type, e.g. IGBT, MOSFET, SiC-MOSFET or GaN-Transistor
-    :type type: str
+    :param transistor_type: transistor type, e.g. IGBT, MOSFET, SiC-MOSFET or GaN-Transistor
+    :type transistor_type: str
 
     :return: default gate voltages [v_g_turn_on, v_g_turn_off, v_g_channel_blocks, v_g_channel_conducting]
+    :rtype: list
     """
     gate_voltages = {'sic-mosfet': [SIC_MOS_VGS_ON, SIC_MOS_VGS_OFF, SIC_MOS_BD_VGS, SIC_MOS_BD_VG_ERR],
                      'mosfet': [MOS_VGS_ON, MOS_VGS_OFF, MOS_BD_VGS, MOS_BD_VG_ERR],
                      'igbt': [IGBT_VG_ON, IGBT_VG_OFF, DIODE_VGS, DIODE_VG_ERR],
                      'gan-transistor': [GAN_VGS_ON, GAN_VGS_OFF, GAN_BD_VGS, GAN_BD_VG_ERR]
-                     }.get(type.lower(), [15, -15, 0, 15])
+                     }.get(transistor_type.lower(), [15, -15, 0, 15])
     return gate_voltages
 
 
-def check_realnum(x):
+def check_realnum(float_to_check: float) -> bool:
     """
     Check if argument is real numeric scalar. Raise TypeError if not. None is also accepted because it is valid for
     optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand.
 
-    :param x: input argument
+    :param float_to_check: input argument
+    :type float_to_check: float
 
-    :raises TypeError: if x is not numeric
+    :raises TypeError: if float_to_check is not numeric
 
     :return: True in case of numeric scalar.
+    :rtype: bool
     """
-    if isinstance(x, (int, float, np.integer, np.floating)) or x is None:
+    if isinstance(float_to_check, (int, float, np.integer, np.floating)) or float_to_check is None:
         return True
-    raise TypeError(f"{x} is not numeric.")
+    raise TypeError(f"{float_to_check} is not numeric.")
 
 
-def check_2d_dataset(x):
+def check_2d_dataset(dataset_to_check: np.array) -> bool:
     """
     Check if argument is real 2D-dataset of right shape. None is also accepted because it is
     valid for optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand.
 
-    :param x: 2d-dataset
+    :param dataset_to_check: 2d-dataset
+    :type dataset_to_check: np.array
 
     :raises TypeError: if the passed argument is a 2D-numpy array with real numeric values
 
     :return: True in case of valid 2d-dataset
+    :rtype: bool
     """
-    if x is None:
+    if dataset_to_check is None:
         return True
-    if isinstance(x, np.ndarray):
-        if np.all(np.isreal(x)):
-            if x.ndim == 2:
-                if x.shape[0] == 2:
+    if isinstance(dataset_to_check, np.ndarray):
+        if np.all(np.isreal(dataset_to_check)):
+            if dataset_to_check.ndim == 2:
+                if dataset_to_check.shape[0] == 2:
                     return True
     raise TypeError("Invalid dataset. Must be 2D-numpy array with shape (2,x) and real numeric values.")
 
 
-def check_str(x):
+def check_str(string_to_check: str) -> bool:
     """
     Check if argument is string. Function not necessary but helpful to keep raising of errors
     consistent with other type checks. None is also accepted because it is valid for optional keys. Mandatory keys that
     must not contain None are checked somewhere else beforehand.
 
-    :param x: input string
+    :param string_to_check: input string
+    :type string_to_check: str
     
     :raises TypeError: if the argument is not of type string
 
     :return: True in case of valid string
+    :rtype: bool
     """
-    if isinstance(x, str) or x is None:
+    if isinstance(string_to_check, str) or string_to_check is None:
         return True
-    raise TypeError(f"{x} is not a string.")
+    raise TypeError(f"{string_to_check} is not a string.")
 
 
-def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_to_0=False, mirror_xy_data=False):
+def csv2array(csv_filename: str, first_xy_to_00: bool = False, second_y_to_0: bool = False,
+              first_x_to_0: bool = False, mirror_xy_data: bool = False) -> np.array:
     """
     Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
@@ -4822,8 +4924,8 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
     :param mirror_xy_data: Takes the absolute() of both axis. Used for given mirrored data, e.g. some datasheet show diode data in the 3rd quadrant instead of the 1st quadrant
     :type mirror_xy_data: bool
 
-    :return: 2d array, ready to use in the transistor database
-    :rtype: 2D-array
+    :return: 1d array, ready to use in the transistor database
+    :rtype: np.array
     """
     # See issue #5: German csv-files use ; as separator, english systems use , as separator
     # if ; is available in the file, csv-file generation was made by a german-language operating system
@@ -4839,31 +4941,34 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
         array = np.genfromtxt(csv_filename, delimiter=",")
     file1.close()
 
-    if first_xy_to_00 == True:
+    if first_xy_to_00:
         array[0][0] = 0  # x value
         array[0][1] = 0  # y value
 
-    if second_y_to_0 == True:
+    if second_y_to_0:
         array[1][1] = 0  # y value
 
-    if first_x_to_0 == True:
+    if first_x_to_0:
         array[0][0] = 0  # x value
 
-    if mirror_xy_data == True:
+    if mirror_xy_data:
         array = np.abs(array)
 
     return np.transpose(array)
 
 
-def merge_curve(curve, curve_detail):
+def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     """
     Merges two equal curves, one of which contains an enlarged section of the first curve.
     Use case is the merging of capacity curves, here often two curves (normal and zoom) are given in the data sheets.
 
     :param curve: full curve
+    :type curve: np.array
     :param curve_detail: curve with zoom on x-axis
+    :type curve_detail: np.array
 
     :return: merged curve
+    :rtype: np.array
 
     :Example (e.g. merges c_oss curve from 0-200V and from 0-1000V):
 
@@ -4913,6 +5018,10 @@ def print_TDB(filters: Optional[List[str]] = None, collection_name: str = "local
 
     if collection_name == "local":
         mongodb_collection = connect_local_TDB()
+    else:
+        # TODO: support other collections. As of now, other database connections also connects to local-tdb
+        warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
+        mongodb_collection = connect_local_TDB()
     if not isinstance(filters, list):
         if isinstance(filters, str):
             filters = [filters]
@@ -4932,18 +5041,19 @@ def print_TDB(filters: Optional[List[str]] = None, collection_name: str = "local
     return name_list
 
 
-def connect_TDB(host):
+def connect_TDB(host: str):
     """
     A method for establishing connection with transistordatabase_exchange.
 
     :param host: "local" is specified by default, other cases need to be investigated
+    :type host: str
 
     :return: transistor_database collection
     """
     if host == "local":
         host = "mongodb://localhost:27017/"
-    myclient = MongoClient(host)
-    return myclient.transistor_database.collection
+    my_transistor_database = MongoClient(host)
+    return my_transistor_database.transistor_database.collection
 
 
 def connect_local_TDB():
@@ -4981,9 +5091,13 @@ def load(transistor: [str, dict], collection_name: str = "local"):
     """
     find_filter = {'name': transistor} if type(transistor) == str else transistor
     if collection_name == "local":
-        collection = connect_local_TDB()
+        mongodb_collection = connect_local_TDB()
+    else:
+        # TODO: support other collections. As of now, other database connections also connects to local-tdb
+        warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
+        mongodb_collection = connect_local_TDB()
     # ToDo: Implement case where different transistors fit the filter criteria.
-    return convert_dict_to_transistor_object(collection.find_one(find_filter))
+    return convert_dict_to_transistor_object(mongodb_collection.find_one(find_filter))
 
 
 def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
@@ -5081,14 +5195,17 @@ def update_from_fileexchange(collection: str = "local", overwrite: bool = True) 
     :type overwrite: bool
 
     :return: None
+    :rtype: None
     """
-    print(
-        f"Note: Please make sure that you have installed the latest version of the transistor database, especially if the update_from_fileexchange()-method ends in an error. Find the latest version here: https://pypi.org/project/transistordatabase/")
+    print("Note: Please make sure that you have installed the latest version of the transistor database, "
+          "especially if the update_from_fileexchange()-method ends in an error. "
+          "Find the latest version here: https://pypi.org/project/transistordatabase/")
     # Check if the local repository exists, if yes load the repo information
+    repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
+    module_file_path = pathlib.Path(__file__).parent.absolute()
+    local_dir = os.path.join(module_file_path, "cloned_repo_TDB_File_Exchange")
+
     try:
-        repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
-        module_file_path = pathlib.Path(__file__).parent.absolute()
-        local_dir = os.path.join(module_file_path, "cloned_repo_TDB_File_Exchange")
         # Raises InvalidGitRepositoryError when not in a repo
         repo = git.Repo(local_dir, search_parent_directories=False)
         # check that the repository loaded correctly
@@ -5157,13 +5274,14 @@ def import_json(path: str) -> Transistor:
         TypeError("path = {0} ist not a string.".format(path))
 
 
-def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: Union[float, List[float]], v_driver_off: float) -> float:
+def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: Union[float, List[float]],
+                                   v_driver_off: float) -> float:
     """
     Calculates the maximum gate resistor to achieve no turn-off losses when working with MOSFETs
     'rapid channel turn-off' (rcto)
 
     Note: Input (e.g. i_off can also be a vector)
-    Source: D. Kübrich, T. Dürbaum, A. Bucher:
+    Source: D. Kubrick, T. Dürbaum, A. Bucher:
     'Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances'
     International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244
 
@@ -5198,6 +5316,7 @@ def dict_clean(input_dict: dict) -> dict:
     :type input_dict: dict
 
     :return: 'clean' matlab-compatible transistor dictionary
+    :rtype: dict
     """
     result = {}
     for key, value in input_dict:
@@ -5207,7 +5326,7 @@ def dict_clean(input_dict: dict) -> dict:
     return result
 
 
-def compatibilityTest(Transistor, attribute):
+def matlab_compatibility_test(Transistor, attribute):
     """
     checks attribute for occurrences of None an replace it with np.nan
 
@@ -5233,7 +5352,7 @@ def compatibilityTest(Transistor, attribute):
         return np.nan
 
 
-def check_keys(keys_to_check, req_type, switch_type):
+def check_keys(keys_to_check: dict, req_type: str, switch_type: str):
     """
     A helper function for find_next_gate_voltage method of class type - switch and diode. Verifies if the required keys are available and their value types are valid for carrying out the export
     Used for export_gecko() and export_plecs()
