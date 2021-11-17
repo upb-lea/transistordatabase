@@ -5036,7 +5036,7 @@ def dpt_save_data(measurement_dict: dict):
             if csv_files[i].rfind("_OFF_I") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
                 position_b = csv_files[i].rfind(position_attribute_start)
-                off_i_locations.append([i, int(csv_files[i][position_b + 2:position_a])])
+                off_i_locations.append([i, float(csv_files[i][position_b + 2:position_a].replace(',', '.'))])
             i += 1
         off_i_locations.sort(key=lambda x: x[1])
 
@@ -5048,7 +5048,7 @@ def dpt_save_data(measurement_dict: dict):
             if csv_files[i].rfind("_OFF_U") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
                 position_b = csv_files[i].rfind(position_attribute_start)
-                off_v_locations.append([i, int(csv_files[i][position_b + 2:position_a])])
+                off_v_locations.append([i, float(csv_files[i][position_b + 2:position_a].replace(',', '.'))])
             i += 1
         off_v_locations.sort(key=lambda x: x[1])
 
@@ -5194,7 +5194,7 @@ def dpt_save_data(measurement_dict: dict):
             if csv_files[i].rfind("_ON_I") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
                 position_b = csv_files[i].rfind(position_attribute_start)
-                on_i_locations.append([i, int(csv_files[i][position_b + 2:position_a])])
+                on_i_locations.append([i, float(csv_files[i][position_b + 2:position_a].replace(',', '.'))])
             i += 1
         on_i_locations.sort(key=lambda x: x[1])
 
@@ -5206,7 +5206,7 @@ def dpt_save_data(measurement_dict: dict):
             if csv_files[i].rfind("_ON_U") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
                 position_b = csv_files[i].rfind(position_attribute_start)
-                on_v_locations.append([i, int(csv_files[i][position_b + 2:position_a])])
+                on_v_locations.append([i, float(csv_files[i][position_b + 2:position_a].replace(',', '.'))])
             i += 1
         on_v_locations.sort(key=lambda x: x[1])
 
