@@ -87,9 +87,9 @@ class Transistor:
     c_rss: Optional[List["VoltageDependentCapacitance"]]  #: List of VoltageDependentCapacitance. (Optional key)
     # Energy stored in c_oss
     graph_v_ecoss: Optional[npt.NDArray[np.float64]]  #: Member instance for storing the voltage dependant capacitance graph in the form of 2D numpy array. Units of Row 1 = V; Row 2 = J  (Optional key)
-
+    # Safe operating area
+    soa: Optional[List[SOA]]
     # Rated operation region
-
     i_cont: Optional[float]  #: Module specific continuous current. Units in  A e.g. Fuji = I_c, Semikron = I_c,nom (Mandatory key)
     t_c_max: float  #: Module specific maximum junction temperature. Units in °C (Optional key)
     r_g_int: float  #: Internal gate resistance. Units in Ohm (Mandatory key)
@@ -137,20 +137,6 @@ class Transistor:
                 self.c_oss_fix = transistor_args.get('c_oss_fix')
                 self.c_iss_fix = transistor_args.get('c_iss_fix')
                 self.c_rss_fix = transistor_args.get('c_rss_fix')
-                self.c_oss_er = None
-                self.c_oss_tr = None
-                try:
-                    if Transistor.isvalid_dict(transistor_args.get('c_oss_er'), 'EffectiveOutputCapacitance'):
-                        # Only create EffectiveOutputCapacitance objects from valid dicts
-                        self.c_oss_er = Transistor.EffectiveOutputCapacitance(transistor_args.get('c_oss_er'))
-                except (TypeError, KeyError) as e:
-                    print(e.args[0])
-                try:
-                    if Transistor.isvalid_dict(transistor_args.get('c_oss_tr'), 'EffectiveOutputCapacitance'):
-                        # Only create EffectiveOutputCapacitance objects from valid dicts
-                        self.c_oss_tr = Transistor.EffectiveOutputCapacitance(transistor_args.get('c_oss_tr'))
-                except (TypeError, KeyError) as e:
-                    print(e.args[0])
                 # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
                 # Import list of valid housing types from "housing_types.txt"
                 # add housing types to the working direction
@@ -265,6 +251,36 @@ class Transistor:
                 elif Transistor.isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
                     # Only create RawMeasurementData objects from valid dicts
                     self.raw_measurement_data.append(Transistor.RawMeasurementData(transistor_args.get('raw_measurement_data')))
+
+                self.c_oss_er = None
+                if Transistor.isvalid_dict(transistor_args.get('c_oss_er'), 'EffectiveOutputCapacitance'):
+                    # Only create EffectiveOutputCapacitance objects from valid dicts
+                    self.c_oss_er = Transistor.EffectiveOutputCapacitance(transistor_args.get('c_oss_er'))
+
+                self.c_oss_tr = None
+                if Transistor.isvalid_dict(transistor_args.get('c_oss_tr'), 'EffectiveOutputCapacitance'):
+                    # Only create EffectiveOutputCapacitance objects from valid dicts
+                    self.c_oss_tr = Transistor.EffectiveOutputCapacitance(transistor_args.get('c_oss_tr'))
+
+                self.soa = []  # Default case: Empty list
+                if isinstance(transistor_args.get('soa'), list):
+                    # Loop through list and check each dict for validity. Only create SOA objects from
+                    # valid dicts. 'None' and empty dicts are ignored.
+                    for dataset in transistor_args.get('soa'):
+                        try:
+                            if Transistor.isvalid_dict(dataset, 'SOA'):
+                                self.soa.append(Transistor.SOA(dataset))
+                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                        except KeyError as error:
+                            dict_list = transistor_args.get('soa')
+                            if not error.args:
+                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of soa "
+                                          f"dictionaries: ",) + error.args
+                            raise
+                elif Transistor.isvalid_dict(transistor_args.get('soa'), 'SOA'):
+                    # Only create SOA objects from valid dicts
+                    self.soa.append(Transistor.SOA(transistor_args.get('soa')))
             else:
                 # ToDo: Is this a value or a type error?
                 # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
@@ -374,6 +390,7 @@ class Transistor:
         d['c_iss'] = [c.convert_to_dict() for c in self.c_iss]
         d['c_rss'] = [c.convert_to_dict() for c in self.c_rss]
         d['raw_measurement_data'] = [c.convert_to_dict() for c in self.raw_measurement_data]
+        d['soa'] = [c.convert_to_dict() for c in self.soa]
         if isinstance(self.graph_v_ecoss, np.ndarray):
             d['graph_v_ecoss'] = self.graph_v_ecoss.tolist()
         return d
@@ -485,7 +502,12 @@ class Transistor:
                 'mandatory_keys': {'i_channel', 't_j', 'v_supply', 'graph_q_v'},
                 'str_keys': {},
                 'numeric_keys': {'i_channel', 't_j', 'v_supply', 'i_g'},
-                'array_keys': {'graph_q_v'}}
+                'array_keys': {'graph_q_v'}},
+            'SOA': {
+                'mandatory_keys': {'graph_i_v'},
+                'str_keys': {},
+                'numeric_keys': {'t_c', 'time_pulse'},
+                'array_keys': {'graph_i_v'}}
 
         }
         if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
@@ -688,6 +710,35 @@ class Transistor:
         plt.ylabel('Charge in C')
         plt.grid()
         plt.show()
+        if buffer_req:
+            return get_img_raw_data(plt)
+        else:
+            plt.show()
+
+    def plot_soa(self, buffer_req=False):
+        """
+         A helper function to plot and convert safe operating region characteristic plots in raw data format.
+
+         :param buffer_req: internally required for generating virtual datasheets
+
+         :return: Respective plots are displayed
+         """
+        if not self.soa:
+            return None
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        fig.set_size_inches(3.5, 2.6)
+        if isinstance(self.soa, list) and self.soa:
+            for curve in self.soa:
+                line1, = curve.get_plots(ax)
+        plt.xlabel('$V_{ds}$ / $V_r$ [V]')
+        plt.ylabel('$I_d$ / $I_r$ [A]')
+        props = dict(fill=False, edgecolor='black', linewidth=1)
+        if len(self.soa):
+            plt.legend(fontsize=8)
+            r_on_condition = '\n'.join(["conditions: ", "$T_{c} $ =" + str(self.soa[0].t_c) + " [°C]"])
+            ax.text(0.65, 0.1, r_on_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='bottom')
+        plt.grid()
         if buffer_req:
             return get_img_raw_data(plt)
         else:
@@ -1248,7 +1299,7 @@ class Transistor:
         """
         Generates and exports the virtual datasheet in form of html page
 
-        :return: .html file is created in the current working directory
+        :return: pdf file is created in the current working directory
 
         :Example:
 
@@ -1261,9 +1312,10 @@ class Transistor:
         # listV = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         pdfData = {}
         devices = {}
-        skipIds = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
+        skipIds = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'soa', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
         pdfData['c_plots'] = get_vc_plots(cap_plots)
+        pdfData['soa'] = self.plot_soa(True)
         for attr in dir(self):
             if not callable(getattr(self, attr)) and not attr.startswith("__"):
                 if attr == 'switch' or attr == 'diode':
@@ -1279,12 +1331,11 @@ class Transistor:
         buf = io.BytesIO(image_binary_bytes)
         encoded_img_data = base64.b64encode(buf.getvalue())
         client_img = encoded_img_data.decode('UTF-8')
-
+        # loaded data into jinja html template for generating the pdf
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
         template = env.get_template('VirtualDatasheet_TransistorTemplate.html')
         html = template.render(trans=trans, switch=switch, diode=diode, image=client_img)
-        # ToDo: to save the results to html   --- need to convert it to pdf in future
         pdfname = trans['Name'][0] + ".pdf"
         datasheetpath = os.path.join(os.getcwd(), pdfname)
         html_to_pdf(html, datasheetpath, pdfname)
@@ -2437,7 +2488,7 @@ class Transistor:
                         plt.legend(fontsize=8)
                         plt.xlabel('Voltage in V')
                         plt.ylabel('Current in A')
-                        plt.title('$T_{{J}}$ = {0} °C'.format(key))
+                        #plt.title('$T_{{J}}$ = {0} °C'.format(key))
                         plt.grid()
                         if buffer_req:
                             categorized_plots |= {key: get_img_raw_data(plt)}
@@ -2452,7 +2503,7 @@ class Transistor:
                         plt.legend(fontsize=8)
                         plt.xlabel('Voltage in V')
                         plt.ylabel('Current in A')
-                        plt.title('$V_{{g}}$ = {0} V'.format(key))
+                        #plt.title('$V_{{g}}$ = {0} V'.format(key))
                         plt.grid()
                         if buffer_req:
                             categorized_plots |= {key: get_img_raw_data(plt)}
@@ -2579,7 +2630,7 @@ class Transistor:
 
             :return: Respective plots are displayed
             """
-            if not all(self.r_channel_th):
+            if not self.r_channel_th:
                 return None
             fig = plt.figure()
             ax = fig.add_subplot(111)
@@ -2612,7 +2663,7 @@ class Transistor:
 
             :return: Respective plots are displayed
             """
-            if not all(self.charge_curve):
+            if not self.charge_curve:
                 return None
             fig = plt.figure()
             ax = fig.add_subplot(111)
@@ -2896,7 +2947,7 @@ class Transistor:
                         plt.legend(fontsize=8)
                         plt.xlabel('Voltage in V')
                         plt.ylabel('Current in A')
-                        plt.title('$T_{{J}}$ = {0} °C'.format(key))
+                        #plt.title('$T_{{J}}$ = {0} °C'.format(key))
                         plt.grid()
                         if buffer_req:
                             categorized_plots |= {key: get_img_raw_data(plt)}
@@ -2911,7 +2962,7 @@ class Transistor:
                         plt.legend(fontsize=8)
                         plt.xlabel('Voltage in V')
                         plt.ylabel('Current in A')
-                        plt.title('$V_{{g}}$ = {0} V'.format(key))
+                        #plt.title('$V_{{g}}$ = {0} V'.format(key))
                         plt.grid()
                         if buffer_req:
                             categorized_plots |= {key: get_img_raw_data(plt)}
@@ -3501,6 +3552,59 @@ class Transistor:
                 plt.legend(fontsize=8)
                 plt.xlabel('Gate Charge, $Q_{G} [nC]$')
                 plt.ylabel('Gate source Voltage, $V_{gs} [V]$')
+                plt.grid()
+                plt.show()
+
+    class SOA:
+        """ A class to hold safe operating area characteristics of transistor type which is added as a optional attribute inside transistor class"""
+
+        t_c: Optional[float]  #: case temperature
+        time_pulse: Optional[float]  #: applied pulse duration
+        graph_i_v: npt.NDArray[np.float64]  #: a 2D numpy array to store SOA characteristics curves
+
+        def __init__(self, args: dict):
+            """
+            Initialization method for SOA object
+
+            :param args: arguments to be passed for initialization
+            """
+            # Validity of args is checked in the constructor of Transistor class and thus does not need to be
+            # checked again here.
+            self.time_pulse = args.get('time_pulse')
+            self.t_c = args.get('t_c')
+            self.graph_i_v = args.get('graph_i_v')
+
+        def convert_to_dict(self):
+            """
+            The method converts SOA object into dict datatype
+
+            :return: SOA object of dict type
+            :rtype: dict
+            """
+            d = dict(vars(self))
+            for att_key in d:
+                if isinstance(d[att_key], np.ndarray):
+                    d[att_key] = d[att_key].tolist()
+            return d
+
+        def get_plots(self, ax=None):
+            """
+            Plots drain current/reverse diode current vs drain-to-source voltage/diode applied reverse voltage of switch type mosfet/igbt
+
+            :param ax: figure axes to append the curves
+
+            :return: Respective plots are displayed if available else None is returned
+            """
+            if ax:
+                label_plot = "$t_{{pulse}}$ = {0} s".format(self.time_pulse)
+                return ax.loglog(self.graph_i_v[0], self.graph_i_v[1], label=label_plot)
+            else:
+                plt.figure()  # needs rework because of this class being a list of transistor class members
+                label_plot = " $t_{{pulse}}$ = {0} V".format(self.time_pulse)
+                plt.loglog(self.graph_i_v[0], self.graph_i_v[1], label=label_plot)
+                plt.legend(fontsize=8)
+                plt.xlabel('Drain-to-source ($V_{ds}$)/ reverse ($V_{ce}$) voltage')
+                plt.ylabel('Drain $(I_d)$/ reverse $(I_c)$ current')
                 plt.grid()
                 plt.show()
 
@@ -4181,6 +4285,44 @@ class Transistor:
             transistor_dict = self.convert_to_dict()
             new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
             collection.update_one(transistor_id, new_value)
+
+    def add_soa_data(self, soa_data: [dict, list], clear=False):
+        """
+        A transistor method to add the soa class object to the loaded transistor object.
+        .. note:: Transistor object must be loaded first before calling this method
+        
+        :param soa_data: argument represents the soa dictionaries objects that needs to be added to transistor object
+        :type soa_data: dict or list
+        :param clear: set to true if to clear the existing soa curves on the transistor object
+        :type clear: bool
+
+        :return: updated transistor object with added soa characteristics
+        """
+        collection = connect_local_TDB()
+        transistor_id = {'_id': self._id}
+        if clear:
+            self.soa = []
+        if isinstance(soa_data, list):
+            for dataset in soa_data:
+                try:
+                    if Transistor.isvalid_dict(dataset, 'SOA'):
+                        self.soa.append(Transistor.SOA(dataset))
+                # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                except KeyError as error:
+                    dict_list = dataset
+                    if not error.args:
+                        error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                    error.args = (f"KeyError occurred for index [{str(soa_data.index(dict_list))}] in list of "
+                                  f"Transistor-soa dictionary: ",) + error.args
+                    raise
+        elif Transistor.isvalid_dict(soa_data, 'SOA'):
+            self.soa.append(Transistor.SOA(soa_data))
+            
+        soa_list = []
+        for soa_item in self.soa:
+            soa_list.append(soa_item.convert_to_dict())
+        new_object = {'$set': {'soa': soa_list}}
+        collection.update_one(transistor_id, new_object)
 
 
 def html_to_pdf(html, pdf, name):
@@ -4873,7 +5015,9 @@ def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
     if 'graph_v_ecoss' in transistor_args:
         if transistor_args['graph_v_ecoss'] is not None:
             transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
-
+    if 'soa' in transistor_args:
+        for i in range(len(transistor_args['soa'])):
+            transistor_args['soa'][i]['graph_i_v'] = np.array(transistor_args['soa'][i]['graph_i_v'])
     if 'raw_measurement_data' in transistor_args:
         for i in range(len(transistor_args['raw_measurement_data'])):
             for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_vds'])):

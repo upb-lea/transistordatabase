@@ -38,7 +38,7 @@
 		<th class="unit"><div class="h4style">Units</div></th>
 	  </tr>
 	  {% for key, value in trans.items() %}
-	  {% if not key == 'c_plots' %}
+	  {% if not (key == 'c_plots' or  key == 'soa') %}
 	  <tr>
 		  {% set split_list = key.split('_') %}
 		  <td style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
@@ -136,6 +136,13 @@
 					  <img id="pic_c_plot_more" src="data:image/png;base64,{{ trans['c_plots'] }}" class="img">
 					</div>
 					{% endif %}
+				   {% if trans['soa'] is not none %}
+					<div class="thumb">
+					  <div class="imgCaption">Safe operating area (SOA/RBSOA)</div>
+					  <img id="pic_soa_more" src="data:image/png;base64,{{ trans['soa'] }}" class="img">
+					</div>
+					{% endif %}
+
 					{% for key, value in switch['channel_plots'].items() %}
 						<div class="thumb">
 						{% if key|abs < 25 %}
@@ -245,6 +252,12 @@
 						<div class="thumb">
 					  <div class="imgCaption">Voltage dependant Capacitance</div>
 					  <img id="c_plot_pic_less" src="data:image/png;base64,{{ trans['c_plots'] }}" class="img">
+					</div>
+				   {% endif %}
+				    {% if trans['soa'] is not none %}
+						<div class="thumb">
+					  <div class="imgCaption">Safe operating area (SOA/RBSOA)</div>
+					  <img id="soa_pic_less" src="data:image/png;base64,{{ trans['soa'] }}" class="img">
 					</div>
 				   {% endif %}
 			   </div>
