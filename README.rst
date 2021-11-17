@@ -105,7 +105,7 @@ Copy this example to a new pycharm project.
     tdb.print_TDB()
 
     # load a transistor from the database
-    transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
+    transistor_loaded = tdb.load('CREE_C3M0016120K')
 
     # export a virtual datasheet
     transistor_loaded.export_datasheet()
@@ -217,7 +217,7 @@ Use your local generated transistor, load it into your workspace and export it, 
 
 .. code-block::
 
-    transistor_loaded = load({'name': 'CREE_C3M0016120K'})
+    transistor_loaded = load('CREE_C3M0016120K')
     transistor_loaded.export_json()
 
 You can upload this file to the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`__  by generating a pull request.
@@ -281,7 +281,7 @@ To parallel transistors use the function.
 
 .. code-block::
 
-    transistor = load({'name': 'Infineon_FF200R12KE3'})
+    transistor = load('Infineon_FF200R12KE3')
     parallel_transistorobject = transistor.parallel_transistors(3)
 
 After this, you can work with the transistor object as usual, e.g. fill in the .wp-workspace or export the device to Matlab, Simulink or GeckoCIRCUITS.
@@ -298,7 +298,7 @@ This function exports a virtual datasheet to see stored data in the database. Fu
 
 .. code-block::
 
-    transistor = tdb.load({'name's: 'Fuji_2MBI100XAA120-50'})
+    transistor = tdb.load('Fuji_2MBI100XAA120-50')
     transistor.export_datasheet()
 
 .. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Virtual_Datasheet.png
@@ -312,7 +312,7 @@ At the moment you need to know the exporting parameters like gate resistor, gate
 
 .. code-block::
 
-    transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
+    transistor = tdb.load('Fuji_2MBI100XAA120-50')
     transistor.export_geckocircuits(600, 15, -4, 2.5, 2.5)
 
 From now on, you can load the model into your GeckoCIRCUITS schematic.
@@ -330,14 +330,14 @@ For a thermal and loss simulation using PLECS simulation tool, it requires the t
 
 .. code-block::
 
-    transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
+    transistor = tdb.load('Fuji_2MBI200XAA065-50')
     transistor.export_plecs()
 
 Outputs are xml files - one for switch and one for diode (if available), which can be then loaded into your schematic following the instructions as mentioned `here <https://www.plexim.com/support/videos/thermal-modeling-part-1>`__. Note that if channel curves for the default gate-voltage are found missing then the xml files could not be possible to generate and a respective warning message is issued to the user. The user can change the default gate-voltage and switching voltage by providing an extra list argument as follows:
 
 .. code-block::
 
-    transistor = tdb.load({'name': 'Fuji_2MBI200XAA065-50'})
+    transistor = tdb.load('Fuji_2MBI200XAA065-50')
     transistor.export_plecs([15, -15, 15, 0])
 
 Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.
@@ -351,7 +351,7 @@ Export to Simulink
 For a loss simulation in simulink, there is a IGBT model available, which can be found in this `simulink model <https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html>`_ . Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
 .. code-block::
 
-    transistor = tdb.load({'name': 'Infineon_FF200R12KE3'})
+    transistor = tdb.load('Infineon_FF200R12KE3')
     transistor.export_simulink_loss_model()
 
 Output is a .mat-file, you can load in your matlab program to simulate. Now, you are able to sweep transistors within your simulation. E.g. some matlab-code:
@@ -377,7 +377,7 @@ Python dictionary can be exported to Matlab, see the following example:
 
 .. code-block::
 
-    transistor = tdb.load({'name': 'Fuji_2MBI100XAA120-50'})
+    transistor = tdb.load('Fuji_2MBI100XAA120-50')
     transistor.export_matlab()
 
 A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.
