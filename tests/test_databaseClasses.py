@@ -50,7 +50,8 @@ def my_transistor():
                 [0.89684619, 1.14140658, 1.33157082, 1.52997052,   1.75270226, 1.98628983,   2.22811286 ,  2.50212905,   2.81644284,   3.14224884, 3.46530345,  3.79703024,   4.12598987, 4.45476966,  4.78863606, 5.03701277]])
     graph_q_v = np.array([[0.00000000e+00, 3.12612221e-10, 5.21272373e-10, 7.29932526e-10,  9.47664859e-10, 1.16539719e-09, 1.46477915e-09, 1.84581073e-09,  2.22684231e-09, 2.78591544e-09, 2.94354458e-09, 3.22478217e-09,  3.49694759e-09, 3.76911301e-09, 4.04127842e-09, 4.31344384e-09,  4.49488745e-09],
                           [0.00000000e+0, 7.34864824e-01, 1.20581561e+00, 1.67976883e+00,  2.17153141e+00, 2.66423762e+00, 2.98759885e+00, 2.99104052e+00,  2.98962929e+00, 2.99726445e+00, 3.19787364e+00, 3.67892685e+00,  4.14972822e+00, 4.61675511e+00, 5.08453690e+00, 5.55307359e+00,  5.86870259e+00]])
-
+    graph_i_v = np.array([[1.20259306e+00, 1.71723866e+00, 2.45212507e+00, 3.50150361e+00,  5.06397984e+00, 7.13967597e+00, 1.10896969e+01, 1.85389674e+01,  3.16339544e+01, 5.39785764e+01, 9.21063068e+01, 1.57165533e+02,  2.68179300e+02, 4.57607565e+02, 6.28968471e+02, 6.33788175e+02,  6.41087068e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02,  6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02,  6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02,  6.53439159e+02, 6.53439159e+02],
+                          [5.10323760e+00, 7.28269824e+00, 1.03929501e+01, 1.48315100e+01,  2.12981497e+01, 3.00519626e+01, 4.66674327e+01, 4.80948414e+01,  4.79713287e+01, 4.80948414e+01, 4.80948414e+01, 4.80948414e+01,  4.80948414e+01, 4.80948414e+01, 4.61859291e+01, 2.83951494e-01,  2.08151346e+00, 2.89502318e+01, 2.04908911e+01, 1.45033939e+01,  1.02654606e+01, 7.26586360e+00, 5.14275742e+00, 3.64002895e+00,  1.29071761e+00, 9.13566221e-01, 6.46619551e-01, 4.57675464e-01,  1.62287110e-01, 1.16113623e-01]])
     technology = 'IGBT3'
     r_g_int = 10
     c_oss_fix = 1
@@ -86,6 +87,11 @@ def my_transistor():
         'i_g': None,
         'graph_q_v': graph_q_v
     }
+    soa_object = {
+        't_c': 25,
+        'time_pulse': 50e-6,
+        'graph_i_v': graph_i_v
+    }
 
     # Create argument dictionaries
     transistor_args = {'name': name, 'type': type, 'author': author, 'comment': comment,
@@ -95,7 +101,8 @@ def my_transistor():
                        'cooling_area': cooling_area, 'housing_type': housing_type, 'v_abs_max': v_abs_max,
                        'i_abs_max': i_abs_max, 'i_cont': i_cont, 'c_oss_fix': c_oss_fix, 'c_iss_fix': c_iss_fix,
                        'c_rss_fix': c_rss_fix, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
-                       'c_oss_er': c_oss_er, 'c_oss_tr': c_oss_tr, 'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs}
+                       'c_oss_er': c_oss_er, 'c_oss_tr': c_oss_tr, 'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs,
+                       'soa': soa_object}
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'channel': [switch_channel],
                    'e_on': [switchenergy], 'e_off': [switchenergy], 'thermal_foster': foster_args, 'r_channel_th': switch_ron_args, 'charge_curve': switch_gate_charge}
@@ -136,6 +143,7 @@ def test_transistor(my_transistor):
     assert transistor.c_oss_er.v_gs == transistor_args['c_oss_er']['v_gs']
     assert transistor.c_oss_er.v_ds == transistor_args['c_oss_er']['v_ds']
     assert transistor.c_oss_tr == transistor_args['c_oss_tr']
+    assert transistor.soa[0].graph_i_v.any() == transistor_args['soa']['graph_i_v'].any()
 
     # switch_args test
     assert transistor.switch.t_j_max == switch_args['t_j_max']
@@ -149,6 +157,7 @@ def test_transistor(my_transistor):
     assert transistor.switch.e_off[0].graph_i_e.any() == switch_args['e_off'][0]['graph_i_e'].any()
     assert transistor.switch.r_channel_th[0].graph_t_r.any() == switch_args['r_channel_th']['graph_t_r'].any()
     assert transistor.switch.charge_curve[0].graph_q_v.any() == switch_args['charge_curve']['graph_q_v'].any()
+
 
     # diode_args test
     assert transistor.diode.t_j_max == diode_args['t_j_max']
