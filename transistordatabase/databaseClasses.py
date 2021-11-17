@@ -248,7 +248,7 @@ class Transistor:
 
                 self.raw_measurement_data = []
                 if isinstance(transistor_args.get('raw_measurement_data'), list):
-                    # Loop through list and check each dict for validity. Only create RawMeasuerementData objects from
+                    # Loop through list and check each dict for validity. Only create RawMeasurementData objects from
                     # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in transistor_args.get('raw_measurement_data'):
                         try:
@@ -547,7 +547,7 @@ class Transistor:
 
         if dict_type == 'Diode_ChannelData' or dict_type == 'Switch_ChannelData':
             for axis in dataset_dict.get('graph_v_i'):
-                if any(x < 0 for x in axis) == True:
+                if any(x < 0 for x in axis):
                     raise ValueError(" Negative values are not allowed, please include mirror_xy_data attribute")
 
         if dict_type not in instructions:
@@ -798,6 +798,7 @@ class Transistor:
             dataset = candidate_datasets[0]
         return dataset
 
+    @staticmethod
     def get_object_i_e_simplified(self, e_on_off_rr, t_j):
         """
         Function to get the loss graphs out of the transistor class, simplified version
@@ -849,6 +850,7 @@ class Transistor:
             i_e_dataset = ie_datasets[0]
         return i_e_dataset, r_e_dataset
 
+    @staticmethod
     def get_object_r_e_simplified(self, e_on_off_rr, t_j, v_g, v_supply, normalize_t_to_v):
         """
         Function to get the loss graphs out of the transistor class, simplified version
@@ -899,7 +901,7 @@ class Transistor:
                              "A list of available operating points is printed above.")
         return dataset
 
-    def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply, normalize_t_to_v) -> Transistor.SwitchEnergyData:
+    def calc_object_i_e(self, e_on_off_rr, r_g, t_j, v_supply, normalize_t_to_v) -> SwitchEnergyData:
         """
         Calculate loss curves for other gate resistor than the standard one.
         This function uses i_e loss curve in combination with r_e loss curve, to calculate a new i_e loss curve for
@@ -949,7 +951,7 @@ class Transistor:
             print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(e_on_off_rr, r_g, t_j, v_supply, e.args[0]))
             raise e
 
-    def calc_i_e_curve_using_r_e_curve(self, i_e_object: Transistor.SwitchEnergyData, r_e_object: Transistor.SwitchEnergyData, r_g: float, v_supply_chosen: float):
+    def calc_i_e_curve_using_r_e_curve(self, i_e_object: SwitchEnergyData, r_e_object: SwitchEnergyData, r_g: float, v_supply_chosen: float):
         """
         Calculates the loss energy curve at the provided gate resistance value based on the r_e_graph data
 
@@ -1671,7 +1673,7 @@ class Transistor:
 
             file_switch = open(f"{self.name}_Switch(rg_on_{r_g_on})(rg_off_{r_g_off}).scl", "w")
 
-            #### switch channel data
+            # switch channel data
 
             file_switch.write("anzMesskurvenPvCOND " + str(len(sw_channel_curves)) + "\n")
             for channel in sw_channel_curves:
@@ -1711,7 +1713,7 @@ class Transistor:
                 file_switch.write(f"\ntj {channel.t_j}\n")
                 file_switch.write("<\LeitverlusteMesskurve>\n")
 
-            #### switch switching loss
+            # switch switching loss
             # check for availability of switching loss curves
             # count number of arrays with gate v_g == v_g_export
 
@@ -1765,7 +1767,7 @@ class Transistor:
         if any(diode_channel_curves):
             file_diode = open(f"{self.name}_Diode(rg_{r_g_err}).scl", "w")
 
-            #### diode channel data
+            # diode channel data
             # count number of arrays for conducting behaviour
             # in case of gan-transistor, search for v_g_off
             # in case of mosfet or igbt use all available data
@@ -1795,7 +1797,7 @@ class Transistor:
                 file_diode.write(f"\ntj {n_channel.t_j}\n")
                 file_diode.write("<\LeitverlusteMesskurve>\n")
 
-            #### diode err loss
+            # diode err loss
             # check for availability of switching loss curves
             # in case of no switching losses available, set curves to zero.
             # if switching losses will not set to zero, geckoCIRCUITS will use initial values
@@ -2023,8 +2025,8 @@ class Transistor:
 
             :param switch_args: argument to be passed for initialization
 
-            :raises KeyError: Expected during the channel\e_on\e_off instance initialization
-            :raises ValueError: Expected during the channel\e_on\e_off instance initialization
+            :raises KeyError: Expected during the channel/e_on/e_off instance initialization
+            :raises ValueError: Expected during the channel/e_on/e_off instance initialization
 
             .. todo:: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
             """
@@ -2256,7 +2258,8 @@ class Transistor:
                 print(key + ': ', value)
             return req_gate_vltgs.values()
 
-        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, switch_energy_dataset_type="graph_i_e") -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData, Transistor.SwitchEnergyData]:
+        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, switch_energy_dataset_type="graph_i_e") \
+                -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData, Transistor.SwitchEnergyData]:
             """
             This function looks for the smallest distance to stored object value and returns this working point
 
@@ -2275,7 +2278,7 @@ class Transistor:
             channeldata_t_js = np.array([chan.t_j for chan in self.channel])
             channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             nodes = np.array([channeldata_t_js / normalize_t_to_v, channeldata_v_gs]).transpose()
-            index_channeldata = distance.cdist(node, nodes).argmin()
+            index_channeldata = distance.cdist([node], nodes).argmin()
 
             # Find closest e_on
             e_ons = [e for e in self.e_on if e.dataset_type == switch_energy_dataset_type]
@@ -2284,7 +2287,7 @@ class Transistor:
             e_on_t_js = np.array([e.t_j for e in e_ons])
             e_on_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_ons])
             nodes = np.array([e_on_t_js / normalize_t_to_v, e_on_v_gs]).transpose()
-            index_e_on = distance.cdist(node, nodes).argmin()
+            index_e_on = distance.cdist([node], nodes).argmin()
             # Find closest e_off
             e_offs = [e for e in self.e_off if e.dataset_type == switch_energy_dataset_type]
             if not e_offs:
@@ -2292,7 +2295,7 @@ class Transistor:
             e_off_t_js = np.array([e.t_j for e in e_offs])
             e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_offs])
             nodes = np.array([e_off_t_js / normalize_t_to_v, e_off_v_gs]).transpose()
-            index_e_off = distance.cdist(node, nodes).argmin()
+            index_e_off = distance.cdist([node], nodes).argmin()
             print("run switch.find_approx_wp: closest working point for t_j = {0} °C and v_g = {1} V:".format(t_j, v_g))
             print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
             print(f"eon:     t_j = {e_ons[index_e_on].t_j} °C and v_g = {e_ons[index_e_on].v_g} V")
@@ -2549,8 +2552,8 @@ class Transistor:
 
             :param diode_args: argument to be passed for initialization
 
-            :raises KeyError: Expected during the channel\e_rr instance initialization
-            :raises ValueError: Expected during the channel\e_rr instance initialization
+            :raises KeyError: Expected during the channel/e_rr instance initialization
+            :raises ValueError: Expected during the channel/e_rr instance initialization
 
 
             """
@@ -2701,7 +2704,8 @@ class Transistor:
                 print(key + ': ', value)
             return req_gate_vltgs.values()
 
-        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, switch_energy_dataset_type="graph_i_e") -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData]:
+        def find_approx_wp(self, t_j, v_g, normalize_t_to_v=10, switch_energy_dataset_type="graph_i_e") \
+                -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData]:
             """
             This function looks for the smallest distance to stored object value and returns this working point
 
@@ -2717,7 +2721,7 @@ class Transistor:
             channeldata_t_js = np.array([chan.t_j for chan in self.channel])
             channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             nodes = np.array([channeldata_t_js / normalize_t_to_v, channeldata_v_gs]).transpose()
-            index_channeldata = distance.cdist(node, nodes).argmin()
+            index_channeldata = distance.cdist([node], nodes).argmin()
             # Find closest e_rr
             e_rrs = [e for e in self.e_rr if e.dataset_type == switch_energy_dataset_type]
             if not e_rrs:
@@ -3139,7 +3143,7 @@ class Transistor:
 
         def plot_graph(self):
             """
-            Plots switch\diode energy curve characteristics (either from graph_i_e or graph_r_e dataset)
+            Plots switch / diode energy curve characteristics (either from graph_i_e or graph_r_e dataset)
 
             :return: Respective plots are displayed
             """
@@ -3500,7 +3504,7 @@ class Transistor:
                 'TurnOffLoss': {},
                 'Comment': [
                     "This datasheet was created by {0} on {1} and was exported using transistordatabase.".format(
-                        transistor_dict['author'], transistor_dict['datasheet_date'])
+                       transistor_dict['author'], transistor_dict['datasheet_date'])
                     , "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
                     "File generated : {0}".format(datetime.datetime.today()),
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
@@ -3545,8 +3549,8 @@ class Transistor:
         except MissingDataError as e:
             print(e.args[0], e.em[e.args[0]] + '.scl')
         return plecs_transistor if plecs_transistor is not None and 'Channel' in plecs_transistor['ConductionLoss'] \
-                   else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
-                   else None
+            else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
+            else None
 
     class RawMeasurementData:
         """
@@ -3555,12 +3559,12 @@ class Transistor:
 
         # Type of the dataset:
         # dpt_u_i: U/t I/t graph from double pulse measurements
-        dataset_type: str  #:  e.g. dpt_u_i (Mandatory key)
+        dataset_type: str  #: e.g. dpt_u_i (Mandatory key)
         dpt_on_vds: Optional[List[npt.NDArray[np.float64]]]   #: measured Vds data at turn on event. Units in V and s
         dpt_on_id: Optional[List[npt.NDArray[np.float64]]]  #: measured Id data at turn on event. Units in A and s
         dpt_off_vds: Optional[List[npt.NDArray[np.float64]]]   #: measured Vds data at turn off event. Units in V and s
-        dpt_off_id: Optional[List[npt.NDArray[np.float64]]] #: measured Vds data at turn off event. Units in A and s
-        measurement_date: Optional["datetime.datetime"]  #: Specifies the date and time at which the measurement was done.
+        dpt_off_id: Optional[List[npt.NDArray[np.float64]]]  #: measured Vds data at turn off event. Units in A and s
+        measurement_date: Optional["datetime.datetime"]  #: Specifies the measurements date and time
         measurement_testbench: Optional[str]  #: Specifies the testbench used for the measurement.
         commutation_device: Optional[str]  #: Second device used in half-bridge test condition
         comment: Optional[str]  #: Comment for additional information e.g. on who made these measurements
@@ -3914,7 +3918,7 @@ class Transistor:
 
         if measurement_data['raw_measurement_data'] is not None:
             if isinstance(measurement_data.get('raw_measurement_data'), list):
-                # Loop through list and check each dict for validity. Only create RawMeasuerementData objects from
+                # Loop through list and check each dict for validity. Only create RawMeasurementData objects from
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in measurement_data.get('raw_measurement_data'):
                     try:
@@ -4452,17 +4456,17 @@ def csv2array(csv_filename, first_xy_to_00=False, second_y_to_0=False, first_x_t
         array = np.genfromtxt(csv_filename, delimiter=",")
     file1.close()
 
-    if first_xy_to_00 == True:
+    if first_xy_to_00:
         array[0][0] = 0  # x value
         array[0][1] = 0  # y value
 
-    if second_y_to_0 == True:
+    if second_y_to_0:
         array[1][1] = 0  # y value
 
-    if first_x_to_0 == True:
+    if first_x_to_0:
         array[0][0] = 0  # x value
 
-    if mirror_xy_data == True:
+    if mirror_xy_data:
         array = np.abs(array)
 
     return np.transpose(array)
@@ -4525,6 +4529,10 @@ def print_TDB(filters: Optional[List[str]] = None, collection_name: str = "local
     filters = filters or []
 
     if collection_name == "local":
+        mongodb_collection = connect_local_TDB()
+    else:
+        # TODO: support other collections. As of now, other database connections also connects to local-tdb
+        warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
         mongodb_collection = connect_local_TDB()
     if not isinstance(filters, list):
         if isinstance(filters, str):
@@ -4774,7 +4782,7 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     'rapid channel turn-off' (rcto)
 
     Note: Input (e.g. i_off can also be a vector)
-    Source: D. Kübrich, T. Dürbaum, A. Bucher:
+    Source: D. Kubrick, T. Dürbaum, A. Bucher:
     'Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances'
     International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244
 
