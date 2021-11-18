@@ -728,7 +728,7 @@ class Transistor:
         else:
             plt.show()
 
-    def plot_soa(self, buffer_req=False):
+    def plot_soa(self, buffer_req: bool = False):
         """
          A helper function to plot and convert safe operating region characteristic plots in raw data format.
 
@@ -2699,7 +2699,7 @@ class Transistor:
                 print("Switch energy r_e curves are not available for the chosen transistor")
                 return None
 
-        def plot_all_on_resistance_curves(self, buffer_req=False):
+        def plot_all_on_resistance_curves(self, buffer_req: bool = False):
             """
             A helper function to plot and convert Temperature dependant on resistance plots in raw data format.
 
@@ -2732,7 +2732,7 @@ class Transistor:
             else:
                 plt.show()
 
-        def plot_all_charge_curves(self, buffer_req=False):
+        def plot_all_charge_curves(self, buffer_req: bool = False):
             """
             A helper function to plot and convert gate emitter/source voltage dependant gate charge plots in raw data format.
 
@@ -3553,7 +3553,7 @@ class Transistor:
             self.r_channel_nominal = args.get('r_channel_nominal')
             self.graph_t_r = args.get('graph_t_r')
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts TemperatureDependResistance object into dict datatype
 
@@ -3612,7 +3612,7 @@ class Transistor:
             self.i_g = args.get('i_g')
             self.graph_q_v = args.get('graph_q_v')
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts GateChargeCurve object into dict datatype
 
@@ -3665,7 +3665,7 @@ class Transistor:
             self.t_c = args.get('t_c')
             self.graph_i_v = args.get('graph_i_v')
 
-        def convert_to_dict(self):
+        def convert_to_dict(self) -> dict:
             """
             The method converts SOA object into dict datatype
 
@@ -4379,7 +4379,7 @@ class Transistor:
             new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
             collection.update_one(transistor_id, new_value)
 
-    def add_soa_data(self, soa_data: [dict, list], clear=False):
+    def add_soa_data(self, soa_data: [dict, list], clear: bool = False, create: bool = False, name: str = None):
         """
         A transistor method to add the soa class object to the loaded transistor object.
         .. note:: Transistor object must be loaded first before calling this method
@@ -4388,34 +4388,103 @@ class Transistor:
         :type soa_data: dict or list
         :param clear: set to true if to clear the existing soa curves on the transistor object
         :type clear: bool
+        :param create: create a new transistor object with updated soa object in the local pymongo database
+        :type create: bool
+        :param name: name of the new transistor object that needs to be created, required when create set to True
+        :type name: str
 
         :return: updated transistor object with added soa characteristics
         """
-        collection = connect_local_TDB()
+        soa_list = []
         transistor_id = {'_id': self._id}
         if clear:
             self.soa = []
+        # gathering existing data if any
+        for soa_item in self.soa:
+            soa_list.append(soa_item.convert_to_dict())
+
+        # validating the dict and checking for duplicates
         if isinstance(soa_data, list):
-            for dataset in soa_data:
+            for index, dataset in enumerate(soa_data):
                 try:
-                    if Transistor.isvalid_dict(dataset, 'SOA'):
+                    if Transistor.isvalid_dict(dataset, 'SOA') and check_duplicates(soa_list, dataset):
                         self.soa.append(Transistor.SOA(dataset))
                 # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                 except KeyError as error:
-                    dict_list = dataset
                     if not error.args:
                         error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                    error.args = (f"KeyError occurred for index [{str(soa_data.index(dict_list))}] in list of "
+                    error.args = (f"KeyError occurred for index [{str(index)}] in list of "
                                   f"Transistor-soa dictionary: ",) + error.args
                     raise
-        elif Transistor.isvalid_dict(soa_data, 'SOA'):
+        elif Transistor.isvalid_dict(soa_data, 'SOA') and check_duplicates(soa_list, soa_data):
             self.soa.append(Transistor.SOA(soa_data))
 
-        soa_list = []
-        for soa_item in self.soa:
-            soa_list.append(soa_item.convert_to_dict())
-        new_object = {'$set': {'soa': soa_list}}
-        collection.update_one(transistor_id, new_object)
+        # appending the list to the transistor object
+        if len(soa_list) != len(self.soa):
+            if create and name is None:
+                raise ValueError("Please provide the name if you are trying to create a new transistor")
+            if create and name is not None:
+                insert_in_database(self.convert_to_dict(), name)
+            elif not create:
+                soa_object = {'$set': {'soa': soa_list}}
+                collection = connect_local_TDB()
+                collection.update_one(transistor_id, soa_object)
+        else:
+            print('No new item to add!')
+
+
+def insert_in_database(transistor_dict: dict, name: str):
+    """
+    A helper method to insert new transistor dictionary into pymongo database. Currently utilised to add SOA, TempDependResistance, GateChargeCurve objects
+    to existing transistor object and create a new transistor with a new name and object id.
+
+    :param transistor_dict: transistor dictionary that needs to be inserted into local database
+    :type transistor_dict: dict
+    :param name: name of the new transistor that needs to be inserted
+    :type name: str
+
+    :return: None
+    """
+    collection = connect_local_TDB()
+    returned_cursor = collection.find({}, ["name"])
+    name_list = []
+    for tran in returned_cursor:
+        name_list.append(tran['name'])
+    if name in name_list:
+        msg = 'Please provide different name. \'{0}\' already exists in database!'.format(name)
+        raise ValueError(msg)
+    transistor_dict['_id'] = ObjectId()
+    transistor_dict['name'] = name
+    collection.insert_one(transistor_dict)
+
+
+def check_duplicates(trans_object: list[dict], item_to_append: dict) -> bool:
+    """
+    A helper method to check if the item being added already exists in the list
+
+    :param trans_object: list of particular class object converted to dictionaries using which the checks are conducted
+    :type trans_object: list(dict)
+    :param item_to_append: the object dict that needs to be appended
+    :type item_to_append: dict
+
+    :return: True if the added item is not duplicate
+    :rtype: bool
+    """
+    if len(trans_object) == 0:
+        return True
+    else:
+        for index, obj_item in enumerate(trans_object):
+            count = 0
+            for key, value in obj_item.items():
+                if isinstance(item_to_append[key], np.ndarray):
+                    item_to_append[key] = item_to_append[key].tolist()
+                if obj_item[key] == item_to_append[key]:
+                    count += 1
+            if count == len(obj_item):
+                msg = "Duplicate object detected: {0} = {1} is already present at position {2} of {3} list object" .format(key, value, index, type(trans_object))
+                print(msg)
+                return False
+        return True
 
 
 def html_to_pdf(html, pdf, name):
