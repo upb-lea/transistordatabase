@@ -4403,7 +4403,7 @@ class Transistor:
         if isinstance(soa_data, list):
             for index, dataset in enumerate(soa_data):
                 try:
-                    if Transistor.isvalid_dict(dataset, 'SOA') and check_duplicates(soa_list, dataset):
+                    if Transistor.isvalid_dict(dataset, 'SOA') and check_duplicates(soa_list, dataset.copy()):
                         self.soa.append(Transistor.SOA(dataset))
                 # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                 except KeyError as error:
@@ -4412,7 +4412,7 @@ class Transistor:
                     error.args = (f"KeyError occurred for index [{str(index)}] in list of "
                                   f"Transistor-soa dictionary: ",) + error.args
                     raise
-        elif Transistor.isvalid_dict(soa_data, 'SOA') and check_duplicates(soa_list, soa_data):
+        elif Transistor.isvalid_dict(soa_data, 'SOA') and check_duplicates(soa_list, soa_data.copy()):
             self.soa.append(Transistor.SOA(soa_data))
 
         # appending the list to the transistor object

@@ -1,3 +1,4 @@
+import copy
 import transistordatabase as tdb
 import numpy as np
 import datetime
@@ -392,3 +393,67 @@ def test_connect_local_TDB(connect_local_TDB):
     connect_local_TDB.return_value = db.collection
     result = tdb.connect_local_TDB()
     assert result.full_name == db.collection.full_name
+
+
+@pytest.fixture()
+def my_database(my_transistor):
+    transistor_args, switch_args, diode_args = my_transistor
+    transistor_args['soa'].clear()
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    mocked_mongo = mongomock.MongoClient()
+    fake_collection = mocked_mongo['transistor_database_fake'].collection
+    transistor_dict = transistor.convert_to_dict()
+    fake_collection.insert_one(transistor_dict)
+    yield transistor, fake_collection
+
+
+def test_add_soa_data(my_database, monkeypatch):
+    graph_i_v_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
+    graph_i_v_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
+    graph_i_v_three = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 3 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
+    soa_object_one = {
+        't_c': 25,
+        'time_pulse': None,
+        'graph_i_v': graph_i_v_one
+    }
+    soa_object_two = {
+        't_c': 25,
+        'time_pulse': 50e-6,
+        'graph_i_v': graph_i_v_two
+    }
+    soa_object_three = {
+        't_c': 25,
+        'time_pulse': 0.2e-6,
+        'graph_i_v': graph_i_v_three
+    }
+
+    transistor, fake_collection = my_database
+
+    def mock_return():
+        return fake_collection
+
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+
+    soa_list_one = copy.deepcopy([soa_object_one, soa_object_two])
+    transistor.add_soa_data(soa_list_one, True)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['soa']) == len(transistor.soa)
+
+    local_soa_list = []
+    for soa_item in local_transistor['soa']:
+        local_soa_list.append(soa_item)
+    for index, item in enumerate(soa_list_one):
+        for key in item:
+            if isinstance(item[key], np.ndarray):
+                item[key] = item[key].tolist()
+            assert item[key] == local_soa_list[index][key]
+
+    soa_list_two = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three])
+    transistor.add_soa_data(soa_list_two)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['soa']) == 3
+
+    soa_list_three = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three, soa_object_one])
+    transistor.add_soa_data(soa_list_three)
+    assert len(transistor.soa) == 3
+
