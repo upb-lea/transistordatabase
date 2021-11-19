@@ -4300,11 +4300,11 @@ class Transistor:
 
     def add_dpt_measurement(self, measurement_data):
         """
-                    This method adds new measurement data to the transistor object and saves changes to the database.
+        This method adds new measurement data to the transistor object and saves changes to the database.
 
-                    :param measurement_data: Dict of data you want to add to given attribute.
-                    :type measurement_data: dict
-                    """
+        :param measurement_data: Dict of data you want to add to given attribute.
+        :type measurement_data: dict
+        """
 
         collection = connect_local_TDB()
         transistor_id = {'_id': self._id}
@@ -4379,19 +4379,15 @@ class Transistor:
             new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
             collection.update_one(transistor_id, new_value)
 
-    def add_soa_data(self, soa_data: [dict, list], clear: bool = False, create: bool = False, name: str = None):
+    def add_soa_data(self, soa_data: [dict, list], clear: bool = False):
         """
-        A transistor method to add the soa class object to the loaded transistor object.
+        A transistor method to add the SOA class object to the loaded transistor.soa attribute.
         .. note:: Transistor object must be loaded first before calling this method
 
         :param soa_data: argument represents the soa dictionaries objects that needs to be added to transistor object
         :type soa_data: dict or list
         :param clear: set to true if to clear the existing soa curves on the transistor object
         :type clear: bool
-        :param create: create a new transistor object with updated soa object in the local pymongo database
-        :type create: bool
-        :param name: name of the new transistor object that needs to be created, required when create set to True
-        :type name: str
 
         :return: updated transistor object with added soa characteristics
         """
@@ -4421,41 +4417,111 @@ class Transistor:
 
         # appending the list to the transistor object
         if len(soa_list) != len(self.soa):
-            if create and name is None:
-                raise ValueError("Please provide the name if you are trying to create a new transistor")
-            if create and name is not None:
-                insert_in_database(self.convert_to_dict(), name)
-            elif not create:
-                soa_object = {'$set': {'soa': soa_list}}
-                collection = connect_local_TDB()
-                collection.update_one(transistor_id, soa_object)
+            soa_list.clear()
+            for soa_item in self.soa:
+                soa_list.append(soa_item.convert_to_dict())
+            soa_object = {'$set': {'soa': soa_list}}
+            collection = connect_local_TDB()
+            collection.update_one(transistor_id, soa_object)
+            print('Updated successfully!')
         else:
             print('No new item to add!')
 
+    def add_gate_charge_data(self, charge_data: [dict, list], clear: bool = False):
+        """
+        A transistor method to add the GateChargeCurve class objects to the loaded transistor.switch.charge_curve attribute.
+        .. note:: Transistor object must be loaded first before calling this method
 
-def insert_in_database(transistor_dict: dict, name: str):
-    """
-    A helper method to insert new transistor dictionary into pymongo database. Currently utilised to add SOA, TempDependResistance, GateChargeCurve objects
-    to existing transistor object and create a new transistor with a new name and object id.
+        :param charge_data: argument represents the gatechargecurve dictionaries objects that needs to be added to transistor object
+        :type charge_data: dict or list
+        :param clear: set to true if to clear the existing gatechargecurve curves on the transistor object
+        :type clear: bool
 
-    :param transistor_dict: transistor dictionary that needs to be inserted into local database
-    :type transistor_dict: dict
-    :param name: name of the new transistor that needs to be inserted
-    :type name: str
+        :return: updated transistor object with added gate charge characteristics
+        """
+        charge_list = []
+        transistor_id = {'_id': self._id}
+        if clear:
+            self.switch.charge_curve = []
+        # gathering existing data if any
+        for charge_item in self.switch.charge_curve:
+            charge_list.append(charge_item.convert_to_dict())
 
-    :return: None
-    """
-    collection = connect_local_TDB()
-    returned_cursor = collection.find({}, ["name"])
-    name_list = []
-    for tran in returned_cursor:
-        name_list.append(tran['name'])
-    if name in name_list:
-        msg = 'Please provide different name. \'{0}\' already exists in database!'.format(name)
-        raise ValueError(msg)
-    transistor_dict['_id'] = ObjectId()
-    transistor_dict['name'] = name
-    collection.insert_one(transistor_dict)
+        # validating the dict and checking for duplicates
+        if isinstance(charge_data, list):
+            for index, dataset in enumerate(charge_data):
+                try:
+                    if Transistor.isvalid_dict(dataset, 'GateChargeCurve') and check_duplicates(charge_list, dataset):
+                        self.switch.charge_curve.append(Transistor.GateChargeCurve(dataset))
+                # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                except KeyError as error:
+                    if not error.args:
+                        error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                    error.args = (f"KeyError occurred for index [{str(index)}] in list of "
+                                  f"Transistor-switch-gatecharge dictionary: ",) + error.args
+                    raise
+        elif Transistor.isvalid_dict(charge_data, 'GateChargeCurve') and check_duplicates(charge_list, charge_data):
+            self.switch.charge_curve.append(Transistor.GateChargeCurve(charge_data))
+
+        # appending the list to the transistor object
+        if len(charge_list) != len(self.switch.charge_curve):
+            charge_list.clear()
+            for charge_item in self.switch.charge_curve:
+                charge_list.append(charge_item.convert_to_dict())
+            charge_object = {'$set': {'switch.charge_curve': charge_list}}
+            collection = connect_local_TDB()
+            collection.update_one(transistor_id, charge_object)
+            print('Updated successfully!')
+        else:
+            print('No new item to add!')
+
+    def add_temp_depend_resis_data(self, r_channel_data: [dict, list], clear: bool = False):
+        """
+        A transistor method to add the TemperatureDependResistance class objects to the loaded transistor.switch.r_channel_th attribute.
+        .. note:: Transistor object must be loaded first before calling this method
+
+        :param r_channel_data: argument represents the TemperatureDependResistance dictionaries objects that needs to be added to transistor.switch.r_channel_th object
+        :type r_channel_data: dict or list
+        :param clear: set to true if to clear the existing r_channel_th curves on the transistor object
+        :type clear: bool
+
+        :return: updated transistor object with added gate charge characteristics
+        """
+        r_channel_list = []
+        transistor_id = {'_id': self._id}
+        if clear:
+            self.switch.r_channel_th = []
+        # gathering existing data if any
+        for r_channel_item in self.switch.r_channel_th:
+            r_channel_list.append(r_channel_item.convert_to_dict())
+
+        # validating the dict and checking for duplicates
+        if isinstance(r_channel_data, list):
+            for index, dataset in enumerate(r_channel_data):
+                try:
+                    if Transistor.isvalid_dict(dataset, 'TemperatureDependResistance') and check_duplicates(r_channel_list, dataset):
+                        self.switch.r_channel_th.append(Transistor.TemperatureDependResistance(dataset))
+                # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                except KeyError as error:
+                    if not error.args:
+                        error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                    error.args = (f"KeyError occurred for index [{str(index)}] in list of "
+                                  f"Transistor-switch-r_channel_th dictionary: ",) + error.args
+                    raise
+        elif Transistor.isvalid_dict(r_channel_data, 'TemperatureDependResistance') and check_duplicates(r_channel_list, r_channel_data):
+            self.switch.r_channel_th.append(Transistor.TemperatureDependResistance(r_channel_data))
+
+        # appending the list to the transistor object
+        if len(r_channel_list) != len(self.switch.r_channel_th):
+            r_channel_list.clear()
+            for r_channel_item in self.switch.r_channel_th:
+                r_channel_list.append(r_channel_item.convert_to_dict())
+            r_channel_object = {'$set': {'switch.r_channel_th': r_channel_list}}
+            collection = connect_local_TDB()
+            collection.update_one(transistor_id, r_channel_object)
+            print('Updated successfully!')
+        else:
+            print('No new item to add!')
 
 
 def check_duplicates(trans_object: list[dict], item_to_append: dict) -> bool:
@@ -4481,7 +4547,7 @@ def check_duplicates(trans_object: list[dict], item_to_append: dict) -> bool:
                 if obj_item[key] == item_to_append[key]:
                     count += 1
             if count == len(obj_item):
-                msg = "Duplicate object detected: {0} = {1} is already present at position {2} of {3} list object" .format(key, value, index, type(trans_object))
+                msg = "Duplicate object detected: already present at index {0} of {1} object" .format(index, type(trans_object).__name__)
                 print(msg)
                 return False
         return True
@@ -5240,6 +5306,11 @@ def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
                 switch_args['e_off_meas'][i]['graph_r_e'] = np.array(switch_args['e_off_meas'][i]['graph_r_e'])
             elif switch_args['e_off_meas'][i]['dataset_type'] == 'graph_i_e':
                 switch_args['e_off_meas'][i]['graph_i_e'] = np.array(switch_args['e_off_meas'][i]['graph_i_e'])
+    for i in range(len(switch_args['charge_curve'])):
+        switch_args['charge_curve'][i]['graph_q_v'] = np.array(switch_args['charge_curve'][i]['graph_q_v'])
+    for i in range(len(switch_args['r_channel_th'])):
+        switch_args['r_channel_th'][i]['graph_t_r'] = np.array(switch_args['r_channel_th'][i]['graph_t_r'])
+
     # Convert diode_args
     diode_args = db_dict['diode']
     if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
