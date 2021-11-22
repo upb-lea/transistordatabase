@@ -15,7 +15,7 @@ with open('CHANGELOG.md') as history_file:
 
 setup_requirements = ['setuptools_scm']
 
-test_requirements = []
+test_requirements = ['mongomock']
 
 setup(
     author="LEA - Uni Paderborn",
