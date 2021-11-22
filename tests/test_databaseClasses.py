@@ -405,6 +405,7 @@ def my_database(my_transistor):
     transistor_dict = transistor.convert_to_dict()
     fake_collection.insert_one(transistor_dict)
     yield transistor, fake_collection
+    fake_collection.drop()
 
 
 def test_add_soa_data(my_database, monkeypatch):
@@ -447,13 +448,113 @@ def test_add_soa_data(my_database, monkeypatch):
             if isinstance(item[key], np.ndarray):
                 item[key] = item[key].tolist()
             assert item[key] == local_soa_list[index][key]
-
+    # deep copy is necessary as the graph_v_i in list format is modified when the add_soa_data is called
     soa_list_two = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three])
     transistor.add_soa_data(soa_list_two)
     local_transistor = fake_collection.find_one({'_id': transistor._id})
     assert len(local_transistor['soa']) == 3
-
+    # deep copy is necessary as the graph_v_i in list format is modified when the add_soa_data is called
     soa_list_three = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three, soa_object_one])
     transistor.add_soa_data(soa_list_three)
     assert len(transistor.soa) == 3
+
+
+def test_add_gate_charge_data(my_database, monkeypatch):
+    graph_q_v_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
+    graph_q_v_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
+
+    switch_charge_curves_100 = {
+        'i_channel': 12,
+        't_j': 25,
+        'v_supply': 100,
+        'i_g': None,
+        'graph_q_v': graph_q_v_one
+    }
+
+    switch_charge_curves_400 = {
+        'i_channel': 12,
+        't_j': 25,
+        'v_supply': 400,
+        'i_g': 12.2,
+        'graph_q_v': graph_q_v_two
+    }
+
+    transistor, fake_collection = my_database
+
+    def mock_return():
+        return fake_collection
+
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+
+    qc_list_one = copy.deepcopy([switch_charge_curves_100])
+    transistor.add_gate_charge_data(qc_list_one, True)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['switch']['charge_curve']) == len(transistor.switch.charge_curve)
+
+    local_qc_list = []
+    for charge_item in local_transistor['switch']['charge_curve']:
+        local_qc_list.append(charge_item)
+    for index, item in enumerate(qc_list_one):
+        for key in item:
+            if isinstance(item[key], np.ndarray):
+                item[key] = item[key].tolist()
+            assert item[key] == local_qc_list[index][key]
+    # deep copy is necessary as the graph_q_v in list format is modified when the add_gate_charge_data is called
+    qc_list_two = copy.deepcopy([switch_charge_curves_100, switch_charge_curves_400])
+    transistor.add_gate_charge_data(qc_list_two)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['switch']['charge_curve']) == 2
+    # deep copy is necessary as the graph_q_v in list format is modified when the add_gate_charge_data is called
+    qc_list_three = copy.deepcopy([switch_charge_curves_400, switch_charge_curves_400, switch_charge_curves_100, switch_charge_curves_100])
+    transistor.add_gate_charge_data(qc_list_three)
+    assert len(transistor.switch.charge_curve) == 2
+
+
+def test_add_temp_depend_resis_data(my_database, monkeypatch):
+    graph_t_r_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
+    graph_t_r_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
+    switch_ron_args = {
+        'i_channel': 12,
+        'v_g': 15,
+        'dataset_type': 't_factor',
+        'r_channel_nominal': 67,
+        'graph_t_r': graph_t_r_one
+    }
+    switch_ron_args_2 = {
+        'i_channel': 12,
+        'v_g': 20,
+        'dataset_type': 't_factor',
+        'r_channel_nominal': 67,
+        'graph_t_r': graph_t_r_two
+    }
+
+    transistor, fake_collection = my_database
+
+    def mock_return():
+        return fake_collection
+
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+
+    rth_list_one = copy.deepcopy([switch_ron_args])
+    transistor.add_temp_depend_resis_data(rth_list_one, True)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['switch']['r_channel_th']) == len(transistor.switch.r_channel_th)
+
+    local_rth_list = []
+    for rth_item in local_transistor['switch']['r_channel_th']:
+        local_rth_list.append(rth_item)
+    for index, item in enumerate(rth_list_one):
+        for key in item:
+            if isinstance(item[key], np.ndarray):
+                item[key] = item[key].tolist()
+            assert item[key] == local_rth_list[index][key]
+    # deep copy is necessary as the graph_t_r in list format is modified when the add_temp_depend_resis_data is called
+    rth_list_two = copy.deepcopy([switch_ron_args, switch_ron_args_2])
+    transistor.add_temp_depend_resis_data(rth_list_two)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['switch']['r_channel_th']) == 2
+    # deep copy is necessary as the graph_t_r in list format is modified when the add_temp_depend_resis_data is called
+    rth_list_three = copy.deepcopy([switch_ron_args_2, switch_ron_args_2, switch_ron_args, switch_ron_args])
+    transistor.add_temp_depend_resis_data(rth_list_three)
+    assert len(transistor.switch.r_channel_th) == 2
 

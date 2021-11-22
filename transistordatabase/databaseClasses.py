@@ -4451,7 +4451,7 @@ class Transistor:
         if isinstance(charge_data, list):
             for index, dataset in enumerate(charge_data):
                 try:
-                    if Transistor.isvalid_dict(dataset, 'GateChargeCurve') and check_duplicates(charge_list, dataset):
+                    if Transistor.isvalid_dict(dataset, 'GateChargeCurve') and check_duplicates(charge_list, dataset.copy()):
                         self.switch.charge_curve.append(Transistor.GateChargeCurve(dataset))
                 # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                 except KeyError as error:
@@ -4460,7 +4460,7 @@ class Transistor:
                     error.args = (f"KeyError occurred for index [{str(index)}] in list of "
                                   f"Transistor-switch-gatecharge dictionary: ",) + error.args
                     raise
-        elif Transistor.isvalid_dict(charge_data, 'GateChargeCurve') and check_duplicates(charge_list, charge_data):
+        elif Transistor.isvalid_dict(charge_data, 'GateChargeCurve') and check_duplicates(charge_list, charge_data.copy()):
             self.switch.charge_curve.append(Transistor.GateChargeCurve(charge_data))
 
         # appending the list to the transistor object
@@ -4499,7 +4499,7 @@ class Transistor:
         if isinstance(r_channel_data, list):
             for index, dataset in enumerate(r_channel_data):
                 try:
-                    if Transistor.isvalid_dict(dataset, 'TemperatureDependResistance') and check_duplicates(r_channel_list, dataset):
+                    if Transistor.isvalid_dict(dataset, 'TemperatureDependResistance') and check_duplicates(r_channel_list, dataset.copy()):
                         self.switch.r_channel_th.append(Transistor.TemperatureDependResistance(dataset))
                 # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                 except KeyError as error:
@@ -4508,7 +4508,7 @@ class Transistor:
                     error.args = (f"KeyError occurred for index [{str(index)}] in list of "
                                   f"Transistor-switch-r_channel_th dictionary: ",) + error.args
                     raise
-        elif Transistor.isvalid_dict(r_channel_data, 'TemperatureDependResistance') and check_duplicates(r_channel_list, r_channel_data):
+        elif Transistor.isvalid_dict(r_channel_data, 'TemperatureDependResistance') and check_duplicates(r_channel_list, r_channel_data.copy()):
             self.switch.r_channel_th.append(Transistor.TemperatureDependResistance(r_channel_data))
 
         # appending the list to the transistor object
