@@ -66,8 +66,6 @@
 	{% set pagesReqForDiode = 2 %}
 {% endif %}
 
-{% set s_plotted_keys = [] %}
-{% set d_plotted_keys = [] %}
 <!-- *************************************************************************************************************************************************** -->
 
 												<!-- ************** transistor specifications table *************** -->
@@ -182,7 +180,7 @@
 	</div>
 	{% endif %}
 												<!-- **************** Switch plots start from here ****************** -->
-
+{% set s_plotted_keys = [] %}
 {% for index in range(pagesReqForSwitch) %}
 	{% set count = [] %}
 	<div style="page-break-before:always;" class="pageCSS">
@@ -208,7 +206,7 @@
 							</div>
 						{% endif %}
 						{% set __ = count.append(1) %}
-						{% do s_plotted_keys.append(key) %}
+						{% do s_plotted_keys.append(s_key) %}
 						{% if count|length == 6 %}
 						{% break %}
 						{% endif %}
@@ -219,7 +217,7 @@
 	</div>
 {% endfor %}
 												<!-- **************** Diode plots start from here ****************** -->
-
+{% set d_plotted_keys = [] %}
 {% for index in range(pagesReqForDiode) %}
 	{% set count = [] %}
 	<div style="page-break-before:always;" class="pageCSS">
