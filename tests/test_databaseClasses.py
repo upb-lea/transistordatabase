@@ -1,9 +1,13 @@
+import copy
 import transistordatabase as tdb
 import numpy as np
 import datetime
 import pytest
 from pytest import approx
+import mongomock
+from unittest.mock import patch
 import os
+
 
 @pytest.fixture()
 def my_transistor():
@@ -44,7 +48,22 @@ def my_transistor():
     graph_t_rthjc = np.array([[0.001, 0.00125, 0.00171, 0.00241, 0.0035, 0.00573, 0.00772, 0.01138, 0.01728, 0.03047, 0.04766, 0.07347, 0.13544, 0.24235, 0.53439, 1],
                               [0.03162, 0.03736, 0.04796, 0.06157, 0.07906, 0.11033, 0.13035, 0.16191, 0.20449, 0.28542, 0.35457, 0.43321, 0.51221, 0.53913, 0.5492, 0.55003]])
     graph_i_e = np.array([[0, 5.79, 15, 26, 38, 47, 56, 69, 81, 94, 106, 118, 133, 152, 170, 186, 200],
-                 [0, 4.9e-04, 9.3e-04, 1.27e-03, 1.51e-03, 1.71e-03, 1.85e-03, 2.07e-03, 2.22e-03, 2.41e-03, 2.54e-03, 2.68e-03, 2.8e-03, 2.93e-03, 3.02e-03, 3.10e-03, 3.15e-03]])
+                          [0, 4.9e-04, 9.3e-04, 1.27e-03, 1.51e-03, 1.71e-03, 1.85e-03, 2.07e-03, 2.22e-03, 2.41e-03, 2.54e-03, 2.68e-03, 2.8e-03, 2.93e-03, 3.02e-03, 3.10e-03, 3.15e-03]])
+
+    graph_t_r = np.array([[-48.61961104, -29.94016048, - 16.23147015, - 2.52277982, 11.18591051, 24.89460084, 38.60329117, 52.3119815, 65.69427445, 79.07656739, 92.78525772, 105.51475588,
+                           116.93866449, 128.03617571, 139.13368693, 147.29362165],
+                          [0.89684619, 1.14140658, 1.33157082, 1.52997052, 1.75270226, 1.98628983, 2.22811286, 2.50212905, 2.81644284, 3.14224884, 3.46530345, 3.79703024, 4.12598987, 4.45476966,
+                           4.78863606, 5.03701277]])
+    graph_q_v = np.array([[0.00000000e+00, 3.12612221e-10, 5.21272373e-10, 7.29932526e-10, 9.47664859e-10, 1.16539719e-09, 1.46477915e-09, 1.84581073e-09, 2.22684231e-09, 2.78591544e-09,
+                           2.94354458e-09, 3.22478217e-09, 3.49694759e-09, 3.76911301e-09, 4.04127842e-09, 4.31344384e-09, 4.49488745e-09],
+                          [0.00000000e+0, 7.34864824e-01, 1.20581561e+00, 1.67976883e+00, 2.17153141e+00, 2.66423762e+00, 2.98759885e+00, 2.99104052e+00, 2.98962929e+00, 2.99726445e+00,
+                           3.19787364e+00, 3.67892685e+00, 4.14972822e+00, 4.61675511e+00, 5.08453690e+00, 5.55307359e+00, 5.86870259e+00]])
+    graph_i_v = np.array([[1.20259306e+00, 1.71723866e+00, 2.45212507e+00, 3.50150361e+00, 5.06397984e+00, 7.13967597e+00, 1.10896969e+01, 1.85389674e+01, 3.16339544e+01, 5.39785764e+01,
+                           9.21063068e+01, 1.57165533e+02, 2.68179300e+02, 4.57607565e+02, 6.28968471e+02, 6.33788175e+02, 6.41087068e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02,
+                           6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02, 6.53439159e+02],
+                          [5.10323760e+00, 7.28269824e+00, 1.03929501e+01, 1.48315100e+01, 2.12981497e+01, 3.00519626e+01, 4.66674327e+01, 4.80948414e+01, 4.79713287e+01, 4.80948414e+01,
+                           4.80948414e+01, 4.80948414e+01, 4.80948414e+01, 4.80948414e+01, 4.61859291e+01, 2.83951494e-01, 2.08151346e+00, 2.89502318e+01, 2.04908911e+01, 1.45033939e+01,
+                           1.02654606e+01, 7.26586360e+00, 5.14275742e+00, 3.64002895e+00, 1.29071761e+00, 9.13566221e-01, 6.46619551e-01, 4.57675464e-01, 1.62287110e-01, 1.16113623e-01]])
     technology = 'IGBT3'
     r_g_int = 10
     c_oss_fix = 1
@@ -59,12 +78,32 @@ def my_transistor():
     switch_channel = {'t_j': t_j, 'graph_v_i': graph_v_i, 'v_g': v_g}
     diode_channel = {'t_j': t_j, 'graph_v_i': graph_v_i}
     switchenergy = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
-                     'r_g': r_g,  'graph_i_e': graph_i_e} #'e_x': e_x, 'i_x': i_x,
+                    'r_g': r_g, 'graph_i_e': graph_i_e}  # 'e_x': e_x, 'i_x': i_x,
     foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
                    'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
                    'graph_t_rthjc': graph_t_rthjc}
     c_oss_er = {'c_o': 73e-12, 'v_gs': 0, 'v_ds': 400}
     c_oss_tr = None
+
+    switch_ron_args = {
+        'i_channel': 12,
+        'v_g': 15,
+        'dataset_type': 't_factor',
+        'r_channel_nominal': 67,
+        'graph_t_r': graph_t_r
+    }
+    switch_gate_charge = {
+        'i_channel': 12.3,
+        't_j': 25,
+        'v_supply': 400,
+        'i_g': None,
+        'graph_q_v': graph_q_v
+    }
+    soa_object = {
+        't_c': 25,
+        'time_pulse': 50e-6,
+        'graph_i_v': graph_i_v
+    }
 
     # Create argument dictionaries
     transistor_args = {'name': name, 'type': type, 'author': author, 'comment': comment,
@@ -74,13 +113,15 @@ def my_transistor():
                        'cooling_area': cooling_area, 'housing_type': housing_type, 'v_abs_max': v_abs_max,
                        'i_abs_max': i_abs_max, 'i_cont': i_cont, 'c_oss_fix': c_oss_fix, 'c_iss_fix': c_iss_fix,
                        'c_rss_fix': c_rss_fix, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
-                       'c_oss_er': c_oss_er, 'c_oss_tr': c_oss_tr, 'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs}
+                       'c_oss_er': c_oss_er, 'c_oss_tr': c_oss_tr, 'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs,
+                       'soa': soa_object}
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'channel': [switch_channel],
-                   'e_on': [switchenergy], 'e_off': [switchenergy], 'thermal_foster': foster_args}
+                   'e_on': [switchenergy], 'e_off': [switchenergy], 'thermal_foster': foster_args, 'r_channel_th': switch_ron_args, 'charge_curve': switch_gate_charge}
     diode_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                   'channel': [diode_channel], 'e_rr': [switchenergy], 'thermal_foster': foster_args}
     return transistor_args, switch_args, diode_args
+
 
 def test_transistor(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
@@ -114,7 +155,7 @@ def test_transistor(my_transistor):
     assert transistor.c_oss_er.v_gs == transistor_args['c_oss_er']['v_gs']
     assert transistor.c_oss_er.v_ds == transistor_args['c_oss_er']['v_ds']
     assert transistor.c_oss_tr == transistor_args['c_oss_tr']
-
+    assert transistor.soa[0].graph_i_v.any() == transistor_args['soa']['graph_i_v'].any()
 
     # switch_args test
     assert transistor.switch.t_j_max == switch_args['t_j_max']
@@ -126,6 +167,8 @@ def test_transistor(my_transistor):
     assert transistor.switch.channel[0].graph_v_i.any() == switch_args['channel'][0]['graph_v_i'].any()
     assert transistor.switch.e_on[0].graph_i_e.any() == switch_args['e_on'][0]['graph_i_e'].any()
     assert transistor.switch.e_off[0].graph_i_e.any() == switch_args['e_off'][0]['graph_i_e'].any()
+    assert transistor.switch.r_channel_th[0].graph_t_r.any() == switch_args['r_channel_th']['graph_t_r'].any()
+    assert transistor.switch.charge_curve[0].graph_q_v.any() == switch_args['charge_curve']['graph_q_v'].any()
 
     # diode_args test
     assert transistor.diode.t_j_max == diode_args['t_j_max']
@@ -138,7 +181,15 @@ def test_transistor(my_transistor):
     assert transistor.diode.e_rr[0].graph_i_e.any() == diode_args['e_rr'][0]['graph_i_e'].any()
 
 
-
+def test_get_gatedefaults():
+    igbt_expected_list = [15, -15, 0, 15]
+    mos_expected_list = [10, 0, 0, 10]
+    sic_expected_list = [15, -4, 0, 15]
+    gan_expected_list = [6, -3, 0, 6]
+    sw_type = {'123': igbt_expected_list, 'igbt': igbt_expected_list, 'mosfet': mos_expected_list, 'sic-mosfet': sic_expected_list, 'gan-transistor': gan_expected_list}
+    for key, value in sw_type.items():
+        return_list = tdb.get_gatedefaults(key)
+        assert return_list == value
 
 
 def test_calc_thermal_params(my_transistor):
@@ -207,7 +258,8 @@ def test_calc_thermal_params(my_transistor):
 
 
 gecko_exporter_test_cases = [{'case': 1, 'recheck': True, 'file': 'master_data/test_data_Fuji_2MBI400XBE065-50.json', 'r_g_on': 2, 'r_g_off': 4, 'v_g_on': 8, 'v_g_off': -8, 'v_supply': 600},
-                             {'case': 2, 'recheck': True, 'file': 'master_data/test_data_Fuji_2MBI400XBE065-50.json', 'r_g_on': None, 'r_g_off': None, 'v_g_on': None, 'v_g_off': None, 'v_supply': None},
+                             {'case': 2, 'recheck': True, 'file': 'master_data/test_data_Fuji_2MBI400XBE065-50.json', 'r_g_on': None, 'r_g_off': None, 'v_g_on': None, 'v_g_off': None,
+                              'v_supply': None},
                              {'case': 3, 'recheck': True, 'file': 'master_data/test_data_CREE_C3M0060065J.json', 'r_g_on': None, 'r_g_off': None, 'v_g_on': None, 'v_g_off': None, 'v_supply': None},
                              {'case': 4, 'recheck': False, 'file': 'master_data/test_data_CREE_C3M0060065J.json', 'v_g_on': 100, 'v_g_off': 100, 'r_g_on': None, 'r_g_off': None, 'v_supply': None}]
 
@@ -227,13 +279,13 @@ def data_setup_for_gecko_exporter(request):
     actual_data['case'] = request.param['case']
     transistor_test_data = tdb.import_json(request.param['file'])
     if request.param['case'] == 2:
-        for index in range(len(transistor_test_data.switch.e_on)-1, -1, -1):
+        for index in range(len(transistor_test_data.switch.e_on) - 1, -1, -1):
             if transistor_test_data.switch.e_on[index].dataset_type == 'graph_r_e':
                 del transistor_test_data.switch.e_on[index]
-        for index in range(len(transistor_test_data.switch.e_off)-1, -1, -1):
+        for index in range(len(transistor_test_data.switch.e_off) - 1, -1, -1):
             if transistor_test_data.switch.e_off[index].dataset_type == 'graph_r_e':
                 del transistor_test_data.switch.e_off[index]
-        for index in range(len(transistor_test_data.diode.e_rr)-1, -1, -1):
+        for index in range(len(transistor_test_data.diode.e_rr) - 1, -1, -1):
             if transistor_test_data.diode.e_rr[index].dataset_type == 'graph_r_e':
                 del transistor_test_data.diode.e_rr[index]
     if request.param['case'] == 3:
@@ -241,8 +293,8 @@ def data_setup_for_gecko_exporter(request):
         transistor_test_data.switch.e_on = []
 
     transistor_test_data.export_geckocircuits(recheck=request.param['recheck'], r_g_on=request.param['r_g_on'], r_g_off=request.param['r_g_off'],
-                                                        v_g_on=request.param['v_g_on'], v_g_off=request.param['v_g_off'],
-                                                        v_supply=request.param['v_supply'])
+                                              v_g_on=request.param['v_g_on'], v_g_off=request.param['v_g_off'],
+                                              v_supply=request.param['v_supply'])
     for file in os.listdir():
         # Check whether file is in text format or not
         if file.endswith(".scl"):
@@ -286,7 +338,7 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
         expected_string = '\ndata[][] 3 2 0 10 0 0 0 0\ntj 25\nuBlock 400\n'
         diode_data = actual_data['diode']
         switch_data = actual_data['switch']
-        actual_err = diode_data[diode_data.find(start := '<SchaltverlusteMesskurve>')+len(start):diode_data.find('<\SchaltverlusteMesskurve>')]
+        actual_err = diode_data[diode_data.find(start := '<SchaltverlusteMesskurve>') + len(start):diode_data.find('<\SchaltverlusteMesskurve>')]
         actual_eon_eoff = switch_data[switch_data.find(start := '<SchaltverlusteMesskurve>') + len(start):switch_data.find('<\SchaltverlusteMesskurve>')]
         assert actual_err == expected_string
         assert actual_eon_eoff == expected_string
@@ -295,6 +347,7 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
         assert 'switch' not in actual_data
         assert 'diode' not in actual_data
     assert True
+
 
 def test_export_json(my_transistor):
     """
@@ -306,6 +359,7 @@ def test_export_json(my_transistor):
     with pytest.raises(TypeError):
         transistor.export_json(123)
         transistor.export_json("/not/existing/path/")
+
 
 def test_check_realnum():
     assert tdb.check_realnum(123)
@@ -322,10 +376,185 @@ def test_check_2d_dataset():
         tdb.check_2d_dataset('Döner')
         tdb.check_2d_dataset(5)
 
+
 def test_check_str():
     assert tdb.check_str('Hello')
     assert tdb.check_str(None)
     with pytest.raises(TypeError):
         tdb.check_str(5)
-        tdb.check_str(np.array([[1, 2],[3, 4]]))
+        tdb.check_str(np.array([[1, 2], [3, 4]]))
         tdb.check_str([1, 2, 3])
+
+
+@patch.object(tdb, "connect_local_TDB")
+def test_connect_local_TDB(connect_local_TDB):
+    mocked_mongo = mongomock.MongoClient()
+    db = mocked_mongo['transistor_databasefake']
+    connect_local_TDB.return_value = db.collection
+    result = tdb.connect_local_TDB()
+    assert result.full_name == db.collection.full_name
+
+
+@pytest.fixture()
+def my_database(my_transistor):
+    transistor_args, switch_args, diode_args = my_transistor
+    transistor_args['soa'].clear()
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    mocked_mongo = mongomock.MongoClient()
+    fake_collection = mocked_mongo['transistor_database_fake'].collection
+    transistor_dict = transistor.convert_to_dict()
+    fake_collection.insert_one(transistor_dict)
+    yield transistor, fake_collection
+    fake_collection.drop()
+
+
+def test_add_soa_data(my_database, monkeypatch):
+    graph_i_v_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
+    graph_i_v_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
+    graph_i_v_three = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 3 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
+    soa_object_one = {
+        't_c': 25,
+        'time_pulse': None,
+        'graph_i_v': graph_i_v_one
+    }
+    soa_object_two = {
+        't_c': 25,
+        'time_pulse': 50e-6,
+        'graph_i_v': graph_i_v_two
+    }
+    soa_object_three = {
+        't_c': 25,
+        'time_pulse': 0.2e-6,
+        'graph_i_v': graph_i_v_three
+    }
+
+    transistor, fake_collection = my_database
+
+    def mock_return():
+        return fake_collection
+
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+
+    soa_list_one = copy.deepcopy([soa_object_one, soa_object_two])
+    transistor.add_soa_data(soa_list_one, True)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['soa']) == len(transistor.soa)
+
+    local_soa_list = []
+    for soa_item in local_transistor['soa']:
+        local_soa_list.append(soa_item)
+    for index, item in enumerate(soa_list_one):
+        for key in item:
+            if isinstance(item[key], np.ndarray):
+                item[key] = item[key].tolist()
+            assert item[key] == local_soa_list[index][key]
+    # deep copy is necessary as the graph_v_i in list format is modified when the add_soa_data is called
+    soa_list_two = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three])
+    transistor.add_soa_data(soa_list_two)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['soa']) == 3
+    # deep copy is necessary as the graph_v_i in list format is modified when the add_soa_data is called
+    soa_list_three = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three, soa_object_one])
+    transistor.add_soa_data(soa_list_three)
+    assert len(transistor.soa) == 3
+
+
+def test_add_gate_charge_data(my_database, monkeypatch):
+    graph_q_v_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
+    graph_q_v_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
+
+    switch_charge_curves_100 = {
+        'i_channel': 12,
+        't_j': 25,
+        'v_supply': 100,
+        'i_g': None,
+        'graph_q_v': graph_q_v_one
+    }
+
+    switch_charge_curves_400 = {
+        'i_channel': 12,
+        't_j': 25,
+        'v_supply': 400,
+        'i_g': 12.2,
+        'graph_q_v': graph_q_v_two
+    }
+
+    transistor, fake_collection = my_database
+
+    def mock_return():
+        return fake_collection
+
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+
+    qc_list_one = copy.deepcopy([switch_charge_curves_100])
+    transistor.add_gate_charge_data(qc_list_one, True)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['switch']['charge_curve']) == len(transistor.switch.charge_curve)
+
+    local_qc_list = []
+    for charge_item in local_transistor['switch']['charge_curve']:
+        local_qc_list.append(charge_item)
+    for index, item in enumerate(qc_list_one):
+        for key in item:
+            if isinstance(item[key], np.ndarray):
+                item[key] = item[key].tolist()
+            assert item[key] == local_qc_list[index][key]
+    # deep copy is necessary as the graph_q_v in list format is modified when the add_gate_charge_data is called
+    qc_list_two = copy.deepcopy([switch_charge_curves_100, switch_charge_curves_400])
+    transistor.add_gate_charge_data(qc_list_two)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['switch']['charge_curve']) == 2
+    # deep copy is necessary as the graph_q_v in list format is modified when the add_gate_charge_data is called
+    qc_list_three = copy.deepcopy([switch_charge_curves_400, switch_charge_curves_400, switch_charge_curves_100, switch_charge_curves_100])
+    transistor.add_gate_charge_data(qc_list_three)
+    assert len(transistor.switch.charge_curve) == 2
+
+
+def test_add_temp_depend_resis_data(my_database, monkeypatch):
+    graph_t_r_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
+    graph_t_r_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
+    switch_ron_args = {
+        'i_channel': 12,
+        'v_g': 15,
+        'dataset_type': 't_factor',
+        'r_channel_nominal': 67,
+        'graph_t_r': graph_t_r_one
+    }
+    switch_ron_args_2 = {
+        'i_channel': 12,
+        'v_g': 20,
+        'dataset_type': 't_factor',
+        'r_channel_nominal': 67,
+        'graph_t_r': graph_t_r_two
+    }
+
+    transistor, fake_collection = my_database
+
+    def mock_return():
+        return fake_collection
+
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+
+    rth_list_one = copy.deepcopy([switch_ron_args])
+    transistor.add_temp_depend_resis_data(rth_list_one, True)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['switch']['r_channel_th']) == len(transistor.switch.r_channel_th)
+
+    local_rth_list = []
+    for rth_item in local_transistor['switch']['r_channel_th']:
+        local_rth_list.append(rth_item)
+    for index, item in enumerate(rth_list_one):
+        for key in item:
+            if isinstance(item[key], np.ndarray):
+                item[key] = item[key].tolist()
+            assert item[key] == local_rth_list[index][key]
+    # deep copy is necessary as the graph_t_r in list format is modified when the add_temp_depend_resis_data is called
+    rth_list_two = copy.deepcopy([switch_ron_args, switch_ron_args_2])
+    transistor.add_temp_depend_resis_data(rth_list_two)
+    local_transistor = fake_collection.find_one({'_id': transistor._id})
+    assert len(local_transistor['switch']['r_channel_th']) == 2
+    # deep copy is necessary as the graph_t_r in list format is modified when the add_temp_depend_resis_data is called
+    rth_list_three = copy.deepcopy([switch_ron_args_2, switch_ron_args_2, switch_ron_args, switch_ron_args])
+    transistor.add_temp_depend_resis_data(rth_list_three)
+    assert len(transistor.switch.r_channel_th) == 2
+
