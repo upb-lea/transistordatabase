@@ -1339,7 +1339,7 @@ class Transistor:
 
     def export_datasheet(self) -> None:
         """
-        Generates and exports the virtual datasheet in form of html page
+        Generates and exports the virtual datasheet in form of pdf
 
         :return: pdf file is created in the current working directory
         :rtype: None
@@ -1353,21 +1353,22 @@ class Transistor:
         .. todo:: Instead of html file, generating a pdf file without third party requirements is a better option
         """
         # listV = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
-        pdfData = {}
+        pdf_data = {}
         devices = {}
-        skipIds = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'soa', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
+        skip_ids = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'soa', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
-        pdfData['c_plots'] = get_vc_plots(cap_plots)
-        pdfData['soa'] = self.plot_soa(True)
+        pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots), 'soa': self.plot_soa(True)}
+        # pdfData['c_plots'] = get_vc_plots(cap_plots)
+        # pdfData['soa'] = self.plot_soa(True)
         for attr in dir(self):
             if not callable(getattr(self, attr)) and not attr.startswith("__"):
                 if attr == 'switch' or attr == 'diode':
                     devices[attr] = getattr(self, attr).collect_data()
-                elif attr not in skipIds and getattr(self, attr):
-                    pdfData[attr.capitalize()] = getattr(self, attr)
-                elif (attr == 'c_oss_er' or attr == 'c_oss_tr') and getattr(self, attr) is not None:   # to be modified for boundary case
-                    pdfData[attr.capitalize()] = getattr(self, attr).c_o
-        trans, diode, switch = attach_units(pdfData, devices)
+                elif attr not in skip_ids and getattr(self, attr):
+                    pdf_data[attr.capitalize()] = getattr(self, attr)
+                elif (attr == 'c_oss_er' or attr == 'c_oss_tr') and getattr(self, attr) is not None:  # to be modified for boundary case
+                    pdf_data[attr.capitalize()] = getattr(self, attr).c_o
+        trans, diode, switch = attach_units(pdf_data, devices)
         img_path = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
         image_file_obj = open(img_path, "rb")
         image_binary_bytes = image_file_obj.read()
@@ -1376,12 +1377,12 @@ class Transistor:
         client_img = encoded_img_data.decode('UTF-8')
         # loaded data into jinja html template for generating the pdf
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
-        env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+        env = Environment(loader=FileSystemLoader(template_dir), autoescape=True, extensions=['jinja2.ext.loopcontrols', 'jinja2.ext.do'])
         template = env.get_template('VirtualDatasheet_TransistorTemplate.html')
         html = template.render(trans=trans, switch=switch, diode=diode, image=client_img)
-        pdfname = trans['Name'][0] + ".pdf"
-        datasheetpath = os.path.join(os.getcwd(), pdfname)
-        html_to_pdf(html, datasheetpath, pdfname)
+        pdf_name = trans['Name'][0] + ".pdf"
+        datasheet_path = os.path.join(os.getcwd(), pdf_name)
+        html_to_pdf(html, datasheet_path, pdf_name)
         # pdfname = trans['Name'][0] + ".html"
         # datasheetpath = pathlib.Path.cwd() / pdfname
         # with open(trans['Name'][0] + ".html", "w") as fh:
@@ -1399,7 +1400,7 @@ class Transistor:
         :return: matlab compatible list of all attributes
         :rtype: list
         """
-        #TODO: Seems to be this function is not used!
+        # TODO: Seems to be this function is not used!
 
         if matlab_compatibility_test(self, attribute) is not np.nan:
             ListData = eval(attribute)
@@ -2120,7 +2121,8 @@ class Transistor:
             :return: foster data in form of dictionary
             :rtype: dict
             """
-            foster_data = {'imp_plot': self.get_plots(True)}
+            foster_data = {}
+            foster_data['foster_plot'] = {'imp_plot': self.get_plots(True)}
             skipIds = ['graph_t_rthjc']
             for attr in dir(self):
                 if attr not in skipIds and not callable(getattr(self, attr)) and not attr.startswith("__") and not isinstance(getattr(self, attr), (list, dict)) \
@@ -2431,7 +2433,7 @@ class Transistor:
             return req_gate_vltgs.values()
 
         def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
-                switch_energy_dataset_type: str = "graph_i_e") \
+                           switch_energy_dataset_type: str = "graph_i_e") \
                 -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData, Transistor.SwitchEnergyData]:
             """
             This function looks for the smallest distance to stored object value and returns this working point
@@ -2563,7 +2565,7 @@ class Transistor:
                         plt.legend(fontsize=8)
                         plt.xlabel('Voltage in V')
                         plt.ylabel('Current in A')
-                        #plt.title('$T_{{J}}$ = {0} °C'.format(key))
+                        #plt.title('Channel at $T_{{J}}$ = {0} °C'.format(key))
                         plt.grid()
                         if buffer_req:
                             categorized_plots |= {key: get_img_raw_data(plt)}
@@ -2578,7 +2580,7 @@ class Transistor:
                         plt.legend(fontsize=8)
                         plt.xlabel('Voltage in V')
                         plt.ylabel('Current in A')
-                        #plt.title('$V_{{g}}$ = {0} V'.format(key))
+                        #plt.title('Channel at $V_{{g}}$ = {0} V'.format(key))
                         plt.grid()
                         if buffer_req:
                             categorized_plots |= {key: get_img_raw_data(plt)}
@@ -2753,12 +2755,13 @@ class Transistor:
             props = dict(fill=False, edgecolor='black', linewidth=1)
             if len(self.charge_curve) == 1:
                 charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel), "$V_{{supply}}$= {0} [V]".format(self.charge_curve[0].v_supply),
-                                              "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j), "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g)+' [A]'))])
+                                              "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
+                                              "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g) + ' [A]'))])
                 ax.text(0.05, 0.95, charge_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='top')
             else:
                 plt.legend(fontsize=8)
-                charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel),  "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
-                                              "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g)+' [A]'))])
+                charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel), "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
+                                              "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g) + ' [A]'))])
                 ax.text(0.65, 0.1, charge_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='bottom')
             plt.grid()
             if buffer_req:
@@ -2773,8 +2776,8 @@ class Transistor:
             :return: Switch data in form of dictionary
             :rtype: dict
             """
-            switch_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True),
-                           'r_channel_th_plot': self.plot_all_on_resistance_curves(True), 'charge_curve': self.plot_all_charge_curves(True)}
+            switch_data = {}
+            switch_data['plots'] = {'channel_plots': self.plot_all_channel_data(True), 'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'r_channel_th_plot': self.plot_all_on_resistance_curves(True), 'charge_curve': self.plot_all_charge_curves(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     switch_data.update(getattr(self, attr).collect_data())
@@ -2907,7 +2910,7 @@ class Transistor:
             d['linearized_diode'] = [ld.convert_to_dict() for ld in self.linearized_diode]
             return d
 
-        def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list=None,
+        def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list = None,
                                    diode_loss_dataset_type: str = "graph_i_e"):
             """
             Finds the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
@@ -3033,7 +3036,7 @@ class Transistor:
                         plt.legend(fontsize=8)
                         plt.xlabel('Voltage in V')
                         plt.ylabel('Current in A')
-                        #plt.title('$T_{{J}}$ = {0} °C'.format(key))
+                        # plt.title('$T_{{J}}$ = {0} °C'.format(key))
                         plt.grid()
                         if buffer_req:
                             categorized_plots |= {key: get_img_raw_data(plt)}
@@ -3048,7 +3051,7 @@ class Transistor:
                         plt.legend(fontsize=8)
                         plt.xlabel('Voltage in V')
                         plt.ylabel('Current in A')
-                        #plt.title('$V_{{g}}$ = {0} V'.format(key))
+                        # plt.title('$V_{{g}}$ = {0} V'.format(key))
                         plt.grid()
                         if buffer_req:
                             categorized_plots |= {key: get_img_raw_data(plt)}
@@ -3162,7 +3165,8 @@ class Transistor:
             :return: Diode data in form of dictionary
             :rtype: dict
             """
-            diode_data = {'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'channel_plots': self.plot_all_channel_data(True)}
+            diode_data = {}
+            diode_data['plots'] = {'channel_plots': self.plot_all_channel_data(True), 'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True)}
             for attr in dir(self):
                 if attr == 'thermal_foster':
                     diode_data.update(getattr(self, attr).collect_data())
@@ -3329,14 +3333,14 @@ class Transistor:
         comment: Optional[str]  #: Comment for additional information e.g. on who made these measurements
         measurement_date: Optional["datetime.datetime"]  #: Specifies the date and time at which the measurement was done.
         measurement_testbench: Optional[str]  #: Specifies the testbench used for the measurement.
-        commutation_device: Optional[str]   #: Second device used in half-bridge test condition
+        commutation_device: Optional[str]  #: Second device used in half-bridge test condition
         # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
         t_j: float  #: Junction temperature. Units in °C (Mandatory key)
         v_supply: float  #: Supply voltage. Units in V (Mandatory key)
         v_g: float  #: Gate voltage. Units in V (Mandatory key)
         v_g_off: Optional[float]  #: Gate voltage for turn off. Units in V
         load_inductance: Optional[float]  #: Load inductance. Units in µH
-        commutation_inductance: Optional[float]   #: Commutation inductance. Units in µH
+        commutation_inductance: Optional[float]  #: Commutation inductance. Units in µH
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
         e_x: Optional[float]  #: Scalar dataset-parameter - switching energy. Units in J
         r_g: Optional[float]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
@@ -3536,7 +3540,7 @@ class Transistor:
         i_channel: float  #: channel current at which the graph is recorded
         v_g: float  #: gate voltage
         dataset_type: str  #: curve datatype, can be either 't_r' or 't_factor'. 't_factor' is used to denote normalized gate curves
-        graph_t_r: npt.NDArray[np.float64]   #: a 2D numpy array to store the temperature related channel on resistance
+        graph_t_r: npt.NDArray[np.float64]  #: a 2D numpy array to store the temperature related channel on resistance
         r_channel_nominal: Optional[float]  #: a mandatory field if the dataset_type is 't_factor'
 
         def __init__(self, args):
@@ -3596,7 +3600,7 @@ class Transistor:
         t_j: float  #: junction temperature
         i_channel: float  #: channel current at which the graph is recorded
         i_g: Optional[float]  #: gate to source/emitter current
-        graph_q_v: npt.NDArray[np.float64]   #: a 2D numpy array to store gate charge dependant on gate to source voltage
+        graph_q_v: npt.NDArray[np.float64]  #: a 2D numpy array to store gate charge dependant on gate to source voltage
 
         def __init__(self, args):
             """
@@ -3942,7 +3946,7 @@ class Transistor:
                 'TurnOffLoss': {},
                 'Comment': [
                     "This datasheet was created by {0} on {1} and was exported using transistordatabase.".format(
-                       transistor_dict['author'], transistor_dict['datasheet_date'])
+                        transistor_dict['author'], transistor_dict['datasheet_date'])
                     , "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
                     "File generated : {0}".format(datetime.datetime.today()),
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
@@ -3987,8 +3991,8 @@ class Transistor:
         except MissingDataError as e:
             print(e.args[0], e.em[e.args[0]] + '.scl')
         return plecs_transistor if plecs_transistor is not None and 'Channel' in plecs_transistor['ConductionLoss'] \
-            else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
-            else None
+                   else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
+                   else None
 
     class RawMeasurementData:
         """
@@ -3998,9 +4002,9 @@ class Transistor:
         # Type of the dataset:
         # dpt_u_i: U/t I/t graph from double pulse measurements
         dataset_type: str  #: e.g. dpt_u_i (Mandatory key)
-        dpt_on_vds: Optional[List[npt.NDArray[np.float64]]]   #: measured Vds data at turn on event. Units in V and s
+        dpt_on_vds: Optional[List[npt.NDArray[np.float64]]]  #: measured Vds data at turn on event. Units in V and s
         dpt_on_id: Optional[List[npt.NDArray[np.float64]]]  #: measured Id data at turn on event. Units in A and s
-        dpt_off_vds: Optional[List[npt.NDArray[np.float64]]]   #: measured Vds data at turn off event. Units in V and s
+        dpt_off_vds: Optional[List[npt.NDArray[np.float64]]]  #: measured Vds data at turn off event. Units in V and s
         dpt_off_id: Optional[List[npt.NDArray[np.float64]]]  #: measured Vds data at turn off event. Units in A and s
         measurement_date: Optional["datetime.datetime"]  #: Specifies the measurements date and time
         measurement_testbench: Optional[str]  #: Specifies the testbench used for the measurement.
@@ -4014,7 +4018,7 @@ class Transistor:
         r_g: Optional[List[npt.NDArray[np.float64]], float]  #: gate resistance. Units in Ohm
         r_g_off: Optional[List[npt.NDArray[np.float64]], float]  #: gate resistance. Units in Ohm
         load_inductance: Optional[float]  #: Load inductance. Units in µH
-        commutation_inductance: Optional[float]   #: Commutation inductance. Units in µH
+        commutation_inductance: Optional[float]  #: Commutation inductance. Units in µH
 
         def __init__(self, args):
             """
@@ -5024,7 +5028,7 @@ def check_str(string_to_check: str) -> bool:
 
     :param string_to_check: input string
     :type string_to_check: str
-    
+
     :raises TypeError: if the argument is not of type string
 
     :return: True in case of valid string
@@ -5239,7 +5243,7 @@ def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
     """
     Converts a dictionary to a transistor object.
     This is a helper function of the following functions:
-    
+
     - parallel_transistors()
     - load()
     - import_json()
