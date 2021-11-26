@@ -114,12 +114,12 @@ def my_transistor():
                        'i_abs_max': i_abs_max, 'i_cont': i_cont, 'c_oss_fix': c_oss_fix, 'c_iss_fix': c_iss_fix,
                        'c_rss_fix': c_rss_fix, 'c_oss': c_oss_v_c, 'c_iss': c_iss_v_c, 'c_rss': c_rss_v_c,
                        'c_oss_er': c_oss_er, 'c_oss_tr': c_oss_tr, 'graph_v_ecoss': e_coss, 'r_g_int': r_g_int, 'r_th_cs': r_th_cs, 'r_th_diode_cs': r_th_diode_cs, 'r_th_switch_cs': r_th_switch_cs,
-                       'soa': soa_object}
+                       }
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'channel': [switch_channel],
-                   'e_on': [switchenergy], 'e_off': [switchenergy], 'thermal_foster': foster_args, 'r_channel_th': switch_ron_args, 'charge_curve': switch_gate_charge}
+                   'e_on': [switchenergy], 'e_off': [switchenergy], 'thermal_foster': foster_args, 'r_channel_th': switch_ron_args, 'charge_curve': switch_gate_charge, 'soa': soa_object}
     diode_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
-                  'channel': [diode_channel], 'e_rr': [switchenergy], 'thermal_foster': foster_args}
+                  'channel': [diode_channel], 'e_rr': [switchenergy], 'thermal_foster': foster_args, 'soa': soa_object}
     return transistor_args, switch_args, diode_args
 
 
@@ -155,7 +155,7 @@ def test_transistor(my_transistor):
     assert transistor.c_oss_er.v_gs == transistor_args['c_oss_er']['v_gs']
     assert transistor.c_oss_er.v_ds == transistor_args['c_oss_er']['v_ds']
     assert transistor.c_oss_tr == transistor_args['c_oss_tr']
-    assert transistor.soa[0].graph_i_v.any() == transistor_args['soa']['graph_i_v'].any()
+
 
     # switch_args test
     assert transistor.switch.t_j_max == switch_args['t_j_max']
@@ -169,6 +169,7 @@ def test_transistor(my_transistor):
     assert transistor.switch.e_off[0].graph_i_e.any() == switch_args['e_off'][0]['graph_i_e'].any()
     assert transistor.switch.r_channel_th[0].graph_t_r.any() == switch_args['r_channel_th']['graph_t_r'].any()
     assert transistor.switch.charge_curve[0].graph_q_v.any() == switch_args['charge_curve']['graph_q_v'].any()
+    assert transistor.switch.soa[0].graph_i_v.any() == switch_args['soa']['graph_i_v'].any()
 
     # diode_args test
     assert transistor.diode.t_j_max == diode_args['t_j_max']
@@ -179,7 +180,7 @@ def test_transistor(my_transistor):
     assert transistor.diode.channel[0].graph_v_i.any() == diode_args['channel'][0]['graph_v_i'].any()
     assert transistor.diode.e_rr[0].t_j == diode_args['channel'][0]['t_j']
     assert transistor.diode.e_rr[0].graph_i_e.any() == diode_args['e_rr'][0]['graph_i_e'].any()
-
+    assert transistor.diode.soa[0].graph_i_v.any() == diode_args['soa']['graph_i_v'].any()
 
 def test_get_gatedefaults():
     igbt_expected_list = [15, -15, 0, 15]
@@ -398,7 +399,7 @@ def test_connect_local_TDB(connect_local_TDB):
 @pytest.fixture()
 def my_database(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
-    transistor_args['soa'].clear()
+    switch_args['soa'].clear()
     transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
     mocked_mongo = mongomock.MongoClient()
     fake_collection = mocked_mongo['transistor_database_fake'].collection
@@ -436,12 +437,12 @@ def test_add_soa_data(my_database, monkeypatch):
     monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
 
     soa_list_one = copy.deepcopy([soa_object_one, soa_object_two])
-    transistor.add_soa_data(soa_list_one, True)
+    transistor.add_soa_data(soa_list_one, 'switch', True)
     local_transistor = fake_collection.find_one({'_id': transistor._id})
-    assert len(local_transistor['soa']) == len(transistor.soa)
+    assert len(local_transistor['switch']['soa']) == len(transistor.switch.soa)
 
     local_soa_list = []
-    for soa_item in local_transistor['soa']:
+    for soa_item in local_transistor['switch']['soa']:
         local_soa_list.append(soa_item)
     for index, item in enumerate(soa_list_one):
         for key in item:
@@ -450,13 +451,13 @@ def test_add_soa_data(my_database, monkeypatch):
             assert item[key] == local_soa_list[index][key]
     # deep copy is necessary as the graph_v_i in list format is modified when the add_soa_data is called
     soa_list_two = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three])
-    transistor.add_soa_data(soa_list_two)
+    transistor.add_soa_data(soa_list_two, 'switch')
     local_transistor = fake_collection.find_one({'_id': transistor._id})
-    assert len(local_transistor['soa']) == 3
+    assert len(local_transistor['switch']['soa']) == 3
     # deep copy is necessary as the graph_v_i in list format is modified when the add_soa_data is called
     soa_list_three = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three, soa_object_one])
-    transistor.add_soa_data(soa_list_three)
-    assert len(transistor.soa) == 3
+    transistor.add_soa_data(soa_list_three, 'switch')
+    assert len(transistor.switch.soa) == 3
 
 
 def test_add_gate_charge_data(my_database, monkeypatch):

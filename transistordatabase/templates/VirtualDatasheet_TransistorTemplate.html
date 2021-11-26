@@ -8,8 +8,9 @@
 {% set diode_plots = {} %}
 {% set switch_plots = {} %}
 {% set trans_plots = {} %}
-{% set switch_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs Energy curves', 'energy_plots_r': 'Rg vs Energy curves', 'r_channel_th_plot':'On Resistance plots', 'charge_curve':'Gate charge,Qg','imp_plot':'Impedance plot'} %}
-{% set diode_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs Energy curves', 'energy_plots_r': 'Rg vs Energy curves', 'imp_plot':'Impedance plot' } %}
+{% set trans_title = {'c_plots': 'Voltage dependant Capacitance'} %}
+{% set switch_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs Energy curves', 'energy_plots_r': 'Rg vs Energy curves', 'r_channel_th_plot':'On Resistance plots', 'charge_curve':'Gate charge,Qg','imp_plot':'Impedance plot', 'soa':'Safe operating Area'} %}
+{% set diode_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs Energy curves', 'energy_plots_r': 'Rg vs Energy curves', 'imp_plot':'Impedance plot', 'soa':'Safe operating Area' } %}
 
 <!--******* diode ********* -->
 {% for key, value in diode['plots'].items() %}
@@ -170,8 +171,8 @@
 				   {% for key, value in trans_plots.items() %}
 						{% if value is not none %}
 						<div class="thumb">
-						  <div class="imgCaption">Voltage dependant Capacitance</div>
-						  <img id="pic_c_plot_more" src="data:image/png;base64,{{ value }}" class="img">
+						  <div class="imgCaption">{{trans_title[key]}}</div>
+						  <img id="key" src="data:image/png;base64,{{ value }}" class="img">
 						</div>
 						{% endif %}
 				   {% endfor %}
@@ -202,7 +203,7 @@
 						{% else %}
 							<div class="thumb">
 							<div class="imgCaption">{{switch_title[s_key]}}</div>
-								<img id= {{key}} class="img" src="data:image/png;base64,{{ value }}" >
+								<img id= {{s_key}} class="img" src="data:image/png;base64,{{ value }}" >
 							</div>
 						{% endif %}
 						{% set __ = count.append(1) %}
