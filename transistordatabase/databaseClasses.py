@@ -2056,7 +2056,7 @@ class Transistor:
                     'tau :' + " ".join(str("{:4.3f}".format(x)) for x in self.tau_vector)
                 ])
                 props = dict(fill=False, edgecolor='black', linewidth=2)
-                ax.text(0.9, 0.2, r_tau_vector, transform=ax.transAxes, bbox=props, ha='right')
+                ax.text(0.9, 0.2, r_tau_vector, fontsize='small', transform=ax.transAxes, bbox=props, ha='right')
             if buffer_req:
                 return get_img_raw_data(plt)
             else:
@@ -4910,7 +4910,7 @@ def get_img_raw_data(plot):
     :return: decoded raw image data to utf-8
     """
     buf = io.BytesIO()
-    plot.gcf().set_size_inches(3.5, 2.6)
+    plot.gcf().set_size_inches(3.5, 2.2)
     plot.savefig(buf, format='png', bbox_inches='tight')
     encoded_img_data = base64.b64encode(buf.getvalue())
     return encoded_img_data.decode('UTF-8')
