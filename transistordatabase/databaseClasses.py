@@ -5314,15 +5314,22 @@ def load(transistor: [str, dict], collection_name: str = "local"):
     >>> import transistordatabase as tdb
     >>> transistor_loaded = tdb.load('Infineon_FF200R12KE3')
     """
-    find_filter = {'name': transistor} if type(transistor) == str else transistor
-    if collection_name == "local":
-        mongodb_collection = connect_local_TDB()
-    else:
-        # TODO: support other collections. As of now, other database connections also connects to local-tdb
-        warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
-        mongodb_collection = connect_local_TDB()
-    # ToDo: Implement case where different transistors fit the filter criteria.
-    return convert_dict_to_transistor_object(mongodb_collection.find_one(find_filter))
+    try:
+        find_filter = {'name': transistor} if type(transistor) == str else transistor
+        if collection_name == "local":
+            mongodb_collection = connect_local_TDB()
+        else:
+            # TODO: support other collections. As of now, other database connections also connects to local-tdb
+            warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
+            mongodb_collection = connect_local_TDB()
+        # ToDo: Implement case where different transistors fit the filter criteria.
+        selected_trans_dict = mongodb_collection.find_one(find_filter)
+        if selected_trans_dict is None:
+            raise MissingDataError('Selected Transistor {0} does not exists in local database'.format(find_filter['name']))
+        return convert_dict_to_transistor_object(selected_trans_dict)
+    except MissingDataError as e:
+        print(e.args[0])
+
 
 
 def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
