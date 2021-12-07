@@ -5342,18 +5342,17 @@ def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
     """
     # Convert transistor_args
     transistor_args = db_dict
-    if 'c_oss' in transistor_args:
+    if 'c_oss' in transistor_args and transistor_args['c_oss'] is not None:
         for i in range(len(transistor_args['c_oss'])):
             transistor_args['c_oss'][i]['graph_v_c'] = np.array(transistor_args['c_oss'][i]['graph_v_c'])
-    if 'c_iss' in transistor_args:
+    if 'c_iss' in transistor_args and transistor_args['c_iss'] is not None:
         for i in range(len(transistor_args['c_iss'])):
             transistor_args['c_iss'][i]['graph_v_c'] = np.array(transistor_args['c_iss'][i]['graph_v_c'])
-    if 'c_rss' in transistor_args:
+    if 'c_rss' in transistor_args and transistor_args['c_rss'] is not None:
         for i in range(len(transistor_args['c_rss'])):
             transistor_args['c_rss'][i]['graph_v_c'] = np.array(transistor_args['c_rss'][i]['graph_v_c'])
-    if 'graph_v_ecoss' in transistor_args:
-        if transistor_args['graph_v_ecoss'] is not None:
-            transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
+    if 'graph_v_ecoss' in transistor_args and transistor_args['graph_v_ecoss'] is not None:
+        transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
     if 'raw_measurement_data' in transistor_args:
         for i in range(len(transistor_args['raw_measurement_data'])):
             for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_vds'])):
