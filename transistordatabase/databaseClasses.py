@@ -1285,7 +1285,7 @@ class Transistor:
         # plt.tight_layout()
         plt.show()
 
-    def export_datasheet(self) -> None:
+    def export_datasheet(self, build_collection=False) -> Optional[str]:
         """
         Generates and exports the virtual datasheet in form of pdf
 
@@ -1329,8 +1329,11 @@ class Transistor:
         template = env.get_template('VirtualDatasheet_TransistorTemplate.html')
         html = template.render(trans=trans, switch=switch, diode=diode, image=client_img)
         pdf_name = trans['Name'][0] + ".pdf"
-        datasheet_path = os.path.join(os.getcwd(), pdf_name)
-        html_to_pdf(html, datasheet_path, pdf_name)
+        pdf_path = os.path.join(os.getcwd(), pdf_name)
+        if not build_collection:
+            html_to_pdf(html, pdf_name, pdf_path)
+        else:
+            return html
         # pdfname = trans['Name'][0] + ".html"
         # datasheetpath = pathlib.Path.cwd() / pdfname
         # with open(trans['Name'][0] + ".html", "w") as fh:
@@ -4644,25 +4647,89 @@ def check_duplicates(current_items: list[dict], item_to_append: dict) -> bool:
         return True
 
 
-def html_to_pdf(html, pdf, name):
+def export_all_datasheets(filter_list: list = None):
+    """
+    A method to export all the available transistor data present in the local mongoDB database
+
+    :param filter_list: a list of transistor names that needs to be exported in specific
+    :type filter_list: list
+
+    :return: None
+    """
+    transistor_list = print_TDB()
+    filtered_list = list()
+    html_list = list()
+    pdf_name_list = list()
+    paths_list = list()
+    if filter_list is not None:
+        for item in filter_list:
+            if item not in transistor_list:
+                print("{0} transistor is not present in database".format(item))
+            else:
+                filtered_list.append(item)
+    else:
+        filtered_list = transistor_list
+    if len(filtered_list) > 0:
+        for transistor_str in filtered_list:
+            transistor = load(transistor_str)
+            html_list.append(transistor.export_datasheet(build_collection=True))
+            pdf_name_list.append(transistor.name + ".pdf")
+            paths_list.append(os.path.join(os.getcwd(), transistor.name + ".pdf"))
+        html_to_pdf(html_list, pdf_name_list, paths_list)
+    else:
+        print("Nothing to export, please recheck inputs")
+
+
+def html_to_pdf(html: Union[list, str], name: Union[list, str], path: Union[list, str]):
+    """
+    A helper method to convert the generated html document to pdf file using qt WebEngineWidgets tool
+
+    :param html: html string that needs to be converted to pdf file
+    :type html: str or list
+    :param name: name of the file that will be saved as (basically the transistor name)
+    :type name: str or list
+    :param path: corresponding path where the file needs to be stored
+    :type path: str or list
+
+    :return: saves the html string to pdf file format
+    """
     app = QtWidgets.QApplication(sys.argv)
     page = QtWebEngineWidgets.QWebEnginePage()
+    path_item = str()
+    name_item = str()
+    html_item = str()
 
-    def handle_print_finished(filename, status):
-        print(f"Export virtual datasheet {name} to {pathlib.Path.cwd().as_uri()}")
-        print(f"Open Datasheet here: {pathlib.Path(filename).as_uri()}")
-        app.exit(0)
+    def fetch_next():
+        try:
+            nonlocal html_item, name_item, path_item
+            html_item, name_item, path_item = next(html_and_paths)
+        except StopIteration:
+            return False
+        else:
+            page.setHtml(html_item)
+        return True
+
+    def handle_print_finished(filepath, status):
+        print(f"Export virtual datasheet {name_item} to {pathlib.Path.cwd().as_uri()}")
+        print(f"Open Datasheet here: {pathlib.Path(filepath).as_uri()}")
+        if not fetch_next():
+            app.quit()
 
     def handle_load_finished(status):
         if status:
-            page.printToPdf(pdf)
+            nonlocal path_item
+            page.printToPdf(path_item)
         else:
             print("Failed")
-            app.exit(0)
+            app.quit()
 
     page.pdfPrintingFinished.connect(handle_print_finished)
     page.loadFinished.connect(handle_load_finished)
-    page.setHtml(html)
+    if isinstance(html, list):
+        html_and_paths = iter(zip(html, name, path))
+    else:
+        html_and_paths = iter(zip([html], [name], [path]))
+    fetch_next()
     app.exec_()
 
 
@@ -4913,6 +4980,7 @@ def get_img_raw_data(plot):
     plot.gcf().set_size_inches(3.5, 2.2)
     plot.savefig(buf, format='png', bbox_inches='tight')
     encoded_img_data = base64.b64encode(buf.getvalue())
+    plot.close()
     return encoded_img_data.decode('UTF-8')
 
 
