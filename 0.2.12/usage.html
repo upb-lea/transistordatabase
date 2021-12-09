@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>transistordatabase’s usage &mdash; transistordatabase(TDB) 0.2.11 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -61,7 +60,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>transistordatabase’s usage</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/Mohan Nagella/transistordatabse/blob/main/docs/usage.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/upb-lea/transistordatabase/blob/database-edits/sphinx/usage.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -69,15 +68,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="transistordatabase-s-usage">
+  <div class="section" id="transistordatabase-s-usage">
 <h1>transistordatabase’s usage<a class="headerlink" href="#transistordatabase-s-usage" title="Permalink to this headline"></a></h1>
 <p>Import transistordatabase to your python program</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
 </pre></div>
 </div>
-<section id="generate-a-new-transistor">
+<div class="section" id="generate-a-new-transistor">
 <h2>Generate a new transistor<a class="headerlink" href="#generate-a-new-transistor" title="Permalink to this headline"></a></h2>
-<section id="transistor-object-basics">
+<div class="section" id="transistor-object-basics">
 <h3>Transistor object basics<a class="headerlink" href="#transistor-object-basics" title="Permalink to this headline"></a></h3>
 <p>Transistor <br>
 | <br>
@@ -94,14 +93,14 @@
 | +-Switching Data <br>
 | <br>
 +-wp (temporary storage for further calculations) <br></p>
-</section>
-<section id="reading-curves-from-the-datasheet">
+</div>
+<div class="section" id="reading-curves-from-the-datasheet">
 <h3>Reading curves from the datasheet<a class="headerlink" href="#reading-curves-from-the-datasheet" title="Permalink to this headline"></a></h3>
 <p>For reading datasheet curves, use the tool <a class="reference external" href="https://git-scm.com/download/win">WebPlotDigitizer</a>. There is a online-version available. Also you can download it for Linux, Mac and Windows. WebPlotDigitizer is open source software.</p>
 <p>Channel data for switch and diode always needs to be positive. Some Manufacturers give diode data in the 3rd quadrant. Here is an example how to set the axes and export the data inside WebPlotDigitizer:</p>
 <img alt="diode channel data negative" class="align-center" src="_images/Diode_channel_data_negative.png" />
-</section>
-<section id="use-the-template-to-generate-a-new-transistor-object">
+</div>
+<div class="section" id="use-the-template-to-generate-a-new-transistor-object">
 <h3>Use the template to generate a new transistor object<a class="headerlink" href="#use-the-template-to-generate-a-new-transistor-object" title="Permalink to this headline"></a></h3>
 <p>After digizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the template</p>
 <p>Some values need to follow some rules, e.g. due to different spelling versions, the manufacturers name or housing types must be written as in the lists below. Some general hints to fill the template:</p>
@@ -123,19 +122,19 @@
                <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="update-and-load-and-share-transistors">
+</div>
+</div>
+<div class="section" id="update-and-load-and-share-transistors">
 <h2>Update and load and share transistors<a class="headerlink" href="#update-and-load-and-share-transistors" title="Permalink to this headline"></a></h2>
-<section id="update-transistors-from-file-exchange">
+<div class="section" id="update-transistors-from-file-exchange">
 <h3>Update transistors from file exchange<a class="headerlink" href="#update-transistors-from-file-exchange" title="Permalink to this headline"></a></h3>
 <p>There is a file exchange to share transistor objects. The repository can be found <a class="reference external" href="https://github.com/upb-lea/transistordatabase_File_Exchange">here</a>. To update your local transistordatabase type in to your python code</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tdb</span><span class="o">.</span><span class="n">update_from_fileexchange</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>After this, you can find new or updated transistor files in your local transistordatabase.</p>
-</section>
-<section id="search-the-database">
+</div>
+<div class="section" id="search-the-database">
 <h3>Search the database<a class="headerlink" href="#search-the-database" title="Permalink to this headline"></a></h3>
 <p>Print all transistors inside the database</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tdb</span><span class="o">.</span><span class="n">print_TDB</span><span class="p">()</span>
@@ -145,14 +144,14 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tdb</span><span class="o">.</span><span class="n">print_TDB</span><span class="p">([</span><span class="s1">&#39;housing_type&#39;</span><span class="p">,</span><span class="s1">&#39;datasheet_hyperlink&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-</section>
-<section id="load-a-transistor-from-the-database">
+</div>
+<div class="section" id="load-a-transistor-from-the-database">
 <h3>Load a transistor from the database<a class="headerlink" href="#load-a-transistor-from-the-database" title="Permalink to this headline"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;CREE_C3M0016120K&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
-</section>
-<section id="share-your-transistors-with-the-world">
+</div>
+<div class="section" id="share-your-transistors-with-the-world">
 <h3>Share your transistors with the world<a class="headerlink" href="#share-your-transistors-with-the-world" title="Permalink to this headline"></a></h3>
 <p>Use your local generated transistor, load it into your workspace and export it, e.g.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span> <span class="o">=</span> <span class="n">load</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;CREE_C3M0016120K&#39;</span><span class="p">})</span>
@@ -160,12 +159,12 @@
 </pre></div>
 </div>
 <p>You can upload this file to the <a class="reference external" href="https://github.com/upb-lea/transistordatabase_File_Exchange">transistor database file exchange</a> git repository by generating a pull request.</p>
-</section>
-</section>
-<section id="usage-of-transistor-wp-in-your-programs">
+</div>
+</div>
+<div class="section" id="usage-of-transistor-wp-in-your-programs">
 <h2>Usage of Transistor.wp. in your programs<a class="headerlink" href="#usage-of-transistor-wp-in-your-programs" title="Permalink to this headline"></a></h2>
 <p>There is a subclass .wp where you can fill for further program calculations.</p>
-<section id="full-automated-example">
+<div class="section" id="full-automated-example">
 <h3>Full-automated example<a class="headerlink" href="#full-automated-example" title="Permalink to this headline"></a></h3>
 <p><strong>Use the quickstart method to fill in the wp-class</strong></p>
 <p>There is a search function, that chooses the closes operating point. In the full-automated method, there are some predefined values</p>
@@ -179,8 +178,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span><span class="o">.</span><span class="n">quickstart_wp</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-<section id="half-automated-example">
+</div>
+<div class="section" id="half-automated-example">
 <h3>Half-automated example<a class="headerlink" href="#half-automated-example" title="Permalink to this headline"></a></h3>
 <p><strong>Fill in the wp-class by a search-method to find the closes working point to your methods</strong></p>
 <p>Insert a working point of interest. The algorithm will find the closest working point and fills out the Transistor.wp.-class
@@ -188,8 +187,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor</span><span class="o">.</span><span class="n">update_wp</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="non-automated-example">
+</div>
+<div class="section" id="non-automated-example">
 <h3>Non-automated example<a class="headerlink" href="#non-automated-example" title="Permalink to this headline"></a></h3>
 <p><strong>Fill in the wp-class manually</strong></p>
 <p>Look for all operating points manually. This will result in an error in case of no match.
@@ -206,11 +205,11 @@
 <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">diode_v_channel</span><span class="p">,</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">diode_r_channel</span> <span class="o">=</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">calc_lin_channel</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="s1">&#39;diode&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="calculations-with-transistor-objects">
+</div>
+</div>
+<div class="section" id="calculations-with-transistor-objects">
 <h2>Calculations with transistor objects<a class="headerlink" href="#calculations-with-transistor-objects" title="Permalink to this headline"></a></h2>
-<section id="parallel-transistors">
+<div class="section" id="parallel-transistors">
 <h3>Parallel transistors<a class="headerlink" href="#parallel-transistors" title="Permalink to this headline"></a></h3>
 <p>To parallel transistors use the function.</p>
 <blockquote>
@@ -224,9 +223,9 @@
 </pre></div>
 </div>
 <p>After this, you can work with the transistor object as usual, e.g. fill in the .wp-workspace or export the device to Matlab, Simulink or GeckoCIRCUITS.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -262,10 +261,13 @@
       <dd><a href="../0.2.11/index.html">0.2.11</a></dd>
       <dd><a href="usage.html">0.2.12</a></dd>
       <dd><a href="../0.2.13/usage.html">0.2.13</a></dd>
+      <dd><a href="../0.2.14/usage.html">0.2.14</a></dd>
+      <dd><a href="../0.3.0/index.html">0.3.0</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>
-      <dd><a href="../main/usage.html">main</a></dd>
+      <dd><a href="../main/index.html">main</a></dd>
+      <dd><a href="../pre_test_gui/index.html">pre_test_gui</a></dd>
     </dl>
   </div>
 </div><script>
