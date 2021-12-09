@@ -5263,7 +5263,7 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     :return: merged curve
     :rtype: np.array
 
-    :Example (e.g. merges c_oss curve from 0-200V and from 0-1000V):
+    :Example: (e.g. merges c_oss curve from 0-200V and from 0-1000V)
 
     >>> import transistordatabase as tdb
     >>> c_oss_normal = tdb.csv2array('transistor_c_oss.csv', first_x_to_0=True)
@@ -5589,11 +5589,6 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     Calculates the maximum gate resistor to achieve no turn-off losses when working with MOSFETs
     'rapid channel turn-off' (rcto)
 
-    Note: Input (e.g. i_off can also be a vector)
-    Source: D. Kubrick, T. Dürbaum, A. Bucher:
-    'Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances'
-    International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244
-
     :param v_gsth: gate threshold voltage
     :type v_gsth: float
     :param c_ds: equivalent drain-source capacitance
@@ -5607,6 +5602,14 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
 
     :return: r_g_max_rcto maximum gate resistor to achieve rapid channel turn-off
     :rtype: float
+
+    .. note::
+        Input (e.g. i_off can also be a vector)
+
+    .. seealso::
+        D. Kubrick, T. Dürbaum, A. Bucher
+        'Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances'
+        International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244
     """
     return (v_gsth - v_driver_off) / i_off * (1 + c_ds / c_gd)
 
