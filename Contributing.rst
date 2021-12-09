@@ -65,7 +65,7 @@ Install Sphinx for this repository. It is useful, to install this inside a virtu
 
 .. code-block::
 
-    python3 -m pip install sphinx sphinx-multiversion sphinx_rtd_theme
+    python3 -m pip install sphinx sphinx-multiversion sphinx_rtd_theme sphinxcontrib-email
 
 
 Use type hints
