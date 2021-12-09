@@ -4,7 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2021-12-09
+### Added
+- NEW: Option to add own measurements to the database
+- Add function export_all_datasheets()
+- #61: Add Keys to add R_DS,ON vs. junction temperature
+- #62: Add Keys for Gate Charge Curve
+- #63: Add Keys for Safe-Operating-Area
+
+### Updated
+- #59: simplify the usage of tdb.load('transistorname') instead of tdb.load({'name': 'transistorname'})
+
+### Bugfixes
+- #51: Mutable List in export_plecs
+- #58: Fix some units displayed in virtual datasheet
+- #66: Cannot get the corresponding datasheet according to the procedures in the tutorial
+- #67: Problem when exporting all transistors from the database to virtual datasheet
 
 
 ## [0.2.14] - 2021-11-02

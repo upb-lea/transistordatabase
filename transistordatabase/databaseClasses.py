@@ -953,7 +953,7 @@ class Transistor:
         :type t_j: float
         :param v_supply: supply voltage of interest
         :type v_supply: float
-        :param normalize_t_to_v: a normalize value used to evalute cartesian distance
+        :param normalize_t_to_v: a normalize value used to evaluate cartesian distance
         :type normalize_t_to_v: float
 
         :raises Exception: When given gate resistance exceeds the existing maximum
@@ -1565,7 +1565,7 @@ class Transistor:
 
         # Note: Dict must be cleaned from 'None's to np.nan (= NaN in Matlab)
         # see https://stackoverflow.com/questions/35985923/replace-none-in-a-python-dictionary
-        transistor_clean_dict = json.loads(dict_str, object_pairs_hook=dict_clean)
+        transistor_clean_dict = json.loads(dict_str, object_pairs_hook=dict2matlab)
         transistor_clean_dict['file_generated'] = f"{datetime.datetime.today()}"
         transistor_clean_dict['file_generated_by'] = "https://github.com/upb-lea/transistordatabase",
 
@@ -5399,7 +5399,6 @@ def load(transistor: [str, dict], collection_name: str = "local"):
         print(e.args[0])
 
 
-
 def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
     """
     Converts a dictionary to a transistor object.
@@ -5615,7 +5614,7 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
 # Export helper functions
 
 
-def dict_clean(input_dict: dict) -> dict:
+def dict2matlab(input_dict: dict) -> dict:
     """
     Cleans a python dict and makes it compatible with matlab
 
