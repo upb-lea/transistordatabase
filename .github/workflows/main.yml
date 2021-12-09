@@ -43,7 +43,9 @@ jobs:
         run: |
           pip install sphinx sphinx-multiversion sphinx_rtd_theme
           pwd
+          ls
           cd ..
           pwd
+          ls
         
           
