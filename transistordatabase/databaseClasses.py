@@ -6,6 +6,7 @@ import numpy.typing as npt
 import re
 import os
 from typing import List, Union, Optional
+from pymongo.errors import ServerSelectionTimeoutError
 from matplotlib import pyplot as plt
 from bson.objectid import ObjectId
 from bson import json_util
@@ -5359,10 +5360,19 @@ def connect_local_TDB():
 
     :return: transistor_database collection
 
+    :raises pymongo.errors.ServerSelectionTimeoutError: if there is no mongoDB instance running
     """
-    host = "mongodb://localhost:27017/"
-    myclient = MongoClient(host)
-    return myclient.transistor_database.collection
+    try:
+        max_server_delay = 1
+        host = "mongodb://localhost:27017/"
+        my_client = MongoClient(host, serverSelectionTimeoutMS=max_server_delay)
+        my_client.server_info()
+    except ServerSelectionTimeoutError:
+        msg = 'Make sure that your MongoDB instance is running. If not please install it from ' \
+              'https://docs.mongodb.com/manual/administration/install-community/'
+        raise MissingServerConnection(msg)
+    else:
+        return my_client.transistor_database.collection
 
 
 def load(transistor: [str, dict], collection_name: str = "local"):
@@ -5709,6 +5719,9 @@ class MissingDataError(Exception):
           1202: "Diode reverse recovery loss information is missing",
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to"}
 
+
+class MissingServerConnection(ServerSelectionTimeoutError):
+    pass
 
 def dpt_save_data(measurement_dict: dict):
     """
