@@ -920,8 +920,7 @@ class Transistor:
             "<string>", "eval")
         candidate_datasets = eval(code)
         # Find closest loss curve
-        dataset = None
-        node = np.array([t_j / normalize_t_to_v, v_g])
+        node = np.array([[t_j / normalize_t_to_v, v_g]])
         lossdata_t_js = np.array([curve.t_j for curve in candidate_datasets])
         lossdata_v_gs = np.array([0 if curve.v_g is None else curve.v_g for curve in candidate_datasets])
         nodes = np.array([lossdata_t_js / normalize_t_to_v, lossdata_v_gs]).transpose()
@@ -2426,12 +2425,12 @@ class Transistor:
             :rtype: tuple[Transistor.ChannelData, Transistor.SwitchEnergyData, Transistor.SwitchEnergyData]
             """
             # Normalize t_j to v_g for distance metric
-            node = np.array([t_j / normalize_t_to_v, v_g])
+            node = np.array([[t_j / normalize_t_to_v, v_g]])
             # Find closest channeldata
             channeldata_t_js = np.array([chan.t_j for chan in self.channel])
             channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             nodes = np.array([channeldata_t_js / normalize_t_to_v, channeldata_v_gs]).transpose()
-            index_channeldata = distance.cdist([node], nodes).argmin()
+            index_channeldata = distance.cdist(node, nodes).argmin()
 
             # Find closest e_on
             e_ons = [e for e in self.e_on if e.dataset_type == switch_energy_dataset_type]
@@ -2440,7 +2439,7 @@ class Transistor:
             e_on_t_js = np.array([e.t_j for e in e_ons])
             e_on_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_ons])
             nodes = np.array([e_on_t_js / normalize_t_to_v, e_on_v_gs]).transpose()
-            index_e_on = distance.cdist([node], nodes).argmin()
+            index_e_on = distance.cdist(node, nodes).argmin()
             # Find closest e_off
             e_offs = [e for e in self.e_off if e.dataset_type == switch_energy_dataset_type]
             if not e_offs:
@@ -2448,7 +2447,7 @@ class Transistor:
             e_off_t_js = np.array([e.t_j for e in e_offs])
             e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_offs])
             nodes = np.array([e_off_t_js / normalize_t_to_v, e_off_v_gs]).transpose()
-            index_e_off = distance.cdist([node], nodes).argmin()
+            index_e_off = distance.cdist(node, nodes).argmin()
             print("run switch.find_approx_wp: closest working point for t_j = {0} °C and v_g = {1} V:".format(t_j, v_g))
             print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
             print(f"eon:     t_j = {e_ons[index_e_on].t_j} °C and v_g = {e_ons[index_e_on].v_g} V")
@@ -3000,12 +2999,12 @@ class Transistor:
             :rtype: tuple[Transistor.ChannelData, Transistor.SwitchEnergyData]
             """
             # Normalize t_j to v_g for distance metric
-            node = np.array([t_j / normalize_t_to_v, v_g])
+            node = np.array([[t_j / normalize_t_to_v, v_g]])
             # Find closest channeldata
             channeldata_t_js = np.array([chan.t_j for chan in self.channel])
             channeldata_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
             nodes = np.array([channeldata_t_js / normalize_t_to_v, channeldata_v_gs]).transpose()
-            index_channeldata = distance.cdist([node], nodes).argmin()
+            index_channeldata = distance.cdist(node, nodes).argmin()
             # Find closest e_rr
             e_rrs = [e for e in self.e_rr if e.dataset_type == switch_energy_dataset_type]
             if not e_rrs:
