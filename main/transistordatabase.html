@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentation &mdash; transistordatabase(TDB) 0.3.0 documentation</title>
+  <title>Documentation &mdash; transistordatabase(TDB) 0.3.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -561,7 +561,7 @@ Uses typical working points</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="transistordatabase.databaseClasses.Transistor.get_object_i_e_simplified">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_object_i_e_simplified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e_on_off_rr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#transistordatabase.databaseClasses.Transistor.get_object_i_e_simplified" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_object_i_e_simplified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e_on_off_rr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#transistordatabase.databaseClasses.Transistor.get_object_i_e_simplified" title="Permalink to this definition"></a></dt>
 <dd><p>Function to get the loss graphs out of the transistor class, simplified version</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -584,7 +584,7 @@ Uses typical working points</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="transistordatabase.databaseClasses.Transistor.get_object_r_e_simplified">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_object_r_e_simplified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e_on_off_rr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_supply</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_t_to_v</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#transistordatabase.databaseClasses.Transistor.get_object_r_e_simplified" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_object_r_e_simplified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e_on_off_rr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_supply</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_t_to_v</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#transistordatabase.databaseClasses.Transistor.get_object_r_e_simplified" title="Permalink to this definition"></a></dt>
 <dd><p>Function to get the loss graphs out of the transistor class, simplified version
 :param e_on_off_rr: can be the following: ‘e_on’, ‘e_off’ or ‘e_rr’
 :type e_on_off_rr: str
@@ -2720,6 +2720,9 @@ Internally used by</p>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>transistor_database collection</p>
 </dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>pymongo.errors.ServerSelectionTimeoutError</strong> – if there is no mongoDB instance running</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -2834,8 +2837,9 @@ Use case is the merging of capacity curves, here often two curves (normal and zo
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.array</p>
 </dd>
-<dt class="field-even">Example (e.g. merges c_oss curve from 0-200V and from 0-1000V)</dt>
-<dd class="field-even"><p></p></dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><p>(e.g. merges c_oss curve from 0-200V and from 0-1000V)</p>
+</dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_normal</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">csv2array</span><span class="p">(</span><span class="s1">&#39;transistor_c_oss.csv&#39;</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2878,10 +2882,6 @@ Use case is the merging of capacity curves, here often two curves (normal and zo
 <span class="sig-prename descclassname"><span class="pre">transistordatabase.databaseClasses.</span></span><span class="sig-name descname"><span class="pre">r_g_max_rapid_channel_turn_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_gsth</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_gd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_off</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_driver_off</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#transistordatabase.databaseClasses.r_g_max_rapid_channel_turn_off" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the maximum gate resistor to achieve no turn-off losses when working with MOSFETs
 ‘rapid channel turn-off’ (rcto)</p>
-<p>Note: Input (e.g. i_off can also be a vector)
-Source: D. Kubrick, T. Dürbaum, A. Bucher:
-‘Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances’
-International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2899,6 +2899,16 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Input (e.g. i_off can also be a vector)</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>D. Kubrick, T. Dürbaum, A. Bucher
+‘Investigation of Turn-Off Behaviour under the Assumption of Linear Capacitances’
+International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2962,6 +2972,7 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
       <dd><a href="../0.2.13/transistordatabase.html">0.2.13</a></dd>
       <dd><a href="../0.2.14/transistordatabase.html">0.2.14</a></dd>
       <dd><a href="../0.3.0/transistordatabase.html">0.3.0</a></dd>
+      <dd><a href="../0.3.1/transistordatabase.html">0.3.1</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>
