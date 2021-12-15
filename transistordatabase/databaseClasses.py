@@ -834,8 +834,8 @@ class Transistor:
             dataset = candidate_datasets[0]
         return dataset
 
-    @staticmethod
-    def get_object_i_e_simplified(e_on_off_rr: str, t_j: float):
+
+    def get_object_i_e_simplified(self, e_on_off_rr: str, t_j: float):
         """
         Function to get the loss graphs out of the transistor class, simplified version
 
@@ -888,8 +888,7 @@ class Transistor:
             i_e_dataset = ie_datasets[0]
         return i_e_dataset, r_e_dataset
 
-    @staticmethod
-    def get_object_r_e_simplified(e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, normalize_t_to_v: float) -> list:
+    def get_object_r_e_simplified(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, normalize_t_to_v: float) -> list:
         """
         Function to get the loss graphs out of the transistor class, simplified version
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
