@@ -885,7 +885,7 @@ class Transistor:
                 if match else "The first of these sets is automatically chosen because selection of a different dataset is not yet implemented."
             print(text_to_print)
         elif len(ie_datasets) == 1:
-            i_e_dataset = ie_datasets[0]
+            i_e_dataset = ie_datasets[0]   # function get_object_r_e_simplified can be called here instead of calling in a separate line of calc_object_i_e method
         return i_e_dataset, r_e_dataset
 
     def get_object_r_e_simplified(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, normalize_t_to_v: float) -> list:

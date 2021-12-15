@@ -33,12 +33,13 @@ def my_transistor():
     t_j_max = 175
     graph_v_i = np.array([[0, 0.59, 0.67, 0.75, 0.81, 0.9, 0.96, 1.07, 1.19, 1.31, 1.39, 1.51, 1.61, 1.73, 1.83, 1.9],
                           [0, 1e-03, 2.38, 5.71, 10, 19, 26.6, 40.9, 60.9, 82.3, 98.1, 120.48, 140.95, 163.33, 183.3, 198.5]])
-    dataset_type = 'graph_i_e'
+    dataset_type_i_e = 'graph_i_e'
+    dataset_type_r_e = 'graph_r_e'
     v_supply = 600
     v_g = 15
     e_x = 1
     r_g = 1
-    i_x = 1
+    i_x = 400
     r_th_vector = [1, 2, 3]
     r_th_total = 0.5
     c_th_vector = [1, 2, 3]
@@ -49,6 +50,8 @@ def my_transistor():
                               [0.03162, 0.03736, 0.04796, 0.06157, 0.07906, 0.11033, 0.13035, 0.16191, 0.20449, 0.28542, 0.35457, 0.43321, 0.51221, 0.53913, 0.5492, 0.55003]])
     graph_i_e = np.array([[0, 5.79, 15, 26, 38, 47, 56, 69, 81, 94, 106, 118, 133, 152, 170, 186, 200],
                           [0, 4.9e-04, 9.3e-04, 1.27e-03, 1.51e-03, 1.71e-03, 1.85e-03, 2.07e-03, 2.22e-03, 2.41e-03, 2.54e-03, 2.68e-03, 2.8e-03, 2.93e-03, 3.02e-03, 3.10e-03, 3.15e-03]])
+    graph_r_e = np.array([[9.911100e-01, 1.403740e+00, 2.078880e+00, 3.134180e+00, 4.478810e+00,  6.997800e+00, 9.911150e+00, 1.342477e+01, 1.884490e+01, 2.692976e+01,  3.219229e+01],
+                          [1.950000e-02, 1.947000e-02, 1.926000e-02, 1.941000e-02, 1.975000e-02,  2.028000e-02, 2.155000e-02, 2.358000e-02, 2.635000e-02, 2.967000e-02,  3.096000e-02]])
 
     graph_t_r = np.array([[-48.61961104, -29.94016048, - 16.23147015, - 2.52277982, 11.18591051, 24.89460084, 38.60329117, 52.3119815, 65.69427445, 79.07656739, 92.78525772, 105.51475588,
                            116.93866449, 128.03617571, 139.13368693, 147.29362165],
@@ -77,8 +80,11 @@ def my_transistor():
     # Create dataset dictionaries
     switch_channel = {'t_j': t_j, 'graph_v_i': graph_v_i, 'v_g': v_g}
     diode_channel = {'t_j': t_j, 'graph_v_i': graph_v_i}
-    switchenergy = {'dataset_type': dataset_type, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
+    switch_energy_i_e = {'dataset_type': dataset_type_i_e, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
                     'r_g': r_g, 'graph_i_e': graph_i_e}  # 'e_x': e_x, 'i_x': i_x,
+    switch_energy_r_e = {'dataset_type': dataset_type_r_e, 't_j': t_j, 'v_supply': v_supply, 'v_g': v_g,
+                    'r_g': None, 'graph_r_e': graph_r_e, 'i_x': i_x}  # 'e_x': e_x,
+
     foster_args = {'r_th_vector': r_th_vector, 'r_th_total': r_th_total, 'c_th_vector': c_th_vector,
                    'c_th_total': c_th_total, 'tau_vector': tau_vector, 'tau_total': tau_total,
                    'graph_t_rthjc': graph_t_rthjc}
@@ -117,9 +123,9 @@ def my_transistor():
                        }
     switch_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
                    'channel': [switch_channel],
-                   'e_on': [switchenergy], 'e_off': [switchenergy], 'thermal_foster': foster_args, 'r_channel_th': switch_ron_args, 'charge_curve': switch_gate_charge, 'soa': soa_object}
+                   'e_on': [switch_energy_i_e, switch_energy_r_e], 'e_off': [switch_energy_i_e, switch_energy_r_e], 'thermal_foster': foster_args, 'r_channel_th': switch_ron_args, 'charge_curve': switch_gate_charge, 'soa': soa_object}
     diode_args = {'t_j_max': t_j_max, 'comment': comment, 'manufacturer': manufacturer, 'technology': technology,
-                  'channel': [diode_channel], 'e_rr': [switchenergy], 'thermal_foster': foster_args, 'soa': soa_object}
+                  'channel': [diode_channel], 'e_rr': [switch_energy_i_e, switch_energy_r_e], 'thermal_foster': foster_args, 'soa': soa_object}
     return transistor_args, switch_args, diode_args
 
 
@@ -156,7 +162,6 @@ def test_transistor(my_transistor):
     assert transistor.c_oss_er.v_ds == transistor_args['c_oss_er']['v_ds']
     assert transistor.c_oss_tr == transistor_args['c_oss_tr']
 
-
     # switch_args test
     assert transistor.switch.t_j_max == switch_args['t_j_max']
     assert transistor.switch.comment == switch_args['comment']
@@ -181,6 +186,7 @@ def test_transistor(my_transistor):
     assert transistor.diode.e_rr[0].t_j == diode_args['channel'][0]['t_j']
     assert transistor.diode.e_rr[0].graph_i_e.any() == diode_args['e_rr'][0]['graph_i_e'].any()
     assert transistor.diode.soa[0].graph_i_v.any() == diode_args['soa']['graph_i_v'].any()
+
 
 def test_get_gatedefaults():
     igbt_expected_list = [15, -15, 0, 15]
@@ -558,4 +564,31 @@ def test_add_temp_depend_resis_data(my_database, monkeypatch):
     rth_list_three = copy.deepcopy([switch_ron_args_2, switch_ron_args_2, switch_ron_args, switch_ron_args])
     transistor.add_temp_depend_resis_data(rth_list_three)
     assert len(transistor.switch.r_channel_th) == 2
+
+
+def test_get_object_i_e_simplified(my_transistor):
+    transistor_args, switch_args, diode_args = my_transistor
+    switch_energy_new = {'dataset_type': 'graph_i_e', 't_j': 25, 'v_supply': 600, 'v_g': 12,
+                         'r_g': 1, 'graph_i_e': np.array([[1, 2, 3], [4, 5, 6]])}
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+
+    with pytest.raises(ValueError):
+        transistor.get_object_i_e_simplified("e_off", 200)
+    i_e_object, r_e_object = transistor.get_object_i_e_simplified("e_off", 25)
+    assert r_e_object is None
+    # When i_e object list has more than one matching items at t_j
+    transistor.switch.e_off.append(tdb.Transistor.SwitchEnergyData(switch_energy_new))
+    i_e_object, r_e_object = transistor.get_object_i_e_simplified("e_off", 25)
+    assert r_e_object is not None
+
+
+def test_get_object_r_e_simplified(my_transistor):
+    transistor_args, switch_args, diode_args = my_transistor
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    with pytest.raises(ValueError):
+        transistor.get_object_r_e_simplified("e_off", 25, 15, 1000, 10)
+    r_e_object = transistor.get_object_r_e_simplified("e_off", 200, 60, 600, 10)
+    assert r_e_object.t_j == 25
+    assert r_e_object.v_g == 15
+
 
