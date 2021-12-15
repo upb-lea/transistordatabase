@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2021-12-15
+### Bugfixes
+- #68: Improved user warning in case of no mongodb installed
+- #70: Save .json-files in multiple lines, to avoid that a small change is very difficult to see in version control
+- #71, #72: fix get_object_i/r_e_simplified
+
 ## [0.3.0] - 2021-12-09
 ### Added
 - NEW: Option to add own measurements to the database
@@ -186,7 +192,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.2.13...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.3.1...HEAD
+[0.3.1]: https://github.com/upb-lea/transistordatabase/compare/0.3.0...0.3.1
+[0.3.0]: https://github.com/upb-lea/transistordatabase/compare/0.2.14...0.3.0
+[0.2.14]: https://github.com/upb-lea/transistordatabase/compare/0.2.13...0.2.14
 [0.2.13]: https://github.com/upb-lea/transistordatabase/compare/0.2.12...0.2.13
 [0.2.12]: https://github.com/upb-lea/transistordatabase/compare/0.2.11...0.2.12
 [0.2.11]: https://github.com/upb-lea/transistordatabase/compare/0.2.10...0.2.11
