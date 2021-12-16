@@ -11,7 +11,7 @@ import os
 
 @pytest.fixture()
 def my_transistor():
-    # Values for basic example
+    # Values for basic example only
     name = 'Test-Transistor'
     type = 'IGBT'
     v_abs_max = 200
