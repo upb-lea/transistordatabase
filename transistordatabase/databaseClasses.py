@@ -3669,11 +3669,13 @@ class Transistor:
             if dataset_type == 'graph_r_e':
                 label_x_plot = 'Ron / Ohm'
 
-            if energies == 'E_off' or energies == 'both':
+            if energies == 'e_off' or energies == 'both':
 
                 sample_point = 0
                 measurement_points = len(self.dpt_off_id)
                 e_off = []
+                dv_dt_off = []
+                di_dt_off = []
                 time_correction = 0
                 time_input = 0
 
@@ -3716,6 +3718,23 @@ class Transistor:
 
                     lower_integration_limit = i
 
+                    # calculate di/dt, dv/dt
+                    di_dt_counter_low = 0
+                    while id_temp[di_dt_counter_low, 1] > (id_avg_max * 0.8):
+                        di_dt_counter_low += 1
+
+                    di_dt_counter_high = di_dt_counter_low
+                    while id_temp[di_dt_counter_high, 1] > (id_avg_max * 0.2):
+                        di_dt_counter_high += 1
+
+                    dv_dt_counter_low = 0
+                    while vds_temp[dv_dt_counter_low, 1] < (vds_avg_max * 0.2):
+                        dv_dt_counter_low += 1
+
+                    dv_dt_counter_high = dv_dt_counter_low
+                    while vds_temp[dv_dt_counter_high, 1] < (vds_avg_max * 0.8):
+                        dv_dt_counter_high += 1
+
                     ##############################
                     # Integrate the power with predefined integration limits
                     ##############################
@@ -3747,8 +3766,8 @@ class Transistor:
                         ax2.plot(vds_temp[:, 0] * 1000000000, vds_temp[:, 1], color='b')
                         plt.show()
                         time_input = input('Please give a value for time correction in ns')
-                        if time_input.isnumeric():
-                            time_correction = int(int(time_input) / (sample_interval * 1000000000))
+                        if isfloat(time_input):
+                            time_correction = int(float(time_input) / (sample_interval * 1000000000))
                             continue
                         else:
                             time_correction = 0
@@ -3758,6 +3777,11 @@ class Transistor:
                         e_off.append([self.r_g[sample_point], e_off_temp])
                     else:
                         e_off.append([id_avg_max, e_off_temp])
+
+                    di_dt_off.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
+                            abs(id_temp[di_dt_counter_high, 0] - id_temp[di_dt_counter_low, 0]) * 1000000000))
+                    dv_dt_off.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[lower_integration_limit, 1]) / (
+                            abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[lower_integration_limit, 0]) * 1000000000))
 
                     sample_point += 1
 
@@ -3780,7 +3804,9 @@ class Transistor:
                               'graph_i_e': np.array([e_off_0, e_off_1]),
                               'graph_r_e': np.array([e_off_0, e_off_1]),
                               'e_x': float(e_off_1[0]),
-                              'i_x': id_avg_max}
+                              'i_x': id_avg_max,
+                              'di_dt': di_dt_off,
+                              'dv_dt': dv_dt_off}
 
                 ##############################
                 # Plot Eoff
@@ -3795,11 +3821,13 @@ class Transistor:
                 plt.grid('both')
                 plt.show(block=True)
 
-            if energies == 'E_on' or energies == 'both':
+            if energies == 'e_on' or energies == 'both':
 
                 sample_point = 0
                 measurement_points = len(self.dpt_on_id)
                 e_on = []
+                dv_dt_on = []
+                di_dt_on = []
                 time_correction = 0
                 time_input = 0
 
@@ -3884,6 +3912,10 @@ class Transistor:
                     else:
                         e_on.append([id_avg_max, e_on_temp])
 
+                    dv_dt_on.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[dv_dt_counter_low, 1]) / (
+                            abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[dv_dt_counter_low, 0]) * 1000000000))
+                    di_dt_on.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
+                            abs(vds_temp[di_dt_counter_high, 0] - vds_temp[di_dt_counter_low, 0]) * 1000000000))
                     sample_point += 1
 
                 e_on_0 = [item[0] for item in e_on]
@@ -3905,7 +3937,9 @@ class Transistor:
                              'graph_i_e': np.array([e_on_0, e_on_1]),
                              'graph_r_e': np.array([e_on_0, e_on_1]),
                              'e_x': float(e_on_1[0]),
-                             'i_x': id_avg_max}
+                             'i_x': id_avg_max,
+                             'dv_dt': dv_dt_on,
+                             'di_dt': di_dt_on}
 
                 ##############################
                 # Plot Eon
@@ -5105,7 +5139,6 @@ def dpt_save_data(measurement_dict: dict):
             lower_integration_limit = i
 
             di_dt_counter_low = 0
-            di_dt_counter_high = 0
             while id_temp[di_dt_counter_low, 1] > (id_avg_max * 0.8):
                 di_dt_counter_low += 1
 
@@ -5113,7 +5146,11 @@ def dpt_save_data(measurement_dict: dict):
             while id_temp[di_dt_counter_high, 1] > (id_avg_max * 0.2):
                 di_dt_counter_high += 1
 
-            dv_dt_counter_high = lower_integration_limit
+            dv_dt_counter_low = 0
+            while vds_temp[dv_dt_counter_low, 1] < (vds_avg_max * 0.8):
+                dv_dt_counter_low += 1
+
+            dv_dt_counter_high = dv_dt_counter_low
             while vds_temp[dv_dt_counter_high, 1] < (vds_avg_max * 0.8):
                 dv_dt_counter_high += 1
 
@@ -5185,7 +5222,9 @@ def dpt_save_data(measurement_dict: dict):
                       'graph_i_e': np.array([e_off_0, e_off_1]),
                       'graph_r_e': np.array([e_off_0, e_off_1]),
                       'e_x': float(e_off_1[0]),
-                      'i_x': id_avg_max}
+                      'i_x': id_avg_max,
+                      'dv_dt': dv_dt_off,
+                      'di_dt': di_dt_off}
 
         dpt_raw_data |= {'dpt_off_vds': vds_raw_off, 'dpt_off_id': id_raw_off}
 
@@ -5272,15 +5311,20 @@ def dpt_save_data(measurement_dict: dict):
 
             # Calculate dv/dt
             dv_dt_counter_low = 0
-            dv_dt_counter_high = 0
-            di_dt_counter_low = 0
-            di_dt_counter_high = 0
-            while vds_temp[dv_dt_counter_low, 1] > (vds_avg_max * 0.9):
+            while vds_temp[dv_dt_counter_low, 1] > (vds_avg_max * 0.8):
                 dv_dt_counter_low += 1
 
             dv_dt_counter_high = dv_dt_counter_low
-            while vds_temp[dv_dt_counter_high, 1] > (vds_avg_max * 0.1):
+            while vds_temp[dv_dt_counter_high, 1] > (vds_avg_max * 0.2):
                 dv_dt_counter_high += 1
+
+            di_dt_counter_low = 0
+            while id_temp[di_dt_counter_low, 1] < (id_avg_max * 0.2):
+                di_dt_counter_low += 1
+
+            di_dt_counter_high = di_dt_counter_low
+            while id_temp[di_dt_counter_high, 1] < (id_avg_max * 0.8):
+                di_dt_counter_high += 1
 
             ##############################
             # Find the starting point of the Eon integration
@@ -5292,10 +5336,6 @@ def dpt_save_data(measurement_dict: dict):
                 i += 1
 
             lower_integration_limit = i
-            di_dt_counter_low = lower_integration_limit
-            di_dt_counter_high = di_dt_counter_low
-            while id_temp[di_dt_counter_high, 1] < (id_avg_max):
-                di_dt_counter_high += 1
 
             ##############################
             # Integrate the power with predefined integration limits
@@ -5368,7 +5408,9 @@ def dpt_save_data(measurement_dict: dict):
                      'graph_i_e': np.array([e_on_0, e_on_1]),
                      'graph_r_e': np.array([e_on_0, e_on_1]),
                      'e_x': float(e_on_1[0]),
-                     'i_x': id_avg_max}
+                     'i_x': id_avg_max,
+                     'dv_dt': dv_dt_on,
+                     'di_dt': di_dt_on}
 
         dpt_raw_data |= {'dpt_on_vds': vds_raw_on, 'dpt_on_id': id_raw_on}
 
