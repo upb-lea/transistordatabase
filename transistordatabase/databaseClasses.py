@@ -4990,7 +4990,7 @@ class MissingDataError(Exception):
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to"}
 
 
-def dpt_save_data(measurement_dict: dict):
+def dpt_save_data(measurement_dict: dict) -> dict:
     """
         Imports double pulse measurements and calculates switching losses to each given working point.
 
@@ -4999,6 +4999,21 @@ def dpt_save_data(measurement_dict: dict):
 
         :param measurement_dict: dictionary with above mentioned parameters
         :type measurement_dict: dict
+
+        example to call this function:
+        dpt_save_dict = {
+            'path': 'C:/Users/.../GaN-Systems/400V/*.csv',
+            'dataset_type': 'graph_i_e',
+            'load_inductance': 750,
+            'measurement_date': None,
+            'measurement_testbench': 'LEA-UPB Testbench',
+            'v_g': 12,
+            'v_g_off': 0,
+            'energies': 'both',
+            'integration_interval': 'IEC 60747-8',
+            'mode': 'analyze'}
+
+        >>>dpt_energies_dict = tdb.dpt_save_data(dpt_save_dict)
 
         """
 
