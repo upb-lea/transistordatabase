@@ -90,7 +90,6 @@ def Template():
                        'r_th_cs': 0,
                        'r_th_diode_cs': 0,
                        'r_th_switch_cs': 0,
-                       'soa': [soa_t_pulse_100ms, soa_t_pulse_1ms, soa_t_pulse_100us, soa_t_pulse_10us]
                        }
 
     ####################################
@@ -201,7 +200,9 @@ def Template():
         'e_off': [e_off_25_600, e_off_25_800],
         'charge_curve': [switch_gate_charge_curve_800],
         'r_channel_th': [switch_ron_args_11, switch_ron_args_13, switch_ron_args_15],
-        'thermal_foster': switch_foster_args}
+        'thermal_foster': switch_foster_args,
+        'soa': [soa_t_pulse_100ms, soa_t_pulse_1ms, soa_t_pulse_100us, soa_t_pulse_10us],
+    }
 
     ####################################
     # diode parameters
@@ -247,7 +248,7 @@ def Template():
 if __name__ == '__main__':
     transistor = Template()
 
-    transistor.export_datasheet()
+    transistor.export_json()
 
     ####################################
     # Method examples
