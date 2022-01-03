@@ -4113,7 +4113,7 @@ class Transistor:
             d['dpt_off_id'] = [c.tolist() for c in self.dpt_off_id]
             return d
 
-        def dpt_calculate_energies(self, integration_interval: str, dataset_type: str, energies: str):
+        def dpt_calculate_energies(self, integration_interval: str, dataset_type: str, energies: str, mode: str):
             """
                 Imports double pulse measurements and calculates switching losses to each given working point.
 
@@ -4163,11 +4163,15 @@ class Transistor:
             if dataset_type == 'graph_r_e':
                 label_x_plot = 'Ron / Ohm'
 
-            if energies == 'E_off' or energies == 'both':
+            if energies == 'e_off' or energies == 'both':
 
                 sample_point = 0
                 measurement_points = len(self.dpt_off_id)
                 e_off = []
+                dv_dt_off = []
+                di_dt_off = []
+                time_correction = 0
+                time_input = 0
 
                 while measurement_points > sample_point:
                     # Load Uds and Id pairs in increasing order
@@ -4206,7 +4210,24 @@ class Transistor:
                     while vds_temp[i, 1] < (vds_avg_max * off_vds_limit):
                         i += 1
 
-                    time_correction = 0
+                    lower_integration_limit = i
+
+                    # calculate di/dt, dv/dt
+                    di_dt_counter_low = 0
+                    while id_temp[di_dt_counter_low, 1] > (id_avg_max * 0.8):
+                        di_dt_counter_low += 1
+
+                    di_dt_counter_high = di_dt_counter_low
+                    while id_temp[di_dt_counter_high, 1] > (id_avg_max * 0.2):
+                        di_dt_counter_high += 1
+
+                    dv_dt_counter_low = 0
+                    while vds_temp[dv_dt_counter_low, 1] < (vds_avg_max * 0.2):
+                        dv_dt_counter_low += 1
+
+                    dv_dt_counter_high = dv_dt_counter_low
+                    while vds_temp[dv_dt_counter_high, 1] < (vds_avg_max * 0.8):
+                        dv_dt_counter_high += 1
 
                     ##############################
                     # Integrate the power with predefined integration limits
@@ -4215,10 +4236,46 @@ class Transistor:
                         e_off_temp = e_off_temp + (vds_temp[i, 1] * id_temp[i - time_correction, 1] * sample_interval)
                         i += 1
 
+                    upper_integration_limit = i
+
+                    if mode == 'analyze':
+                        text1 = f"E_off = {(e_off_temp * 1000000).round(2)} µJ, time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
+                        text2 = f"Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                        fig, ax1 = plt.subplots()
+                        ax1.set_xlabel("t / ns")
+                        ax1.set_ylabel("Id / A", color='r')
+                        ax1.plot(((id_temp[:, 0] * 1000000000) + int(time_input)), id_temp[:, 1], color='r')
+                        plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
+                                    linewidth=2)
+                        plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
+                                    linewidth=2)
+                        props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                        ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
+                                 verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                        ax1.text(0.02, .5, text2, transform=ax1.transAxes, fontsize=12,
+                                 verticalalignment='center', horizontalalignment='left', bbox=props)
+                        plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
+                        ax2 = ax1.twinx()
+                        ax2.set_ylabel('Uds / V', color='b')
+                        ax2.plot(vds_temp[:, 0] * 1000000000, vds_temp[:, 1], color='b')
+                        plt.show()
+                        time_input = input('Please give a value for time correction in ns')
+                        if isfloat(time_input):
+                            time_correction = int(float(time_input) / (sample_interval * 1000000000))
+                            continue
+                        else:
+                            time_correction = 0
+                            time_input = 0
+
                     if dataset_type == 'graph_r_e':
                         e_off.append([self.r_g[sample_point], e_off_temp])
                     else:
                         e_off.append([id_avg_max, e_off_temp])
+
+                    di_dt_off.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
+                            abs(id_temp[di_dt_counter_high, 0] - id_temp[di_dt_counter_low, 0]) * 1000000000))
+                    dv_dt_off.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[lower_integration_limit, 1]) / (
+                            abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[lower_integration_limit, 0]) * 1000000000))
 
                     sample_point += 1
 
@@ -4241,7 +4298,9 @@ class Transistor:
                               'graph_i_e': np.array([e_off_0, e_off_1]),
                               'graph_r_e': np.array([e_off_0, e_off_1]),
                               'e_x': float(e_off_1[0]),
-                              'i_x': id_avg_max}
+                              'i_x': id_avg_max,
+                              'di_dt': di_dt_off,
+                              'dv_dt': dv_dt_off}
 
                 ##############################
                 # Plot Eoff
@@ -4256,11 +4315,15 @@ class Transistor:
                 plt.grid('both')
                 plt.show(block=True)
 
-            if energies == 'E_on' or energies == 'both':
+            if energies == 'e_on' or energies == 'both':
 
                 sample_point = 0
                 measurement_points = len(self.dpt_on_id)
                 e_on = []
+                dv_dt_on = []
+                di_dt_on = []
+                time_correction = 0
+                time_input = 0
 
                 while measurement_points > sample_point:
                     # Load Uds and Id pairs in increasing order
@@ -4298,19 +4361,55 @@ class Transistor:
                     while id_temp[i, 1] < (id_avg_max * on_is_limit):
                         i += 1
 
-                    time_correction = 0
+                    lower_integration_limit = i
+
                     ##############################
                     # Integrate the power with predefined integration limits
                     ##############################
-                    while vds_temp[i + time_correction, 1] >= (vds_avg_max * on_vds_limit):
-                        e_on_temp = e_on_temp + (vds_temp[i + time_correction, 1] * id_temp[i, 1] * sample_interval)
+                    while vds_temp[i - time_correction, 1] >= (vds_avg_max * on_vds_limit):
+                        e_on_temp = e_on_temp + (vds_temp[i - time_correction, 1] * id_temp[i, 1] * sample_interval)
                         i += 1
+
+                    upper_integration_limit = i
+
+                    if mode == 'analyze':
+                        text1 = f"E_on = {(e_on_temp * 1000000).round(2)} µJ, time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
+                        text2 = f"Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                        fig, ax1 = plt.subplots()
+                        ax1.set_xlabel("t / ns")
+                        ax1.set_ylabel("Id / A", color='r')
+                        ax1.plot(id_temp[:, 0] * 1000000000, id_temp[:, 1], color='r')
+                        plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
+                                    linewidth=2)
+                        plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
+                                    linewidth=2)
+                        props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                        ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
+                                 verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                        ax1.text(0.02, .5, text2, transform=ax1.transAxes, fontsize=12,
+                                 verticalalignment='center', horizontalalignment='left', bbox=props)
+                        plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
+                        ax2 = ax1.twinx()
+                        ax2.set_ylabel('Uds / V', color='b')
+                        ax2.plot(vds_temp[:, 0] * 1000000000 + int(time_input), vds_temp[:, 1], color='b')
+                        plt.show()
+                        time_input = input('Please give a value for time correction in ns')
+                        if time_input.isnumeric():
+                            time_correction = int(int(time_input) / (sample_interval * 1000000000))
+                            continue
+                        else:
+                            time_correction = 0
+                            time_input = 0
 
                     if dataset_type == 'graph_r_e':
                         e_on.append([self.r_g[sample_point], e_on_temp])
                     else:
                         e_on.append([id_avg_max, e_on_temp])
 
+                    dv_dt_on.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[dv_dt_counter_low, 1]) / (
+                            abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[dv_dt_counter_low, 0]) * 1000000000))
+                    di_dt_on.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
+                            abs(vds_temp[di_dt_counter_high, 0] - vds_temp[di_dt_counter_low, 0]) * 1000000000))
                     sample_point += 1
 
                 e_on_0 = [item[0] for item in e_on]
@@ -4332,7 +4431,9 @@ class Transistor:
                              'graph_i_e': np.array([e_on_0, e_on_1]),
                              'graph_r_e': np.array([e_on_0, e_on_1]),
                              'e_x': float(e_on_1[0]),
-                             'i_x': id_avg_max}
+                             'i_x': id_avg_max,
+                             'dv_dt': dv_dt_on,
+                             'di_dt': di_dt_on}
 
                 ##############################
                 # Plot Eon
@@ -5721,7 +5822,7 @@ class MissingDataError(Exception):
 class MissingServerConnection(ServerSelectionTimeoutError):
     pass
 
-def dpt_save_data(measurement_dict: dict):
+def dpt_save_data(measurement_dict: dict) -> dict:
     """
         Imports double pulse measurements and calculates switching losses to each given working point.
 
@@ -5730,6 +5831,21 @@ def dpt_save_data(measurement_dict: dict):
 
         :param measurement_dict: dictionary with above mentioned parameters
         :type measurement_dict: dict
+
+        example to call this function:
+        dpt_save_dict = {
+            'path': 'C:/Users/.../GaN-Systems/400V/*.csv',
+            'dataset_type': 'graph_i_e',
+            'load_inductance': 750,
+            'measurement_date': None,
+            'measurement_testbench': 'LEA-UPB Testbench',
+            'v_g': 12,
+            'v_g_off': 0,
+            'energies': 'both',
+            'integration_interval': 'IEC 60747-8',
+            'mode': 'analyze'}
+
+        >>>dpt_energies_dict = tdb.dpt_save_data(dpt_save_dict)
 
         """
 
@@ -5801,7 +5917,7 @@ def dpt_save_data(measurement_dict: dict):
             if csv_files[i].rfind("_OFF_I") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
                 position_b = csv_files[i].rfind(position_attribute_start)
-                off_i_locations.append([i, int(csv_files[i][position_b + 2:position_a])])
+                off_i_locations.append([i, float(csv_files[i][position_b + 2:position_a].replace(',', '.'))])
             i += 1
         off_i_locations.sort(key=lambda x: x[1])
 
@@ -5813,7 +5929,7 @@ def dpt_save_data(measurement_dict: dict):
             if csv_files[i].rfind("_OFF_U") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
                 position_b = csv_files[i].rfind(position_attribute_start)
-                off_v_locations.append([i, int(csv_files[i][position_b + 2:position_a])])
+                off_v_locations.append([i, float(csv_files[i][position_b + 2:position_a].replace(',', '.'))])
             i += 1
         off_v_locations.sort(key=lambda x: x[1])
 
@@ -5822,37 +5938,40 @@ def dpt_save_data(measurement_dict: dict):
         e_off = []
         vds_raw_off = []
         id_raw_off = []
+        dv_dt_off = []
+        di_dt_off = []
         time_correction = 0
+        time_input = 0
 
         while measurement_points > sample_point:
-            # Load vds and Id pairs in increasing order
-            vds = np.genfromtxt(csv_files[off_v_locations[sample_point][0]], delimiter=',', skip_header=24)
-            Id = np.genfromtxt(csv_files[off_i_locations[sample_point][0]], delimiter=',', skip_header=24)
+            # Load vds_temp and id_temp pairs in increasing order
+            vds_temp = np.genfromtxt(csv_files[off_v_locations[sample_point][0]], delimiter=',', skip_header=24)
+            id_temp = np.genfromtxt(csv_files[off_i_locations[sample_point][0]], delimiter=',', skip_header=24)
 
-            vds_raw_off.append(np.array(vds))
-            id_raw_off.append(np.array(Id))
+            vds_raw_off.append(np.array(vds_temp))
+            id_raw_off.append(np.array(id_temp))
 
-            sample_length = len(vds)
-            sample_interval = abs(vds[1, 0] - vds[2, 0])
+            sample_length = len(vds_temp)
+            sample_interval = abs(vds_temp[1, 0] - vds_temp[2, 0])
             avg_interval = int(sample_length * 0.05)
 
             vds_avg_max = 0
             id_avg_max = 0
 
             ##############################
-            # Find the max. Id in steady state
+            # Find the max. id_temp in steady state
             ##############################
             i = 0
             while i <= avg_interval:
-                id_avg_max = id_avg_max + Id[i, 1] / avg_interval
+                id_avg_max = id_avg_max + id_temp[i, 1] / avg_interval
                 i += 1
 
             ##############################
-            # Find the max. vds in steady state
+            # Find the max. vds_temp in steady state
             ##############################
             i = 0
             while i <= avg_interval:
-                vds_avg_max = vds_avg_max + vds[(sample_length - 1 - i), 1] / avg_interval
+                vds_avg_max = vds_avg_max + vds_temp[(sample_length - 1 - i), 1] / avg_interval
                 i += 1
 
             ##############################
@@ -5861,25 +5980,73 @@ def dpt_save_data(measurement_dict: dict):
             ##############################
             i = 0
             e_off_temp = 0
-            while vds[i, 1] < (vds_avg_max * off_vds_limit):
+            while vds_temp[i, 1] < (vds_avg_max * off_vds_limit):
                 i += 1
 
             lower_integration_limit = i
 
+            di_dt_counter_low = 0
+            while id_temp[di_dt_counter_low, 1] > (id_avg_max * 0.8):
+                di_dt_counter_low += 1
+
+            di_dt_counter_high = di_dt_counter_low
+            while id_temp[di_dt_counter_high, 1] > (id_avg_max * 0.2):
+                di_dt_counter_high += 1
+
+            dv_dt_counter_low = 0
+            while vds_temp[dv_dt_counter_low, 1] < (vds_avg_max * 0.8):
+                dv_dt_counter_low += 1
+
+            dv_dt_counter_high = dv_dt_counter_low
+            while vds_temp[dv_dt_counter_high, 1] < (vds_avg_max * 0.8):
+                dv_dt_counter_high += 1
+
             ##############################
             # Integrate the power with predefined integration limits
             ##############################
-            while Id[i - time_correction, 1] >= (id_avg_max * off_is_limit):
-                e_off_temp = e_off_temp + (vds[i, 1] * Id[i - time_correction, 1] * sample_interval)
+            while id_temp[i - time_correction, 1] >= (id_avg_max * off_is_limit):
+                e_off_temp = e_off_temp + (vds_temp[i, 1] * id_temp[i - time_correction, 1] * sample_interval)
                 i += 1
 
             upper_integration_limit = i
+
+            if measurement_dict['mode'] == 'analyze':
+                text1 = f"E_off = {(e_off_temp * 1000000).round(2)} µJ, Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                text2 = f"time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
+                fig, ax1 = plt.subplots()
+                ax1.set_xlabel("t / ns")
+                ax1.set_ylabel("Id / A", color='r')
+                ax1.plot(((id_temp[:, 0] * 1000000000) + float(time_input)), id_temp[:, 1], color='r')
+                plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
+                plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
+                props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
+                         verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                ax1.text(0.5, .5, text2, transform=ax1.transAxes, fontsize=12,
+                         verticalalignment='center', horizontalalignment='left', bbox=props)
+                plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
+                ax2 = ax1.twinx()
+                ax2.set_ylabel('Uds / V', color='b')
+                ax2.plot(vds_temp[:, 0] * 1000000000, vds_temp[:, 1], color='b')
+                plt.show()
+                time_input = input('Please give a value for time correction in ns')
+                if isfloat(time_input):
+                    time_correction = int(float(time_input) / (sample_interval * 1000000000))
+                    continue
+                else:
+                    time_correction = 0
+                    time_input = 0
 
             if measurement_dict['dataset_type'] == 'graph_r_e':
                 e_off.append([off_i_locations[sample_point][1], e_off_temp])
                 r_g_on_list.append(off_i_locations[sample_point][1])
             else:
                 e_off.append([id_avg_max, e_off_temp])
+
+            di_dt_off.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
+                    abs(id_temp[di_dt_counter_high, 0] - id_temp[di_dt_counter_low, 0]) * 1000000000))
+            dv_dt_off.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[lower_integration_limit, 1]) / (
+                        abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[lower_integration_limit, 0]) * 1000000000))
 
             sample_point += 1
 
@@ -5902,7 +6069,9 @@ def dpt_save_data(measurement_dict: dict):
                       'graph_i_e': np.array([e_off_0, e_off_1]),
                       'graph_r_e': np.array([e_off_0, e_off_1]),
                       'e_x': float(e_off_1[0]),
-                      'i_x': id_avg_max}
+                      'i_x': id_avg_max,
+                      'dv_dt': dv_dt_off,
+                      'di_dt': di_dt_off}
 
         dpt_raw_data |= {'dpt_off_vds': vds_raw_off, 'dpt_off_id': id_raw_off}
 
@@ -5931,7 +6100,7 @@ def dpt_save_data(measurement_dict: dict):
             if csv_files[i].rfind("_ON_I") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
                 position_b = csv_files[i].rfind(position_attribute_start)
-                on_i_locations.append([i, int(csv_files[i][position_b + 2:position_a])])
+                on_i_locations.append([i, float(csv_files[i][position_b + 2:position_a].replace(',', '.'))])
             i += 1
         on_i_locations.sort(key=lambda x: x[1])
 
@@ -5943,7 +6112,7 @@ def dpt_save_data(measurement_dict: dict):
             if csv_files[i].rfind("_ON_U") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
                 position_b = csv_files[i].rfind(position_attribute_start)
-                on_v_locations.append([i, int(csv_files[i][position_b + 2:position_a])])
+                on_v_locations.append([i, float(csv_files[i][position_b + 2:position_a].replace(',', '.'))])
             i += 1
         on_v_locations.sort(key=lambda x: x[1])
 
@@ -5952,36 +6121,57 @@ def dpt_save_data(measurement_dict: dict):
         e_on = []
         vds_raw_on = []
         id_raw_on = []
+        dv_dt_on = []
+        di_dt_on = []
+        time_correction = 0
+        time_input = 0
 
         while measurement_points > sample_point:
-            # Load vds and Id pairs in increasing order
-            vds = np.genfromtxt(csv_files[on_v_locations[sample_point][0]], delimiter=',', skip_header=24)
-            Id = np.genfromtxt(csv_files[on_i_locations[sample_point][0]], delimiter=',', skip_header=24)
+            # Load vds_temp and id_temp pairs in increasing order
+            vds_temp = np.genfromtxt(csv_files[on_v_locations[sample_point][0]], delimiter=',', skip_header=24)
+            id_temp = np.genfromtxt(csv_files[on_i_locations[sample_point][0]], delimiter=',', skip_header=24)
 
-            vds_raw_on.append(np.array(vds))
-            id_raw_on.append(np.array(Id))
+            vds_raw_on.append(np.array(vds_temp))
+            id_raw_on.append(np.array(id_temp))
 
-            sample_length = len(vds)
-            sample_interval = abs(vds[1, 0] - vds[2, 0])
+            sample_length = len(vds_temp)
+            sample_interval = abs(vds_temp[1, 0] - vds_temp[2, 0])
             avg_interval = int(sample_length * 0.05)
             vds_avg_max = 0
             id_avg_max = 0
 
             ##############################
-            # Find the max. Id in steady state
+            # Find the max. id_temp in steady state
             ##############################
             i = 0
             while i <= avg_interval:
-                id_avg_max = id_avg_max + (Id[(sample_length - 3 - i), 1] / avg_interval)
+                id_avg_max = id_avg_max + (id_temp[(sample_length - 3 - i), 1] / avg_interval)
                 i += 1
 
             ##############################
-            # Find the max. vds in steady state
+            # Find the max. vds_temp in steady state
             ##############################
             i = 0
             while i <= avg_interval:
-                vds_avg_max = vds_avg_max + (vds[i, 1] / avg_interval)
+                vds_avg_max = vds_avg_max + (vds_temp[i, 1] / avg_interval)
                 i += 1
+
+            # Calculate dv/dt
+            dv_dt_counter_low = 0
+            while vds_temp[dv_dt_counter_low, 1] > (vds_avg_max * 0.8):
+                dv_dt_counter_low += 1
+
+            dv_dt_counter_high = dv_dt_counter_low
+            while vds_temp[dv_dt_counter_high, 1] > (vds_avg_max * 0.2):
+                dv_dt_counter_high += 1
+
+            di_dt_counter_low = 0
+            while id_temp[di_dt_counter_low, 1] < (id_avg_max * 0.2):
+                di_dt_counter_low += 1
+
+            di_dt_counter_high = di_dt_counter_low
+            while id_temp[di_dt_counter_high, 1] < (id_avg_max * 0.8):
+                di_dt_counter_high += 1
 
             ##############################
             # Find the starting point of the Eon integration
@@ -5989,16 +6179,47 @@ def dpt_save_data(measurement_dict: dict):
             ##############################
             i = 0
             e_on_temp = 0
-            while Id[i, 1] < (id_avg_max * on_is_limit):
+            while id_temp[i, 1] < (id_avg_max * on_is_limit):
                 i += 1
 
-            time_correction = 0
+            lower_integration_limit = i
+
             ##############################
             # Integrate the power with predefined integration limits
             ##############################
-            while vds[i + time_correction, 1] >= (vds_avg_max * on_vds_limit):
-                e_on_temp = e_on_temp + (vds[i + time_correction, 1] * Id[i, 1] * sample_interval)
+            while vds_temp[i - time_correction, 1] >= (vds_avg_max * on_vds_limit):
+                e_on_temp = e_on_temp + (vds_temp[i - time_correction, 1] * id_temp[i, 1] * sample_interval)
                 i += 1
+
+            upper_integration_limit = i
+
+            if measurement_dict['mode'] == 'analyze':
+                text1 = f"E_on = {(e_on_temp * 1000000).round(2)} µJ, Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                text2 = f"time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
+                fig, ax1 = plt.subplots()
+                ax1.set_xlabel("t / ns")
+                ax1.set_ylabel("Id / A", color='r')
+
+                ax1.plot(id_temp[:, 0] * 1000000000, id_temp[:, 1], color='r')
+                plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
+                plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
+                props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
+                         verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                ax1.text(0.5, .5, text2, transform=ax1.transAxes, fontsize=12,
+                         verticalalignment='center', horizontalalignment='left', bbox=props)
+                plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
+                ax2 = ax1.twinx()
+                ax2.set_ylabel('Uds / V', color='b')
+                ax2.plot(vds_temp[:, 0] * 1000000000 + float(time_input), vds_temp[:, 1], color='b')
+                plt.show()
+                time_input = input('Please give a value for time correction in ns')
+                if isfloat(time_input):
+                    time_correction = int(float(time_input) / (sample_interval * 1000000000))
+                    continue
+                else:
+                    time_correction = 0
+                    time_input = 0
 
             if measurement_dict['dataset_type'] == 'graph_r_e':
                 e_on.append([on_i_locations[sample_point][1], e_on_temp])
@@ -6007,6 +6228,11 @@ def dpt_save_data(measurement_dict: dict):
 
             if measurement_dict['dataset_type'] == 'graph_r_e' and measurement_dict['energies'] != 'both':
                 r_g_on_list.append(on_i_locations[sample_point][1])
+
+            dv_dt_on.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[dv_dt_counter_low, 1]) / (
+                        abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[dv_dt_counter_low, 0]) * 1000000000))
+            di_dt_on.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
+                        abs(vds_temp[di_dt_counter_high, 0] - vds_temp[di_dt_counter_low, 0]) * 1000000000))
 
             sample_point += 1
 
@@ -6029,7 +6255,9 @@ def dpt_save_data(measurement_dict: dict):
                      'graph_i_e': np.array([e_on_0, e_on_1]),
                      'graph_r_e': np.array([e_on_0, e_on_1]),
                      'e_x': float(e_on_1[0]),
-                     'i_x': id_avg_max}
+                     'i_x': id_avg_max,
+                     'dv_dt': dv_dt_on,
+                     'di_dt': di_dt_on}
 
         dpt_raw_data |= {'dpt_on_vds': vds_raw_on, 'dpt_on_id': id_raw_on}
 
@@ -6063,90 +6291,9 @@ def dpt_save_data(measurement_dict: dict):
     dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'raw_measurement_data': dpt_raw_data}
     return dpt_dict
 
-
-def build_dummy(attribute_name, attribute_value):
-    """
-            This function creates an dummy transistor which is usually used by update_dpt_measurement to append
-            new values to a existing transistor.
-
-            :param attribute_name: Name of the attribute you want to change.
-            :type attribute_name: str
-            :param attribute_value: Dict of data you want to add to given attribute.
-            :type attribute_value: dict
-            """
-
-    name = 'Dummy-Transistor'
-    type = 'IGBT'
-    author = 'Dummy-Author'
-    manufacturer = 'Fuji Electric'
-    housing_area = 367e-6
-    cooling_area = 160e-6
-    housing_type = 'TO247'
-    v_abs_max = 200
-    i_abs_max = 200
-    i_cont = 200
-    r_g_int = 10
-    t_j_max = 175
-    r_th_switch_cs = 0
-    r_th_diode_cs = 0
-    r_th_cs = 0.05
-
-    switch_args = {'t_j_max': t_j_max,
-                   attribute_name: attribute_value}
-    diode_args = {'t_j_max': t_j_max,
-                  attribute_name: attribute_value}
-    transistor_args = {'name': name,
-                       'type': type,
-                       'author': author,
-                       'manufacturer': manufacturer,
-                       'housing_area': housing_area,
-                       'cooling_area': cooling_area,
-                       'housing_type': housing_type,
-                       'v_abs_max': v_abs_max,
-                       'i_abs_max': i_abs_max,
-                       'i_cont': i_cont,
-                       'r_g_int': r_g_int,
-                       'r_th_cs': r_th_cs,
-                       'r_th_switch_cs': r_th_switch_cs,
-                       'r_th_diode_cs': r_th_diode_cs,
-                       attribute_name: attribute_value}
-
-    dummy_transistor = Transistor(transistor_args, switch_args, diode_args)
-    return dummy_transistor
-
-
-def update_dpt_measurement(transistor_name, measurement_data):
-    """
-        This function loads a transistor from the database and adds new measurement data.
-
-        :param transistor_name: Name of the transistor to be loaded.
-        :type transistor_name: str
-        :param measurement_data: Dict of data you want to add to given attribute.
-        :type measurement_data: dict
-
-        """
-
-    transistor_loaded = load(transistor_name)
-    collection = connect_local_TDB()
-    transistor_id = {'_id': transistor_loaded._id}
-
-    if measurement_data['e_off_meas'] is not None:
-        dummy_off = build_dummy('e_off_meas', measurement_data['e_off_meas'])
-        transistor_loaded.switch.e_off_meas.append(dummy_off.switch.e_off_meas[0])
-        transistor_dict = transistor_loaded.convert_to_dict()
-        new_value = {'$set': {'switch.e_off_meas': transistor_dict['switch']['e_off_meas']}}
-        collection.update_one(transistor_id, new_value)
-
-    if measurement_data['e_on_meas'] is not None:
-        dummy_on = build_dummy('e_on_meas', measurement_data['e_on_meas'])
-        transistor_loaded.switch.e_on_meas.append(dummy_on.switch.e_on_meas[0])
-        transistor_dict = transistor_loaded.convert_to_dict()
-        new_value = {'$set': {'switch.e_on_meas': transistor_dict['switch']['e_on_meas']}}
-        collection.update_one(transistor_id, new_value)
-
-    if measurement_data['dpt_raw_data'] is not None:
-        dummy_raw = build_dummy('raw_measurement_data', measurement_data['dpt_raw_data'])
-        transistor_loaded.raw_measurement_data.append(dummy_raw.raw_measurement_data[0])
-        transistor_dict = transistor_loaded.convert_to_dict()
-        new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
-        collection.update_one(transistor_id, new_value)
+def isfloat(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
