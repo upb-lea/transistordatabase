@@ -152,7 +152,7 @@ def Template():
         't_j': 25,
         'v_supply': 800,
         'i_g': 50e-3,
-        'graph_q_v': tdb.csv2array('gate_charge_100v.csv', first_x_to_0=True)
+        'graph_q_v': tdb.csv2array('gate_charge.csv', first_x_to_0=True)
     }  # insert csv here
 
     switch_ron_args_11 = {
@@ -246,6 +246,8 @@ def Template():
 
 if __name__ == '__main__':
     transistor = Template()
+
+    transistor.export_datasheet()
 
     ####################################
     # Method examples
