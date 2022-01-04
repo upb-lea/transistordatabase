@@ -604,7 +604,7 @@ class Transistor:
         :rtype: None
         """
         if switch_or_diode in ["diode", "both"]:
-            diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
+            self.wp.diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
             if self.wp.e_rr is None:
                 print("run diode.find_approx_wp: closest working point for t_j = {0} °C and {1} V:".format(t_j, v_g))
                 print("There is no err, may due to MOSFET, SiC-MOSFET or GaN device: Set err to [[0, 0], [0, 0]]")
@@ -619,14 +619,14 @@ class Transistor:
             # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
             #  object can "linearize itself".
             self.wp.diode_v_channel, self.wp.diode_r_channel = \
-                self.calc_lin_channel(diode_channel.t_j, diode_channel.v_g, i_channel, switch_or_diode="diode")
+                self.calc_lin_channel(self.wp.diode_channel.t_j, self.wp.diode_channel.v_g, i_channel, switch_or_diode="diode")
 
         if switch_or_diode in ["switch", "both"]:
-            switch_channel, self.wp.e_on, self.wp.e_off = self.switch.find_approx_wp(t_j, v_g, normalize_t_to_v)
+            self.wp.switch_channel, self.wp.e_on, self.wp.e_off = self.switch.find_approx_wp(t_j, v_g, normalize_t_to_v)
             # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
             #  object can "linearize itself".
             self.wp.switch_v_channel, self.wp.switch_r_channel = \
-                self.calc_lin_channel(switch_channel.t_j, switch_channel.v_g, i_channel, switch_or_diode="switch")
+                self.calc_lin_channel(self.wp.switch_channel.t_j, self.wp.switch_channel.v_g, i_channel, switch_or_diode="switch")
 
     def quickstart_wp(self) -> None:
         """
@@ -3515,8 +3515,12 @@ class Transistor:
         - Is a temporary workspace.
         """
         # type hints
-        v_channel: Optional[float]
-        r_channel: Optional[float]
+        switch_v_channel: Optional[float]
+        switch_r_channel: Optional[float]
+        diode_v_channel: Optional[float]
+        diode_r_channel: Optional[float]
+        switch_channel: Optional[float]
+        diode_channel: Optional[float]
         e_on: Optional[npt.NDArray[np.float64]]  #: Units: Row 1: A; Row 2: J
         e_off: Optional[npt.NDArray[np.float64]]  #: Units: Row 1: A; Row 2: J
         e_rr: Optional[npt.NDArray[np.float64]]  #: Units: Row 1: A; Row 2: J
@@ -3530,6 +3534,8 @@ class Transistor:
             self.switch_r_channel = None
             self.diode_v_channel = None
             self.diode_r_channel = None
+            self.switch_channel = None
+            self.diode_channel = None
             self.e_on = None
             self.e_off = None
             self.e_rr = None
@@ -5472,6 +5478,25 @@ def connect_local_TDB():
         raise MissingServerConnection(msg)
     else:
         return my_client.transistor_database.collection
+
+
+def drop_local_tdb():
+    """
+    Drop the local database
+
+    :raises pymongo.errors.ServerSelectionTimeoutError: if there is no mongoDB instance running
+    """
+    try:
+        max_server_delay = 1
+        host = "mongodb://localhost:27017/"
+        my_client = MongoClient(host, serverSelectionTimeoutMS=max_server_delay)
+        my_client.server_info()
+    except ServerSelectionTimeoutError:
+        msg = 'Make sure that your MongoDB instance is running. If not please install it from ' \
+              'https://docs.mongodb.com/manual/administration/install-community/'
+        raise MissingServerConnection(msg)
+    else:
+        my_client.drop_database('transistor_database')
 
 
 def load(transistor: [str, dict], collection_name: str = "local"):
