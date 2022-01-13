@@ -19,7 +19,7 @@ test_requirements = ['mongomock']
 
 setup(
     author="LEA - Uni Paderborn",
-    author_email='upblea@mail.upb.de',
+    author_email='tdb@lea.upb.de',
     python_requires='>=3.7',
     classifiers=[
         'Development Status :: 3 - Alpha',
