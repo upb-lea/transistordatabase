@@ -69,9 +69,9 @@ class Transistor:
     r_g_off_recommended: Optional[float]  #: Recommended turn off gate resistance of switch (Optional key)
     raw_measurement_data: Optional[List["RawMeasurementData"]]  #: Member instance for class type RawMeasurementData
     # Thermal data. See git for equivalent thermal_foster circuit diagram.
-    r_th_cs: Optional[float]  #: Module specific case to sink thermal resistance.  Units in K/W  (Optional key)
-    r_th_switch_cs: Optional[float]  #: Switch specific case to sink thermal resistance. Units in K/W  (Optional key)
-    r_th_diode_cs: Optional[float]  #: Diode specific case to sink thermal resistance. Units in K/W  (Optional key)
+    r_th_cs: Optional[float]  #: Module specific case to sink thermal resistance.  Units in K/W  (Mandatory key)
+    r_th_switch_cs: Optional[float]  #: Switch specific case to sink thermal resistance. Units in K/W  (Mandatory key)
+    r_th_diode_cs: Optional[float]  #: Diode specific case to sink thermal resistance. Units in K/W  (Mandatory key)
     # Absolute maximum ratings
     v_abs_max: float  #: Absolute maximum voltage rating. Units in V  (Mandatory key)
     i_abs_max: float  #: Absolute maximum current rating. Units in A  (Mandatory key)
