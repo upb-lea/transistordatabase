@@ -3387,8 +3387,8 @@ class Transistor:
         v_supply: float  #: Supply voltage. Units in V (Mandatory key)
         v_g: float  #: Gate voltage. Units in V (Mandatory key)
         v_g_off: Optional[float]  #: Gate voltage for turn off. Units in V
-        load_inductance: Optional[float]  #: Load inductance. Units in µH
-        commutation_inductance: Optional[float]  #: Commutation inductance. Units in µH
+        load_inductance: Optional[float]  #: Load inductance. Units in H
+        commutation_inductance: Optional[float]  #: Commutation inductance. Units in H
         # Scalar dataset-parameters. Some of these can be 'None' depending on the dataset_type.
         e_x: Optional[float]  #: Scalar dataset-parameter - switching energy. Units in J
         r_g: Optional[float]  #: Scalar dataset-parameter - gate resistance. Units in Ohm
@@ -5861,12 +5861,16 @@ def dpt_save_data(measurement_dict: dict) -> dict:
         dpt_save_dict = {
             'path': 'C:/Users/.../GaN-Systems/400V/*.csv',
             'dataset_type': 'graph_i_e',
-            'load_inductance': 750,
+            'comment': '',
+            'load_inductance': 750e-6,
+            'commutation_inductance': 15.63e-9,
+            'commutation_device': 'IDH06G65C6',
             'measurement_date': None,
             'measurement_testbench': 'LEA-UPB Testbench',
             'v_g': 12,
             'v_g_off': 0,
             'energies': 'both',
+            'r_g_off': 1.8,
             'integration_interval': 'IEC 60747-8',
             'mode': 'analyze'}
 
