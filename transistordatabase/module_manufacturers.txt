@@ -10,3 +10,4 @@ Vincotech
 Mitsubishi Electric
 Hitachi ABB
 GaN Systems
+ROHM Semiconductor
