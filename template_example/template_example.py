@@ -11,35 +11,6 @@ import transistordatabase as tdb
 
 # Template to generate a transistor
 def Template():
-    """
-    * Initial author: N. Foerster
-    * Date of creation: 8.2.2021
-    * Last modified by: -
-    * Date of modification: -
-    * Version: 1.0.0
-    * Compatibility: Python 3.9
-    * Other files required:
-    * Link to function:
-    Syntax:
-
-
-    Description:
-    Template to generate a transistor object
-
-    Input parameters:
-
-
-    Output parameters:
-     * Transistor
-
-    Example:
-
-
-    Known Bugs:
-
-
-    """
-
     ####################################
     # transistor parameters
     ####################################
