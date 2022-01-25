@@ -393,12 +393,12 @@ def test_check_str():
         tdb.check_str([1, 2, 3])
 
 
-@patch.object(tdb, "connect_local_TDB")
-def test_connect_local_TDB(connect_local_TDB):
+@patch.object(tdb, "connect_local_tdb")
+def test_connect_local_tdb(connect_local_tdb):
     mocked_mongo = mongomock.MongoClient()
     db = mocked_mongo['transistor_databasefake']
-    connect_local_TDB.return_value = db.collection
-    result = tdb.connect_local_TDB()
+    connect_local_tdb.return_value = db.collection
+    result = tdb.connect_local_tdb()
     assert result.full_name == db.collection.full_name
 
 
@@ -440,7 +440,7 @@ def test_add_soa_data(my_database, monkeypatch):
     def mock_return():
         return fake_collection
 
-    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_tdb', mock_return)
 
     soa_list_one = copy.deepcopy([soa_object_one, soa_object_two])
     transistor.add_soa_data(soa_list_one, 'switch', True)
@@ -491,7 +491,7 @@ def test_add_gate_charge_data(my_database, monkeypatch):
     def mock_return():
         return fake_collection
 
-    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_tdb', mock_return)
 
     qc_list_one = copy.deepcopy([switch_charge_curves_100])
     transistor.add_gate_charge_data(qc_list_one, True)
@@ -540,10 +540,10 @@ def test_add_temp_depend_resis_data(my_database, monkeypatch):
     def mock_return():
         return fake_collection
 
-    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_TDB', mock_return)
+    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_tdb', mock_return)
 
     rth_list_one = copy.deepcopy([switch_ron_args])
-    transistor.add_temp_depend_resis_data(rth_list_one, True)
+    transistor.add_temp_depend_resistor_data(rth_list_one, True)
     local_transistor = fake_collection.find_one({'_id': transistor._id})
     assert len(local_transistor['switch']['r_channel_th']) == len(transistor.switch.r_channel_th)
 
@@ -557,12 +557,12 @@ def test_add_temp_depend_resis_data(my_database, monkeypatch):
             assert item[key] == local_rth_list[index][key]
     # deep copy is necessary as the graph_t_r in list format is modified when the add_temp_depend_resis_data is called
     rth_list_two = copy.deepcopy([switch_ron_args, switch_ron_args_2])
-    transistor.add_temp_depend_resis_data(rth_list_two)
+    transistor.add_temp_depend_resistor_data(rth_list_two)
     local_transistor = fake_collection.find_one({'_id': transistor._id})
     assert len(local_transistor['switch']['r_channel_th']) == 2
     # deep copy is necessary as the graph_t_r in list format is modified when the add_temp_depend_resis_data is called
     rth_list_three = copy.deepcopy([switch_ron_args_2, switch_ron_args_2, switch_ron_args, switch_ron_args])
-    transistor.add_temp_depend_resis_data(rth_list_three)
+    transistor.add_temp_depend_resistor_data(rth_list_three)
     assert len(transistor.switch.r_channel_th) == 2
 
 

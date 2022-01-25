@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 import re
 import os
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Dict
 from pymongo.errors import ServerSelectionTimeoutError
 from matplotlib import pyplot as plt
 from bson.objectid import ObjectId
@@ -307,7 +307,7 @@ class Transistor:
         :rtype: None
         """
         if collection == "local":
-            collection = connect_local_TDB()
+            collection = connect_local_tdb()
         transistor_dict = self.convert_to_dict()
         if transistor_dict.get("_id") is not None:
             _id = transistor_dict["_id"]
@@ -2332,7 +2332,7 @@ class Transistor:
             return d
 
         def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list = None,
-                                   switch_loss_dataset_type: str = "graph_i_e") -> int:
+                                   switch_loss_dataset_type: str = "graph_i_e") -> Dict:
             """
             Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets. Applicable to either plecs exporter or gecko exporter
 
@@ -4465,7 +4465,7 @@ class Transistor:
         :type measurement_data: dict
         """
 
-        collection = connect_local_TDB()
+        collection = connect_local_tdb()
         transistor_id = {'_id': self._id}
 
         if measurement_data['e_off_meas'] is not None:
@@ -4592,7 +4592,7 @@ class Transistor:
 
         # appending the list to the transistor object
         if len(soa_list) > init_length:
-            collection = connect_local_TDB()
+            collection = connect_local_tdb()
             if switch_type == 'switch':
                 self.switch.soa.clear()
                 for soa_item in soa_list:
@@ -4661,13 +4661,13 @@ class Transistor:
                 self.switch.charge_curve.append(Transistor.GateChargeCurve(charge_item))
                 charge_item['graph_q_v'] = charge_item['graph_q_v'].tolist()
             charge_object = {'$set': {'switch.charge_curve': charge_list}}
-            collection = connect_local_TDB()
+            collection = connect_local_tdb()
             collection.update_one(transistor_id, charge_object)
             print('Updated successfully!')
         else:
             print('No new item to add!')
 
-    def add_temp_depend_resis_data(self, r_channel_data: [dict, list], clear: bool = False):
+    def add_temp_depend_resistor_data(self, r_channel_data: [dict, list], clear: bool = False):
         """
         A transistor method to add the TemperatureDependResistance class objects to the loaded transistor.switch.r_channel_th attribute.
         .. note:: Transistor object must be loaded first before calling this method
@@ -4717,7 +4717,7 @@ class Transistor:
                 self.switch.r_channel_th.append(Transistor.TemperatureDependResistance(r_channel_item))
                 r_channel_item['graph_t_r'] = r_channel_item['graph_t_r'].tolist()
             r_channel_object = {'$set': {'switch.r_channel_th': r_channel_list}}
-            collection = connect_local_TDB()
+            collection = connect_local_tdb()
             collection.update_one(transistor_id, r_channel_object)
             print('Updated successfully!')
         else:
@@ -5392,6 +5392,11 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
 
 
 def print_TDB(filters: Optional[List[str]] = None, collection_name: str = "local") -> List[str]:
+    warnings.warn("'print_TDB'-function will be deprecated soon. Use 'print_tdb' instead.")
+    return print_tdb(filters=filters, collection_name=collection_name)
+
+
+def print_tdb(filters: Optional[List[str]] = None, collection_name: str = "local") -> List[str]:
     """
     Print all transistorelements stored in the local database
 
@@ -5416,11 +5421,11 @@ def print_TDB(filters: Optional[List[str]] = None, collection_name: str = "local
     filters = filters or []
 
     if collection_name == "local":
-        mongodb_collection = connect_local_TDB()
+        mongodb_collection = connect_local_tdb()
     else:
         # TODO: support other collections. As of now, other database connections also connects to local-tdb
         warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
-        mongodb_collection = connect_local_TDB()
+        mongodb_collection = connect_local_tdb()
     if not isinstance(filters, list):
         if isinstance(filters, str):
             filters = [filters]
@@ -5441,6 +5446,10 @@ def print_TDB(filters: Optional[List[str]] = None, collection_name: str = "local
 
 
 def connect_TDB(host: str):
+    warnings.warn("'connect_TDB'-function will be deprecated soon. Use 'connect_tdb' instead.")
+    return connect_tdb(host)
+
+def connect_tdb(host: str):
     """
     A method for establishing connection with transistordatabase_exchange.
 
@@ -5454,8 +5463,12 @@ def connect_TDB(host: str):
     my_transistor_database = MongoClient(host)
     return my_transistor_database.transistor_database.collection
 
-
 def connect_local_TDB():
+    warnings.warn("'connect_local_TDB'-function will be deprecated soon. Use 'connect_local_tdb' instead.")
+    return connect_local_tdb()
+
+
+def connect_local_tdb():
     """
     A method for establishing connection with transistordatabase_exchange.
     Internally used by
@@ -5519,11 +5532,11 @@ def load(transistor: [str, dict], collection_name: str = "local"):
     try:
         find_filter = {'name': transistor} if type(transistor) == str else transistor
         if collection_name == "local":
-            mongodb_collection = connect_local_TDB()
+            mongodb_collection = connect_local_tdb()
         else:
             # TODO: support other collections. As of now, other database connections also connects to local-tdb
             warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
-            mongodb_collection = connect_local_TDB()
+            mongodb_collection = connect_local_tdb()
         # ToDo: Implement case where different transistors fit the filter criteria.
         selected_trans_dict = mongodb_collection.find_one(find_filter)
         if selected_trans_dict is None:
@@ -5677,7 +5690,7 @@ def update_from_fileexchange(collection: str = "local", overwrite: bool = True) 
         git.Repo.clone_from(repo_url, local_dir)
 
     if collection == "local":
-        collection = connect_local_TDB()
+        collection = connect_local_tdb()
 
     for subdir, dirs, files in os.walk(local_dir):
         for file in files:
@@ -5874,7 +5887,8 @@ def dpt_save_data(measurement_dict: dict) -> dict:
             'integration_interval': 'IEC 60747-8',
             'mode': 'analyze'}
 
-        >>>dpt_energies_dict = tdb.dpt_save_data(dpt_save_dict)
+        >>> import transistordatabase as tdb
+        >>> dpt_energies_dict = tdb.dpt_save_data(dpt_save_dict)
 
         """
 
