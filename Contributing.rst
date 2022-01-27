@@ -66,6 +66,7 @@ Use type hints
 Type Hints are used 
 * for all function/classes handover parameters and function return values
 * Function/Classes internal parameters do not need type-hints
+* Due to backward compatibility with python 3.8, type-hints must be imported via 'from typing import List, Dict, Tuple'.
 * Find a type hint cheat sheet `here <https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html>`__.
 
 
