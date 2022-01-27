@@ -440,7 +440,7 @@ def test_add_soa_data(my_database, monkeypatch):
     def mock_return():
         return fake_collection
 
-    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_tdb', mock_return)
+    monkeypatch.setattr('transistordatabase.tdb_classes.connect_local_tdb', mock_return)
 
     soa_list_one = copy.deepcopy([soa_object_one, soa_object_two])
     transistor.add_soa_data(soa_list_one, 'switch', True)
@@ -491,7 +491,7 @@ def test_add_gate_charge_data(my_database, monkeypatch):
     def mock_return():
         return fake_collection
 
-    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_tdb', mock_return)
+    monkeypatch.setattr('transistordatabase.tdb_classes.connect_local_tdb', mock_return)
 
     qc_list_one = copy.deepcopy([switch_charge_curves_100])
     transistor.add_gate_charge_data(qc_list_one, True)
@@ -540,7 +540,7 @@ def test_add_temp_depend_resis_data(my_database, monkeypatch):
     def mock_return():
         return fake_collection
 
-    monkeypatch.setattr('transistordatabase.databaseClasses.connect_local_tdb', mock_return)
+    monkeypatch.setattr('transistordatabase.tdb_classes.connect_local_tdb', mock_return)
 
     rth_list_one = copy.deepcopy([switch_ron_args])
     transistor.add_temp_depend_resistor_data(rth_list_one, True)
