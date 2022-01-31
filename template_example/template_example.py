@@ -271,14 +271,14 @@ if __name__ == '__main__':
     ####################################
 
     # print ALL database content
-    # tdb.print_TDB()
+    # tdb.print_tdb()
 
     # print database content of housing and datasheet hyperlink
-    # tdb.print_TDB(['housing_type','datasheet_hyperlink'])
+    # tdb.print_tdb(['housing_type','datasheet_hyperlink'])
 
     # before init mongo, you need to install mongodb and start the database via the command line by using 'mongo' command
     # init mongodb
-    # collection = tdb.connect_local_TDB()  # Collection
+    # collection = tdb.connect_local_tdb()  # Collection
 
     # reset the mongodb database
     # collection.drop()
@@ -302,7 +302,7 @@ if __name__ == '__main__':
     # print(transistor_imported.switch.t_j_max)
 
     # Rename transistor arguments
-    # tdb.connect_local_TDB().update_many({}, {"$rename": {"transistor_type": "type"}})
+    # tdb.connect_local_tdb().update_many({}, {"$rename": {"transistor_type": "type"}})
 
     ####################################
     # Examples to fill-in transistor.wp-class

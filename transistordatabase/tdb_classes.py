@@ -4759,7 +4759,7 @@ def export_all_datasheets(filter_list: list = None):
 
     :return: None
     """
-    transistor_list = print_TDB()
+    transistor_list = print_tdb()
     filtered_list = list()
     html_list = list()
     pdf_name_list = list()

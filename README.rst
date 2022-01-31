@@ -102,7 +102,7 @@ Copy this example to a new pycharm project.
     tdb.update_from_fileexchange()
 
     # print the database
-    tdb.print_TDB()
+    tdb.print_tdb()
 
     # load a transistor from the database
     transistor_loaded = tdb.load('CREE_C3M0016120K')
@@ -196,7 +196,7 @@ Print all transistors inside the database
 
 .. code-block::
 
-    tdb.print_TDB()
+    tdb.print_tdb()
 
 If you want to store the transistor list, this function returns the names in a variable. Next option is the usage of filters, e.g. print the housing type and the hyperlink to the datasheet. All database entries can be used as filter.
 
@@ -421,23 +421,6 @@ History and project status
 This project started in 2020 as a side project and was initially written in matlab. It quickly became clear that the project was no longer a side project. The project should be completely rewritten, because many new complex levels have been added. To place the project in the open source world, the programming language python is used.
 
 In January 2021 a very early alpha status is reached. First pip package is provided in may 2021.
-
-Authors and contributors
----------------------------
-Actual developers
-
-    * Nikolas Förster
-    * Henning Steinhagen
-    * Mohan Nagella
-
-Project leading
-
-    * Nikolas Förster
-    * Philipp Rehlaender
-
-Developers in the past
-
-    * Manuel Klädtke
 
 License
 -------

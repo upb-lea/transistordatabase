@@ -203,9 +203,9 @@ def print_tdb(filters: list[str] | None = None, collection_name: str = "local") 
     :Example:
 
     >>> import transistordatabase as tdb
-    >>> tdb.print_TDB()
+    >>> tdb.print_tdb()
     >>> # or
-    >>> tdb.print_TDB(collection = 'type')
+    >>> tdb.print_tdb(collection = 'type')
     """
     # Note: Never use mutable default arguments
     # see https://florimond.dev/en/posts/2018/08/python-mutable-defaults-are-the-source-of-all-evil/
