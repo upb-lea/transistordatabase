@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>transistordatabase package &mdash; transistordatabase(TDB) 0.2.10 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -64,24 +65,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="module-databaseClasses">
+  <section id="module-databaseClasses">
 <span id="transistordatabase-package"></span><h1>transistordatabase package<a class="headerlink" href="#module-databaseClasses" title="Permalink to this headline"></a></h1>
 <dl class="py exception">
 <dt class="sig sig-object py" id="databaseClasses.MissingDataError">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">MissingDataError</span></span><a class="headerlink" href="#databaseClasses.MissingDataError" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">MissingDataError</span></span><a class="headerlink" href="#databaseClasses.MissingDataError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">Transistor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transistor_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diode_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">Transistor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transistor_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diode_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Groups data of all other classes for a single transistor. Methods are specified in such a way that only
 user-interaction with this class is necessary (ToDo!)
 Documentation on how to add or extract a transistor-object to/from the database can be found in (ToDo!)</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.ChannelData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">ChannelData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.ChannelData" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ChannelData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.ChannelData" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
 For different temperatures: Create additional ChannelData-objects and store them as a list in the respective
@@ -91,7 +92,7 @@ This data can be used to linearize the transistor at a specific operating point<
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Diode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diode_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Diode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diode_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
 multiple channel- and e_rr- datasets.</p>
@@ -127,7 +128,7 @@ multiple channel- and e_rr- datasets.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FosterThermalModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FosterThermalModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
 temperature behavior as a thermal_foster RC-network. The necessary parameters can be estimated by curve-fitting
@@ -137,7 +138,7 @@ parameters R, C, and tau.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.LinearizedModel">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">LinearizedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearizedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
 t_j, i_channel and (not for all diode types) v_g.</p>
@@ -145,7 +146,7 @@ t_j, i_channel and (not for all diode types) v_g.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains data associated with the switchting-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
 channel-, e_on- and e_off-datasets.</p>
@@ -195,7 +196,7 @@ e_off
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">SwitchEnergyData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SwitchEnergyData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is
 already implicitly specified by how the respective objects of this class are used in a Diode- or Switch-object.
@@ -211,7 +212,7 @@ to be specified by the dataset_type-property.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.VoltageDependentCapacitance">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">VoltageDependentCapacitance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VoltageDependentCapacitance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
 For different temperatures: Create additional VoltageDependentCapacitance-objects and store them as a list in the transistor-object.</p>
@@ -219,7 +220,7 @@ For different temperatures: Create additional VoltageDependentCapacitance-object
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">WP</span></span><a class="headerlink" href="#databaseClasses.Transistor.WP" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WP</span></span><a class="headerlink" href="#databaseClasses.Transistor.WP" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class WP is for user calculations in python. The user is able to linearize the channel and store the result in
 transistor.wp . Doing so, it will be easy to handle transistor objects in later calculating code.
@@ -378,7 +379,7 @@ Note: r_e_object may has not same voltage as i_e_object. #ToDo:  r_e_object may 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.isvalid_dict">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">isvalid_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.isvalid_dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isvalid_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.isvalid_dict" title="Permalink to this definition"></a></dt>
 <dd><p>This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
 are present, have the right type and permitted values (e.g. ‘MOSFET’ or ‘IGBT’ or ‘SiC-MOSFET’ for ‘type’).
 Returns ‘False’ if dictionary is ‘None’ or Empty. These cases should be handled outside this method.
@@ -557,7 +558,7 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
 :return: -</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
@@ -598,6 +599,7 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
       <dd><a href="../0.2.14/transistordatabase.html">0.2.14</a></dd>
       <dd><a href="../0.3.0/transistordatabase.html">0.3.0</a></dd>
       <dd><a href="../0.3.1/transistordatabase.html">0.3.1</a></dd>
+      <dd><a href="../0.3.2/transistordatabase.html">0.3.2</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>

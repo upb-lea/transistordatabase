@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>transistordatabase(TDB) &mdash; transistordatabase(TDB) 0.3.1 documentation</title>
+  <title>transistordatabase(TDB) &mdash; transistordatabase(TDB) 0.3.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -71,7 +72,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="transistordatabase-tdb">
+  <section id="transistordatabase-tdb">
 <h1>transistordatabase(TDB)<a class="headerlink" href="#transistordatabase-tdb" title="Permalink to this headline"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
@@ -139,8 +140,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#about"><span class="sectnum">6.3</span> About</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="intro.html#history-and-project-status"><span class="sectnum">6.3.1</span> History and project status</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#authors-and-contributors"><span class="sectnum">6.3.2</span> Authors and contributors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#license"><span class="sectnum">6.3.3</span> License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#license"><span class="sectnum">6.3.2</span> License</a></li>
 </ul>
 </li>
 </ul>
@@ -152,15 +152,21 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#write-code">Write Code</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="contribute.html#sphinx-documentation-using-docstrings">Sphinx documentation using docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#code-structure">Code Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#folder-and-file-structure">Folder and File Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#packages-and-dependencies">Packages and Dependencies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contribute.html#use-type-hints">Use type hints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#sphinx-documentation-using-docstrings">Sphinx documentation using docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#unittesting-with-pytest">unittesting with pytest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#update-the-changelog">update the changelog</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="contribute.html#write-tests">Write Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#install-and-setup-pytest">Install and setup pytest</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="contribute.html#configuring-pycharm">Configuring Pycharm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contribute.html#writing-a-test-case">Writing a test case</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#install-and-setup-sphinx">Install and setup Sphinx</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#release-workflow">Release Workflow</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="contribute.html#update-version-strings">Update version strings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contribute.html#make-sure-that-new-functions-methods-classes-are-included-to-the-documentation">Make sure that new functions/methods/classes are included to the documentation</a></li>
@@ -176,20 +182,20 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="transistordatabase.html">Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="transistordatabase.html#the-transistor-class">The <code class="docutils literal notranslate"><span class="pre">Transistor</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="transistordatabase.html#module-transistordatabase.databaseClasses">General methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transistordatabase.html#module-transistordatabase.tdb_functions">General methods</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="indices-and-tables">
+</section>
+<section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
+</section>
 
 
            </div>
@@ -230,6 +236,7 @@
       <dd><a href="../0.2.14/index.html">0.2.14</a></dd>
       <dd><a href="../0.3.0/index.html">0.3.0</a></dd>
       <dd><a href="../0.3.1/index.html">0.3.1</a></dd>
+      <dd><a href="../0.3.2/index.html">0.3.2</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>

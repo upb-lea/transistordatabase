@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Documentation &mdash; transistordatabase(TDB) 0.2.11 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -73,13 +74,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="documentation">
+  <section id="documentation">
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline"></a></h1>
-<div class="section" id="the-transistor-class">
+<section id="the-transistor-class">
 <h2>The <code class="docutils literal notranslate"><span class="pre">Transistor</span></code> class<a class="headerlink" href="#the-transistor-class" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">Transistor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transistor_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diode_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">Transistor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transistor_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diode_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Transistor object which is the core class of transistordatabse module. Contains subclasses like Switch, Diode, FosterThermalModel etc, and other child classes
 using which all the features and functionalities of this module are based and developed.</p>
@@ -92,7 +93,7 @@ using which all the features and functionalities of this module are based and de
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transistor_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diode_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transistor_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diode_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Takes in the following dictionary arguments for creating and initializing the transistor object. isvalid_dict() method is applied on transistor_args object
 to validate the argument. Else TypeError exception is raised. Module manufacturer type and housing type data validations are performed for matching the given
 values to the pre-existed types stored in the form of ‘housing.txt’ and ‘module_manufacturer.txt’ files.</p>
@@ -115,193 +116,193 @@ values to the pre-existed types stored in the form of ‘housing.txt’ and ‘m
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.name" title="Permalink to this definition"></a></dt>
 <dd><p>Name of the transistor. Choose as specific as possible. (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.type" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.type" title="Permalink to this definition"></a></dt>
 <dd><p>Specifies the type of module either e.g IGBT, MOSFET, SiC MOSFET etc. (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.author">
-<span class="sig-name descname"><span class="pre">author</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.author" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">author</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.author" title="Permalink to this definition"></a></dt>
 <dd><p>The author of the module specific object. Usually added when creating and adding a new datasheet module using template.py. (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.template_version">
-<span class="sig-name descname"><span class="pre">template_version</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.template_version" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">template_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.template_version" title="Permalink to this definition"></a></dt>
 <dd><p>Specifies the template version using which a new datasheet module is created. (Mandatory/Automatic)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.template_date">
-<span class="sig-name descname"><span class="pre">template_date</span></span><em class="property"><span class="pre">:</span> <span class="pre">datetime.datetime</span></em><a class="headerlink" href="#databaseClasses.Transistor.template_date" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">template_date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime.datetime</span></em><a class="headerlink" href="#databaseClasses.Transistor.template_date" title="Permalink to this definition"></a></dt>
 <dd><p>Specifies the date and time at which the template in created. (Mandatory/Automatic)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.creation_date">
-<span class="sig-name descname"><span class="pre">creation_date</span></span><em class="property"><span class="pre">:</span> <span class="pre">datetime.datetime</span></em><a class="headerlink" href="#databaseClasses.Transistor.creation_date" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">creation_date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime.datetime</span></em><a class="headerlink" href="#databaseClasses.Transistor.creation_date" title="Permalink to this definition"></a></dt>
 <dd><p>Specifies the date and time of the new transistor module that is created using template. (Mandatory/Automatic)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.comment">
-<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.comment" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.comment" title="Permalink to this definition"></a></dt>
 <dd><p>Any user specific comment created when adding a new datasheet module. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.datasheet_hyperlink">
-<span class="sig-name descname"><span class="pre">datasheet_hyperlink</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.datasheet_hyperlink" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">datasheet_hyperlink</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.datasheet_hyperlink" title="Permalink to this definition"></a></dt>
 <dd><p>As the name specifies, provides the hyperlink of the datasheet that is being referred to. Should be a valid link if specified(Optional)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.datasheet_date">
-<span class="sig-name descname"><span class="pre">datasheet_date</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.datasheet_date" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">datasheet_date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.datasheet_date" title="Permalink to this definition"></a></dt>
 <dd><p>pymongo cannot encode date =&gt; always save as datetime. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.datasheet_version">
-<span class="sig-name descname"><span class="pre">datasheet_version</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.datasheet_version" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">datasheet_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.datasheet_version" title="Permalink to this definition"></a></dt>
 <dd><p>Specifies the version of the module manufacturer datasheet. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.housing_area">
-<span class="sig-name descname"><span class="pre">housing_area</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.housing_area" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">housing_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.housing_area" title="Permalink to this definition"></a></dt>
 <dd><p>Housing area extracted from datasheet. Units in m^2. (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.cooling_area">
-<span class="sig-name descname"><span class="pre">cooling_area</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.cooling_area" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">cooling_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.cooling_area" title="Permalink to this definition"></a></dt>
 <dd><p>Housing area extracted from datasheet. Units in m^2. (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.t_c_max">
-<span class="sig-name descname"><span class="pre">t_c_max</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.t_c_max" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t_c_max</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.t_c_max" title="Permalink to this definition"></a></dt>
 <dd><p>Module specific maximum junction temperature. Units in °C (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.r_g_int">
-<span class="sig-name descname"><span class="pre">r_g_int</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.r_g_int" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_g_int</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.r_g_int" title="Permalink to this definition"></a></dt>
 <dd><p>Internal gate resistance. Units in Ohm (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.c_oss_fix">
-<span class="sig-name descname"><span class="pre">c_oss_fix</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_oss_fix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">c_oss_fix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_oss_fix" title="Permalink to this definition"></a></dt>
 <dd><p>Parasitic constant capacitance. Units in F  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.c_iss_fix">
-<span class="sig-name descname"><span class="pre">c_iss_fix</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_iss_fix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">c_iss_fix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_iss_fix" title="Permalink to this definition"></a></dt>
 <dd><p>Parasitic constant capacitance. Units in F  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.c_rss_fix">
-<span class="sig-name descname"><span class="pre">c_rss_fix</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_rss_fix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">c_rss_fix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_rss_fix" title="Permalink to this definition"></a></dt>
 <dd><p>Parasitic constant capacitance. Units in F  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.housing_type">
-<span class="sig-name descname"><span class="pre">housing_type</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.housing_type" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">housing_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.housing_type" title="Permalink to this definition"></a></dt>
 <dd><p>e.g. TO-220, etc. Must be from a list of specific strings. (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.manufacturer">
-<span class="sig-name descname"><span class="pre">manufacturer</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.manufacturer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manufacturer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.manufacturer" title="Permalink to this definition"></a></dt>
 <dd><p>Provides information of the module maufacturer. (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.r_th_cs">
-<span class="sig-name descname"><span class="pre">r_th_cs</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.r_th_cs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_th_cs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.r_th_cs" title="Permalink to this definition"></a></dt>
 <dd><p>Module specific case to sink thermal resistance.  Units in K/W  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.r_th_switch_cs">
-<span class="sig-name descname"><span class="pre">r_th_switch_cs</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.r_th_switch_cs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_th_switch_cs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.r_th_switch_cs" title="Permalink to this definition"></a></dt>
 <dd><p>Switch specific case to sink thermal resistance. Units in K/W  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.r_th_diode_cs">
-<span class="sig-name descname"><span class="pre">r_th_diode_cs</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.r_th_diode_cs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_th_diode_cs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.r_th_diode_cs" title="Permalink to this definition"></a></dt>
 <dd><p>Diode specifc case to sink thermal resistance. Units in K/W  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.v_abs_max">
-<span class="sig-name descname"><span class="pre">v_abs_max</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.v_abs_max" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_abs_max</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.v_abs_max" title="Permalink to this definition"></a></dt>
 <dd><p>Absolute maximum voltage rating. Units in V  (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.i_abs_max">
-<span class="sig-name descname"><span class="pre">i_abs_max</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.i_abs_max" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">i_abs_max</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.i_abs_max" title="Permalink to this definition"></a></dt>
 <dd><p>Absolute maximum current rating. Units in A  (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.i_cont">
-<span class="sig-name descname"><span class="pre">i_cont</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.i_cont" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">i_cont</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.i_cont" title="Permalink to this definition"></a></dt>
 <dd><p>Module specific continuous current. Units in  A e.g. Fuji = I_c, Semikron = I_c,nom (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.c_oss">
-<span class="sig-name descname"><span class="pre">c_oss</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="databaseClasses.Transistor.VoltageDependentCapacitance"><span class="pre">VoltageDependentCapacitance</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_oss" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">c_oss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="databaseClasses.Transistor.VoltageDependentCapacitance"><span class="pre">VoltageDependentCapacitance</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_oss" title="Permalink to this definition"></a></dt>
 <dd><p>List of VoltageDependentCapacitance. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.c_iss">
-<span class="sig-name descname"><span class="pre">c_iss</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="databaseClasses.Transistor.VoltageDependentCapacitance"><span class="pre">VoltageDependentCapacitance</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_iss" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">c_iss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="databaseClasses.Transistor.VoltageDependentCapacitance"><span class="pre">VoltageDependentCapacitance</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_iss" title="Permalink to this definition"></a></dt>
 <dd><p>List of VoltageDependentCapacitance. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.c_rss">
-<span class="sig-name descname"><span class="pre">c_rss</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="databaseClasses.Transistor.VoltageDependentCapacitance"><span class="pre">VoltageDependentCapacitance</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_rss" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">c_rss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="databaseClasses.Transistor.VoltageDependentCapacitance"><span class="pre">VoltageDependentCapacitance</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.c_rss" title="Permalink to this definition"></a></dt>
 <dd><p>List of VoltageDependentCapacitance. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.graph_v_ecoss">
-<span class="sig-name descname"><span class="pre">graph_v_ecoss</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.graph_v_ecoss" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">graph_v_ecoss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.graph_v_ecoss" title="Permalink to this definition"></a></dt>
 <dd><p>Member instance for storing the voltage dependant capacitance graph in the form of 2D numpy array. Units of Row 1 = V; Row 2 = J  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.diode">
-<span class="sig-name descname"><span class="pre">diode</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#databaseClasses.Transistor.Diode" title="databaseClasses.Transistor.Diode"><span class="pre">Diode</span></a></em><a class="headerlink" href="#databaseClasses.Transistor.diode" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">diode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#databaseClasses.Transistor.Diode" title="databaseClasses.Transistor.Diode"><span class="pre">Diode</span></a></em><a class="headerlink" href="#databaseClasses.Transistor.diode" title="Permalink to this definition"></a></dt>
 <dd><p>Member instance for class type Diode (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.switch">
-<span class="sig-name descname"><span class="pre">switch</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#databaseClasses.Transistor.Switch" title="databaseClasses.Transistor.Switch"><span class="pre">Switch</span></a></em><a class="headerlink" href="#databaseClasses.Transistor.switch" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">switch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#databaseClasses.Transistor.Switch" title="databaseClasses.Transistor.Switch"><span class="pre">Switch</span></a></em><a class="headerlink" href="#databaseClasses.Transistor.switch" title="Permalink to this definition"></a></dt>
 <dd><p>Member instance for class type Switch (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'local'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.save" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'local'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.save" title="Permalink to this definition"></a></dt>
 <dd><p>The method save the transistor object to local mongodb database.
 Currently receives the execution instructions from update_from_fileexchange(..)</p>
 <dl class="field-list simple">
@@ -316,7 +317,7 @@ Currently receives the execution instructions from update_from_fileexchange(..)<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.export_json">
-<span class="sig-name descname"><span class="pre">export_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.export_json" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">export_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.export_json" title="Permalink to this definition"></a></dt>
 <dd><p>Exports the transistor object to .json file, e.g. to share this file on fileexchange on github</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -344,7 +345,7 @@ Currently receives the execution instructions from update_from_fileexchange(..)<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.isvalid_dict">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">isvalid_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.isvalid_dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isvalid_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.isvalid_dict" title="Permalink to this definition"></a></dt>
 <dd><p>This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
 are present, have the right type and permitted values (e.g. ‘MOSFET’ or ‘IGBT’ or ‘SiC-MOSFET’ for ‘type’).
 Returns ‘False’ if dictionary is ‘None’ or Empty. These cases should be handled outside this method.
@@ -378,7 +379,7 @@ Raises appropriate errors if dictionary invalid in other ways.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.update_wp">
-<span class="sig-name descname"><span class="pre">update_wp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_channel</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_or_diode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'both'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_t_to_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.update_wp" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_wp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switch_or_diode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'both'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_t_to_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.update_wp" title="Permalink to this definition"></a></dt>
 <dd><p>Fills the .wp-class, a temporary storage for self-written user-programs
 Searches for the input values and fills the .wp-class with data next to this points</p>
 <dl class="field-list simple">
@@ -799,7 +800,7 @@ This function searches for the closest available curves for given arguments t_j 
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FosterThermalModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FosterThermalModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
 temperature behavior as a thermal_foster RC-network. The necessary parameters can be estimated by curve-fitting
@@ -830,43 +831,43 @@ parameters R, C, and tau.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel.r_th_total">
-<span class="sig-name descname"><span class="pre">r_th_total</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.r_th_total" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_th_total</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.r_th_total" title="Permalink to this definition"></a></dt>
 <dd><p>Sum of thermal_foster resistances of n-pole RC-network (scalar). Units in K/W  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel.r_th_vector">
-<span class="sig-name descname"><span class="pre">r_th_vector</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.r_th_vector" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_th_vector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.r_th_vector" title="Permalink to this definition"></a></dt>
 <dd><p>Thermal resistances of RC-network (array). Units in K/W (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel.c_th_total">
-<span class="sig-name descname"><span class="pre">c_th_total</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.c_th_total" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">c_th_total</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.c_th_total" title="Permalink to this definition"></a></dt>
 <dd><p>Sum of thermal_foster capacitances of n-pole low pass as (scalar). Units in J/K  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel.c_th_vector">
-<span class="sig-name descname"><span class="pre">c_th_vector</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.c_th_vector" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">c_th_vector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.c_th_vector" title="Permalink to this definition"></a></dt>
 <dd><p>Thermal capacitances of n-pole RC-network (array). Units in J/K (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel.tau_total">
-<span class="sig-name descname"><span class="pre">tau_total</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.tau_total" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tau_total</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.tau_total" title="Permalink to this definition"></a></dt>
 <dd><p>Sum of thermal_foster time constants of n-pole RC-network (scalar). Units in s (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel.tau_vector">
-<span class="sig-name descname"><span class="pre">tau_vector</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.tau_vector" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tau_vector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.tau_vector" title="Permalink to this definition"></a></dt>
 <dd><p>Thermal time constants of n-pole RC-network (array). Units in s  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.FosterThermalModel.graph_t_rthjc">
-<span class="sig-name descname"><span class="pre">graph_t_rthjc</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.graph_t_rthjc" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">graph_t_rthjc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.FosterThermalModel.graph_t_rthjc" title="Permalink to this definition"></a></dt>
 <dd><p>Transient data for extraction of the thermal_foster parameters specified above. Units of Row 1 in s; Row 2 in K/W  (Optional key)</p>
 </dd></dl>
 
@@ -916,7 +917,7 @@ parameters R, C, and tau.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Switch" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains data associated with the switchting-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
 channel-, e_on- and e_off-datasets.</p>
@@ -943,55 +944,55 @@ channel-, e_on- and e_off-datasets.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.thermal_foster">
-<span class="sig-name descname"><span class="pre">thermal_foster</span></span><em class="property"><span class="pre">:</span> <span class="pre">FosterThermalModel</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.thermal_foster" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">thermal_foster</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FosterThermalModel</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.thermal_foster" title="Permalink to this definition"></a></dt>
 <dd><p>Transient thermal_foster model. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.t_j_max">
-<span class="sig-name descname"><span class="pre">t_j_max</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.t_j_max" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t_j_max</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.t_j_max" title="Permalink to this definition"></a></dt>
 <dd><p>Maximum junction temperature. Units in °C (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.comment">
-<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.comment" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.comment" title="Permalink to this definition"></a></dt>
 <dd><p>Comment if any to be specified (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.manufacturer">
-<span class="sig-name descname"><span class="pre">manufacturer</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.manufacturer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manufacturer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.manufacturer" title="Permalink to this definition"></a></dt>
 <dd><p>Name of the manufacturer (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.technology">
-<span class="sig-name descname"><span class="pre">technology</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.technology" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">technology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.technology" title="Permalink to this definition"></a></dt>
 <dd><p>Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.channel">
-<span class="sig-name descname"><span class="pre">channel</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ChannelData</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.channel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ChannelData</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.channel" title="Permalink to this definition"></a></dt>
 <dd><p>Switch channel voltage and current data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.e_on">
-<span class="sig-name descname"><span class="pre">e_on</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.e_on" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">e_on</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.e_on" title="Permalink to this definition"></a></dt>
 <dd><p>Switch on energy data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.e_off">
-<span class="sig-name descname"><span class="pre">e_off</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.e_off" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">e_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.e_off" title="Permalink to this definition"></a></dt>
 <dd><p>Switch of energy data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.linearized_switch">
-<span class="sig-name descname"><span class="pre">linearized_switch</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">LinearizedModel</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.linearized_switch" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">linearized_switch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">LinearizedModel</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Switch.linearized_switch" title="Permalink to this definition"></a></dt>
 <dd><p>Static data valid for a specific operating point.</p>
 </dd></dl>
 
@@ -1054,7 +1055,7 @@ channel-, e_on- and e_off-datasets.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Switch.plot_channel_data_vge">
-<span class="sig-name descname"><span class="pre">plot_channel_data_vge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gatevoltage</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_channel_data_vge" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_channel_data_vge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gatevoltage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.Transistor.Switch.plot_channel_data_vge" title="Permalink to this definition"></a></dt>
 <dd><p>Plot channel data with a chosen gate-voltage</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1148,7 +1149,7 @@ channel-, e_on- and e_off-datasets.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Diode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diode_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Diode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diode_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.Diode" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
 multiple channel- and e_rr- datasets.</p>
@@ -1171,49 +1172,49 @@ multiple channel- and e_rr- datasets.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.thermal_foster">
-<span class="sig-name descname"><span class="pre">thermal_foster</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">FosterThermalModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.thermal_foster" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">thermal_foster</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">FosterThermalModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.thermal_foster" title="Permalink to this definition"></a></dt>
 <dd><p>Transient thermal_foster model.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.t_j_max">
-<span class="sig-name descname"><span class="pre">t_j_max</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.t_j_max" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t_j_max</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.t_j_max" title="Permalink to this definition"></a></dt>
 <dd><p>Diode maximum junction temperature. Units in °C (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.comment">
-<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.comment" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.comment" title="Permalink to this definition"></a></dt>
 <dd><p>Comment if any specified by the user. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.manufacturer">
-<span class="sig-name descname"><span class="pre">manufacturer</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.manufacturer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manufacturer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.manufacturer" title="Permalink to this definition"></a></dt>
 <dd><p>Name of the manufacturer. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.technology">
-<span class="sig-name descname"><span class="pre">technology</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.technology" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">technology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.technology" title="Permalink to this definition"></a></dt>
 <dd><p>Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7. (Optional key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.channel">
-<span class="sig-name descname"><span class="pre">channel</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ChannelData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.channel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ChannelData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.channel" title="Permalink to this definition"></a></dt>
 <dd><p>Diode forward voltage and forward current data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.e_rr">
-<span class="sig-name descname"><span class="pre">e_rr</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.e_rr" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">e_rr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SwitchEnergyData</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.e_rr" title="Permalink to this definition"></a></dt>
 <dd><p>Reverse recovery energy data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.Diode.linearized_diode">
-<span class="sig-name descname"><span class="pre">linearized_diode</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">LinearizedModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.linearized_diode" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">linearized_diode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">LinearizedModel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.Diode.linearized_diode" title="Permalink to this definition"></a></dt>
 <dd><p>Static data. Valid for a specific operating point.</p>
 </dd></dl>
 
@@ -1338,7 +1339,7 @@ The diode has only turn-off gate voltage which is the switch turn-on gate voltag
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.LinearizedModel">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">LinearizedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearizedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
 t_j, i_channel and (not for all diode types) v_g.</p>
@@ -1355,31 +1356,31 @@ t_j, i_channel and (not for all diode types) v_g.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.LinearizedModel.t_j">
-<span class="sig-name descname"><span class="pre">t_j</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.t_j" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t_j</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.t_j" title="Permalink to this definition"></a></dt>
 <dd><p>Junction temperature of diodeswitch. Units in K  (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.LinearizedModel.v_g">
-<span class="sig-name descname"><span class="pre">v_g</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.v_g" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_g</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.v_g" title="Permalink to this definition"></a></dt>
 <dd><p>Gate voltage of switch or diode. Units in V (Mandatory for Switch, Optional for some Diode types)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.LinearizedModel.i_channel">
-<span class="sig-name descname"><span class="pre">i_channel</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.i_channel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">i_channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.i_channel" title="Permalink to this definition"></a></dt>
 <dd><p>Channel current of diodeswitch. Units in A (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.LinearizedModel.r_channel">
-<span class="sig-name descname"><span class="pre">r_channel</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.r_channel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.r_channel" title="Permalink to this definition"></a></dt>
 <dd><p>Channel resistance of diodeswitch. Units in Ohm (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.LinearizedModel.v0_channel">
-<span class="sig-name descname"><span class="pre">v0_channel</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.v0_channel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v0_channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.LinearizedModel.v0_channel" title="Permalink to this definition"></a></dt>
 <dd><p>Channel voltage of diodeswitch. Unis in V (Mandatory key)</p>
 </dd></dl>
 
@@ -1401,7 +1402,7 @@ t_j, i_channel and (not for all diode types) v_g.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.ChannelData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">ChannelData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.ChannelData" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ChannelData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.ChannelData" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
 For different temperatures: Create additional ChannelData-objects and store them as a list in the respective
@@ -1420,19 +1421,19 @@ This data can be used to linearize the transistor at a specific operating point<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.ChannelData.t_j">
-<span class="sig-name descname"><span class="pre">t_j</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.t_j" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t_j</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.t_j" title="Permalink to this definition"></a></dt>
 <dd><p>Junction temperature of switchdiode. (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.ChannelData.graph_v_i">
-<span class="sig-name descname"><span class="pre">graph_v_i</span></span><em class="property"><span class="pre">:</span> <span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.graph_v_i" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">graph_v_i</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.graph_v_i" title="Permalink to this definition"></a></dt>
 <dd><p>Represented as a numpy 2D array where row 1 is the voltage and row 2 the current. Units of Row 1 = V; Row 2 = A (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.ChannelData.v_g">
-<span class="sig-name descname"><span class="pre">v_g</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.v_g" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_g</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.ChannelData.v_g" title="Permalink to this definition"></a></dt>
 <dd><p>optional (standard diode useless, for GaN ‘diode’ necessary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1473,7 +1474,7 @@ This data can be used to linearize the transistor at a specific operating point<
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.VoltageDependentCapacitance">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">VoltageDependentCapacitance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VoltageDependentCapacitance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
 For different temperatures: Create additional VoltageDependentCapacitance-objects and store them as a list in the transistor-object.</p>
@@ -1490,13 +1491,13 @@ For different temperatures: Create additional VoltageDependentCapacitance-object
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.VoltageDependentCapacitance.t_j">
-<span class="sig-name descname"><span class="pre">t_j</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.t_j" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t_j</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.t_j" title="Permalink to this definition"></a></dt>
 <dd><p>Junction temperature (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.VoltageDependentCapacitance.graph_v_c">
-<span class="sig-name descname"><span class="pre">graph_v_c</span></span><em class="property"><span class="pre">:</span> <span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.graph_v_c" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">graph_v_c</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.VoltageDependentCapacitance.graph_v_c" title="Permalink to this definition"></a></dt>
 <dd><p>Represented as a 2D numpy array where row 1 is the voltage and row 2 the capacitance. Units of Row 1 = V; Row 2 = A  (Mandatory key)</p>
 </dd></dl>
 
@@ -1535,7 +1536,7 @@ For different temperatures: Create additional VoltageDependentCapacitance-object
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">SwitchEnergyData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SwitchEnergyData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <ul class="simple">
 <li><p>Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is already implicitly specified by how the respective objects of this class are used in a Diode- or Switch-object.</p></li>
@@ -1562,55 +1563,55 @@ For different temperatures: Create additional VoltageDependentCapacitance-object
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.dataset_type">
-<span class="sig-name descname"><span class="pre">dataset_type</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.dataset_type" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dataset_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.dataset_type" title="Permalink to this definition"></a></dt>
 <dd><p>Single, graph_r_e, graph_i_e (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.v_supply">
-<span class="sig-name descname"><span class="pre">v_supply</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.v_supply" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_supply</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.v_supply" title="Permalink to this definition"></a></dt>
 <dd><p>Supply voltage. Units in V (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.v_g">
-<span class="sig-name descname"><span class="pre">v_g</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.v_g" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_g</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.v_g" title="Permalink to this definition"></a></dt>
 <dd><p>Gate voltage. Units in V (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.t_j">
-<span class="sig-name descname"><span class="pre">t_j</span></span><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.t_j" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">t_j</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.t_j" title="Permalink to this definition"></a></dt>
 <dd><p>Junction temperature. Units in °C (Mandatory key)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.e_x">
-<span class="sig-name descname"><span class="pre">e_x</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.e_x" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">e_x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.e_x" title="Permalink to this definition"></a></dt>
 <dd><p>Scalar dataset-parameter - switching energy. Units in J</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.r_g">
-<span class="sig-name descname"><span class="pre">r_g</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.r_g" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_g</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.r_g" title="Permalink to this definition"></a></dt>
 <dd><p>Scalar dataset-parameter - gate resistance. Units in Ohm</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.i_x">
-<span class="sig-name descname"><span class="pre">i_x</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.i_x" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">i_x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.i_x" title="Permalink to this definition"></a></dt>
 <dd><p>Scalar dataset-parameter - current rating. Units in A</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.graph_i_e">
-<span class="sig-name descname"><span class="pre">graph_i_e</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.graph_i_e" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">graph_i_e</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.graph_i_e" title="Permalink to this definition"></a></dt>
 <dd><p>Units for Row 1 = A; Row 2 = J</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.SwitchEnergyData.graph_r_e">
-<span class="sig-name descname"><span class="pre">graph_r_e</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.graph_r_e" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">graph_r_e</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.SwitchEnergyData.graph_r_e" title="Permalink to this definition"></a></dt>
 <dd><p>Units for Row 1 = Ohm; Row 2 = J</p>
 </dd></dl>
 
@@ -1643,7 +1644,7 @@ For different temperatures: Create additional VoltageDependentCapacitance-object
 
 <dl class="py class">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">WP</span></span><a class="headerlink" href="#databaseClasses.Transistor.WP" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WP</span></span><a class="headerlink" href="#databaseClasses.Transistor.WP" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <blockquote>
 <div><p>The WP class is intended for user calculations in Python. It is used to access transistor data in user-written programs.
@@ -1658,12 +1659,12 @@ for specific boundary conditions, so that the same variable is always accessed i
 </ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.v_channel">
-<span class="sig-name descname"><span class="pre">v_channel</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.v_channel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.v_channel" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.r_channel">
-<span class="sig-name descname"><span class="pre">r_channel</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.r_channel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r_channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.r_channel" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1673,7 +1674,7 @@ for specific boundary conditions, so that the same variable is always accessed i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.e_on">
-<span class="sig-name descname"><span class="pre">e_on</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.e_on" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">e_on</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.e_on" title="Permalink to this definition"></a></dt>
 <dd><p>A; Row 2: J</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1687,7 +1688,7 @@ for specific boundary conditions, so that the same variable is always accessed i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.e_off">
-<span class="sig-name descname"><span class="pre">e_off</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.e_off" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">e_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.e_off" title="Permalink to this definition"></a></dt>
 <dd><p>A; Row 2: J</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1701,7 +1702,7 @@ for specific boundary conditions, so that the same variable is always accessed i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.e_rr">
-<span class="sig-name descname"><span class="pre">e_rr</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.e_rr" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">e_rr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.e_rr" title="Permalink to this definition"></a></dt>
 <dd><p>A; Row 2: J</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1715,7 +1716,7 @@ for specific boundary conditions, so that the same variable is always accessed i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.v_switching_ref">
-<span class="sig-name descname"><span class="pre">v_switching_ref</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.v_switching_ref" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_switching_ref</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.v_switching_ref" title="Permalink to this definition"></a></dt>
 <dd><p>V</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1726,7 +1727,7 @@ for specific boundary conditions, so that the same variable is always accessed i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.e_oss">
-<span class="sig-name descname"><span class="pre">e_oss</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.e_oss" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">e_oss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.e_oss" title="Permalink to this definition"></a></dt>
 <dd><p>V; Row 2: J</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1740,7 +1741,7 @@ for specific boundary conditions, so that the same variable is always accessed i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.q_oss">
-<span class="sig-name descname"><span class="pre">q_oss</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.q_oss" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q_oss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.q_oss" title="Permalink to this definition"></a></dt>
 <dd><p>V; Row 2: C</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1754,7 +1755,7 @@ for specific boundary conditions, so that the same variable is always accessed i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="databaseClasses.Transistor.WP.parallel_transistors">
-<span class="sig-name descname"><span class="pre">parallel_transistors</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.parallel_transistors" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parallel_transistors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#databaseClasses.Transistor.WP.parallel_transistors" title="Permalink to this definition"></a></dt>
 <dd><p>Number</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1832,8 +1833,8 @@ Appends corresponding codes for further verification in get_curve_data(..) metho
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-databaseClasses">
+</section>
+<section id="module-databaseClasses">
 <span id="general-methods"></span><h2>General methods<a class="headerlink" href="#module-databaseClasses" title="Permalink to this headline"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="databaseClasses.connect_TDB">
@@ -1892,7 +1893,7 @@ case of nonlinear input/output capacitances, e.g. c_oss, c_iss, c_rss</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="databaseClasses.import_json">
-<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">import_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#databaseClasses.import_json" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">import_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#databaseClasses.import_json" title="Permalink to this definition"></a></dt>
 <dd><p>Import a json-file to your local transistor database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1928,7 +1929,7 @@ case of nonlinear input/output capacitances, e.g. c_oss, c_iss, c_rss</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="databaseClasses.load_from_db">
-<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">load_from_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.load_from_db" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">load_from_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#databaseClasses.load_from_db" title="Permalink to this definition"></a></dt>
 <dd><p>Loads a transistor object from the database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1967,7 +1968,7 @@ Use case is the merging of capacity curves, here often two curves (normal and zo
 
 <dl class="py function">
 <dt class="sig sig-object py" id="databaseClasses.print_TDB">
-<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">print_TDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'local'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#databaseClasses.print_TDB" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">print_TDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'local'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#databaseClasses.print_TDB" title="Permalink to this definition"></a></dt>
 <dd><p>Print all transistorelements stored in the local database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1994,7 +1995,7 @@ Use case is the merging of capacity curves, here often two curves (normal and zo
 
 <dl class="py function">
 <dt class="sig sig-object py" id="databaseClasses.r_g_max_rapid_channel_turn_off">
-<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">r_g_max_rapid_channel_turn_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_gsth</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_gd</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_off</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_driver_off</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#databaseClasses.r_g_max_rapid_channel_turn_off" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">r_g_max_rapid_channel_turn_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_gsth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_gd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_off</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_driver_off</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#databaseClasses.r_g_max_rapid_channel_turn_off" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the maximum gate resistor to achieve no turn-off losses when working with MOSFETs
 ‘rapid channel turn-off’ (rcto)</p>
 <p>Note: Input (e.g. i_off can also be a vector)
@@ -2022,7 +2023,7 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
 
 <dl class="py function">
 <dt class="sig sig-object py" id="databaseClasses.update_from_fileexchange">
-<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">update_from_fileexchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'local'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.update_from_fileexchange" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">databaseClasses.</span></span><span class="sig-name descname"><span class="pre">update_from_fileexchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'local'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#databaseClasses.update_from_fileexchange" title="Permalink to this definition"></a></dt>
 <dd><p>Update your local transitor database from transistordatabase-fileexchange from github</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2037,8 +2038,8 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -2079,6 +2080,7 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
       <dd><a href="../0.2.14/transistordatabase.html">0.2.14</a></dd>
       <dd><a href="../0.3.0/transistordatabase.html">0.3.0</a></dd>
       <dd><a href="../0.3.1/transistordatabase.html">0.3.1</a></dd>
+      <dd><a href="../0.3.2/transistordatabase.html">0.3.2</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>
