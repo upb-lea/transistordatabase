@@ -81,23 +81,24 @@ Sphinx documentation using docstrings
 * Find a rst and sphinx cheat sheet `here <https://sphinx-tutorial.readthedocs.io/cheatsheet/>`__.
 
 .. code-block::
+
     def print_tdb(filters: Optional[List[str]] = None, collection_name: str = "local") -> List[str]:
-		"""
-		Print all transistorelements stored in the local database
+	"""
+	Print all transistorelements stored in the local database
 
-		:param filters: filters for searching the database, e.g. 'name' or 'type'
-		:type filters: List[str]
-		:param collection_name: Choose database name in local mongodb client. Default name is "collection"
-		:type collection_name: str
+	:param filters: filters for searching the database, e.g. 'name' or 'type'
+	:type filters: List[str]
+	:param collection_name: Choose database name in local mongodb client. Default name is "collection"
+	:type collection_name: str
 
-		:return: Return a list with all transistor objects fitting to the search-filter
-		:rtype: list
+	:return: Return a list with all transistor objects fitting to the search-filter
+	:rtype: list
 
-		:Example:
+	:Example:
 
-		>>> import transistordatabase as tdb
-		>>> tdb.print_TDB()
-		"""
+	>>> import transistordatabase as tdb
+	>>> tdb.print_tdb()
+	"""
 
 unittesting with pytest
 -----------------------
