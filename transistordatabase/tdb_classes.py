@@ -273,6 +273,7 @@ class Transistor:
             # self.calc_thermal_params(input_type='switch')
             # self.calc_thermal_params(input_type='diode')
             self.wp = self.WP()
+            print(f"Transistor {self.name} generated / loaded successfully!")
         except Exception as e:
             print('Exception occurred: Selected datasheet or module could not be created or loaded\n' + str(e))
             raise
