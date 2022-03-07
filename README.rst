@@ -156,7 +156,7 @@ Channel data for switch and diode always needs to be positive. Some Manufacturer
 Use the template to generate a new transistor object
 ----------------------------------------------------
 
-After digitizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the  `template </template_example/template_example.py>`_.
+After digitizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the  `template <https://github.com/upb-lea/transistordatabase/blob/main/template_example/template_example.py>`_.
 
 Some values need to follow some rules, e.g. due to different spelling versions, the manufacturers name or housing types must be written as in the lists below. Some general hints to fill the template:
 
