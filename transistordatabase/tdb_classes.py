@@ -1273,6 +1273,7 @@ class Transistor:
                     raise Exception(f"graph_t_rthjc in {input_type}'s foster thermal object is empty!")
         except Exception as e:
             print("Thermal parameter computation failed: {0}".format(e))
+            print("This also occurs when there is no thermal impedance given.")
         else:
             exec(f"self.{input_type}.thermal_foster = foster_args")
             print(input_type, ':Thermal parameters re-assigned to foster object')
