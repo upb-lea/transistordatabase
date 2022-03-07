@@ -266,8 +266,12 @@ class Transistor:
                                 "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
             self.diode = self.Diode(diode_args)
             self.switch = self.Switch(switch_args)
-            self.calc_thermal_params(input_type='switch')
-            self.calc_thermal_params(input_type='diode')
+
+            # calculate r_th and c_th from impedance curves
+            # This will be uncommented, due to re-assigning the parameters at every transistor reload or at transistor
+            # generation.
+            # self.calc_thermal_params(input_type='switch')
+            # self.calc_thermal_params(input_type='diode')
             self.wp = self.WP()
         except Exception as e:
             print('Exception occurred: Selected datasheet or module could not be created or loaded\n' + str(e))
@@ -624,6 +628,60 @@ class Transistor:
             #  object can "linearize itself".
             self.wp.switch_v_channel, self.wp.switch_r_channel = \
                 self.calc_lin_channel(self.wp.switch_channel.t_j, self.wp.switch_channel.v_g, i_channel, switch_or_diode="switch")
+
+    def init_loss_matrices(self):
+        self.init_switch_channel_matrix()
+
+    def init_switch_channel_matrix(self):
+        # -----------------------------------------------------------
+        # find out max values for v_g, v_channel, i_channel and t_j
+        # -----------------------------------------------------------
+        t_j_max = self.switch.channel[0].t_j
+        t_j_min = self.switch.channel[0].t_j
+        i_channel_max = 0
+        v_channel_max = 0
+        v_g_on_max = 0
+        for channel_object in self.switch.channel:
+            if channel_object.t_j > t_j_max:
+                t_j_max = channel_object.t_j
+            if t_j_min > channel_object.t_j:
+                t_j_min = channel_object.t_j
+            if channel_object.graph_v_i[0][-1] > v_channel_max:
+                v_channel_max = channel_object.graph_v_i[0][-1]
+            if channel_object.graph_v_i[1][-1] > i_channel_max:
+                i_channel_max = channel_object.graph_v_i[1][-1]
+            if channel_object.v_g > v_g_on_max:
+                v_g_on_max = channel_object.v_g
+
+        # -----------------------------------------------------------
+        # Interpolate channel data
+        # -----------------------------------------------------------
+        v_g_linspace = np.linspace(0, v_g_on_max, 100)
+        t_j_linspace = np.linspace(t_j_min, t_j_max, 100)
+        i_channel_linspace = np.linspace(0, i_channel_max, 100)
+
+        # -----------------------------------------------------------
+        # setup mesh grid
+        # -----------------------------------------------------------
+        # m_i_channel, m_t_j = np.meshgrid(i_channel_linspace, t_j_linspace)
+
+        # -----------------------------------------------------------
+        # Interpolate channel data
+        # -----------------------------------------------------------
+        for channel_object in self.switch.channel:
+            v_channel_interpolated = np.interp(i_channel_linspace, channel_object.graph_v_i[1],
+                                               channel_object.graph_v_i[0])
+
+
+
+
+
+
+            print(f"{channel_object.t_j = }")
+        print(f"{t_j_max = }")
+        print(f"{t_j_min = }")
+        print(f"{v_channel_max = }")
+        print(f"{i_channel_max = }")
 
     def quickstart_wp(self) -> None:
         """
