@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Changed
 - do not re-assign r_th and c_th values when loading/creating a transistor object (do not run calc_thermal_params())
+- Workaround for brocken export_datasheet(): temporary only html-files available instead of pdf-files
 
 ## [0.3.2] - 2021-02-02
 ### Added

@@ -1386,16 +1386,27 @@ class Transistor:
         html = template.render(trans=trans, switch=switch, diode=diode, image=client_img)
         pdf_name = trans['Name'][0] + ".pdf"
         pdf_path = os.path.join(os.getcwd(), pdf_name)
-        if not build_collection:
-            html_to_pdf(html, pdf_name, pdf_path)
-        else:
-            return html
-        # pdfname = trans['Name'][0] + ".html"
-        # datasheetpath = pathlib.Path.cwd() / pdfname
-        # with open(trans['Name'][0] + ".html", "w") as fh:
-        #     fh.write(html)
-        # print(f"Export virtual datasheet {self.name}.html to {pathlib.Path.cwd().as_uri()}")
-        # print(f"Open Datasheet here: {datasheetpath.as_uri()}")
+
+        # -------------------------
+        # Workaround, due to bug in exporting a pdf-file
+        # 2022-03-18: bug seems to be in function html_to_pdf, in last row "app.exec_()"
+        # Now, the old code (using html only) is restored,
+        # -------------------------
+        # the next 4 lines were commented, because leaded to bug
+        # so these lines can be uncommented when bug is fixed
+        # if not build_collection:
+        #     html_to_pdf(html, pdf_name, pdf_path)
+        # else:
+        #     return html
+
+        # Workaround starts here: this is the original code before using html_to_pdf()
+        # This code until the end can be commented when bug is fixed.
+        pdfname = trans['Name'][0] + ".html"
+        datasheetpath = pathlib.Path.cwd() / pdfname
+        with open(trans['Name'][0] + ".html", "w") as fh:
+            fh.write(html)
+        print(f"Export virtual datasheet {self.name}.html to {pathlib.Path.cwd().as_uri()}")
+        print(f"Open Datasheet here: {datasheetpath.as_uri()}")
 
     # export function start from here
     def buildList(self, attribute):
