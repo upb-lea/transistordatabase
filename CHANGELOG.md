@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## [0.3.3] - 2021-03-20
 ### Changed
 - do not re-assign r_th and c_th values when loading/creating a transistor object (do not run calc_thermal_params())
 - Workaround for brocken export_datasheet(): temporary only html-files available instead of pdf-files
@@ -204,7 +206,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.3.2...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.3.3...HEAD
+[0.3.3]: https://github.com/upb-lea/transistordatabase/compare/0.3.2...0.3.3
 [0.3.2]: https://github.com/upb-lea/transistordatabase/compare/0.3.1...0.3.2
 [0.3.1]: https://github.com/upb-lea/transistordatabase/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/upb-lea/transistordatabase/compare/0.2.14...0.3.0
