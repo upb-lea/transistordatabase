@@ -145,7 +145,7 @@ Transistor |br|
 
 Reading curves from the datasheet
 ---------------------------------
-For reading datasheet curves, use the tool `WebPlotDigitizer <https://git-scm.com/download/win>`_. There is a online-version available. Also you can download it for Linux, Mac and Windows. WebPlotDigitizer is open source software.
+For reading datasheet curves, use the tool `WebPlotDigitizer <https://apps.automeris.io/wpd/>`_. There is a online-version available. Also you can download it for Linux, Mac and Windows. WebPlotDigitizer is open source software.
 
 Channel data for switch and diode always needs to be positive. Some Manufacturers give diode data in the 3rd quadrant. Here is an example how to set the axes and export the data inside WebPlotDigitizer:
 
@@ -156,7 +156,7 @@ Channel data for switch and diode always needs to be positive. Some Manufacturer
 Use the template to generate a new transistor object
 ----------------------------------------------------
 
-After digitizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the  `template <https://github.com/upb-lea/transistordatabase/blob/main/template_example/template_example.py>`_.
+After digitizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the  `template </template_example/template_example.py>`_.
 
 Some values need to follow some rules, e.g. due to different spelling versions, the manufacturers name or housing types must be written as in the lists below. Some general hints to fill the template:
 
