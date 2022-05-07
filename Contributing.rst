@@ -321,7 +321,7 @@ generate executable file with all dependencies to run the GUI
     - Add Directory: "...transistordatabase/transistordatabase"
  - Step 3: Click the button "CONVERT .PY TO .EXE" (all other settings can be left at default)
 
-If an error message occurs when trying to run "gui.exe" within the generated folder that a certain python package is missing install the package via the "pip install" command and try to generate the .exe again (you may need to restart auto-py-to-exe since it will not work otherwise sometimes)
+If an error message occurs when trying to run "gui.exe" that a certain python package is missing install the package via the "pip install" command and try to generate the .exe again (you may need to restart auto-py-to-exe since it will not work otherwise sometimes)
 
 
 
