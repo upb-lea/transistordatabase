@@ -313,10 +313,10 @@ generate executable file with all dependencies to run the GUI
 -------------------------------------------------------------
 
 
- * Step 1: install auto-py-to-exe via the "pip install auto-py-to-exe" command (https://pypi.org/project/auto-py-to-exe/)
- * Step 2: run auto-py-to-exe and select the follwing files: 
- - Script Location: "...transistordatabase/transistordatabase/gui/gui.py"
- - Additional Files:
+ Step 1: install auto-py-to-exe via the "pip install auto-py-to-exe" command (https://pypi.org/project/auto-py-to-exe/)
+ Step 2: run auto-py-to-exe and select the follwing files: 
+ * Script Location: "...transistordatabase/transistordatabase/gui/gui.py"
+ * Additional Files:
  1. Add Files: all files in the directory "...transistordatabase/transistordatabase/gui" (except gui.py) that are associated with the GUI
  2. Add Files: "housing_types.txt" and "module manufacturers.txt" in the directory "...transistordatabase/transistordatabase"
  3. Add Directory: "...transistordatabase/transistordatabase"
