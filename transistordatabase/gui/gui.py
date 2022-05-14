@@ -31,7 +31,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        uic.loadUi("MainWindow.ui", self)
+        MainWindow_path=os.path.join(os.path.dirname(__file__),"MainWindow.ui")
+        uic.loadUi(MainWindow_path, self)
 
         sys.stdout = EmittingStream(text_written=self.standard_output_written)
 
@@ -1216,7 +1217,7 @@ class MainWindow(QMainWindow):
 
        # load housing types list and module manufacturers list from transistordatabase main path or from local path if not existent in main path
 
-        path_transistordatabase = os.path.dirname(__file__).replace("\gui", "")
+        path_transistordatabase = os.path.dirname(os.path.abspath(__file__)).replace("/gui", "")
 
         try:
             housing_types_list_file_path = os.path.join(path_transistordatabase, 'housing_types.txt')
