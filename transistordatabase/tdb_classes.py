@@ -5459,7 +5459,7 @@ def update_from_fileexchange(collection: str = "local", overwrite: bool = True) 
     repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
     module_file_path = pathlib.Path(__file__).parent.absolute()
     local_dir = os.path.join(module_file_path, "cloned_repo_TDB_File_Exchange")
-
+    
     try:
         # Raises InvalidGitRepositoryError when not in a repo
         repo = git.Repo(local_dir, search_parent_directories=False)
@@ -5470,7 +5470,12 @@ def update_from_fileexchange(collection: str = "local", overwrite: bool = True) 
             # If the loaded repo is dirty discard the local changes
             if repo.is_dirty():
                 repo.git.reset('--hard')
-            repo.remotes.origin.pull()
+            try:
+                repo.remotes.origin.pull()
+            except:
+                print("----------------------------------------------------------------------")
+                print("No internet connection, please make sure that you have internet access")
+                print("----------------------------------------------------------------------")
         else:
             print('Could not load repository at {} :('.format(repo.working_tree_dir))
             raise git.exc.InvalidGitRepositoryError
