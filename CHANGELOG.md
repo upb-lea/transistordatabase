@@ -6,16 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## [0.4.0] - 2021-05-07
+## [0.4.0] - 2022-05-07
 ### Added
 - NEW: Graphical User Interface: - run the file "gui.py" within the directory ".../transistordatabase/transistordatabase/gui" to start the GUI
        
-## [0.3.3] - 2021-03-20
+## [0.3.3] - 2022-03-20
 ### Changed
 - do not re-assign r_th and c_th values when loading/creating a transistor object (do not run calc_thermal_params())
 - Workaround for brocken export_datasheet(): temporary only html-files available instead of pdf-files
 
-## [0.3.2] - 2021-02-02
+## [0.3.2] - 2022-02-02
 ### Added
 - Add Rohm to manufacturer list
 ### Changes
@@ -210,7 +210,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.3.3...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.4.0...HEAD
 [0.4.0]: https://github.com/upb-lea/transistordatabase/compare/0.3.3...0.4.0
 [0.3.3]: https://github.com/upb-lea/transistordatabase/compare/0.3.2...0.3.3
 [0.3.2]: https://github.com/upb-lea/transistordatabase/compare/0.3.1...0.3.2
