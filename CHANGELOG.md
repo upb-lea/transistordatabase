@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## [0.4.0] - 2021-03-20
+## [0.4.0] - 2021-04-07
 ### Added
 - NEW: Graphical User Interface: - run the file "gui.py" within the directory ".../transistordatabase/transistordatabase/gui" to start the GUI
        
