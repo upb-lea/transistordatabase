@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.4.0] - 2021-03-20
+### Added
+- NEW: Graphical User Interface: - run the file "gui.py" within the directory ".../transistordatabase/transistordatabase/gui" to start the GUI
+       
 ## [0.3.3] - 2021-03-20
 ### Changed
 - do not re-assign r_th and c_th values when loading/creating a transistor object (do not run calc_thermal_params())
