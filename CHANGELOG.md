@@ -5,10 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-
-## [0.4.0] - 2022-05-07
 ### Added
 - NEW: Graphical User Interface: - run the file "gui.py" within the directory ".../transistordatabase/transistordatabase/gui" to start the GUI
+
+### Fixed
+- #82: umpdate_from_fileexchange() leads to failure in case of no internet connection
        
 ## [0.3.3] - 2022-03-20
 ### Changed
