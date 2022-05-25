@@ -525,7 +525,7 @@ class MainWindow(QMainWindow):
         self.resize(size)
         self.hide()
         self.move(1,2)
-        event.ignore()
+        self.close()
 
 
     def get_transistor_list(self):
