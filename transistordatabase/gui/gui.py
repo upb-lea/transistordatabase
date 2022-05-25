@@ -410,6 +410,7 @@ class MainWindow(QMainWindow):
         self.button_search_database_load_topology_calculator.clicked.connect(self.load_from_search_database_into_topology_calculator)
         self.button_search_database_load_create_transistor.clicked.connect(self.load_from_search_database_into_create_transistor)
         self.button_search_database_reset_filters.clicked.connect(self.reset_filter_search_database)
+        self.button_update_from_fileexchange.clicked.connect(self.update_database_from_fileexchange)
 
         # connect all checkBoxes(when state changed) and lineEdits(when text changed) to the functions to load data into the tableWidget
         self.checkBox_search_database_id.stateChanged.connect(self.search_database_load_data)
@@ -541,6 +542,16 @@ class MainWindow(QMainWindow):
             name_list.append(tran['name'])
 
         return name_list
+
+    def update_database_from_fileexchange(self):
+        """
+        Update the local database from the github fileexchange
+
+        :return: None
+        :rtype: None
+        """
+        tdb.update_from_fileexchange()
+        self.label_updated_database.setText(f"Successfully Updated")
 
 
     def __del__(self):

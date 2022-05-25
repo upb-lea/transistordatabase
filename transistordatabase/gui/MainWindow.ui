@@ -1886,6 +1886,20 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="button_update_from_fileexchange">
+          <property name="text">
+           <string>Update Database from Github</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="label_updated_database">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_create_transistor">
@@ -1914,7 +1928,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-1573</y>
+             <y>0</y>
              <width>1250</width>
              <height>3100</height>
             </rect>
