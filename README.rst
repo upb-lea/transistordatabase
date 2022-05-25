@@ -21,12 +21,12 @@ Functionality overview
 
 Functionality examples:
 
-    * digitize transistor datasheet parameters and graphs and save it to the TDB
-    * use this data for calculations in python (e.g. some loss calulations for a boost-converter)
-    * export this data to matlab for calculations in matlab
-    * export transistors to GeckoCIRCUITS simulation program
-    * export transistors to Simulink simulation program
-    * export transistors to PLECS simulation program
+* digitize transistor datasheet parameters and graphs and save it to the TDB
+* use this data for calculations in python (e.g. some loss calulations for a boost-converter)
+* export this data to matlab for calculations in matlab
+* export transistors to GeckoCIRCUITS simulation program
+* export transistors to Simulink simulation program
+* export transistors to PLECS simulation program
 
 .. note::
     Development status: Alpha
