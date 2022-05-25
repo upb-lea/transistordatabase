@@ -1227,8 +1227,12 @@ class MainWindow(QMainWindow):
 
 
        # load housing types list and module manufacturers list from transistordatabase main path or from local path if not existent in main path
-
-        path_transistordatabase = os.path.dirname(os.path.abspath(__file__)).replace("/gui", "")
+        if os.name == 'nt':
+            # windows uses backslash
+            path_transistordatabase = os.path.dirname(os.path.abspath(__file__)).replace("\gui", "")
+        else:
+            # linux uses forward slash
+            path_transistordatabase = os.path.dirname(os.path.abspath(__file__)).replace("/gui", "")
 
         try:
             housing_types_list_file_path = os.path.join(path_transistordatabase, 'housing_types.txt')
