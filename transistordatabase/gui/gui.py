@@ -145,6 +145,8 @@ class MainWindow(QMainWindow):
         # run the functions "comboBox_topology_transistor1_changed" and "comboBox_topology_transistor2_changed",
         # when the current text of the ComboBoxes to choose the transistors changed, which will reset and refill
         # the ComboBoxes that store transistor specific selections(gate-voltages and gate-resistors)
+        
+        self.start=True
         self.comboBox_topology_transistor1.currentTextChanged.connect(self.comboBox_topology_transistor1_changed)
         self.comboBox_topology_transistor1_changed()
 
@@ -4364,7 +4366,7 @@ class MainWindow(QMainWindow):
                                              slider_topology_r_g_on_transistor,
                                              label_topology_slider_r_g_on_value_transistor,
                                              slider_topology_r_g_off_transistor,
-                                             label_topology_slider_r_g_off_value_transistor,):
+                                             label_topology_slider_r_g_off_value_transistor):
         """
         Fills the ComboBox to choose the gate voltage for the transistor and sets minimum and maximum value for the sliders
         to choose the gate resistors for transistor based on the available data stored in the transistordatabase
@@ -4406,9 +4408,11 @@ class MainWindow(QMainWindow):
                 r_g_on_max = max([i for i in [e_on.r_g for e_on in transistor.switch.e_on] if i is not None])
                 slider_topology_r_g_on_transistor.setMinimum(int(r_g_on_max * 100))
                 slider_topology_r_g_on_transistor.setMaximum(int(r_g_on_max * 100))
-                self.show_popup_message(f"No energy data for different turn on gate resistor for <b>{transistor.name}</b> available!")
+                if not self.start:
+                    self.show_popup_message(f"No energy data for different turn on gate resistor for <b>{transistor.name}</b> available!")
             except:
-                self.show_popup_message(f"No turn-on energy data for <b>{transistor.name}</b> available!")
+                if not self.start:
+                    self.show_popup_message(f"No turn-on energy data for <b>{transistor.name}</b> available!")
                 slider_topology_r_g_on_transistor.setMinimum(0)
                 slider_topology_r_g_on_transistor.setMaximum(0)
 
@@ -4455,12 +4459,14 @@ class MainWindow(QMainWindow):
                 r_g_off_max = max([i for i in [e_off.r_g for e_off in transistor.switch.e_off] if i is not None])
                 slider_topology_r_g_off_transistor.setMinimum(int(r_g_off_max * 100))
                 slider_topology_r_g_off_transistor.setMaximum(int(r_g_off_max * 100))
-                self.show_popup_message(f"No energy data for different turn off gate resistor for <b>{transistor.name}</b> available!")
+                if not self.start:
+                    self.show_popup_message(f"No energy data for different turn off gate resistor for <b>{transistor.name}</b> available!")
             except:
                 slider_topology_r_g_off_transistor.setMinimum(0)
                 slider_topology_r_g_off_transistor.setMaximum(0)
-                self.show_popup_message(f"No turn-off energy data for <b>{transistor.name}</b> available!")
-
+                if not self.start:
+                    self.show_popup_message(f"No turn-off energy data for <b>{transistor.name}</b> available!")
+        self.start=None    
 
 
     def comboBox_topology_transistor1_changed(self):
@@ -4469,6 +4475,7 @@ class MainWindow(QMainWindow):
 
         :return: None
         """
+        print("we are before the comboBox_topology_transistor_changed ")
         self.comboBox_topology_transistor_changed(self.comboBox_topology_transistor1,
                                                    self.comboBox_topology_v_g_on_transistor1,
                                                    self.slider_topology_r_g_on_transistor1,
