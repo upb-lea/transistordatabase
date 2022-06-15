@@ -5055,7 +5055,7 @@
              </widget>
             </item>
             <item row="90" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_integration_interval"/>
+             <widget class="QComboBox" name="comboBox_create_transistor_add_data_dpt_integration_interval"/>
             </item>
             <item row="9" column="3">
              <widget class="QLabel" name="label_create_switch_c_th_vector">
@@ -8387,7 +8387,7 @@
             <item row="88" column="0">
              <widget class="QLabel" name="label_32">
               <property name="text">
-               <string>Energies:</string>
+               <string>Energieseee:</string>
               </property>
              </widget>
             </item>

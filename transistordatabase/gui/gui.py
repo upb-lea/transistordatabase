@@ -21,8 +21,14 @@ import buck_converter_functions
 import boost_converter_functions
 import buck_boost_converter_functions
 import comparison_tools_functions
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
-
+    return os.path.join(base_path, relative_path)
+    
 class MainWindow(QMainWindow):
     """
     MainWindow class which inherits from QMainWindow and contains all the code and functions to implement all
@@ -36,7 +42,7 @@ class MainWindow(QMainWindow):
 
         sys.stdout = EmittingStream(text_written=self.standard_output_written)
 
-        self.tray_icon = QSystemTrayIcon(QIcon("window_icon.png"), parent=app)
+        self.tray_icon = QSystemTrayIcon(QIcon(resource_path("window_icon.png")), parent=app)
         self.tray_icon.setToolTip("Transistordatabase")
         self.tray_icon.show()
         self.tray_icon.activated.connect(self.show)
@@ -814,7 +820,7 @@ class MainWindow(QMainWindow):
         """
         all_settings_dict = self.get_settings_dict()
         path = pathlib.Path.cwd()
-        with open(path.joinpath("settings.json"), 'w') as fp:
+        with open(path.joinpath(resource_path("settings.json")), 'w') as fp:
             json.dump(all_settings_dict, fp)
         self.show_popup_message("Settings saved succsessfully!")
 
@@ -825,7 +831,7 @@ class MainWindow(QMainWindow):
         :return: None
         """
         try:
-            path = QFileDialog.getOpenFileName(self, "Open File", "", "(*.json)")
+            path = QFileDialog.getOpenFileName(self, "Open File", "", resource_path("(*.json)"))
             with open(path[0], 'r') as fp:
                 all_settings_dict = json.load(fp)
             self.set_all_settings(all_settings_dict)
@@ -841,7 +847,7 @@ class MainWindow(QMainWindow):
         :return: None
         """
         try:
-            with open("settings.json", 'r') as fp:
+            with open(resource_path("settings.json"), 'r') as fp:
                 all_settings_dict = json.load(fp)
             self.set_all_settings(all_settings_dict)
         except:
@@ -4229,13 +4235,13 @@ class MainWindow(QMainWindow):
 
         if self.comboBox_topology_topology.currentText() == "Buck-Converter":
             self.label_picture_topology.setMaximumSize(QtCore.QSize(450, 115))
-            self.label_picture_topology.setPixmap(QtGui.QPixmap("buck_converter_schematic.png"))
+            self.label_picture_topology.setPixmap(QtGui.QPixmap(resource_path("buck_converter_schematic.png")))
         elif self.comboBox_topology_topology.currentText() == "Boost-Converter":
             self.label_picture_topology.setMaximumSize(QtCore.QSize(450, 110))
-            self.label_picture_topology.setPixmap(QtGui.QPixmap("boost_converter_schematic.png"))
+            self.label_picture_topology.setPixmap(QtGui.QPixmap(resource_path("boost_converter_schematic.png")))
         elif self.comboBox_topology_topology.currentText() == "Buck-Boost-Converter":
             self.label_picture_topology.setMaximumSize(QtCore.QSize(450, 115))
-            self.label_picture_topology.setPixmap(QtGui.QPixmap("buck_boost_converter_schematic.png"))
+            self.label_picture_topology.setPixmap(QtGui.QPixmap(resource_path("buck_boost_converter_schematic.png")))
 
     def comboBox_topology_plot_line_contour_changed(self, comboBox_topology_plot_y_axis, comboBox_topology_plot_z_axis, comboBox_topology_plot_line_contour):
         """
@@ -5293,7 +5299,7 @@ class CurveCheckerWindow(QMainWindow):
         super(CurveCheckerWindow, self).__init__()
         uic.loadUi("CurveCheckerWindow.ui", self)
 
-        self.setWindowIcon(QtGui.QIcon("window_icon"))
+        self.setWindowIcon(QtGui.QIcon(resource_path("window_icon")))
 
         self.matplotlibwidget = MatplotlibWidget()
         self.matplotlibwidget.axis_cm.remove()

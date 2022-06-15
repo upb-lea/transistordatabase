@@ -5672,7 +5672,7 @@ def dpt_save_data(measurement_dict: dict) -> dict:
 
     # Get a list of all the csv files
     csv_files = glob.glob(measurement_dict.get('path'))
-
+    
     position_t_j = csv_files[1].rfind("C_")
     position_t_j_start = csv_files[1].rfind("_", 0, position_t_j)
     t_j = int(csv_files[1][position_t_j_start + 1:position_t_j])
@@ -5686,8 +5686,8 @@ def dpt_save_data(measurement_dict: dict) -> dict:
     v_supply = int(csv_files[1][position_v_supply_start + 1:position_v_supply])
 
     dpt_raw_data = {}
-    e_off_meas = dict | None
-    e_on_meas = dict | None
+    e_off_meas = dict 
+    e_on_meas = dict
 
     position_attribute_start = 'V_'
     position_attribute_end = 'A_'
