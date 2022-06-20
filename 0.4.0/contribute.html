@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing &mdash; transistordatabase(TDB) 0.4.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Documentation" href="transistordatabase.html" />
+    <link rel="prev" title="1 Introduction" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> transistordatabase(TDB)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html"><span class="sectnum">1</span> Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#gui-screenshots"><span class="sectnum">2</span> GUI Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#why-the-transistordatabase"><span class="sectnum">3</span> Why the transistordatabase?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">4</span> Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase-s-usage"><span class="sectnum">5</span> transistordatabase’s usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">6</span> Export transistor objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">7</span> Others</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#drawings">Drawings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-the-transistordatabase-as-a-pip-package-in-developer-mode">Install the transistordatabase as a pip-package in developer mode</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#set-up-a-virtual-environment">Set up a virtual environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#write-code">Write Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#code-structure">Code Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#folder-and-file-structure">Folder and File Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#packages-and-dependencies">Packages and Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-type-hints">Use type hints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sphinx-documentation-using-docstrings">Sphinx documentation using docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unittesting-with-pytest">unittesting with pytest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-the-changelog">update the changelog</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#install-and-setup-pytest">Install and setup pytest</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-pycharm">Configuring Pycharm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-a-test-case">Writing a test case</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#install-and-setup-sphinx">Install and setup Sphinx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-workflow">Release Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#update-version-strings">Update version strings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-sure-that-new-functions-methods-classes-are-included-to-the-documentation">Make sure that new functions/methods/classes are included to the documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-a-local-test-documentation">Build a local test-documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-requirements-txt">Generate requirements.txt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-pip-package-by-using-setup-py">Generate pip-package by using setup.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upload-pip-package-to-pypi">Upload pip package to pypi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-git-release-and-upload-it-to-github">create a git release and upload it to github</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-sphinx-documentation-on-github-pages">generate sphinx documentation on github pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-executable-file-with-all-dependencies-to-run-the-gui">generate executable file with all dependencies to run the GUI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="transistordatabase.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">transistordatabase(TDB)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Contributing</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/upb-lea/transistordatabase/blob/database-edits/sphinx/contribute.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline"></a></h1>
+<div class="contents local topic" id="table-of-contents">
+<p class="topic-title"><strong>Table of Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#drawings" id="id1">Drawings</a></p></li>
+<li><p><a class="reference internal" href="#install-the-transistordatabase-as-a-pip-package-in-developer-mode" id="id2">Install the transistordatabase as a pip-package in developer mode</a></p></li>
+<li><p><a class="reference internal" href="#write-code" id="id3">Write Code</a></p></li>
+<li><p><a class="reference internal" href="#install-and-setup-pytest" id="id4">Install and setup pytest</a></p></li>
+<li><p><a class="reference internal" href="#install-and-setup-sphinx" id="id5">Install and setup Sphinx</a></p></li>
+<li><p><a class="reference internal" href="#release-workflow" id="id6">Release Workflow</a></p></li>
+</ul>
+</div>
+<section id="drawings">
+<h2><a class="toc-backref" href="#id1">Drawings</a><a class="headerlink" href="#drawings" title="Permalink to this headline"></a></h2>
+<p>For drawings (e.g. in readme-files), we recommend to use the program <a class="reference external" href="https://inkscape.org/">Inkscape</a>. It is open source software and runs on Linux, Mac and Windows. If you want to draw electric circuits, we recommend this library on <a class="reference external" href="https://github.com/upb-lea/Inkscape_electric_Symbols">github</a>.</p>
+</section>
+<section id="install-the-transistordatabase-as-a-pip-package-in-developer-mode">
+<h2><a class="toc-backref" href="#id2">Install the transistordatabase as a pip-package in developer mode</a><a class="headerlink" href="#install-the-transistordatabase-as-a-pip-package-in-developer-mode" title="Permalink to this headline"></a></h2>
+<p>To develop code that will later be delivered as pip-package it is useful to install the code in developer mode. Note about the ‘.’ point!</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">of</span><span class="o">/</span><span class="n">transistordatabase</span><span class="o">-</span><span class="n">git</span><span class="o">/</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+</pre></div>
+</div>
+<p>The code in the installed pip-packet (corresponds to the linked git reposistory) is now changed in realtime.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using the Pycharm Python Console, the kernel must be restarted for changes!</p>
+</div>
+<section id="set-up-a-virtual-environment">
+<h3>Set up a virtual environment<a class="headerlink" href="#set-up-a-virtual-environment" title="Permalink to this headline"></a></h3>
+<p>In lot of cases it is useful to set up a virtual environment and use this for coding of for testing.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># set up virtual environment once</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">userxy</span><span class="o">/</span><span class="n">venv_tdb</span>
+<span class="c1"># attach to this virtual environment, everytime you need it</span>
+<span class="n">source</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">userxy</span><span class="o">/</span><span class="n">venv_tdb</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="write-code">
+<h2><a class="toc-backref" href="#id3">Write Code</a><a class="headerlink" href="#write-code" title="Permalink to this headline"></a></h2>
+<section id="code-structure">
+<h3>Code Structure<a class="headerlink" href="#code-structure" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>functions/methods: ‘lower_snake_case&lt;<a class="reference external" href="https://en.wikipedia.org/wiki/Snake_case">https://en.wikipedia.org/wiki/Snake_case</a>&gt;’__.</p></li>
+<li><p>Classes: ‘CamelCase&lt;<a class="reference external" href="https://en.wikipedia.org/wiki/Camel_case">https://en.wikipedia.org/wiki/Camel_case</a>&gt;’__.</p></li>
+</ul>
+</section>
+<section id="folder-and-file-structure">
+<h3>Folder and File Structure<a class="headerlink" href="#folder-and-file-structure" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>folder and function names lower case</p></li>
+<li><p>classes should go into _classes.py</p></li>
+<li><p>functions should go into _functions.py</p></li>
+</ul>
+</section>
+<section id="packages-and-dependencies">
+<h3>Packages and Dependencies<a class="headerlink" href="#packages-and-dependencies" title="Permalink to this headline"></a></h3>
+<p>In general, external packages should be involved as little as possible.
+* for transistordatabase, use ‘pathlib’ instead of ‘os’
+* for femmt, use ‘os’ instead of ‘pathlib’
+* use pytest instead of unittest</p>
+</section>
+<section id="use-type-hints">
+<h3>Use type hints<a class="headerlink" href="#use-type-hints" title="Permalink to this headline"></a></h3>
+<p>Type Hints are used
+* for all function/classes handover parameters and function return values
+* Function/Classes internal parameters do not need type-hints
+* Due to backward compatibility with python 3.8, type-hints must be imported
+* TDB package: from __future__ import annotations
+* FEMMT package:  via ‘from typing import List, Dict, Tuple’.
+* Find a type hint cheat sheet <a class="reference external" href="https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html">here</a>.</p>
+</section>
+<section id="sphinx-documentation-using-docstrings">
+<h3>Sphinx documentation using docstrings<a class="headerlink" href="#sphinx-documentation-using-docstrings" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>documentation necessary for all functions, classes and methods</p></li>
+<li><p>include typehints and explanations for every parameter</p></li>
+<li><p>include an example</p></li>
+<li><p>include a graphic</p></li>
+<li><p>Find a rst and sphinx cheat sheet <a class="reference external" href="https://sphinx-tutorial.readthedocs.io/cheatsheet/">here</a>.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_tdb</span><span class="p">(</span><span class="n">filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print all transistorelements stored in the local database</span>
+
+<span class="sd">    :param filters: filters for searching the database, e.g. &#39;name&#39; or &#39;type&#39;</span>
+<span class="sd">    :type filters: List[str]</span>
+<span class="sd">    :param collection_name: Choose database name in local mongodb client. Default name is &quot;collection&quot;</span>
+<span class="sd">    :type collection_name: str</span>
+
+<span class="sd">    :return: Return a list with all transistor objects fitting to the search-filter</span>
+<span class="sd">    :rtype: list</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; import transistordatabase as tdb</span>
+<span class="sd">    &gt;&gt;&gt; tdb.print_tdb()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="unittesting-with-pytest">
+<h3>unittesting with pytest<a class="headerlink" href="#unittesting-with-pytest" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>separate functions should be tested completely</p></li>
+</ul>
+</section>
+<section id="update-the-changelog">
+<h3>update the changelog<a class="headerlink" href="#update-the-changelog" title="Permalink to this headline"></a></h3>
+<p>Write in what changes for the end user of the package. This is for example
+* important change in a parameter passing of a function
+* Bugfixes, if possible with link to the issue</p>
+</section>
+</section>
+<section id="install-and-setup-pytest">
+<h2><a class="toc-backref" href="#id4">Install and setup pytest</a><a class="headerlink" href="#install-and-setup-pytest" title="Permalink to this headline"></a></h2>
+<p>A good developer always writes test cases after he/she develop a new feature or add a new function
+to the existing ones. The test cases determine if different features within a system are performing as expected and can also help reveal errors or defects within the system.
+Unit testing methodology is adopted in this work and is achieved using <code class="docutils literal notranslate"><span class="pre">pytest</span></code> framework.</p>
+<section id="configuring-pycharm">
+<h3>Configuring Pycharm<a class="headerlink" href="#configuring-pycharm" title="Permalink to this headline"></a></h3>
+<p>Add pytest package from Python Package tool window or by running the following command in terminal.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytest</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To ensure all pytest-specific features are available, set the test runner manually:
+press <code class="docutils literal notranslate"><span class="pre">Ctrl+Alt+S</span></code> to open the IDE settings and select Tools | Python Integrated Tools,
+and then select pytest from the Default test runner list.</p>
+</div>
+</section>
+<section id="writing-a-test-case">
+<h3>Writing a test case<a class="headerlink" href="#writing-a-test-case" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Navigate to method or class for which you want to create the test case and perform a right click.</p></li>
+<li><p>From the context menu, choose Go To | Test</p></li>
+<li><p>PyCharm shows the list of available tests</p></li>
+<li><p>To add one select Create New Test</p></li>
+<li><p>Pycharm navigates to test_databaseclasses.py and adds the testscase for the choosen method with a prefix <code class="docutils literal notranslate"><span class="pre">'test'</span></code></p></li>
+<li><p>While writing tests make use of my_transistor fixture to generate transistor object. Modifying this fixture is <strong>not recommended</strong> as it can affect other test cases</p></li>
+</ul>
+<p>More information on how to write test cases using pytest can be inferred from <a class="reference external" href="https://www.jetbrains.com/help/pycharm/pytest.html">here</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The test case name should be either of <code class="docutils literal notranslate"><span class="pre">test_methodname</span></code> or <code class="docutils literal notranslate"><span class="pre">methodname_test</span></code> format for pycharm to associate the test case
+with respective method that needs to be tested.</p>
+</div>
+</section>
+</section>
+<section id="install-and-setup-sphinx">
+<h2><a class="toc-backref" href="#id5">Install and setup Sphinx</a><a class="headerlink" href="#install-and-setup-sphinx" title="Permalink to this headline"></a></h2>
+<p>Documentation is generated by Sphinx, and Sphinx reads the docstrings inside the code. Make sure to keep the docstrings up-to-date when making a change!
+Sphinx uses autodoc extension which generates documentation automatically by reading the docstrings.
+The docstrings can be written in rst file format whereas other formats like google docstrings are also available.</p>
+<p>Find a rst and sphinx cheat sheet <a class="reference external" href="https://sphinx-tutorial.readthedocs.io/cheatsheet/">here</a>.</p>
+<p>Step 1: Use <a class="reference external" href="https://www.sphinx-doc.org/en/master/man/sphinx-quickstart.html">sphinx-quickstart</a> feature of sphinx which will setup the required files.</p>
+<p>Step 2: Configure the conf.py file with necessary extensions.</p>
+<p>Step 3: Create the necessary .rst files like _introduction, installation, transistordatabase and add the tree structure in index.rst.</p>
+<p>Step 4: Point to folder where Makefile exists and execute command <strong>“make html”</strong> to generate documentation. The generated HTML files will be placed under _buildhtml folder.</p>
+<p>For generating multiversion documentation, py module <code class="docutils literal notranslate"><span class="pre">sphinx-multiversion</span></code> is used and added as extension in conf.py.
+Further steps about configuring the project to enable multiversioning documentation can be found <a class="reference external" href="https://holzhaus.github.io/sphinx-multiversion/master/quickstart.html">here</a>.</p>
+<p>Install Sphinx for this repository. It is useful, to install this inside a virtual environment.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">multiversion</span> <span class="n">sphinx_rtd_theme</span> <span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">email</span>
+</pre></div>
+</div>
+</section>
+<section id="release-workflow">
+<h2><a class="toc-backref" href="#id6">Release Workflow</a><a class="headerlink" href="#release-workflow" title="Permalink to this headline"></a></h2>
+<section id="update-version-strings">
+<h3>Update version strings<a class="headerlink" href="#update-version-strings" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt>Version strings need to be updated in</dt><dd><ul class="simple">
+<li><p>setup.py</p></li>
+<li><p>sphinx/conf.py</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="make-sure-that-new-functions-methods-classes-are-included-to-the-documentation">
+<h3>Make sure that new functions/methods/classes are included to the documentation<a class="headerlink" href="#make-sure-that-new-functions-methods-classes-are-included-to-the-documentation" title="Permalink to this headline"></a></h3>
+<p>The text file sphinx/transistordatabase.rst contains all functions that will be shown in the documentation build by sphinx. Make sure that this list ist up-to-date when releasing a new version.</p>
+</section>
+<section id="build-a-local-test-documentation">
+<h3>Build a local test-documentation<a class="headerlink" href="#build-a-local-test-documentation" title="Permalink to this headline"></a></h3>
+<p>First, generate the sphinx documentation for the current version to see if this runs without any errors.
+Go to /sphinx and runs</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>Make sure the html-generation works without errors and visit the generated file inside /spinx/_build/_html/index.html</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clean</span>
+</pre></div>
+</div>
+<p>Next, generate the sphinx-multiversion documentation for all available versions and see if this runs without any errors.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sphinx</span><span class="o">-</span><span class="n">multiversion</span> <span class="n">sphinx</span> <span class="n">sphinx</span><span class="o">/</span><span class="n">_build</span><span class="o">/</span><span class="n">_html</span>
+</pre></div>
+</div>
+<p>Make sure the html-generation works without errors and visit the generated file inside /spinx/_build/_html/main/index.html</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Maybe there is a bug in some older versions, because this workflow was introduced only with the passing of time and thus non-error free builds exist in older versions.</p>
+</div>
+</section>
+<section id="generate-requirements-txt">
+<h3>Generate requirements.txt<a class="headerlink" href="#generate-requirements-txt" title="Permalink to this headline"></a></h3>
+<p>File ‘requirements.txt’ is auto generated by pipreqs. To install pipreqs, do the following</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pipreqs</span>
+</pre></div>
+</div>
+<p>Generate the ‘requirements.txt’-file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pipreqs</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">project</span><span class="o">/</span><span class="n">location</span><span class="o">/</span><span class="n">transistor_database</span>
+</pre></div>
+</div>
+<p>Further information can be found <a class="reference external" href="https://pypi.org/project/pipreqs/">here</a>.</p>
+</section>
+<section id="generate-pip-package-by-using-setup-py">
+<h3>Generate pip-package by using setup.py<a class="headerlink" href="#generate-pip-package-by-using-setup-py" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt>Some useful links</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://pypi.org/classifiers/">classifiers</a>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Run setup.py as the following from your operating system command line</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">bdist_wheel</span>
+</pre></div>
+</div>
+<p>Please find the generated pip package inside the /dist-folder. <br></p>
+<p>Test the pip package from local installation before uploading.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">transistordatabase</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">py3</span><span class="o">-</span><span class="n">none</span><span class="o">-</span><span class="nb">any</span><span class="o">.</span><span class="n">whl</span>
+</pre></div>
+</div>
+</section>
+<section id="upload-pip-package-to-pypi">
+<h3>Upload pip package to pypi<a class="headerlink" href="#upload-pip-package-to-pypi" title="Permalink to this headline"></a></h3>
+<p>Run this from your operating system command line</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">twine</span> <span class="n">upload</span> <span class="o">--</span><span class="n">repository</span> <span class="n">pypi</span> <span class="n">dist</span><span class="o">/*</span>
+</pre></div>
+</div>
+</section>
+<section id="create-a-git-release-and-upload-it-to-github">
+<h3>create a git release and upload it to github<a class="headerlink" href="#create-a-git-release-and-upload-it-to-github" title="Permalink to this headline"></a></h3>
+<p>Easiest way is to use <a class="reference external" href="https://github.com/NicoHood/GPGit">GPGit</a>. This tool helps you in all steps. Example to generate the 0.1.3-release and upload it to github:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gpgit</span> <span class="mf">0.1.3</span>
+</pre></div>
+</div>
+</section>
+<section id="generate-sphinx-documentation-on-github-pages">
+<h3>generate sphinx documentation on github pages<a class="headerlink" href="#generate-sphinx-documentation-on-github-pages" title="Permalink to this headline"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># make sure to clean up old build data</span>
+<span class="n">cd</span> <span class="n">sphinx</span><span class="o">/</span>
+<span class="n">make</span> <span class="n">clean</span>
+<span class="n">cd</span> <span class="o">..</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">multiversion</span> <span class="n">sphinx</span> <span class="n">sphinx</span><span class="o">/</span><span class="n">_build</span><span class="o">/</span><span class="n">_html</span>
+<span class="c1"># write the new documentation to github-pages</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">gh</span><span class="o">-</span><span class="n">pages</span>
+<span class="c1"># now, copy the files from sphinx/_build/_html to the gh-pages repository</span>
+<span class="n">git</span> <span class="n">add</span> <span class="c1">#newChangesHere</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;update docu&quot;</span>
+<span class="n">git</span> <span class="n">push</span>
+<span class="c1"># change back to the main branch</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">main</span>
+<span class="c1"># clean up old build data</span>
+<span class="n">cd</span> <span class="n">sphinx</span>
+<span class="n">make</span> <span class="n">clean</span>
+</pre></div>
+</div>
+</section>
+<section id="generate-executable-file-with-all-dependencies-to-run-the-gui">
+<h3>generate executable file with all dependencies to run the GUI<a class="headerlink" href="#generate-executable-file-with-all-dependencies-to-run-the-gui" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Step 1: install auto-py-to-exe via the “pip install auto-py-to-exe” command (<a class="reference external" href="https://pypi.org/project/auto-py-to-exe/">https://pypi.org/project/auto-py-to-exe/</a>)</p></li>
+<li><dl class="simple">
+<dt>Step 2: run auto-py-to-exe and select the follwing files:</dt><dd><ul>
+<li><p>Script Location: “…transistordatabase/transistordatabase/gui/gui.py”</p></li>
+<li><p>choose ‘One File’ and ‘Window Based (hide the console)’</p></li>
+<li><p>Add Files: all files in the directory “…transistordatabase/transistordatabase/gui” (except gui.py) that are associated with the GUI</p></li>
+<li><p>Add Files: “housing_types.txt” and “module manufacturers.txt” in the directory “…transistordatabase/transistordatabase”</p></li>
+<li><p>Add Directory: “…transistordatabase/transistordatabase”</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Step 3: Click the button “CONVERT .PY TO .EXE” (all other settings can be left at default)</p></li>
+</ul>
+<p>If an error message occurs when trying to run “gui.exe” that a certain python package is missing install the package via the “pip install” command and try to generate the .exe again (you may need to restart auto-py-to-exe since it will not work otherwise sometimes)</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="1 Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="transistordatabase.html" class="btn btn-neutral float-right" title="Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, LEA, Paderborn University.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: 0.4.0
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../0.2.11/index.html">0.2.11</a></dd>
+      <dd><a href="../0.2.12/index.html">0.2.12</a></dd>
+      <dd><a href="../0.2.13/index.html">0.2.13</a></dd>
+      <dd><a href="../0.2.14/index.html">0.2.14</a></dd>
+      <dd><a href="../0.3.0/contribute.html">0.3.0</a></dd>
+      <dd><a href="../0.3.1/contribute.html">0.3.1</a></dd>
+      <dd><a href="../0.3.2/contribute.html">0.3.2</a></dd>
+      <dd><a href="../0.3.3/contribute.html">0.3.3</a></dd>
+      <dd><a href="contribute.html">0.4.0</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../main/contribute.html">main</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

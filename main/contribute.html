@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contributing &mdash; transistordatabase(TDB) 0.3.3 documentation</title>
+  <title>Contributing &mdash; transistordatabase(TDB) 0.4.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -40,11 +40,12 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html"><span class="sectnum">1</span> Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#why-the-transistordatabase"><span class="sectnum">2</span> Why the transistordatabase?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">3</span> Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase-s-usage"><span class="sectnum">4</span> transistordatabase’s usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">5</span> Export transistor objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">6</span> Others</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#gui-screenshots"><span class="sectnum">2</span> GUI Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#why-the-transistordatabase"><span class="sectnum">3</span> Why the transistordatabase?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">4</span> Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase-s-usage"><span class="sectnum">5</span> transistordatabase’s usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">6</span> Export transistor objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">7</span> Others</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#drawings">Drawings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#install-the-transistordatabase-as-a-pip-package-in-developer-mode">Install the transistordatabase as a pip-package in developer mode</a><ul>
@@ -76,6 +77,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#upload-pip-package-to-pypi">Upload pip package to pypi</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#create-a-git-release-and-upload-it-to-github">create a git release and upload it to github</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#generate-sphinx-documentation-on-github-pages">generate sphinx documentation on github pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-executable-file-with-all-dependencies-to-run-the-gui">generate executable file with all dependencies to run the GUI</a></li>
 </ul>
 </li>
 </ul>
@@ -378,6 +380,25 @@ Go to /sphinx and runs</p>
 </pre></div>
 </div>
 </section>
+<section id="generate-executable-file-with-all-dependencies-to-run-the-gui">
+<h3>generate executable file with all dependencies to run the GUI<a class="headerlink" href="#generate-executable-file-with-all-dependencies-to-run-the-gui" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Step 1: install auto-py-to-exe via the “pip install auto-py-to-exe” command (<a class="reference external" href="https://pypi.org/project/auto-py-to-exe/">https://pypi.org/project/auto-py-to-exe/</a>)</p></li>
+<li><dl class="simple">
+<dt>Step 2: run auto-py-to-exe and select the follwing files:</dt><dd><ul>
+<li><p>Script Location: “…transistordatabase/transistordatabase/gui/gui.py”</p></li>
+<li><p>choose ‘One File’ and ‘Window Based (hide the console)’</p></li>
+<li><p>Add Files: all files in the directory “…transistordatabase/transistordatabase/gui” (except gui.py) that are associated with the GUI</p></li>
+<li><p>Add Files: “housing_types.txt” and “module manufacturers.txt” in the directory “…transistordatabase/transistordatabase”</p></li>
+<li><p>Add Directory: “…transistordatabase/transistordatabase”</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Step 3: Click the button “CONVERT .PY TO .EXE” (all other settings can be left at default)</p></li>
+</ul>
+<p>If an error message occurs when trying to run “gui.exe” that a certain python package is missing install the package via the “pip install” command and try to generate the .exe again (you may need to restart auto-py-to-exe since it will not work otherwise sometimes)</p>
+</section>
 </section>
 </section>
 
@@ -423,13 +444,11 @@ Go to /sphinx and runs</p>
       <dd><a href="../0.3.1/contribute.html">0.3.1</a></dd>
       <dd><a href="../0.3.2/contribute.html">0.3.2</a></dd>
       <dd><a href="../0.3.3/contribute.html">0.3.3</a></dd>
+      <dd><a href="../0.4.0/contribute.html">0.4.0</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>
-      <dd><a href="../feature_loss_matrix/contribute.html">feature_loss_matrix</a></dd>
-      <dd><a href="../gui/contribute.html">gui</a></dd>
       <dd><a href="contribute.html">main</a></dd>
-      <dd><a href="../pre_test_gui/contribute.html">pre_test_gui</a></dd>
     </dl>
   </div>
 </div><script>
