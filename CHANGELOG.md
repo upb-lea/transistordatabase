@@ -4,12 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [0.4.0] - 2022-06-20
 ### Added
-- NEW: Graphical User Interface: - run the file "gui.py" within the directory ".../transistordatabase/transistordatabase/gui" to start the GUI
+- NEW: Graphical User Interface: Download exe-file, - or run the file "gui.py" within the directory ".../transistordatabase/transistordatabase/gui" to start the GUI
 
 ### Fixed
-- #82: umpdate_from_fileexchange() leads to failure in case of no internet connection
+- #82: update_from_fileexchange() leads to failure in case of no internet connection
+- #84: Process is still running when closing main window
+- #85: Ignore missing-data messages at GUI startup
+- #87: Database not visible in exe-file
        
 ## [0.3.3] - 2022-03-20
 ### Changed

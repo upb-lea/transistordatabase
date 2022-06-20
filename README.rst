@@ -1,6 +1,30 @@
 .. sectnum::
 
 ###########################
+GUI Screenshots
+###########################
+
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_database.png
+    :align: center
+    :alt: gui_database
+
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_comparison.png
+    :align: center
+    :alt: gui_comparison
+
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_create_transistor.png
+    :align: center
+    :alt: gui_create_transistor
+
+
+Download and installation for windows
+*************************************
+(For other operating systems, scroll down)
+* Download and install git `Git Installation file <https://git-scm.com/download/win>`_.
+* Download and install mongodb. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`_.
+* Download and install the transistordatabase
+
+###########################
 Why the transistordatabase?
 ###########################
 
@@ -62,6 +86,11 @@ Install latest Python version: `Link <https://www.python.org/>`__.
 Install Pycharm
 ---------------
 `Installation file <https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC>`_.
+
+Download and run executable
+---------------------------
+Download exe-file here:
+
 
 Linux
 *****
