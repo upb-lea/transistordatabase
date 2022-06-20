@@ -20,7 +20,8 @@ GUI Screenshots
 Download and installation for windows
 *************************************
 (For other operating systems, scroll down)
-* Download and install git `Git Installation file <https://git-scm.com/download/win>`_.
+
+* Download and install `Git Installation file <https://git-scm.com/download/win>`_.
 * Download and install mongodb. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`_.
 * Download and install the transistordatabase
 
