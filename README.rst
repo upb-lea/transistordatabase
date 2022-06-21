@@ -422,13 +422,12 @@ Others
 
 Roadmap
 *******
-Planned features in 2021
+Planned features in 2022
 
-    * show a virtual datasheet of a transistor
-    * exporters to a few programs, e.g. Simulink, GeckoCIRCUITS, PLECs, ...
-    * save measurement data from double pulse measurements in the transistor database
-    * compare resistors within the database (e.g. compare measurements wit datasheet values, or compare datasheet values for transistor A with transistor B)
-    * provide a pip package
+* Focus on adding self-measured data to the database
+* Working with self-measured data in exporters
+* Usability improvements
+* Stable software
 
 Organisation
 ************
@@ -450,7 +449,7 @@ History and project status
 --------------------------
 This project started in 2020 as a side project and was initially written in matlab. It quickly became clear that the project was no longer a side project. The project should be completely rewritten, because many new complex levels have been added. To place the project in the open source world, the programming language python is used.
 
-In January 2021 a very early alpha status is reached. First pip package is provided in may 2021.
+In January 2021 a very early alpha status was reached. First pip package was provided in may 2021. First GUI is provided in June 2022.
 
 License
 -------
