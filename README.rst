@@ -23,7 +23,7 @@ Download and installation for windows
 
 * Download and install `Git Installation file <https://git-scm.com/download/win>`_.
 * Download and install mongodb. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`_.
-* Download and install the transistordatabase
+* Download and run the transistordatabase `here <https://groups.uni-paderborn.de/lea/public/downloads/transistordatabase.zip>`_.
 
 ###########################
 Why the transistordatabase?
