@@ -182,12 +182,6 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
 # Database interactions
 # ---------------------------------
 
-
-def print_TDB(filters: list[str] | None = None, collection_name: str = "local") -> list[str]:
-    warnings.warn("'print_TDB'-function will be deprecated soon. Use 'print_tdb' instead.")
-    return print_tdb(filters=filters, collection_name=collection_name)
-
-
 def print_tdb(filters: list[str] | None = None, collection_name: str = "local") -> list[str]:
     """
     Print all transistorelements stored in the local database
@@ -241,11 +235,6 @@ def print_tdb(filters: list[str] | None = None, collection_name: str = "local") 
 # MongoDB database interactions
 # ---------------------------------
 
-def connect_TDB(host: str):
-    warnings.warn("'connect_TDB'-function will be deprecated soon. Use 'connect_tdb' instead.")
-    return connect_tdb(host)
-
-
 def connect_tdb(host: str):
     """
     A method for establishing connection with transistordatabase_exchange.
@@ -260,10 +249,6 @@ def connect_tdb(host: str):
     my_transistor_database = pymongo.MongoClient(host)
     return my_transistor_database.transistor_database.collection
 
-
-def connect_local_TDB():
-    warnings.warn("'connect_local_TDB'-function will be deprecated soon. Use 'connect_local_tdb' instead.")
-    return connect_local_tdb()
 
 def connect_local_tdb():
     """
