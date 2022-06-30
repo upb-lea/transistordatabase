@@ -12801,8 +12801,17 @@
     </property>
     <addaction name="action_delete_transistor"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="action_documentation"/>
+    <addaction name="action_report_bug"/>
+    <addaction name="action_contribute"/>
+   </widget>
    <addaction name="menuSettings"/>
    <addaction name="menuTransistor"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_save_settings">
@@ -12871,6 +12880,21 @@
   <action name="action_delete_transistor">
    <property name="text">
     <string>Delete Transistor</string>
+   </property>
+  </action>
+  <action name="action_documentation">
+   <property name="text">
+    <string>Documentation</string>
+   </property>
+  </action>
+  <action name="action_report_bug">
+   <property name="text">
+    <string>Report Bug</string>
+   </property>
+  </action>
+  <action name="action_contribute">
+   <property name="text">
+    <string>Contribute</string>
    </property>
   </action>
  </widget>

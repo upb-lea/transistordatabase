@@ -66,6 +66,12 @@ class MainWindow(QMainWindow):
         self.action_delete_transistor.triggered.connect(self.delete_marked_transistor_search_database_from_local_tdb)
 
 
+        ### Actions for 'help' ###
+        self.action_contribute.triggered.connect(self.webbrowser_contribute)
+        self.action_documentation.triggered.connect(self.webbrowser_documentation)
+        self.action_report_bug.triggered.connect(self.webbrowser_bugreport)
+
+
         ###TOPOLOGY CALCULATOR###
 
         # create the six Matplotlib figures needed
@@ -523,6 +529,18 @@ class MainWindow(QMainWindow):
 
         # load data into the tableWidget when starting the program
         self.search_database_load_data()
+
+    ### Help actions ###
+    def webbrowser_contribute(self):
+        webbrowser.open('https://github.com/upb-lea/transistordatabase/blob/main/Contributing.rst')
+
+    def webbrowser_bugreport(self):
+        webbrowser.open('https://github.com/upb-lea/transistordatabase/issues')
+
+    def webbrowser_documentation(self):
+        webbrowser.open('https://upb-lea.github.io/transistordatabase/main/transistordatabase.html')
+
+
 
 
     def closeEvent(self, event):
