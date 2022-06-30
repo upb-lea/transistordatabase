@@ -1834,7 +1834,8 @@ class Transistor:
                     if i > 0 and current[i] == 0:
                         current[i] = 0.001
 
-                if self.type.lower() == 'mosfet' or self.type.lower() == 'sic-mosfet':
+                if self.type.lower() == 'mosfet' or self.type.lower() == 'sic-mosfet' \
+                        or self.type.lower() == 'gan-transistor':
                     # Note: Loss calculation in GeckoCIRCUITs will fail in case of reverse conducting
                     # Forward characteristic will be copied to backward-characteristic
 
