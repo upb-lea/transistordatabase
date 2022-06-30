@@ -55,7 +55,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_search_database">
        <attribute name="title">
@@ -1930,7 +1930,7 @@
              <x>0</x>
              <y>0</y>
              <width>1250</width>
-             <height>3100</height>
+             <height>3104</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
@@ -7768,7 +7768,7 @@
                </size>
               </property>
               <property name="text">
-               <string>Manufacturer:</string>
+               <string>Chip-Manufacturer:</string>
               </property>
              </widget>
             </item>
@@ -8462,7 +8462,7 @@
                </size>
               </property>
               <property name="text">
-               <string>Manufacturer:</string>
+               <string>Chip-Manufacturer:</string>
               </property>
              </widget>
             </item>

@@ -1266,8 +1266,8 @@ class MainWindow(QMainWindow):
                                            not line.startswith("#")]
 
         self.comboBox_create_transistor_manufacturer.addItems(modulemanufacturer_list)
-        self.comboBox_create_transistor_switch_manufacturer.addItems(modulemanufacturer_list)
-        self.comboBox_create_transistor_diode_manufacturer.addItems(modulemanufacturer_list)
+        self.comboBox_create_transistor_switch_manufacturer.addItems([""] + modulemanufacturer_list)
+        self.comboBox_create_transistor_diode_manufacturer.addItems([""] + modulemanufacturer_list)
 
 
     def clear_create_transistor(self):
