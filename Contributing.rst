@@ -194,6 +194,7 @@ Update version strings
 Version strings need to be updated in
  * setup.py
  * sphinx/conf.py
+ * __init__.py
 
 Make sure that new functions/methods/classes are included to the documentation
 ------------------------------------------------------------------------------

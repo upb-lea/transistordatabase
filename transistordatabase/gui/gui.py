@@ -21,6 +21,9 @@ import buck_converter_functions
 import boost_converter_functions
 import buck_boost_converter_functions
 import comparison_tools_functions
+
+
+
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
@@ -46,6 +49,8 @@ class MainWindow(QMainWindow):
         self.tray_icon.setToolTip("Transistordatabase")
         self.tray_icon.show()
         self.tray_icon.activated.connect(self.show)
+
+        self.setWindowTitle(f"Transistordatabase - {tdb.__version__}")
 
         tdb.update_from_fileexchange(overwrite=True)
 

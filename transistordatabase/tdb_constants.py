@@ -1,5 +1,3 @@
-__version__ = "0.4.0"
-
 #On and Off gate voltages
 """IGBT Module Constants"""
 IGBT_VG_ON = 15
