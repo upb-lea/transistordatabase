@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - Date
 ### Added
-- Option to delete transistors from local database
-- Gecko Exporter for GaN-Transistors: mirror 1. quadrant forward characteristic to 3rd quadrant
+- General: Option to delete transistors from local database
+- General: Gecko Exporter for GaN-Transistors: mirror 1. quadrant forward characteristic to 3rd quadrant
+- GUI: Add options to display virtual and original datasheet for selected transistor
 
 ### Fixed
 - Fix PDF preview not working due to a workaround

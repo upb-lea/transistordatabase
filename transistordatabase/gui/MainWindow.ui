@@ -12799,6 +12799,9 @@
     <property name="title">
      <string>Transistor</string>
     </property>
+    <addaction name="action_show_virtual_datasheet"/>
+    <addaction name="action_show_original_datasheet"/>
+    <addaction name="separator"/>
     <addaction name="action_delete_transistor"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -12895,6 +12898,16 @@
   <action name="action_contribute">
    <property name="text">
     <string>Contribute</string>
+   </property>
+  </action>
+  <action name="action_show_virtual_datasheet">
+   <property name="text">
+    <string>Show Virtual Datasheet</string>
+   </property>
+  </action>
+  <action name="action_show_original_datasheet">
+   <property name="text">
+    <string>Show Original Datasheet</string>
    </property>
   </action>
  </widget>

@@ -69,6 +69,9 @@ class MainWindow(QMainWindow):
 
         ### Actions for 'Transistor' ###
         self.action_delete_transistor.triggered.connect(self.delete_marked_transistor_search_database_from_local_tdb)
+        self.action_show_original_datasheet.triggered.connect(self.webbrowser_original_datasheet)
+        self.action_show_virtual_datasheet.triggered.connect(self.webbrowser_virtual_datasheet)
+
 
 
         ### Actions for 'help' ###
@@ -534,6 +537,21 @@ class MainWindow(QMainWindow):
 
         # load data into the tableWidget when starting the program
         self.search_database_load_data()
+
+    ### Transistor actions ###
+    def webbrowser_original_datasheet(self):
+        transistor = self.get_marked_transistor()
+        webbrowser.open(transistor.datasheet_hyperlink)
+
+    def webbrowser_virtual_datasheet(self):
+        transistor = self.get_marked_transistor()
+        html = transistor.export_datasheet(build_collection=True)
+        with tempfile.NamedTemporaryFile('w', delete=False, suffix='.html') as f:
+            url = 'file://' + f.name
+            f.write(html)
+        webbrowser.open(url)
+
+
 
     ### Help actions ###
     def webbrowser_contribute(self):
@@ -2699,11 +2717,12 @@ class MainWindow(QMainWindow):
             if isinstance(widget, QLineEdit):
                 widget.clear()
 
-
-    def delete_marked_transistor_search_database_from_local_tdb(self):
+    def get_marked_transistor(self):
         """
-        Delete the marked transistor ('search transistor'-tab) from the local mongodb-database.
+        Get the marked transistor object from the search-database tab.
 
+        :return: Transistor
+        :rtype: Transistor
         """
         try:
             for i in range(self.tableWidget_search_database.columnCount()):
@@ -2712,11 +2731,21 @@ class MainWindow(QMainWindow):
             selected_transistor_name = self.tableWidget_search_database.item(self.tableWidget_search_database.currentRow(), column).text()
 
             transistor = tdb.load(selected_transistor_name)
-            transistor.delete()
-            self.search_database_load_data()
+            return transistor
 
         except:
             self.show_popup_message("Error: No transistor selected!")
+
+
+    def delete_marked_transistor_search_database_from_local_tdb(self):
+        """
+        Delete the marked transistor ('search transistor'-tab) from the local mongodb-database.
+
+        """
+        transistor = self.get_marked_transistor()
+        transistor.delete()
+        self.search_database_load_data()
+
 
     def load_from_search_database_into_create_transistor(self):
         """
