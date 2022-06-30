@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - Date
 ### Added
+- Option to delete transistors from local database
 
 ### Fixed
 - Fix PDF preview not working due to a workaround

@@ -329,6 +329,28 @@ class Transistor:
         else:
             collection.insert_one(transistor_dict)
 
+    def delete(self, collection: str = 'local') -> None:
+        """
+        The method deletes the transistor object from the local mongodb database.
+
+        :param collection: By default local database is selected and "local" is provided as value
+        :type collection: str
+
+        :return: None
+        :rtype: None
+        """
+        if collection == "local":
+            collection = connect_local_tdb()
+        transistor_dict = self.convert_to_dict()
+        if transistor_dict.get("_id") is not None:
+            _id = transistor_dict["_id"]
+            if collection.find_one({"_id": _id}) is not None:
+                collection.delete_one({"_id": _id})
+            else:
+                print("Can not find transistor in the database with same 'id' to delete.")
+        else:
+            print("Transistor can not be deleted. Has no internal 'id'.")
+
     def export_json(self, path: str = None) -> None:
         """
         Exports the transistor object to .json file, e.g. to share this file on file exchange on github

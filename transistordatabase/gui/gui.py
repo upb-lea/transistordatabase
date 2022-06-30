@@ -62,6 +62,9 @@ class MainWindow(QMainWindow):
         self.action_clear_create_transistor.triggered.connect(self.clear_create_transistor)
         self.action_exit.triggered.connect(app.exit)
 
+        ### Actions for 'Transistor' ###
+        self.action_delete_transistor.triggered.connect(self.delete_marked_transistor_search_database_from_local_tdb)
+
 
         ###TOPOLOGY CALCULATOR###
 
@@ -2672,6 +2675,25 @@ class MainWindow(QMainWindow):
         for widget in self.scrollAreaWidgetContents_search_database.children():
             if isinstance(widget, QLineEdit):
                 widget.clear()
+
+
+    def delete_marked_transistor_search_database_from_local_tdb(self):
+        """
+        Delete the marked transistor ('search transistor'-tab) from the local mongodb-database.
+
+        """
+        try:
+            for i in range(self.tableWidget_search_database.columnCount()):
+                if self.tableWidget_search_database.horizontalHeaderItem(i).text() == "NAME":
+                    column = i
+            selected_transistor_name = self.tableWidget_search_database.item(self.tableWidget_search_database.currentRow(), column).text()
+
+            transistor = tdb.load(selected_transistor_name)
+            transistor.delete()
+            self.search_database_load_data()
+
+        except:
+            self.show_popup_message("Error: No transistor selected!")
 
     def load_from_search_database_into_create_transistor(self):
         """
