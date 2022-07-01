@@ -12802,6 +12802,8 @@
     <addaction name="action_show_virtual_datasheet"/>
     <addaction name="action_show_original_datasheet"/>
     <addaction name="separator"/>
+    <addaction name="action_add_transistor_to_transistordatabase_file_exchange"/>
+    <addaction name="separator"/>
     <addaction name="action_delete_transistor"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -12908,6 +12910,11 @@
   <action name="action_show_original_datasheet">
    <property name="text">
     <string>Show Original Datasheet</string>
+   </property>
+  </action>
+  <action name="action_add_transistor_to_transistordatabase_file_exchange">
+   <property name="text">
+    <string>Add Transistor to Transistordatabase File Exchange</string>
    </property>
   </action>
  </widget>

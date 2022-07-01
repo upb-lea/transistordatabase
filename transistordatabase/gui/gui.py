@@ -71,6 +71,10 @@ class MainWindow(QMainWindow):
         self.action_delete_transistor.triggered.connect(self.delete_marked_transistor_search_database_from_local_tdb)
         self.action_show_original_datasheet.triggered.connect(self.webbrowser_original_datasheet)
         self.action_show_virtual_datasheet.triggered.connect(self.webbrowser_virtual_datasheet)
+        self.action_add_transistor_to_transistordatabase_file_exchange.triggered.connect(self.email_add_transistor_to_transistordatabase_file_exchange)
+
+
+
 
 
 
@@ -551,6 +555,20 @@ class MainWindow(QMainWindow):
             f.write(html)
         webbrowser.open(url)
 
+    def email_add_transistor_to_transistordatabase_file_exchange(self):
+        """
+        Email workflow to start a request for adding a new transistor to the transistordatabase file exchange.
+        This routine will open the mailprogram with predefined adresses. The .json file needs to be added manually.
+        """
+
+        transistor = self.get_marked_transistor()
+        transistor.export_json()
+
+        self.show_popup_message(f'Workflow to start request for upload <b>{transistor.name}</b> to the transistordatabase file exchange: <br> <br> 1. The browser opens and wants to access the mail program. Allow this.  <br> 2. The email program opens with the addressee pre-filled. <br> 3. Add the transistor file {transistor.name}.json as attachment from this filder: <a href={pathlib.Path.cwd().as_uri()}>{pathlib.Path.cwd().as_uri()}</a> <br> 4. Send Email.')
+
+        email_body = f"Do not forget to attach the transistor file <b>{transistor.name}</b> to this email!! Link to File: <a href={pathlib.Path.cwd().as_uri()}>{pathlib.Path.cwd().as_uri()}</a>"
+        email_subject = 'Request to add transistor {transistor.name} to the transistordatabase file exchange (TDB-FE)'
+        webbrowser.open(f'mailto:?to=tdb@lea.upb.de&subject=' + email_subject + '&body=' + email_body, new=2)
 
 
     ### Help actions ###
