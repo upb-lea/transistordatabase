@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix PDF preview not working due to a workaround
 - #93: Manufacturer parameters for switch and diode must be optional
+- Fix integration intervals combobox
 
 ## [0.4.0] - 2022-06-20
 ### Added

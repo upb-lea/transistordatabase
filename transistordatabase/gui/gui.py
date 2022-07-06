@@ -1330,6 +1330,7 @@ class MainWindow(QMainWindow):
         self.comboBox_create_transistor_manufacturer.addItems(modulemanufacturer_list)
         self.comboBox_create_transistor_switch_manufacturer.addItems([""] + modulemanufacturer_list)
         self.comboBox_create_transistor_diode_manufacturer.addItems([""] + modulemanufacturer_list)
+        self.comboBox_create_transistor_add_data_dpt_integration_interval.addItems(['IEC 60747-9', 'Mitsubishi', 'Infineon', 'Wolfspeed'])
 
 
     def clear_create_transistor(self):
@@ -1438,7 +1439,7 @@ class MainWindow(QMainWindow):
             self.lineEdit_create_transistor_add_data_dpt_r_g_off.text()) if self.lineEdit_create_transistor_add_data_dpt_r_g_off.text().isnumeric() == True else None
         energies = self.comboBox_create_transistor_add_data_dpt_energies.currentText()
         commutation_device = self.lineEdit_create_transistor_add_data_dpt_commutation_device.text()
-        integration_interval = self.lineEdit_create_transistor_add_data_dpt_integration_interval.text()
+        integration_interval = self.comboBox_create_transistor_add_data_dpt_integration_interval.currentText()
         t_j = float(
             self.lineEdit_create_transistor_add_data_dpt_t_j.text()) if self.lineEdit_create_transistor_add_data_dpt_t_j.text().isnumeric() == True else None
 
