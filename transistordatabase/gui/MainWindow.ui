@@ -55,7 +55,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_search_database">
        <attribute name="title">
@@ -1928,7 +1928,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-2444</y>
              <width>1250</width>
              <height>3104</height>
             </rect>
@@ -6225,7 +6225,7 @@
             <item row="83" column="0">
              <widget class="QLabel" name="label_28">
               <property name="text">
-               <string>V_g [V]:</string>
+               <string>V_g_on [V]:</string>
               </property>
              </widget>
             </item>
@@ -8387,7 +8387,7 @@
             <item row="88" column="0">
              <widget class="QLabel" name="label_32">
               <property name="text">
-               <string>Energieseee:</string>
+               <string>Energy:</string>
               </property>
              </widget>
             </item>

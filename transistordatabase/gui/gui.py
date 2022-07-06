@@ -1470,7 +1470,7 @@ class MainWindow(QMainWindow):
                 'energies': energies,
                 'commutation_device': commutation_device,
                 'integration_interval': integration_interval,
-                'mode': 'analyz'}
+                'mode': 'analyze'}
 
             all_items_text = self.get_all_items_text_from_comboBox(
                 self.comboBox_create_transistor_added_dpt)
