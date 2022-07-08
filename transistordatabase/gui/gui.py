@@ -1493,7 +1493,14 @@ class MainWindow(QMainWindow):
                                                                        "data_dict": data_dict})
                     self.comboBox_create_transistor_added_dpt.setCurrentText(comboBox_entry_name)
                 except:
-                    self.show_popup_message("Selected Directory is invalid!")
+                    self.show_popup_message(f"Selected Directory is invalid! Possible Reasons <br>"
+                                            f"1. Mandatory parameters: v_g_on, v_g_off, r_g_on, r_g_off, t_j <br>"
+                                            f"2. Following keys in csv-file name must match <br>"
+                                            f"    - Temperature <b>_</b>xx<b>C_</b><br>"
+                                            f"    - Voltage <b>_</b>xxx<b>V_</b> <br>"
+                                            f"    - Resistance <b>_</b>x.xx<b>R_</b> <br>"
+                                            f"    - Current on/off <b> _ON_I</b> or <b> _OFF_I </b><br>"
+                                            f"    - Voltage on/off <b>ON_U</b> or <b>OFF_U</b>")
 
 
     def view_dpt_measurement_data(self):

@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix PDF preview not working due to a workaround
 - #93: GUI Manufacturer parameters for switch and diode must be optional
-- Fix GUI integration interval when integrating own measurement.
+- Fix GUI measurement integration method when integrating own measurement.
 
 ## [0.4.0] - 2022-06-20
 ### Added

@@ -5696,7 +5696,7 @@ def dpt_save_data(measurement_dict: dict) -> dict:
 
     position_r_g = csv_files[1].rfind("R_")
     position_r_g_start = csv_files[1].rfind("_", 0, position_r_g)
-    r_g = int(csv_files[1][position_r_g_start + 1:position_r_g])
+    r_g = float(csv_files[1][position_r_g_start + 1:position_r_g])
 
     position_v_supply = csv_files[1].rfind("V_")
     position_v_supply_start = csv_files[1].rfind("_", 0, position_v_supply)
