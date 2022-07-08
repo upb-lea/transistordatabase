@@ -58,6 +58,15 @@ class MainWindow(QMainWindow):
 
         self.setWindowIcon(QtGui.QIcon("window_icon"))
 
+        self.translation_dict = {
+            'IEC 60747-9': 'IEC 60747-9 (MOSFET)',
+            'IEC 60747-8': 'IEC 60747-8 (IGBT)',
+            'Mitsubishi': 'Mitsubishi',
+            'Infineon': 'Infineon',
+            'Wolfspeed': 'Wolfspeed',
+
+        }
+
         self.action_save_settings.triggered.connect(self.save_settings)
         self.action_export_settings.triggered.connect(self.export_settings)
         self.action_load_settings.triggered.connect(self.load_settings)
@@ -1330,7 +1339,7 @@ class MainWindow(QMainWindow):
         self.comboBox_create_transistor_manufacturer.addItems(modulemanufacturer_list)
         self.comboBox_create_transistor_switch_manufacturer.addItems([""] + modulemanufacturer_list)
         self.comboBox_create_transistor_diode_manufacturer.addItems([""] + modulemanufacturer_list)
-        self.comboBox_create_transistor_add_data_dpt_integration_interval.addItems(['IEC 60747-9', 'Mitsubishi', 'Infineon', 'Wolfspeed'])
+        self.comboBox_create_transistor_add_data_dpt_integration_interval.addItems([self.translation_dict['IEC 60747-9'], self.translation_dict['IEC 60747-8'], self.translation_dict['Mitsubishi'], self.translation_dict['Infineon'], self.translation_dict['Wolfspeed']])
 
 
     def clear_create_transistor(self):
@@ -1469,8 +1478,8 @@ class MainWindow(QMainWindow):
                 't_j': t_j,
                 'energies': energies,
                 'commutation_device': commutation_device,
-                'integration_interval': integration_interval,
-                'mode': 'analyze'}
+                'integration_interval': list(self.translation_dict.keys())[list(self.translation_dict.values()).index(integration_interval)],
+                'mode': 'save'}
 
             all_items_text = self.get_all_items_text_from_comboBox(
                 self.comboBox_create_transistor_added_dpt)

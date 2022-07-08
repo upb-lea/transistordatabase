@@ -5623,6 +5623,9 @@ def dpt_save_data(measurement_dict: dict) -> dict:
     """
         Imports double pulse measurements and calculates switching losses to each given working point.
 
+        Note: This function brings the measurement data to a dictionary.
+        It does not store the data to the transistor!
+
         [1] options for the integration interval are based on following paper:
         Link: https://ieeexplore.ieee.org/document/8515553
 
@@ -5652,9 +5655,16 @@ def dpt_save_data(measurement_dict: dict) -> dict:
         """
 
     if measurement_dict.get('integration_interval') == 'IEC 60747-9':
+        # FETs
         off_vds_limit = 0.1
         off_is_limit = 0.02
         on_vds_limit = 0.02
+        on_is_limit = 0.1
+    elif measurement_dict.get('integration_interval') == 'IEC 60747-8':
+        # IGBTs
+        off_vds_limit = 0.1
+        off_is_limit = 0.1
+        on_vds_limit = 0.1
         on_is_limit = 0.1
     elif measurement_dict.get('integration_interval') == 'Mitsubishi':
         off_vds_limit = 0.1
