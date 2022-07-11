@@ -15,6 +15,7 @@ import json
 import os
 import webbrowser
 import tempfile
+import datetime
 
 import transistordatabase as tdb
 import buck_converter_functions
@@ -415,21 +416,27 @@ class MainWindow(QMainWindow):
 
 
         # set mandatory example keys
-        self.lineEdit_create_transistor_name.setText("Test")
-        self.lineEdit_create_transistor_author.setText("Phillip Beine")
-        self.lineEdit_create_transistor_cooling_area.setText("160e-6")
-        self.lineEdit_create_transistor_housing_area.setText("367e-6")
-        self.lineEdit_create_transistor_r_th_diode_cs.setText("0")
-        self.lineEdit_create_transistor_r_th_switch_cs.setText("0")
-        self.lineEdit_create_transistor_i_abs_max.setText("250")
-        self.lineEdit_create_transistor_v_abs_max.setText("1200")
-        self.lineEdit_create_transistor_i_cont.setText("115")
-        self.lineEdit_create_transistor_r_g_int.setText("2.6")
-        self.lineEdit_create_transistor_r_th_cs.setText("0")
-        self.lineEdit_create_transistor_switch_r_th_total.setText("0.27")
-        self.lineEdit_create_transistor_diode_r_th_total.setText("0")
-        self.lineEdit_create_transistor_switch_t_j_max.setText("175")
-        self.lineEdit_create_transistor_diode_t_j_max.setText("175")
+        # self.lineEdit_create_transistor_name.setText("Test")
+        # self.lineEdit_create_transistor_author.setText("Phillip Beine")
+        # self.lineEdit_create_transistor_cooling_area.setText("160e-6")
+        # self.lineEdit_create_transistor_housing_area.setText("367e-6")
+        # self.lineEdit_create_transistor_r_th_diode_cs.setText("0")
+        # self.lineEdit_create_transistor_r_th_switch_cs.setText("0")
+        # self.lineEdit_create_transistor_i_abs_max.setText("250")
+        # self.lineEdit_create_transistor_v_abs_max.setText("1200")
+        # self.lineEdit_create_transistor_i_cont.setText("115")
+        # self.lineEdit_create_transistor_r_g_int.setText("2.6")
+        # self.lineEdit_create_transistor_r_th_cs.setText("0")
+        # self.lineEdit_create_transistor_switch_r_th_total.setText("0.27")
+        # self.lineEdit_create_transistor_diode_r_th_total.setText("0")
+        # self.lineEdit_create_transistor_switch_t_j_max.setText("175")
+        # self.lineEdit_create_transistor_diode_t_j_max.setText("175")
+
+        self.lineEdit_create_transistor_add_data_dpt_measurement_date.setText(str(datetime.date.today()))
+
+        # Testbench combobox
+        self.comboBox_create_transistor_add_data_dpt_measurement_testbench.addItems(['', 'Paderborn University / LEA'])
+        self.comboBox_create_transistor_add_data_dpt_measurement_testbench.setEditable(True)
 
 
         #Sets all settings given in the settings.json file in the current working directory
@@ -1437,7 +1444,7 @@ class MainWindow(QMainWindow):
         commutation_inductance = float(
             self.lineEdit_create_transistor_add_data_commutation_inductance.text()) if self.lineEdit_create_transistor_add_data_commutation_inductance.text().isnumeric() == True else None
         measurement_date = self.lineEdit_create_transistor_add_data_dpt_measurement_date.text()
-        measurement_testbench = self.lineEdit_create_transistor_add_data_dpt_measurement_testbench.text()
+        measurement_testbench = self.comboBox_create_transistor_add_data_dpt_measurement_testbench.currentText()
         v_g = float(
             self.lineEdit_create_transistor_add_data_dpt_v_g.text()) if self.lineEdit_create_transistor_add_data_dpt_v_g.text().isnumeric() == True else None
         v_g_off = float(
