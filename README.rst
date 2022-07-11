@@ -1,5 +1,34 @@
 .. sectnum::
 
+
+###########################
+Features
+###########################
+
+
+The key feature is the Python interface, to use the transistor data in self-written optimization routines.
+
+1. Python interface
+Use the transistor data in you self-written optimization program, see figure:
+
+* Automatic calculate your converter losses with many different transistors
+* Search the database for usable transistors for your application
+* Functions provided, to search for closest operating point
+* Functions provided, to linearize the transistor/diode conduction behaviour
+* Functions provided, to calculate the output capacitances Energy from the C_oss-curve 
+* Use own loss measurements for above features (coming soon)
+
+2. GUI
+
+* Manage, store and search the transistors
+* Export transistor models to programs like GeckoCIRCUITS, PLECS, Matlab/Octave
+* Compare transistors (interpolate switch loss data for new gate resistors and temperatures, ...)
+
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/documentation/workflow_wp.png
+    :align: center
+    :alt: optimization
+
+
 ###########################
 GUI Screenshots
 ###########################
