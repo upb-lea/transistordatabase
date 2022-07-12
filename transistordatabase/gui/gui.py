@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QMessageBox, QFileDialog, QLineEdit, QComboBox, QSystemTrayIcon
 from PyQt5 import uic, QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QDoubleValidator, QIntValidator
 from matplotlib.widgets import Cursor
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
@@ -442,6 +442,12 @@ class MainWindow(QMainWindow):
         #Sets all settings given in the settings.json file in the current working directory
         self.load_local_settings()
 
+
+        # set input masks and validators
+        self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.setValidator(QDoubleValidator(0.0, 1000.0, 8))
+        self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.setValidator(QDoubleValidator(-300.0, 300.0, 2))
+        self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.setValidator(QDoubleValidator(0.0, 1000.0, 8))
+        self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.setValidator(QDoubleValidator(-300, 300, 2))
 
         ###SEARCH DATABASE###
 
@@ -1910,12 +1916,12 @@ class MainWindow(QMainWindow):
 
     def add_curve_switch_soa_t_pulse(self):
         t_c = float(
-            self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text()) if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text().isnumeric() == True else None
-        t_c_entry_name = self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() + " °C" if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text()) if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() != "" else None
+        t_c_entry_name = self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() + " °C" if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() != "" else None
 
         time_pulse = float(
-            self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text()) if self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text().isnumeric() == True else None
-        time_pulse_entry_name = self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() + " s" if self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text()) if self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() != "" else None
+        time_pulse_entry_name = self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() + " s" if self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"T_j = {t_c_entry_name}, Time_pulse = {time_pulse_entry_name}\nPath: {file_path}"
@@ -1956,12 +1962,12 @@ class MainWindow(QMainWindow):
 
     def add_curve_diode_soa_t_pulse(self):
         t_c = float(
-            self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text()) if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text().isnumeric() == True else None
-        t_c_entry_name = self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() + " °C" if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text()) if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() != "" else None
+        t_c_entry_name = self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() + " °C" if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() != "" else None
 
         time_pulse = float(
-            self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text()) if self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text().isnumeric() == True else None
-        time_pulse_entry_name = self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() + " s" if self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text()) if self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() != "" else None
+        time_pulse_entry_name = self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() + " s" if self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"T_j = {t_c_entry_name}, Time_pulse = {time_pulse_entry_name}\nPath: {file_path}"

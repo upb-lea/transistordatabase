@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix PDF preview not working due to a workaround
 - #93: GUI Manufacturer parameters for switch and diode must be optional
 - Fix GUI measurement integration method when integrating own measurement.
+- Fix GUI SOA switch/diode does not accept float or negative values
 
 ## [0.4.0] - 2022-06-20
 ### Added
