@@ -217,6 +217,26 @@ class MainWindow(QMainWindow):
         self.comboBox_topology_plot5_x_axis.currentTextChanged.connect(self.comboBox_topology_plots_x_axis_changed)
         self.comboBox_topology_plot6_x_axis.currentTextChanged.connect(self.comboBox_topology_plots_x_axis_changed)
 
+        # Topology Calculator: set input masks and validators
+        self.lineEdit_topology_output_power.setValidator(QDoubleValidator())
+        self.lineEdit_topology_v_in.setValidator(QDoubleValidator())
+        self.lineEdit_topology_v_out.setValidator(QDoubleValidator())
+        self.lineEdit_topology_frequency.setValidator(QDoubleValidator())
+        self.lineEdit_topology_zeta.setValidator(QDoubleValidator())
+        self.lineEdit_topology_temperature_heatsink.setValidator(QDoubleValidator())
+        self.lineEdit_topology_thermal_resistance_heatsink.setValidator(QDoubleValidator())
+        self.lineEdit_topology_number_parallel_transistor1.setValidator(QDoubleValidator())
+        self.lineEdit_topology_output_power_min.setValidator(QDoubleValidator())
+        self.lineEdit_topology_v_in_min.setValidator(QDoubleValidator())
+        self.lineEdit_topology_v_out_min.setValidator(QDoubleValidator())
+        self.lineEdit_topology_frequency_min.setValidator(QDoubleValidator())
+        self.lineEdit_topology_zeta_min.setValidator(QDoubleValidator())
+        self.lineEdit_topology_number_parallel_transistor2.setValidator(QDoubleValidator())
+        self.lineEdit_topology_output_power_max.setValidator(QDoubleValidator())
+        self.lineEdit_topology_v_in_max.setValidator(QDoubleValidator())
+        self.lineEdit_topology_v_out_max.setValidator(QDoubleValidator())
+        self.lineEdit_topology_frequency_max.setValidator(QDoubleValidator())
+        self.lineEdit_topology_zeta_max.setValidator(QDoubleValidator())
 
         ###COMPARISON TOOLS###
 
@@ -309,6 +329,17 @@ class MainWindow(QMainWindow):
         self.comboBox_compare_transistor1_changed()
         self.comboBox_compare_transistor2_changed()
         self.comboBox_compare_transistor3_changed()
+
+        # Comparison Tools: set input masks and validators
+        self.lineEdit_compare_t_j_transistor1.setValidator(QDoubleValidator())
+        self.lineEdit_compare_t_j_transistor2.setValidator(QDoubleValidator())
+        self.lineEdit_compare_t_j_transistor3.setValidator(QDoubleValidator())
+        self.lineEdit_compare_v_supply_transistor1.setValidator(QDoubleValidator())
+        self.lineEdit_compare_v_supply_transistor2.setValidator(QDoubleValidator())
+        self.lineEdit_compare_v_supply_transistor3.setValidator(QDoubleValidator())
+        self.lineEdit_compare_number_parallel_transistor1.setValidator(QDoubleValidator())
+        self.lineEdit_compare_number_parallel_transistor2.setValidator(QDoubleValidator())
+        self.lineEdit_compare_number_parallel_transistor3.setValidator(QDoubleValidator())
         
         ###Exporting Tools###
 
@@ -322,6 +353,22 @@ class MainWindow(QMainWindow):
         self.button_export_simulink.clicked.connect(self.export_simulink)
         self.button_export_gecko.clicked.connect(self.export_gecko)
         self.button_export_plecs.clicked.connect(self.export_plecs)
+
+        # Exporting Tools: set input masks and validators for transistor parameters
+        self.lineEdit_export_number_parallel_transistors.setValidator(QDoubleValidator())
+        self.lineEdit_export_simulink_v_supply.setValidator(QDoubleValidator())
+        self.lineEdit_export_simulink_r_g_on.setValidator(QDoubleValidator())
+        self.lineEdit_export_simulink_r_g_off.setValidator(QDoubleValidator())
+        self.lineEdit_export_simulink_normalize_t_to_v.setValidator(QDoubleValidator())
+        self.lineEdit_export_gecko_v_supply.setValidator(QDoubleValidator())
+        self.lineEdit_export_gecko_r_g_on.setValidator(QDoubleValidator())
+        self.lineEdit_export_gecko_r_g_off.setValidator(QDoubleValidator())
+        self.lineEdit_export_gecko_v_g_on.setValidator(QDoubleValidator())
+        self.lineEdit_export_gecko_v_g_off.setValidator(QDoubleValidator())
+        self.lineEdit_export_plecs_v_g_on.setValidator(QDoubleValidator())
+        self.lineEdit_export_plecs_v_g_off.setValidator(QDoubleValidator())
+        self.lineEdit_export_plecs_v_d_on.setValidator(QDoubleValidator())
+        self.lineEdit_export_plecs_v_d_off.setValidator(QDoubleValidator())
 
 
         ###CREATE TRANSISTOR###
@@ -443,9 +490,70 @@ class MainWindow(QMainWindow):
         self.load_local_settings()
 
 
-        # set input masks and validators
+        # create transistor: set input masks and validators for transistor parameters
+        self.lineEdit_create_transistor_v_abs_max.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_i_abs_max.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_i_cont.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_transistor_c_oss_er_c_o.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_transistor_c_oss_er_v_gs.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_transistor_c_oss_er_v_ds.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_transistor_c_oss_tr_c_o.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_transistor_c_oss_tr_v_gs.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_transistor_c_oss_tr_v_ds.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_t_c_max.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_r_g_int.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_r_th_cs.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_r_th_diode_cs.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_r_th_switch_cs.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_r_g_on_recommended.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_r_g_off_recommended.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_c_iss_fix.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_c_oss_fix.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_c_rss_fix.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_curve_c_iss_t_j.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_curve_c_oss_t_j.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_curve_c_rss_t_j.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_data_dpt_load_inductance.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_data_commutation_inductance.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_data_dpt_v_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_data_dpt_v_g_off.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_data_dpt_r_g_on.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_data_dpt_r_g_off.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_add_data_dpt_t_j.setValidator(QDoubleValidator())
+
+        # set input masks and validators for switch parameters
+        self.lineEdit_create_transistor_switch_t_j_max.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_r_th_total.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_c_th_total.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_tau_total.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_channel_data_t_j.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_channel_data_v_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_switching_losses_t_j.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_switching_losses_v_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_switching_losses_r_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_gate_charge_t_j.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_gate_charge_i_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_r_on_i_channel.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_r_on_v_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.setValidator(QDoubleValidator())
+
         self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.setValidator(QDoubleValidator(0.0, 1000.0, 8))
         self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.setValidator(QDoubleValidator(-300.0, 300.0, 2))
+
+        # set input masks and validators for diode parameters
+        self.lineEdit_create_transistor_diode_t_j_max.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_r_th_total.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_c_th_total.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_tau_total.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_add_channel_data_t_j.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_add_channel_data_v_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_add_switching_losses_t_j.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_add_switching_losses_v_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_add_switching_losses_r_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.setValidator(QDoubleValidator(0.0, 1000.0, 8))
         self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.setValidator(QDoubleValidator(-300, 300, 2))
 
@@ -563,6 +671,42 @@ class MainWindow(QMainWindow):
 
         # load data into the tableWidget when starting the program
         self.search_database_load_data()
+
+        # Search Database: set input masks and validators
+        self.lineEdit_search_database_housing_area_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_housing_area_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_cooling_area_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_cooling_area_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_t_c_max_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_t_c_max_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_g_int_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_g_int_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_g_on_recommended_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_g_on_recommended_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_g_off_recommended_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_g_off_recommended_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_c_oss_fix_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_c_oss_fix_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_c_iss_fix_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_c_iss_fix_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_c_rss_fix_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_c_rss_fix_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_th_cs_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_th_cs_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_th_switch_cs_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_th_switch_cs_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_th_diode_cs_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_r_th_diode_cs_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_v_abs_max_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_v_abs_max_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_i_abs_max_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_i_abs_max_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_i_cont_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_i_cont_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_switch_t_j_max_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_switch_t_j_max_max.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_diode_t_j_max_min.setValidator(QDoubleValidator())
+        self.lineEdit_search_database_diode_t_j_max_max.setValidator(QDoubleValidator())
 
     ### Transistor actions ###
     def webbrowser_original_datasheet(self):
@@ -1661,23 +1805,22 @@ class MainWindow(QMainWindow):
         self.comboBox_create_transistor_switch_added_curves_switching_losses.removeItem(self.comboBox_create_transistor_switch_added_curves_switching_losses.currentIndex())
         self.comboBox_create_transistor_switch_added_curves_switching_losses.setDisabled(False)
 
-
     def add_curve_switch_gate_charge(self):
         i_channel = float(
-            self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text().isnumeric() == True else None
-        i_channel_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() + " A" if self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() != "" else None
+        i_channel_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() + " A" if self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() != "" else None
 
         i_g = float(
-            self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text().isnumeric() == True else None
-        i_g_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() + " A" if self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() != "" else None
+        i_g_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() + " A" if self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() != "" else None
 
         t_j = float(
-            self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text().isnumeric() == True else None
-        t_j_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() != "" else None
 
         v_supply = float(
-            self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text().isnumeric() == True else None
-        v_supply_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() + " V" if self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() != "" else None
+        v_supply_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() + " V" if self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"I_channel ={i_channel_entry_name}, T_j = {t_j_entry_name}, V_supply = {v_supply_entry_name}, I_g = {i_g_entry_name}\nPath: {file_path}"
@@ -1726,16 +1869,16 @@ class MainWindow(QMainWindow):
 
     def add_curve_switch_r_on(self):
         i_channel = float(
-            self.lineEdit_create_transistor_switch_add_r_on_i_channel.text()) if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text().isnumeric() == True else None
-        i_channel_entry_name = self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() + " A" if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_r_on_i_channel.text()) if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() != "" else None
+        i_channel_entry_name = self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() + " A" if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_switch_add_r_on_v_g.text()) if self.lineEdit_create_transistor_switch_add_r_on_v_g.text().isnumeric() == True else None
-        v_g_entry_name = self.lineEdit_create_transistor_switch_add_r_on_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_r_on_v_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_r_on_v_g.text()) if self.lineEdit_create_transistor_switch_add_r_on_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_switch_add_r_on_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_r_on_v_g.text() != "" else None
 
         r_channel_nominal = float(
-            self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text()) if self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text().isnumeric() == True else None
-        r_channel_nominal_entry_name = self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() + " Ω" if self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text()) if self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() != "" else None
+        r_channel_nominal_entry_name = self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() + " Ω" if self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"I_channel ={i_channel_entry_name}, V_g = {v_g_entry_name}, R_channel_nominal = {r_channel_nominal_entry_name}\nPath: {file_path}"
@@ -1783,12 +1926,12 @@ class MainWindow(QMainWindow):
 
     def add_curve_diode_channel(self):
         t_j = float(
-            self.lineEdit_create_transistor_diode_add_channel_data_t_j.text()) if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text().isnumeric() == True else None
-        t_j_entry_name = self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() + " °C" if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_diode_add_channel_data_t_j.text()) if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() + " °C" if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_diode_add_channel_data_v_g.text()) if self.lineEdit_create_transistor_diode_add_channel_data_v_g.text().isnumeric() == True else None
-        v_g_entry_name = self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() + " V" if self.lineEdit_create_transistor_diode_add_channel_data_v_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_diode_add_channel_data_v_g.text()) if self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() + " V" if self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}\nPath: {file_path}"
@@ -1836,20 +1979,20 @@ class MainWindow(QMainWindow):
 
     def add_curve_diode_switching_losses(self):
         t_j = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text().isnumeric() == True else None
-        t_j_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() + " °C" if self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() + " °C" if self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text().isnumeric() == True else None
-        v_g_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() + " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() + " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() != "" else None
 
         r_g = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text().isnumeric() == True else None
-        r_g_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text() + " Ω" if self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text() != "" else None
+        r_g_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text() + " Ω" if self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text() != "" else None
 
         v_supply = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text().isnumeric() == True else None
-        v_supply_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() + " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() != "" else None
+        v_supply_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() + " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, R_g = {r_g_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
@@ -2117,8 +2260,8 @@ class MainWindow(QMainWindow):
     def add_curve_c_iss_normal(self):
         if self.comboBox_create_transistor_added_c_iss_normal.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text().isnumeric() == True else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text().isnumeric() == True else None
+                self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
@@ -2155,8 +2298,8 @@ class MainWindow(QMainWindow):
     def add_curve_c_iss_detail(self):
         if self.comboBox_create_transistor_added_c_iss_detail.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text().isnumeric() == True else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text().isnumeric() == True else None
+                self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
@@ -2192,8 +2335,8 @@ class MainWindow(QMainWindow):
     def add_curve_c_oss_normal(self):
         if self.comboBox_create_transistor_added_c_oss_normal.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text().isnumeric() == True else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text().isnumeric() == True else None
+                self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
@@ -2230,8 +2373,8 @@ class MainWindow(QMainWindow):
     def add_curve_c_oss_detail(self):
         if self.comboBox_create_transistor_added_c_oss_detail.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text().isnumeric() == True else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text().isnumeric() == True else None
+                self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
@@ -2267,8 +2410,8 @@ class MainWindow(QMainWindow):
     def add_curve_c_rss_normal(self):
         if self.comboBox_create_transistor_added_c_rss_normal.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text().isnumeric() == True else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text().isnumeric() == True else None
+                self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}, Path\n{file_path}"
@@ -2305,8 +2448,8 @@ class MainWindow(QMainWindow):
     def add_curve_c_rss_detail(self):
         if self.comboBox_create_transistor_added_c_rss_detail.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text().isnumeric() == True else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text().isnumeric() == True else None
+                self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
