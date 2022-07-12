@@ -2278,7 +2278,7 @@ class MainWindow(QMainWindow):
                     curve_title="C_iss_normal Curve",
                     comboBox=self.comboBox_create_transistor_added_c_iss_normal,
                     xlabel="Voltage in V",
-                    ylabel="Energy in J")
+                    ylabel="Capacitance in F")
         else:
             self.show_popup_message("Curve has already been added!")
 
@@ -2288,7 +2288,7 @@ class MainWindow(QMainWindow):
             curve_title="C_iss_normal Curve",
             comboBox=self.comboBox_create_transistor_added_c_iss_normal,
             xlabel="Voltage in V",
-            ylabel="Energy in J")
+            ylabel="Capacitance in F")
 
 
     def delete_curve_c_iss_normal(self):
@@ -2316,7 +2316,7 @@ class MainWindow(QMainWindow):
                     curve_title="C_iss_detail Curve",
                     comboBox=self.comboBox_create_transistor_added_c_iss_detail,
                     xlabel="Voltage in V",
-                    ylabel="Energy in J")
+                    ylabel="Capacitance in F")
         else:
             self.show_popup_message("Curve has already been added!")
 
@@ -2326,7 +2326,7 @@ class MainWindow(QMainWindow):
             curve_title="C_iss_detail Curve",
             comboBox=self.comboBox_create_transistor_added_c_iss_detail,
             xlabel="Voltage in V",
-            ylabel="Energy in J")
+            ylabel="Capacitance in F")
 
     def delete_curve_c_iss_detail(self):
         self.comboBox_create_transistor_added_c_iss_detail.clear()
@@ -2353,7 +2353,7 @@ class MainWindow(QMainWindow):
                     curve_title="C_oss_normal Curve",
                     comboBox=self.comboBox_create_transistor_added_c_oss_normal,
                     xlabel="Voltage in V",
-                    ylabel="Energy in J")
+                    ylabel="Capacitance in F")
         else:
             self.show_popup_message("Curve has already been added!")
 
@@ -2363,7 +2363,7 @@ class MainWindow(QMainWindow):
             curve_title="C_oss_normal Curve",
             comboBox=self.comboBox_create_transistor_added_c_oss_normal,
             xlabel="Voltage in V",
-            ylabel="Energy in J")
+            ylabel="Capacitance in F")
 
 
     def delete_curve_c_oss_normal(self):
@@ -2391,7 +2391,7 @@ class MainWindow(QMainWindow):
                     curve_title="C_oss_detail Curve",
                     comboBox=self.comboBox_create_transistor_added_c_oss_detail,
                     xlabel="Voltage in V",
-                    ylabel="Energy in J")
+                    ylabel="Capacitance in F")
         else:
             self.show_popup_message("Curve has already been added!")
 
@@ -2401,7 +2401,7 @@ class MainWindow(QMainWindow):
             curve_title="C_oss_detail Curve",
             comboBox=self.comboBox_create_transistor_added_c_oss_detail,
             xlabel="Voltage in V",
-            ylabel="Energy in J")
+            ylabel="Capacitance in F")
 
     def delete_curve_c_oss_detail(self):
         self.comboBox_create_transistor_added_c_oss_detail.clear()
@@ -2428,7 +2428,7 @@ class MainWindow(QMainWindow):
                     curve_title="C_rss_normal Curve",
                     comboBox=self.comboBox_create_transistor_added_c_rss_normal,
                     xlabel="Voltage in V",
-                    ylabel="Energy in J")
+                    ylabel="Capacitance in F")
         else:
             self.show_popup_message("Curve has already been added!")
 
@@ -2438,7 +2438,7 @@ class MainWindow(QMainWindow):
             curve_title="C_rss_normal Curve",
             comboBox=self.comboBox_create_transistor_added_c_rss_normal,
             xlabel="Voltage in V",
-            ylabel="Energy in J")
+            ylabel="Capacitance in F")
 
 
     def delete_curve_c_rss_normal(self):
@@ -2466,7 +2466,7 @@ class MainWindow(QMainWindow):
                     curve_title="C_rss_detail Curve",
                     comboBox=self.comboBox_create_transistor_added_c_rss_detail,
                     xlabel="Voltage in V",
-                    ylabel="Energy in J")
+                    ylabel="Capacitance in F")
         else:
             self.show_popup_message("Curve has already been added!")
 
@@ -2476,7 +2476,7 @@ class MainWindow(QMainWindow):
             curve_title="C_rss_detail Curve",
             comboBox=self.comboBox_create_transistor_added_c_rss_detail,
             xlabel="Voltage in V",
-            ylabel="Energy in J")
+            ylabel="Capacitance in F")
 
     def delete_curve_c_rss_detail(self):
         self.comboBox_create_transistor_added_c_rss_detail.clear()
