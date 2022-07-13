@@ -31,19 +31,12 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>780</width>
-         <height>539</height>
+         <width>784</width>
+         <height>525</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="1" column="0">
-         <widget class="QCheckBox" name="checkBox_logarithmic">
-          <property name="text">
-           <string>scale logarithmic</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
+        <item row="4" column="0">
          <widget class="QComboBox" name="comboBox_data">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -75,6 +68,38 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QRadioButton" name="radioButton_scale_linear">
+            <property name="text">
+             <string>Linear Scale</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_scale_log_x">
+            <property name="text">
+             <string>log(x)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_scale_log_y">
+            <property name="text">
+             <string>log(y)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_scale_log_xy">
+            <property name="text">
+             <string>log(x), log(y)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -87,7 +112,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>32</height>
     </rect>
    </property>
   </widget>

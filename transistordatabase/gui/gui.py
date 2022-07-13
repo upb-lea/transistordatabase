@@ -5573,7 +5573,10 @@ class CurveCheckerWindow(QMainWindow):
         self.checkBox_second_y_to_0.stateChanged.connect(self.update_curve)
         self.checkBox_first_x_to_0.stateChanged.connect(self.update_curve)
         self.checkBox_mirror_xy_data.stateChanged.connect(self.update_curve)
-        self.checkBox_logarithmic.stateChanged.connect(self.update_curve)
+        self.radioButton_scale_linear.toggled.connect(self.update_curve)
+        self.radioButton_scale_log_x.toggled.connect(self.update_curve)
+        self.radioButton_scale_log_y.toggled.connect(self.update_curve)
+        self.radioButton_scale_log_xy.toggled.connect(self.update_curve)
 
         self.button_save_curve.clicked.connect(self.save_curve)
 
@@ -5659,11 +5662,14 @@ class CurveCheckerWindow(QMainWindow):
         curve_label = self.comboBox_data.currentText()
         self.matplotlibwidget.axis.clear()
 
-
-        if self.checkBox_logarithmic.isChecked() == True:
+        if self.radioButton_scale_log_xy.isChecked() == True:
             self.matplotlibwidget.axis.loglog(graph[0], graph[1], label=curve_label)
-        elif self.checkBox_logarithmic.isChecked() == False:
+        elif self.radioButton_scale_linear.isChecked() == True:
             self.matplotlibwidget.axis.plot(graph[0], graph[1], label=curve_label)
+        elif self.radioButton_scale_log_x.isChecked() == True:
+            self.matplotlibwidget.axis.semilogx(graph[0], graph[1], label=curve_label)
+        elif self.radioButton_scale_log_y.isChecked() == True:
+            self.matplotlibwidget.axis.semilogy(graph[0], graph[1], label=curve_label)
 
         self.matplotlibwidget.axis.grid()
         self.matplotlibwidget.axis.set(xlabel=xlabel,
@@ -5700,6 +5706,9 @@ class CurveCheckerWindow(QMainWindow):
             self.matplotlibwidget.axis.set(xlabel=xlabel,
                                            ylabel=ylabel,
                                            title=curve_title)
+
+            self.radioButton_scale_linear.setChecked(True)
+
             self.update_curve()
 
             self.show()
@@ -5780,12 +5789,14 @@ class ViewCurveWindow(QMainWindow):
         self.matplotlibwidget = MatplotlibWidget()
         self.matplotlibwidget.axis_cm.remove()
 
-        self.checkBox_logarithmic.stateChanged.connect(self.update_curve)
-
+        self.radioButton_scale_linear.toggled.connect(self.update_curve)
+        self.radioButton_scale_log_x.toggled.connect(self.update_curve)
+        self.radioButton_scale_log_y.toggled.connect(self.update_curve)
+        self.radioButton_scale_log_xy.toggled.connect(self.update_curve)
 
     def update_curve(self):
         """
-        Updates the scaling of the curve when the checkBox to scale logarithmic is pressed
+        Updates the scaling of the curve when the radio buttons to scale linear/log(x)/log(y)/log(x,y) is pressed
 
         :return: None
         """
@@ -5797,11 +5808,14 @@ class ViewCurveWindow(QMainWindow):
         curve_label = self.comboBox_data.currentText()
         self.matplotlibwidget.axis.clear()
 
-        if self.checkBox_logarithmic.isChecked() == True:
+        if self.radioButton_scale_log_xy.isChecked() == True:
             self.matplotlibwidget.axis.loglog(graph[0], graph[1], label=curve_label)
-        elif self.checkBox_logarithmic.isChecked() == False:
+        elif self.radioButton_scale_linear.isChecked() == True:
             self.matplotlibwidget.axis.plot(graph[0], graph[1], label=curve_label)
-
+        elif self.radioButton_scale_log_x.isChecked() == True:
+            self.matplotlibwidget.axis.semilogx(graph[0], graph[1], label=curve_label)
+        elif self.radioButton_scale_log_y.isChecked() == True:
+            self.matplotlibwidget.axis.semilogy(graph[0], graph[1], label=curve_label)
 
         self.matplotlibwidget.axis.set(xlabel=xlabel,
                                        ylabel=ylabel,
@@ -5841,6 +5855,8 @@ class ViewCurveWindow(QMainWindow):
             self.matplotlibwidget.axis.set(xlabel=xlabel,
                                            ylabel=ylabel,
                                            title=curve_title)
+            # set linear scale as default
+            self.radioButton_scale_linear.setChecked(True)
             self.update_curve()
 
             self.show()

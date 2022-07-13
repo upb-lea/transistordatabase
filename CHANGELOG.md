@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - General: Gecko Exporter for GaN-Transistors: mirror 1. quadrant forward characteristic to 3rd quadrant
 - GUI: Add options to display virtual and original datasheet for selected transistor
 - #90: Add email-workflow to add new transistor to the transistordatabase file exchange (TDB-FE)
+- Add log(x), log(y) for adding/viewing plots
 
 ### Fixed
 - Fix PDF preview not working due to a workaround
