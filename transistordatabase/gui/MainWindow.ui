@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1300</width>
-    <height>800</height>
+    <width>1440</width>
+    <height>926</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,7 +55,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab_search_database">
        <attribute name="title">
@@ -1928,8 +1928,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-1412</y>
-             <width>1250</width>
+             <y>0</y>
+             <width>1390</width>
              <height>3108</height>
             </rect>
            </property>
@@ -9070,9 +9070,15 @@
          <rect>
           <x>10</x>
           <y>150</y>
-          <width>151</width>
+          <width>220</width>
           <height>16</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>220</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Number of parallel Transistors:</string>
@@ -9083,9 +9089,15 @@
          <rect>
           <x>10</x>
           <y>260</y>
-          <width>151</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-on Gate Resistor [Ω]:</string>
@@ -9096,9 +9108,15 @@
          <rect>
           <x>10</x>
           <y>280</y>
-          <width>151</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-off Gate Resistor [Ω]:</string>
@@ -9120,7 +9138,7 @@
        <widget class="QLineEdit" name="lineEdit_export_simulink_r_g_on">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>260</y>
           <width>50</width>
           <height>20</height>
@@ -9130,7 +9148,7 @@
        <widget class="QLineEdit" name="lineEdit_export_simulink_r_g_off">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>280</y>
           <width>50</width>
           <height>20</height>
@@ -9140,7 +9158,7 @@
        <widget class="QLineEdit" name="lineEdit_export_simulink_v_supply">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>240</y>
           <width>50</width>
           <height>20</height>
@@ -9150,7 +9168,7 @@
        <widget class="QLineEdit" name="lineEdit_export_gecko_v_g_on">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>420</y>
           <width>50</width>
           <height>20</height>
@@ -9160,7 +9178,7 @@
        <widget class="QLineEdit" name="lineEdit_export_gecko_r_g_on">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>380</y>
           <width>50</width>
           <height>20</height>
@@ -9170,7 +9188,7 @@
        <widget class="QLineEdit" name="lineEdit_export_gecko_v_supply">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>360</y>
           <width>50</width>
           <height>20</height>
@@ -9180,7 +9198,7 @@
        <widget class="QLineEdit" name="lineEdit_export_gecko_r_g_off">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>400</y>
           <width>50</width>
           <height>20</height>
@@ -9192,9 +9210,15 @@
          <rect>
           <x>10</x>
           <y>380</y>
-          <width>161</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-on Gate Resistor [Ω]:</string>
@@ -9218,9 +9242,15 @@
          <rect>
           <x>10</x>
           <y>400</y>
-          <width>161</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-off Gate Resistor [Ω]:</string>
@@ -9231,9 +9261,15 @@
          <rect>
           <x>10</x>
           <y>420</y>
-          <width>131</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-on Gate Voltage [V]:</string>
@@ -9242,7 +9278,7 @@
        <widget class="QLineEdit" name="lineEdit_export_number_parallel_transistors">
         <property name="geometry">
          <rect>
-          <x>160</x>
+          <x>230</x>
           <y>150</y>
           <width>30</width>
           <height>20</height>
@@ -9265,7 +9301,7 @@
        <widget class="QLineEdit" name="lineEdit_export_simulink_normalize_t_to_v">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>300</y>
           <width>50</width>
           <height>20</height>
@@ -9277,9 +9313,15 @@
          <rect>
           <x>10</x>
           <y>440</y>
-          <width>131</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-off Gate Voltage [V]:</string>
@@ -9288,7 +9330,7 @@
        <widget class="QLineEdit" name="lineEdit_export_gecko_v_g_off">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>440</y>
           <width>50</width>
           <height>20</height>
@@ -9319,9 +9361,15 @@
          <rect>
           <x>10</x>
           <y>520</y>
-          <width>131</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-off Gate Voltage [V]:</string>
@@ -9330,7 +9378,7 @@
        <widget class="QLineEdit" name="lineEdit_export_plecs_v_g_on">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>500</y>
           <width>50</width>
           <height>20</height>
@@ -9340,7 +9388,7 @@
        <widget class="QLineEdit" name="lineEdit_export_plecs_v_d_on">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>540</y>
           <width>50</width>
           <height>20</height>
@@ -9352,9 +9400,15 @@
          <rect>
           <x>10</x>
           <y>560</y>
-          <width>161</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-Off Diode Voltage [V]:</string>
@@ -9365,9 +9419,15 @@
          <rect>
           <x>10</x>
           <y>500</y>
-          <width>131</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-on Gate Voltage [V]:</string>
@@ -9376,7 +9436,7 @@
        <widget class="QLineEdit" name="lineEdit_export_plecs_v_g_off">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>520</y>
           <width>50</width>
           <height>20</height>
@@ -9386,7 +9446,7 @@
        <widget class="QLineEdit" name="lineEdit_export_plecs_v_d_off">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>210</x>
           <y>560</y>
           <width>50</width>
           <height>20</height>
@@ -9411,9 +9471,15 @@
          <rect>
           <x>10</x>
           <y>540</y>
-          <width>141</width>
+          <width>200</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="text">
          <string>Turn-On Diode Voltage [V]:</string>
@@ -9617,7 +9683,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -9652,7 +9718,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>220</width>
             <height>20</height>
            </size>
           </property>
@@ -9687,7 +9753,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -9726,7 +9792,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -9767,7 +9833,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -9812,7 +9878,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -9859,7 +9925,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -9919,7 +9985,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -9951,7 +10017,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>220</width>
             <height>20</height>
            </size>
           </property>
@@ -10043,7 +10109,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -10068,7 +10134,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -10138,7 +10204,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -10163,7 +10229,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>220</width>
             <height>20</height>
            </size>
           </property>
@@ -10198,7 +10264,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -10223,7 +10289,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -10274,8 +10340,8 @@
           <widget class="QWidget" name="scrollAreaWidgetContents">
            <property name="geometry">
             <rect>
-             <x>0</x>
-             <y>0</y>
+             <x>-434</x>
+             <y>-357</y>
              <width>1824</width>
              <height>1056</height>
             </rect>
@@ -10313,7 +10379,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -10354,7 +10420,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -10401,7 +10467,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -10497,6 +10563,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>50</width>
@@ -10532,6 +10604,12 @@
             </item>
             <item row="2" column="3">
              <widget class="QPushButton" name="button_compare_pop_out_plot5">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>50</width>
@@ -10575,7 +10653,7 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>0</height>
                </size>
               </property>
@@ -10677,6 +10755,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>50</width>
@@ -10712,6 +10796,12 @@
             </item>
             <item row="4" column="3">
              <widget class="QPushButton" name="button_compare_pop_out_plot8">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>50</width>
@@ -10755,7 +10845,7 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>0</height>
                </size>
               </property>
@@ -11345,7 +11435,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -11623,7 +11713,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -11945,7 +12035,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -12106,7 +12196,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -12150,7 +12240,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -12320,7 +12410,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -12584,7 +12674,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>150</width>
+            <width>180</width>
             <height>20</height>
            </size>
           </property>
@@ -12768,7 +12858,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1300</width>
+     <width>1440</width>
      <height>32</height>
     </rect>
    </property>
