@@ -1549,12 +1549,12 @@ class MainWindow(QMainWindow):
         :return: None
         """
         t_j = float(
-            self.lineEdit_create_transistor_switch_add_channel_data_t_j.text()) if self.lineEdit_create_transistor_switch_add_channel_data_t_j.text().isnumeric() == True else None
-        t_j_entry_name = self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_channel_data_t_j.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_channel_data_t_j.text()) if self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_switch_add_channel_data_v_g.text()) if self.lineEdit_create_transistor_switch_add_channel_data_v_g.text().isnumeric() == True else None
-        v_g_entry_name = self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_channel_data_v_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_channel_data_v_g.text()) if self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() != "" else None
 
         file_path = self.browse_file_csv()
 
@@ -1590,24 +1590,24 @@ class MainWindow(QMainWindow):
         dataset_type = self.comboBox_create_transistor_add_data_dpt_dataset_type.currentText()
         comment = self.lineEdit_create_transistor_add_data_dpt_comment.text()
         load_inductance = float(
-            self.lineEdit_create_transistor_add_data_dpt_load_inductance.text()) if self.lineEdit_create_transistor_add_data_dpt_load_inductance.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_add_data_dpt_load_inductance.text()) if self.lineEdit_create_transistor_add_data_dpt_load_inductance.text() != "" else None
         commutation_inductance = float(
-            self.lineEdit_create_transistor_add_data_commutation_inductance.text()) if self.lineEdit_create_transistor_add_data_commutation_inductance.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_add_data_commutation_inductance.text()) if self.lineEdit_create_transistor_add_data_commutation_inductance.text() != "" else None
         measurement_date = self.lineEdit_create_transistor_add_data_dpt_measurement_date.text()
         measurement_testbench = self.comboBox_create_transistor_add_data_dpt_measurement_testbench.currentText()
         v_g = float(
-            self.lineEdit_create_transistor_add_data_dpt_v_g.text()) if self.lineEdit_create_transistor_add_data_dpt_v_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_add_data_dpt_v_g.text()) if self.lineEdit_create_transistor_add_data_dpt_v_g.text() != "" else None
         v_g_off = float(
-            self.lineEdit_create_transistor_add_data_dpt_v_g_off.text()) if self.lineEdit_create_transistor_add_data_dpt_v_g_off.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_add_data_dpt_v_g_off.text()) if self.lineEdit_create_transistor_add_data_dpt_v_g_off.text() != "" else None
         r_g_on = float(
-            self.lineEdit_create_transistor_add_data_dpt_r_g_on.text()) if self.lineEdit_create_transistor_add_data_dpt_r_g_on.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_add_data_dpt_r_g_on.text()) if self.lineEdit_create_transistor_add_data_dpt_r_g_on.text() != "" else None
         r_g_off = float(
-            self.lineEdit_create_transistor_add_data_dpt_r_g_off.text()) if self.lineEdit_create_transistor_add_data_dpt_r_g_off.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_add_data_dpt_r_g_off.text()) if self.lineEdit_create_transistor_add_data_dpt_r_g_off.text() != "" else None
         energies = self.comboBox_create_transistor_add_data_dpt_energies.currentText()
         commutation_device = self.lineEdit_create_transistor_add_data_dpt_commutation_device.text()
         integration_interval = self.comboBox_create_transistor_add_data_dpt_integration_interval.currentText()
         t_j = float(
-            self.lineEdit_create_transistor_add_data_dpt_t_j.text()) if self.lineEdit_create_transistor_add_data_dpt_t_j.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_add_data_dpt_t_j.text()) if self.lineEdit_create_transistor_add_data_dpt_t_j.text() != "" else None
 
         directory_path = QFileDialog.getExistingDirectory(self, caption="Open Directory")
 
@@ -1728,20 +1728,20 @@ class MainWindow(QMainWindow):
 
     def add_curve_switch_switching_losses(self):
         t_j = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text().isnumeric() == True else None
-        t_j_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text().isnumeric() == True else None
-        v_g_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() != "" else None
 
         r_g = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text().isnumeric() == True else None
-        r_g_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text() + " Ω" if self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text() != "" else None
+        r_g_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text() + " Ω" if self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text() != "" else None
 
         v_supply = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text().isnumeric() == True else None
-        v_supply_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() + " V" if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text().isnumeric() == True else None
+            self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() != "" else None
+        v_supply_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() + " V" if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() != "" else None
 
         e_on_off = self.comboBox_create_transistor_switch_add_switching_losses_on_off.currentText()
         curve_type = self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText()
