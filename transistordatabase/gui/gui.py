@@ -462,6 +462,11 @@ class MainWindow(QMainWindow):
         self.button_create_transistor_delete_directory_dpt.clicked.connect(self.delete_dpt_measurement_data)
 
 
+        self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentTextChanged.connect(self.comboBox_create_transistor_switch_add_switching_losses_curve_type_changed)
+        self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentTextChanged.connect(self.comboBox_create_transistor_diode_add_switching_losses_curve_type_changed)
+
+
+
         # set mandatory example keys
         # self.lineEdit_create_transistor_name.setText("Test")
         # self.lineEdit_create_transistor_author.setText("Phillip Beine")
@@ -530,7 +535,7 @@ class MainWindow(QMainWindow):
         self.lineEdit_create_transistor_switch_add_channel_data_v_g.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_switch_add_switching_losses_t_j.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_switch_add_switching_losses_v_g.setValidator(QDoubleValidator())
-        self.lineEdit_create_transistor_switch_add_switching_losses_r_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_switch_add_gate_charge_t_j.setValidator(QDoubleValidator())
@@ -552,7 +557,7 @@ class MainWindow(QMainWindow):
         self.lineEdit_create_transistor_diode_add_channel_data_v_g.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_diode_add_switching_losses_t_j.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_diode_add_switching_losses_v_g.setValidator(QDoubleValidator())
-        self.lineEdit_create_transistor_diode_add_switching_losses_r_g.setValidator(QDoubleValidator())
+        self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.setValidator(QDoubleValidator())
         self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.setValidator(QDoubleValidator(0.0, 1000.0, 8))
         self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.setValidator(QDoubleValidator(-300, 300, 2))
@@ -1446,6 +1451,18 @@ class MainWindow(QMainWindow):
 
     ###CREATE TRANSISTOR###
 
+    def comboBox_create_transistor_switch_add_switching_losses_curve_type_changed(self):
+        if self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
+            self.label_create_switch_switching_losses_r_g_i_x.setText("R_g [Ω]")
+        elif self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
+            self.label_create_switch_switching_losses_r_g_i_x.setText(r"I [A]")
+
+    def comboBox_create_transistor_diode_add_switching_losses_curve_type_changed(self):
+        if self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
+            self.label_create_diode_switching_losses_r_g_i_x.setText("R_g [Ω]")
+        elif self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
+            self.label_create_diode_switching_losses_r_g_i_x.setText(r"I [A]")
+
     def fill_comboBoxes_create_transistor(self):
         """
         Fills the ComboBoxes containing the transistor types, housing types and manufacturers list
@@ -1735,9 +1752,14 @@ class MainWindow(QMainWindow):
             self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() != "" else None
         v_g_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() != "" else None
 
-        r_g = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text() != "" else None
-        r_g_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text() + " Ω" if self.lineEdit_create_transistor_switch_add_switching_losses_r_g.text() != "" else None
+        r_g_i_x = float(
+            self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" else None
+        if self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" and self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
+            r_g_i_x_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() + " Ω"
+        elif self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" and self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
+            r_g_i_x_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() + " A"
+        else:
+            None
 
         v_supply = float(
             self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() != "" else None
@@ -1747,12 +1769,13 @@ class MainWindow(QMainWindow):
         curve_type = self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText()
 
         file_path = self.browse_file_csv()
-        comboBox_entry_name = f"{e_on_off}: T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, R_g = {r_g_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
 
         if curve_type == "Switching Losses vs. Channel Current":
-            data_dict = {"e_on_off": e_on_off.lower(), "dataset_type": "graph_i_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'r_g': r_g, "graph_i_e": "", "path": file_path}
+            data_dict = {"e_on_off": e_on_off.lower(), "dataset_type": "graph_i_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'r_g': r_g_i_x, "graph_i_e": "", "path": file_path}
+            comboBox_entry_name = f"{e_on_off}: T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, R_g = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
         if curve_type == "Switching Losses vs. Gate Resistor":
-            data_dict = {"e_on_off": e_on_off.lower(), "dataset_type": "graph_r_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'r_g': r_g, "graph_r_e": "", "path": file_path}
+            data_dict = {"e_on_off": e_on_off.lower(), "dataset_type": "graph_r_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'i_x': r_g_i_x, "graph_r_e": "", "path": file_path}
+            comboBox_entry_name = f"{e_on_off}: T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, I_x = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
 
 
         if file_path != "":
@@ -1986,21 +2009,29 @@ class MainWindow(QMainWindow):
             self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() != "" else None
         v_g_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() + " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() != "" else None
 
-        r_g = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text() != "" else None
-        r_g_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text() + " Ω" if self.lineEdit_create_transistor_diode_add_switching_losses_r_g.text() != "" else None
+        r_g_i_x = float(
+            self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" else None
+
+        if self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" and self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
+            r_g_i_x_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() + " Ω"
+        elif self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" and self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
+            r_g_i_x_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() + " A"
+        else:
+            None
 
         v_supply = float(
             self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() != "" else None
         v_supply_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() + " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() != "" else None
 
         file_path = self.browse_file_csv()
-        comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, R_g = {r_g_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
+
 
         if self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
-            data_dict = {"dataset_type": "graph_i_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'r_g': r_g, "graph_i_e": "", "path": file_path}
+            data_dict = {"dataset_type": "graph_i_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'r_g': r_g_i_x, "graph_i_e": "", "path": file_path}
+            comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, r_g = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
         elif self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
-            data_dict = {"dataset_type": "graph_r_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'r_g': r_g, "graph_r_e": "", "path": file_path}
+            data_dict = {"dataset_type": "graph_r_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'i_x': r_g_i_x, "graph_r_e": "", "path": file_path}
+            comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, i_x = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
 
 
         if file_path != "":
