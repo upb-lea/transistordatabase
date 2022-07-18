@@ -1049,7 +1049,7 @@ class MainWindow(QMainWindow):
         all_settings_dict = self.get_settings_dict()
         path = pathlib.Path.cwd()
         with open(path.joinpath(resource_path("settings.json")), 'w') as fp:
-            json.dump(all_settings_dict, fp)
+            json.dump(all_settings_dict, fp, indent=2)
         self.show_popup_message("Settings saved succsessfully!")
 
     def load_settings(self):
