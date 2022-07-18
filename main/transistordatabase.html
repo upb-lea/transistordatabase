@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentation &mdash; transistordatabase(TDB) 0.4.0 documentation</title>
+  <title>Documentation &mdash; transistordatabase(TDB) 0.4.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -39,12 +39,13 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html"><span class="sectnum">1</span> Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#gui-screenshots"><span class="sectnum">2</span> GUI Screenshots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#why-the-transistordatabase"><span class="sectnum">3</span> Why the transistordatabase?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">4</span> Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase-s-usage"><span class="sectnum">5</span> transistordatabase’s usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">6</span> Export transistor objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">7</span> Others</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#features"><span class="sectnum">2</span> Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#gui-screenshots"><span class="sectnum">3</span> GUI Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#why-the-transistordatabase"><span class="sectnum">4</span> Why the transistordatabase?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">5</span> Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase-s-usage"><span class="sectnum">6</span> transistordatabase’s usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">7</span> Export transistor objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">8</span> Others</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-transistor-class">The <code class="docutils literal notranslate"><span class="pre">Transistor</span></code> class</a></li>
@@ -344,6 +345,23 @@ Currently receives the execution instructions from update_from_fileexchange(..)<
 <li><p><strong>collection</strong> (<em>str</em>) – By default local database is selected and “local” is provided as value</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em><em> or </em><em>None</em>) – Indicates whether to overwrite the existing transistor object in the local database if a match is found</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transistordatabase.tdb_classes.Transistor.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'local'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#transistordatabase.tdb_classes.Transistor.delete" title="Permalink to this definition"></a></dt>
+<dd><p>The method deletes the transistor object from the local mongodb database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>collection</strong> (<em>str</em>) – By default local database is selected and “local” is provided as value</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>None</p>
@@ -2924,6 +2942,7 @@ International Conference of Power Electronics Intelligent Motion Power Quality 2
       <dd><a href="../0.3.2/transistordatabase.html">0.3.2</a></dd>
       <dd><a href="../0.3.3/transistordatabase.html">0.3.3</a></dd>
       <dd><a href="../0.4.0/transistordatabase.html">0.4.0</a></dd>
+      <dd><a href="../0.4.1/transistordatabase.html">0.4.1</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>
