@@ -1,6 +1,8 @@
 from __future__ import annotations
 import datetime
 import xml.etree.ElementTree as et
+from typing import Any
+
 import numpy as np
 import numpy.typing as npt
 import re
@@ -5690,17 +5692,17 @@ def dpt_save_data(measurement_dict: dict) -> dict:
     # Get a list of all the csv files
     csv_files = glob.glob(measurement_dict.get('path'))
     
-    position_t_j = csv_files[1].rfind("C_")
-    position_t_j_start = csv_files[1].rfind("_", 0, position_t_j)
-    t_j = int(csv_files[1][position_t_j_start + 1:position_t_j])
+    # position_t_j = csv_files[1].rfind("C_")
+    # position_t_j_start = csv_files[1].rfind("_", 0, position_t_j)
+    # t_j = int(csv_files[1][position_t_j_start + 1:position_t_j])
 
-    position_r_g = csv_files[1].rfind("R_")
-    position_r_g_start = csv_files[1].rfind("_", 0, position_r_g)
-    r_g = float(csv_files[1][position_r_g_start + 1:position_r_g])
+    # position_r_g = csv_files[1].rfind("R_")
+    # position_r_g_start = csv_files[1].rfind("_", 0, position_r_g)
+    # r_g = float(csv_files[1][position_r_g_start + 1:position_r_g])
 
-    position_v_supply = csv_files[1].rfind("V_")
-    position_v_supply_start = csv_files[1].rfind("_", 0, position_v_supply)
-    v_supply = int(csv_files[1][position_v_supply_start + 1:position_v_supply])
+    # position_v_supply = csv_files[1].rfind("V_")
+    # position_v_supply_start = csv_files[1].rfind("_", 0, position_v_supply)
+    # v_supply = int(csv_files[1][position_v_supply_start + 1:position_v_supply])
 
     dpt_raw_data = {}
     e_off_meas = dict 
@@ -5720,6 +5722,54 @@ def dpt_save_data(measurement_dict: dict) -> dict:
         off_i_locations = []
         off_v_locations = []
         csv_length = len(csv_files)
+
+        #################################################################################
+        # Read all Turn-off supply voltage, gate voltage, gate resistance and temperature
+        #################################################################################
+        l = 0
+        v_supply_off = []
+        while csv_length > l:
+            if csv_files[l].rfind("_OFF_I") != -1:
+                position_v_supply_off = csv_files[l].rfind("V_")
+                position_v_supply_off_start = csv_files[l].rfind("_", 0, position_v_supply_off)
+                v_supply_off.append(csv_files[l][position_v_supply_off_start + 1:position_v_supply_off])
+            l += 1
+        print(f'v_supply_off=', v_supply_off)
+        if not compare_list(v_supply_off):
+            raise ValueError
+        i = 0
+        v_g_off = []
+        while csv_length > i:
+            if csv_files[i].rfind("_OFF_I") != -1:
+                position_v_g_off = csv_files[i].rfind("vg_")
+                position_v_g_off_start = csv_files[i].rfind("_", 0, position_v_g_off)
+                v_g_off.append(csv_files[i][position_v_g_off_start + 1:position_v_g_off])
+            i += 1
+        print(f'vg_off=', v_g_off)
+        if not compare_list(v_g_off):
+            raise ValueError
+        j = 0
+        r_g_off = []
+        while csv_length > j:
+            if csv_files[j].rfind("_OFF_I") != -1:
+                position_r_g_off = csv_files[j].rfind("R_")
+                position_r_g_off_start = csv_files[j].rfind("_", 0, position_r_g_off)
+                r_g_off.append(csv_files[j][position_r_g_off_start + 1:position_r_g_off])
+            j += 1
+        print(f'Rg_off=', r_g_off)
+        if not compare_list(r_g_off):
+            raise ValueError
+        k = 0
+        t_j_off = []
+        while csv_length > k:
+            if csv_files[k].rfind("_OFF_I") != -1:
+                position_t_j_off = csv_files[k].rfind("C_")
+                position_t_j_off_start = csv_files[k].rfind("_", 0, position_t_j_off)
+                t_j_off.append(csv_files[k][position_t_j_off_start + 1:position_t_j_off])
+            k += 1
+        print(f't_j_off=', t_j_off)
+        if not compare_list(t_j_off):
+            raise ValueError
 
         ##############################
         # Read all Turn-off current measurements and sort them by Id or Rgon
@@ -5816,6 +5866,7 @@ def dpt_save_data(measurement_dict: dict) -> dict:
             ##############################
             # Integrate the power with predefined integration limits
             ##############################
+            time_delay: int | None = measurement_dict.get('global_delay_time')
             while id_temp[i - time_correction, 1] >= (id_avg_max * off_is_limit):
                 e_off_temp = e_off_temp + (vds_temp[i, 1] * id_temp[i - time_correction, 1] * sample_interval)
                 i += 1
@@ -5841,13 +5892,16 @@ def dpt_save_data(measurement_dict: dict) -> dict:
                 ax2.set_ylabel('Uds / V', color='b')
                 ax2.plot(vds_temp[:, 0] * 1000000000, vds_temp[:, 1], color='b')
                 plt.show()
-                time_input = input('Please give a value for time correction in ns')
-                if check_float(time_input):
-                    time_correction = int(float(time_input) / (sample_interval * 1000000000))
-                    continue
+                if time_delay == 0:
+                    time_input =0
                 else:
-                    time_correction = 0
-                    time_input = 0
+                    time_input = input('Please give a value for time correction in ns')
+                    if check_float(time_input):
+                        time_correction = int(float(time_input) / (sample_interval * 1000000000))
+                        continue
+                    else:
+                        time_correction = 0
+                        time_input = 0
 
             if measurement_dict['dataset_type'] == 'graph_r_e':
                 e_off.append([off_i_locations[sample_point][1], e_off_temp])
@@ -5866,18 +5920,18 @@ def dpt_save_data(measurement_dict: dict) -> dict:
         e_off_1 = [item[1] for item in e_off]
 
         e_off_meas = {'dataset_type': measurement_dict.get('dataset_type'),
-                      't_j': t_j,
+                      't_j': t_j_off,
                       'load_inductance': measurement_dict.get('load_inductance'),
                       'commutation_inductance': measurement_dict.get('commutation_inductance'),
                       'commutation_device': measurement_dict.get('commutation_device'),
                       'comment': measurement_dict.get('comment'),
                       'measurement_date': measurement_dict.get('measurement_date'),
                       'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                      'v_supply': v_supply,
-                      'v_g': measurement_dict.get('v_g'),
-                      'v_g_off': measurement_dict.get('v_g_off'),
-                      'r_g': r_g,
-                      'r_g_off': measurement_dict.get('r_g_off'),
+                      'v_supply': v_supply_off,
+                      # 'v_g': v_g,
+                      'v_g_off': v_g_off,
+                      # 'r_g': r_g,
+                      'r_g_off': r_g_off,
                       'graph_i_e': np.array([e_off_0, e_off_1]),
                       'graph_r_e': np.array([e_off_0, e_off_1]),
                       'e_x': float(e_off_1[0]),
@@ -5901,13 +5955,61 @@ def dpt_save_data(measurement_dict: dict) -> dict:
         plt.show(block=True)
 
     if measurement_dict['energies'] == 'e_on' or measurement_dict['energies'] == 'both':
-        i = 0
         on_i_locations = []
         on_v_locations = []
         csv_length = len(csv_files)
+
+        #################################################################################
+        # Read all Turn-on supply voltage, gate voltage, gate resistance and temperature
+        #################################################################################
+        i = 0
+        v_g = []
+        while csv_length > i:
+            if csv_files[i].rfind("_ON_I") != -1:
+                position_v_g = csv_files[i].rfind("vg_")
+                position_v_g_start = csv_files[i].rfind("_", 0, position_v_g)
+                v_g.append(csv_files[i][position_v_g_start + 1:position_v_g])
+            i += 1
+        print(f'vg=', v_g)
+        if not compare_list(v_g):
+            raise ValueError
+        j = 0
+        r_g = []
+        while csv_length > j:
+            if csv_files[j].rfind("_ON_I") != -1:
+                position_r_g = csv_files[j].rfind("R_")
+                position_r_g_start = csv_files[j].rfind("_", 0, position_r_g)
+                r_g.append(csv_files[j][position_r_g_start + 1:position_r_g])
+            j += 1
+        print(f'Rg=', r_g)
+        if not compare_list(r_g):
+            raise ValueError
+        k = 0
+        t_j = []
+        while csv_length > k:
+            if csv_files[k].rfind("_ON_I") != -1:
+                position_t_j = csv_files[k].rfind("C_")
+                position_t_j_start = csv_files[k].rfind("_", 0, position_t_j)
+                t_j.append(csv_files[k][position_t_j_start + 1:position_t_j])
+            k += 1
+        print(f't_j=', t_j)
+        if not compare_list(t_j):
+            raise ValueError
+        l = 0
+        v_supply_on = []
+        while csv_length > l:
+            if csv_files[l].rfind("_ON_I") != -1:
+                position_v_supply_on = csv_files[l].rfind("V_")
+                position_v_supply_on_start = csv_files[l].rfind("_", 0, position_v_supply_on)
+                v_supply_on.append(csv_files[l][position_v_supply_on_start + 1:position_v_supply_on])
+            l += 1
+        print(f'v_supply=', v_supply_on)
+        if not compare_list(v_supply_on):
+            raise ValueError
         ##############################
         # Read all Turn-on current measurements and sort them by Id or Rgon
         ##############################
+        i = 0
         while csv_length > i:
             if csv_files[i].rfind("_ON_I") != -1:
                 position_a = csv_files[i].rfind(position_attribute_end)
@@ -6025,13 +6127,16 @@ def dpt_save_data(measurement_dict: dict) -> dict:
                 ax2.set_ylabel('Uds / V', color='b')
                 ax2.plot(vds_temp[:, 0] * 1000000000 + float(time_input), vds_temp[:, 1], color='b')
                 plt.show()
-                time_input = input('Please give a value for time correction in ns')
-                if check_float(time_input):
-                    time_correction = int(float(time_input) / (sample_interval * 1000000000))
-                    continue
-                else:
-                    time_correction = 0
+                if time_delay == 0:
                     time_input = 0
+                else:
+                    time_input = input('Please give a value for time correction in ns')
+                    if check_float(time_input):
+                        time_correction = int(float(time_input) / (sample_interval * 1000000000))
+                        continue
+                    else:
+                        time_correction = 0
+                        time_input = 0
 
             if measurement_dict['dataset_type'] == 'graph_r_e':
                 e_on.append([on_i_locations[sample_point][1], e_on_temp])
@@ -6059,11 +6164,11 @@ def dpt_save_data(measurement_dict: dict) -> dict:
                      'comment': measurement_dict.get('comment'),
                      'measurement_date': measurement_dict.get('measurement_date'),
                      'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                     'v_supply': v_supply,
-                     'v_g': measurement_dict.get('v_g'),
-                     'v_g_off': measurement_dict.get('v_g_off'),
+                     'v_supply': v_supply_on,
+                     'v_g': v_g,
+                     # 'v_g_off': v_g_off,
                      'r_g': r_g,
-                     'r_g_off': measurement_dict.get('r_g_off'),
+                     # 'r_g_off': r_g_off,
                      'graph_i_e': np.array([e_on_0, e_on_1]),
                      'graph_r_e': np.array([e_on_0, e_on_1]),
                      'e_x': float(e_on_1[0]),
@@ -6090,9 +6195,9 @@ def dpt_save_data(measurement_dict: dict) -> dict:
                      'load_inductance': measurement_dict.get('load_inductance'),
                      'measurement_date': measurement_dict.get('measurement_date'),
                      'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                     'v_supply': v_supply,
-                     'v_g': measurement_dict.get('v_g'),
-                     'v_g_off': measurement_dict.get('v_g_off')}
+                     'v_supply': v_supply_on,
+                     'v_g':v_g,
+                     'v_g_off': v_g_off}
 
     if measurement_dict.get('dataset_type') == 'graph_r_e':
         dpt_raw_data |= {'dataset_type': 'dpt_u_i_r',

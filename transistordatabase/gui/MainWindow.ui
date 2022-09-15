@@ -218,11 +218,11 @@
           <property name="columnCount">
            <number>100</number>
           </property>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>0</number>
-          </attribute>
           <attribute name="horizontalHeaderDefaultSectionSize">
            <number>200</number>
+          </attribute>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>0</number>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>false</bool>
@@ -524,8 +524,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>332</width>
-             <height>1630</height>
+             <width>342</width>
+             <height>1061</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
@@ -1928,9 +1928,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-685</y>
-             <width>1390</width>
-             <height>3108</height>
+             <y>-2038</y>
+             <width>1367</width>
+             <height>2834</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
@@ -1978,8 +1978,8 @@
               </property>
              </widget>
             </item>
-            <item row="13" column="3" colspan="2">
-             <widget class="QPushButton" name="button_create_transistor_switch_add_t_rthjc_curve">
+            <item row="35" column="3" colspan="2">
+             <widget class="QLabel" name="label_create_switch_switching_losses_added_curves">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -1998,13 +1998,16 @@
                 <height>25</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
               <property name="text">
-               <string>Add t_rthjc Curve</string>
+               <string>Added Curves:</string>
               </property>
              </widget>
-            </item>
-            <item row="84" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_v_g"/>
             </item>
             <item row="75" column="0" colspan="2">
              <widget class="Line" name="line_17">
@@ -2037,8 +2040,8 @@
               </property>
              </widget>
             </item>
-            <item row="35" column="3" colspan="2">
-             <widget class="QLabel" name="label_create_switch_switching_losses_added_curves">
+            <item row="13" column="3" colspan="2">
+             <widget class="QPushButton" name="button_create_transistor_switch_add_t_rthjc_curve">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2057,14 +2060,8 @@
                 <height>25</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
               <property name="text">
-               <string>Added Curves:</string>
+               <string>Add t_rthjc Curve</string>
               </property>
              </widget>
             </item>
@@ -2115,7 +2112,7 @@
               </property>
              </widget>
             </item>
-            <item row="92" column="0" colspan="2">
+            <item row="87" column="0" colspan="2">
              <widget class="QPushButton" name="button_create_transistor_add_directory_dpt">
               <property name="minimumSize">
                <size>
@@ -2131,28 +2128,6 @@
               </property>
               <property name="text">
                <string>Add Directory</string>
-              </property>
-             </widget>
-            </item>
-            <item row="32" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
               </property>
              </widget>
             </item>
@@ -2181,8 +2156,8 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_create_transistor_datasheet_hyperlink">
+            <item row="32" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2199,56 +2174,6 @@
                <size>
                 <width>16777215</width>
                 <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Datasheet Hyperlink:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="17" column="0">
-             <widget class="QLabel" name="label_create_transistor_i_cont_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>C_oss_er [F]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="48" column="0" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_added_c_iss_detail">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>35</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>35</height>
                </size>
               </property>
              </widget>
@@ -2281,8 +2206,8 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="6">
-             <widget class="QLabel" name="label_37">
+            <item row="17" column="0">
+             <widget class="QLabel" name="label_create_transistor_i_cont_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2301,23 +2226,13 @@
                 <height>25</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>10</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
               <property name="text">
-               <string>Thermal Model</string>
+               <string>C_oss_er [F]:</string>
               </property>
              </widget>
             </item>
-            <item row="86" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_r_g_on"/>
-            </item>
-            <item row="61" column="3">
-             <widget class="QLabel" name="label_create_switch_channel_data_temperature_2">
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_create_transistor_datasheet_hyperlink">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2337,7 +2252,29 @@
                </size>
               </property>
               <property name="text">
-               <string>T_c [°C]:</string>
+               <string>Datasheet Hyperlink:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="48" column="0" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_added_c_iss_detail">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>35</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -2394,8 +2331,14 @@
               </property>
              </widget>
             </item>
-            <item row="47" column="3">
-             <widget class="QPushButton" name="button_create_transistor_view_curve_switch_gate_charge">
+            <item row="6" column="6">
+             <widget class="QLabel" name="label_37">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -2408,13 +2351,20 @@
                 <height>25</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
               <property name="text">
-               <string>View</string>
+               <string>Thermal Model</string>
               </property>
              </widget>
             </item>
-            <item row="72" column="0" colspan="2">
-             <widget class="QPushButton" name="button_create_transistor_add_curve_c_rss_detail">
+            <item row="61" column="3">
+             <widget class="QLabel" name="label_create_switch_channel_data_temperature_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2434,7 +2384,26 @@
                </size>
               </property>
               <property name="text">
-               <string>Add C_rss_detail Curve</string>
+               <string>T_c [°C]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="47" column="3">
+             <widget class="QPushButton" name="button_create_transistor_view_curve_switch_gate_charge">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>View</string>
               </property>
              </widget>
             </item>
@@ -2463,30 +2432,8 @@
               </property>
              </widget>
             </item>
-            <item row="12" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_tau_total">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="18" column="6" rowspan="2">
-             <widget class="QLabel" name="label_create_diode_channel_data_temperature_3">
+            <item row="72" column="0" colspan="2">
+             <widget class="QPushButton" name="button_create_transistor_add_curve_c_rss_detail">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2506,7 +2453,29 @@
                </size>
               </property>
               <property name="text">
-               <string>T_j [°C]:</string>
+               <string>Add C_rss_detail Curve</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_tau_total">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -2535,8 +2504,8 @@
               </property>
              </widget>
             </item>
-            <item row="53" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_curve_c_oss_t_j">
+            <item row="18" column="6" rowspan="2">
+             <widget class="QLabel" name="label_create_diode_channel_data_temperature_3">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2554,6 +2523,242 @@
                 <width>16777215</width>
                 <height>25</height>
                </size>
+              </property>
+              <property name="text">
+               <string>T_j [°C]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="31" column="6">
+             <widget class="QLabel" name="label_create_diode_switching_losses_v_g_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>V_g [V]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="29" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_add_switching_losses_t_j">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="33" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_r_g_off_recommended">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="4">
+             <widget class="QPushButton" name="button_create_transistor_switch_delete_curve_t_rthjc">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Delete</string>
+              </property>
+             </widget>
+            </item>
+            <item row="36" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>C_rss_fix [F]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3" colspan="3">
+             <widget class="QLabel" name="label_exporting_tools_export_to_other_programs_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Switch Parameters</string>
+              </property>
+             </widget>
+            </item>
+            <item row="53" column="3">
+             <widget class="QLabel" name="label_create_switch_switching_losses_v_g_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>R_channel_nominal [Ω]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="60" column="3" colspan="2">
+             <widget class="QLabel" name="label_create_switch_add_curves_channel_data_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Add Curves for Switch SOA_t_pulse</string>
+              </property>
+             </widget>
+            </item>
+            <item row="38" column="0" colspan="2">
+             <widget class="QPushButton" name="button_create_transistor_add_curve_v_ecoss">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add V_Ecoss Curve</string>
               </property>
              </widget>
             </item>
@@ -2589,6 +2794,28 @@
               </property>
              </widget>
             </item>
+            <item row="53" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_add_curve_c_oss_t_j">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item row="7" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_r_th_vector">
               <property name="sizePolicy">
@@ -2617,9 +2844,6 @@
               </property>
              </widget>
             </item>
-            <item row="77" column="1">
-             <widget class="QComboBox" name="comboBox_create_transistor_add_data_dpt_energies"/>
-            </item>
             <item row="32" column="6">
              <widget class="QLabel" name="label_create_diode_switching_losses_r_g_i_x">
               <property name="sizePolicy">
@@ -2645,15 +2869,8 @@
               </property>
              </widget>
             </item>
-            <item row="80" column="0">
-             <widget class="QLabel" name="label_24">
-              <property name="text">
-               <string>Load Inductance [F]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="91" column="1">
-             <widget class="QComboBox" name="comboBox_create_transistor_add_data_dpt_integration_interval"/>
+            <item row="77" column="1">
+             <widget class="QComboBox" name="comboBox_create_transistor_add_data_dpt_energies"/>
             </item>
             <item row="3" column="3">
              <widget class="QLabel" name="label_create_switch_comment">
@@ -2730,55 +2947,18 @@
               </property>
              </widget>
             </item>
-            <item row="57" column="4">
-             <widget class="QPushButton" name="button_create_transistor_switch_delete_curve_r_on">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
+            <item row="80" column="0">
+             <widget class="QLabel" name="label_24">
               <property name="text">
-               <string>Delete</string>
+               <string>Load Inductance [F]:</string>
               </property>
              </widget>
+            </item>
+            <item row="86" column="1">
+             <widget class="QComboBox" name="comboBox_create_transistor_add_data_dpt_integration_interval"/>
             </item>
             <item row="1" column="4">
              <widget class="QComboBox" name="comboBox_create_transistor_switch_manufacturer">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="24" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_tr_v_ds">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2831,15 +3011,30 @@
               </property>
              </widget>
             </item>
-            <item row="79" column="0">
-             <widget class="QLabel" name="label_23">
-              <property name="text">
-               <string>Comment:</string>
+            <item row="24" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_tr_v_ds">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_create_transistor_type">
+            <item row="57" column="4">
+             <widget class="QPushButton" name="button_create_transistor_switch_delete_curve_r_on">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2859,38 +3054,7 @@
                </size>
               </property>
               <property name="text">
-               <string>Type:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="55" column="3" colspan="2">
-             <widget class="QLabel" name="label_create_switch_switching_losses_added_curves_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Added Curves:</string>
+               <string>Delete</string>
               </property>
              </widget>
             </item>
@@ -2950,8 +3114,8 @@
               </property>
              </widget>
             </item>
-            <item row="45" column="3" colspan="2">
-             <widget class="QLabel" name="label_create_switch_switching_losses_added_curves_2">
+            <item row="55" column="3" colspan="2">
+             <widget class="QLabel" name="label_create_switch_switching_losses_added_curves_3">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2978,6 +3142,60 @@
               </property>
               <property name="text">
                <string>Added Curves:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="79" column="0">
+             <widget class="QLabel" name="label_23">
+              <property name="text">
+               <string>Comment:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_create_transistor_type">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Type:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_type">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -3028,30 +3246,8 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_type">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="32" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x">
+            <item row="45" column="3" colspan="2">
+             <widget class="QLabel" name="label_create_switch_switching_losses_added_curves_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -3070,55 +3266,14 @@
                 <height>25</height>
                </size>
               </property>
-             </widget>
-            </item>
-            <item row="19" column="3">
-             <widget class="QLabel" name="label_create_switch_channel_data_temperature">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
               </property>
               <property name="text">
-               <string>T_j [°C]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="52" column="3">
-             <widget class="QLabel" name="label_create_switch_switching_losses_temperature_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>V_g [V]:</string>
+               <string>Added Curves:</string>
               </property>
              </widget>
             </item>
@@ -3147,10 +3302,82 @@
               </property>
              </widget>
             </item>
-            <item row="91" column="0">
+            <item row="86" column="0">
              <widget class="QLabel" name="label_34">
               <property name="text">
                <string>Integration Method:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="32" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="52" column="3">
+             <widget class="QLabel" name="label_create_switch_switching_losses_temperature_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>V_g [V]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="3">
+             <widget class="QLabel" name="label_create_switch_channel_data_temperature">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>T_j [°C]:</string>
               </property>
              </widget>
             </item>
@@ -3185,37 +3412,6 @@
               </property>
              </widget>
             </item>
-            <item row="64" column="3" colspan="2">
-             <widget class="QLabel" name="label_create_switch_channel_data_added_curves_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Added Curves:</string>
-              </property>
-             </widget>
-            </item>
             <item row="25" column="0" colspan="2">
              <widget class="Line" name="line_6">
               <property name="sizePolicy">
@@ -3244,25 +3440,6 @@
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="45" column="6">
-             <widget class="QPushButton" name="button_create_transistor_view_curve_diode_soa_t_pulse">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>View</string>
               </property>
              </widget>
             </item>
@@ -3298,6 +3475,56 @@
               </property>
              </widget>
             </item>
+            <item row="64" column="3" colspan="2">
+             <widget class="QLabel" name="label_create_switch_channel_data_added_curves_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Added Curves:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="45" column="6">
+             <widget class="QPushButton" name="button_create_transistor_view_curve_diode_soa_t_pulse">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>View</string>
+              </property>
+             </widget>
+            </item>
             <item row="58" column="3" colspan="2">
              <widget class="Line" name="line_15">
               <property name="sizePolicy">
@@ -3329,8 +3556,8 @@
               </property>
              </widget>
             </item>
-            <item row="43" column="3">
-             <widget class="QLabel" name="label_create_switch_switching_losses_r_g_2">
+            <item row="20" column="3">
+             <widget class="QLabel" name="label_create_switch_channel_data_v_g">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -3350,7 +3577,7 @@
                </size>
               </property>
               <property name="text">
-               <string>I_g [A]:</string>
+               <string>V_g [V]:</string>
               </property>
              </widget>
             </item>
@@ -3407,8 +3634,8 @@
               </property>
              </widget>
             </item>
-            <item row="20" column="3">
-             <widget class="QLabel" name="label_create_switch_channel_data_v_g">
+            <item row="43" column="3">
+             <widget class="QLabel" name="label_create_switch_switching_losses_r_g_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -3428,32 +3655,7 @@
                </size>
               </property>
               <property name="text">
-               <string>V_g [V]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="35" column="0">
-             <widget class="QLabel" name="label_create_transistor_c_oss_fix">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>C_oss_fix [F]:</string>
+               <string>I_g [A]:</string>
               </property>
              </widget>
             </item>
@@ -3529,6 +3731,31 @@
               </property>
              </widget>
             </item>
+            <item row="35" column="0">
+             <widget class="QLabel" name="label_create_transistor_c_oss_fix">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>C_oss_fix [F]:</string>
+              </property>
+             </widget>
+            </item>
             <item row="6" column="1">
              <widget class="QLineEdit" name="lineEdit_create_transistor_datasheet_hyperlink">
               <property name="sizePolicy">
@@ -3558,6 +3785,31 @@
              <widget class="QLabel" name="label_10">
               <property name="text">
                <string>Curve Type:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="54" column="0" colspan="2">
+             <widget class="QPushButton" name="button_create_transistor_add_curve_c_oss_normal">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add C_oss_normal Curve</string>
               </property>
              </widget>
             </item>
@@ -3618,31 +3870,6 @@
               </property>
              </widget>
             </item>
-            <item row="54" column="0" colspan="2">
-             <widget class="QPushButton" name="button_create_transistor_add_curve_c_oss_normal">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add C_oss_normal Curve</string>
-              </property>
-             </widget>
-            </item>
             <item row="37" column="7">
              <widget class="QPushButton" name="button_create_transistor_diode_delete_curve_switching_losses">
               <property name="sizePolicy">
@@ -3700,8 +3927,8 @@
               </property>
              </widget>
             </item>
-            <item row="31" column="6">
-             <widget class="QLabel" name="label_create_diode_switching_losses_v_g_2">
+            <item row="14" column="0">
+             <widget class="QLabel" name="label_create_transistor_i_cont">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -3721,12 +3948,66 @@
                </size>
               </property>
               <property name="text">
-               <string>V_g [V]:</string>
+               <string>I_cont [A]:</string>
               </property>
              </widget>
             </item>
-            <item row="15" column="4">
-             <widget class="QPushButton" name="button_create_transistor_switch_delete_curve_t_rthjc">
+            <item row="7" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_r_th_vector">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>e.g. 1 2 3 4 5</string>
+              </property>
+             </widget>
+            </item>
+            <item row="29" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_switching_losses_t_j">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="81" column="0">
+             <widget class="QLabel" name="label_25">
+              <property name="text">
+               <string>Commutation Inductance [F]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_create_transistor_manufracturer">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -3746,212 +4027,7 @@
                </size>
               </property>
               <property name="text">
-               <string>Delete</string>
-              </property>
-             </widget>
-            </item>
-            <item row="29" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_add_switching_losses_t_j">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="36" column="0">
-             <widget class="QLabel" name="label_11">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>C_rss_fix [F]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="33" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_r_g_off_recommended">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="38" column="0" colspan="2">
-             <widget class="QPushButton" name="button_create_transistor_add_curve_v_ecoss">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add V_Ecoss Curve</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3" colspan="3">
-             <widget class="QLabel" name="label_exporting_tools_export_to_other_programs_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>14</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Switch Parameters</string>
-              </property>
-             </widget>
-            </item>
-            <item row="60" column="3" colspan="2">
-             <widget class="QLabel" name="label_create_switch_add_curves_channel_data_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>10</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Add Curves for Switch SOA_t_pulse</string>
-              </property>
-             </widget>
-            </item>
-            <item row="53" column="3">
-             <widget class="QLabel" name="label_create_switch_switching_losses_v_g_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>R_channel_nominal [Ω]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="63" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_curve_c_rss_t_j">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
+               <string>Manufacturer:</string>
               </property>
              </widget>
             </item>
@@ -4011,18 +4087,8 @@
               </property>
              </widget>
             </item>
-            <item row="88" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_t_j"/>
-            </item>
-            <item row="90" column="0">
-             <widget class="QLabel" name="label_33">
-              <property name="text">
-               <string>Commutation Device:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="51" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_r_on_i_channel">
+            <item row="63" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_add_curve_c_rss_t_j">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -4043,8 +4109,15 @@
               </property>
              </widget>
             </item>
-            <item row="11" column="1">
-             <widget class="QComboBox" name="comboBox_create_transistor_housing_type">
+            <item row="85" column="0">
+             <widget class="QLabel" name="label_33">
+              <property name="text">
+               <string>Commutation Device:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="51" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_r_on_i_channel">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -4109,6 +4182,28 @@
               </property>
              </widget>
             </item>
+            <item row="11" column="1">
+             <widget class="QComboBox" name="comboBox_create_transistor_housing_type">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item row="11" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_tau_vector">
               <property name="sizePolicy">
@@ -4131,6 +4226,63 @@
               </property>
               <property name="placeholderText">
                <string>e.g. 1 2 3 4 5</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="6" colspan="2">
+             <widget class="QPushButton" name="button_create_transistor_diode_add_t_rthjc_curve">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add t_rthjc Curve</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="2">
+             <widget class="QLabel" name="label_exporting_tools_export_to_other_programs_4">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Transistor Parameters</string>
               </property>
              </widget>
             </item>
@@ -4215,8 +4367,8 @@
               </property>
              </widget>
             </item>
-            <item row="13" column="6" colspan="2">
-             <widget class="QPushButton" name="button_create_transistor_diode_add_t_rthjc_curve">
+            <item row="50" column="1">
+             <widget class="QPushButton" name="button_create_transistor_delete_curve_c_iss_detail">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -4236,14 +4388,14 @@
                </size>
               </property>
               <property name="text">
-               <string>Add t_rthjc Curve</string>
+               <string>Delete</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="0" colspan="2">
-             <widget class="QLabel" name="label_exporting_tools_export_to_other_programs_4">
+            <item row="24" column="6">
+             <widget class="QPushButton" name="button_create_transistor_view_curve_diode_channel_data">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -4260,15 +4412,8 @@
                 <height>25</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>14</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
               <property name="text">
-               <string>Transistor Parameters</string>
+               <string>View</string>
               </property>
              </widget>
             </item>
@@ -4300,31 +4445,6 @@
             <item row="78" column="1">
              <widget class="QComboBox" name="comboBox_create_transistor_add_data_dpt_dataset_type"/>
             </item>
-            <item row="24" column="6">
-             <widget class="QPushButton" name="button_create_transistor_view_curve_diode_channel_data">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>View</string>
-              </property>
-             </widget>
-            </item>
             <item row="37" column="6">
              <widget class="QPushButton" name="button_create_transistor_view_curve_diode_switching_losses">
               <property name="minimumSize">
@@ -4344,32 +4464,7 @@
               </property>
              </widget>
             </item>
-            <item row="50" column="1">
-             <widget class="QPushButton" name="button_create_transistor_delete_curve_c_iss_detail">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Delete</string>
-              </property>
-             </widget>
-            </item>
-            <item row="95" column="0" colspan="9">
+            <item row="90" column="0" colspan="9">
              <spacer name="horizontalSpacer">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -4399,6 +4494,47 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="28" column="7">
+             <widget class="QComboBox" name="comboBox_create_transistor_diode_add_switching_losses_curve_type">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="89" column="1">
+             <widget class="QPushButton" name="button_create_transistor_delete_directory_dpt">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Delete</string>
+              </property>
+             </widget>
             </item>
             <item row="17" column="6" colspan="3">
              <widget class="QLabel" name="label_create_diode_add_curves_channel_data_2">
@@ -4432,47 +4568,6 @@
               </property>
              </widget>
             </item>
-            <item row="94" column="1">
-             <widget class="QPushButton" name="button_create_transistor_delete_directory_dpt">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Delete</string>
-              </property>
-             </widget>
-            </item>
-            <item row="28" column="7">
-             <widget class="QComboBox" name="comboBox_create_transistor_diode_add_switching_losses_curve_type">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
             <item row="13" column="1">
              <widget class="QLineEdit" name="lineEdit_create_transistor_i_abs_max">
               <property name="sizePolicy">
@@ -4498,8 +4593,14 @@
               </property>
              </widget>
             </item>
-            <item row="94" column="0">
-             <widget class="QPushButton" name="button_create_transistor_view_directory_dpt">
+            <item row="40" column="1">
+             <widget class="QPushButton" name="button_create_transistor_delete_curve_v_ecoss">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -4513,12 +4614,34 @@
                </size>
               </property>
               <property name="text">
-               <string>View</string>
+               <string>Delete</string>
               </property>
              </widget>
             </item>
             <item row="23" column="1">
              <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_tr_v_gs">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="41" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_gate_charge_t_j">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -4561,55 +4684,8 @@
               </property>
              </widget>
             </item>
-            <item row="40" column="1">
-             <widget class="QPushButton" name="button_create_transistor_delete_curve_v_ecoss">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Delete</string>
-              </property>
-             </widget>
-            </item>
-            <item row="41" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_gate_charge_t_j">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="50" column="0">
-             <widget class="QPushButton" name="button_create_transistor_view_curve_c_iss_detail">
+            <item row="89" column="0">
+             <widget class="QPushButton" name="button_create_transistor_view_directory_dpt">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -4624,28 +4700,6 @@
               </property>
               <property name="text">
                <string>View</string>
-              </property>
-             </widget>
-            </item>
-            <item row="14" column="6" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_diode_added_curve_t_rthjc">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>35</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>35</height>
-               </size>
               </property>
              </widget>
             </item>
@@ -4681,6 +4735,25 @@
               </property>
              </widget>
             </item>
+            <item row="50" column="0">
+             <widget class="QPushButton" name="button_create_transistor_view_curve_c_iss_detail">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>View</string>
+              </property>
+             </widget>
+            </item>
             <item row="33" column="6">
              <widget class="QLabel" name="label_create_diode_switching_losses_v_supply_2">
               <property name="sizePolicy">
@@ -4706,10 +4779,10 @@
               </property>
              </widget>
             </item>
-            <item row="62" column="3">
-             <widget class="QLabel" name="label_create_switch_channel_data_v_g_2">
+            <item row="14" column="6" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_diode_added_curve_t_rthjc">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -4717,42 +4790,14 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>25</height>
+                <height>35</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>25</height>
+                <height>35</height>
                </size>
-              </property>
-              <property name="text">
-               <string>Time_pulse [s]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="3">
-             <widget class="QLabel" name="label_create_switch_t_j_max">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>T_j_max [°C]:</string>
               </property>
              </widget>
             </item>
@@ -4828,18 +4873,55 @@
               </property>
              </widget>
             </item>
-            <item row="27" column="6" colspan="2">
-             <spacer name="horizontalSpacer_14">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+            <item row="62" column="3">
+             <widget class="QLabel" name="label_create_switch_channel_data_v_g_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="sizeHint" stdset="0">
+              <property name="minimumSize">
                <size>
-                <width>40</width>
-                <height>20</height>
+                <width>0</width>
+                <height>25</height>
                </size>
               </property>
-             </spacer>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Time_pulse [s]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="3">
+             <widget class="QLabel" name="label_create_switch_t_j_max">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>T_j_max [°C]:</string>
+              </property>
+             </widget>
             </item>
             <item row="9" column="3">
              <widget class="QLabel" name="label_create_switch_c_th_vector">
@@ -4923,6 +5005,19 @@
               </property>
              </widget>
             </item>
+            <item row="27" column="6" colspan="2">
+             <spacer name="horizontalSpacer_14">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item row="15" column="0" colspan="2">
              <widget class="Line" name="line_5">
               <property name="sizePolicy">
@@ -4979,31 +5074,6 @@
               </property>
              </widget>
             </item>
-            <item row="12" column="6">
-             <widget class="QLabel" name="label_create_diode_tau_total_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Tau_total [s]:</string>
-              </property>
-             </widget>
-            </item>
             <item row="20" column="7">
              <widget class="QLineEdit" name="lineEdit_create_transistor_diode_add_channel_data_v_g">
               <property name="sizePolicy">
@@ -5051,6 +5121,31 @@
               </property>
              </widget>
             </item>
+            <item row="12" column="6">
+             <widget class="QLabel" name="label_create_diode_tau_total_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Tau_total [s]:</string>
+              </property>
+             </widget>
+            </item>
             <item row="53" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_r_on_r_channel_nominal">
               <property name="sizePolicy">
@@ -5073,8 +5168,8 @@
               </property>
              </widget>
             </item>
-            <item row="52" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_r_on_v_g">
+            <item row="8" column="6">
+             <widget class="QLabel" name="label_create_diode_r_th_total_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5092,6 +5187,9 @@
                 <width>16777215</width>
                 <height>25</height>
                </size>
+              </property>
+              <property name="text">
+               <string>R_th_total [Ω]:</string>
               </property>
              </widget>
             </item>
@@ -5120,8 +5218,8 @@
               </property>
              </widget>
             </item>
-            <item row="8" column="6">
-             <widget class="QLabel" name="label_create_diode_r_th_total_2">
+            <item row="52" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_r_on_v_g">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5139,9 +5237,6 @@
                 <width>16777215</width>
                 <height>25</height>
                </size>
-              </property>
-              <property name="text">
-               <string>R_th_total [Ω]:</string>
               </property>
              </widget>
             </item>
@@ -5176,31 +5271,6 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="3">
-             <widget class="QLabel" name="label_create_switch_manufracturer">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Chip-Manufacturer:</string>
-              </property>
-             </widget>
-            </item>
             <item row="33" column="0">
              <widget class="QLabel" name="label_18">
               <property name="sizePolicy">
@@ -5226,8 +5296,8 @@
               </property>
              </widget>
             </item>
-            <item row="14" column="0">
-             <widget class="QLabel" name="label_create_transistor_i_cont">
+            <item row="1" column="3">
+             <widget class="QLabel" name="label_create_switch_manufracturer">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5247,86 +5317,21 @@
                </size>
               </property>
               <property name="text">
-               <string>I_cont [A]:</string>
+               <string>Chip-Manufacturer:</string>
               </property>
              </widget>
             </item>
-            <item row="29" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_switching_losses_t_j">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="81" column="0">
-             <widget class="QLabel" name="label_25">
-              <property name="text">
-               <string>Commutation Inductance [F]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_r_th_vector">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="placeholderText">
-               <string>e.g. 1 2 3 4 5</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_create_transistor_manufracturer">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
+            <item row="76" column="0" colspan="2">
+             <widget class="QLabel" name="label_21">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
               </property>
               <property name="text">
-               <string>Manufacturer:</string>
+               <string>Add DPT Measurement Data</string>
               </property>
              </widget>
             </item>
@@ -5355,8 +5360,8 @@
               </property>
              </widget>
             </item>
-            <item row="28" column="0">
-             <widget class="QLabel" name="label_create_transistor_r_th_cs">
+            <item row="2" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_technology">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5374,9 +5379,6 @@
                 <width>16777215</width>
                 <height>25</height>
                </size>
-              </property>
-              <property name="text">
-               <string>R_th_cs [Ω]:</string>
               </property>
              </widget>
             </item>
@@ -5402,22 +5404,55 @@
               </property>
              </widget>
             </item>
-            <item row="76" column="0" colspan="2">
-             <widget class="QLabel" name="label_21">
-              <property name="font">
-               <font>
-                <pointsize>10</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
+            <item row="28" column="0">
+             <widget class="QLabel" name="label_create_transistor_r_th_cs">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
               </property>
               <property name="text">
-               <string>Add DPT Measurement Data</string>
+               <string>R_th_cs [Ω]:</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_technology">
+            <item row="23" column="3" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_switch_added_curves_channel_data">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>35</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_comment">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5460,9 +5495,6 @@
               </property>
              </widget>
             </item>
-            <item row="85" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_v_g_off"/>
-            </item>
             <item row="8" column="0">
              <widget class="QLabel" name="label_create_transistor_datasheet_version">
               <property name="sizePolicy">
@@ -5488,14 +5520,18 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_comment">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+            <item row="83" column="0">
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>Measurement Testbench:</string>
               </property>
+             </widget>
+            </item>
+            <item row="81" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_commutation_inductance"/>
+            </item>
+            <item row="56" column="0">
+             <widget class="QPushButton" name="button_create_transistor_view_curve_c_oss_normal">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -5508,10 +5544,13 @@
                 <height>25</height>
                </size>
               </property>
+              <property name="text">
+               <string>View</string>
+              </property>
              </widget>
             </item>
-            <item row="23" column="3" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_switch_added_curves_channel_data">
+            <item row="23" column="6" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_diode_added_curves_channel_data">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5557,34 +5596,8 @@
               </property>
              </widget>
             </item>
-            <item row="56" column="0">
-             <widget class="QPushButton" name="button_create_transistor_view_curve_c_oss_normal">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>View</string>
-              </property>
-             </widget>
-            </item>
-            <item row="83" column="0">
-             <widget class="QLabel" name="label_27">
-              <property name="text">
-               <string>Measurement Testbench:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="23" column="6" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_diode_added_curves_channel_data">
+            <item row="33" column="3">
+             <widget class="QLabel" name="label_create_switch_switching_losses_v_supply">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5594,24 +5607,17 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>35</height>
+                <height>25</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>35</height>
+                <height>25</height>
                </size>
               </property>
-             </widget>
-            </item>
-            <item row="81" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_commutation_inductance"/>
-            </item>
-            <item row="86" column="0">
-             <widget class="QLabel" name="label_30">
               <property name="text">
-               <string>R_g_on [Ω]:</string>
+               <string>V_supply [V]:</string>
               </property>
              </widget>
             </item>
@@ -5640,31 +5646,6 @@
               </property>
              </widget>
             </item>
-            <item row="33" column="3">
-             <widget class="QLabel" name="label_create_switch_switching_losses_v_supply">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>V_supply [V]:</string>
-              </property>
-             </widget>
-            </item>
             <item row="34" column="6" colspan="2">
              <widget class="QPushButton" name="button_create_transistor_diode_add_curve_switching_losses">
               <property name="sizePolicy">
@@ -5687,6 +5668,31 @@
               </property>
               <property name="text">
                <string>Add Curve</string>
+              </property>
+             </widget>
+            </item>
+            <item row="53" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>T_j [°C]:</string>
               </property>
              </widget>
             </item>
@@ -5784,33 +5790,8 @@
               </property>
              </widget>
             </item>
-            <item row="53" column="0">
-             <widget class="QLabel" name="label_7">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>T_j [°C]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="27" column="0">
-             <widget class="QLabel" name="label_create_transistor_r_g_int">
+            <item row="15" column="7">
+             <widget class="QPushButton" name="button_create_transistor_diode_delete_curve_t_rthjc">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5830,14 +5811,7 @@
                </size>
               </property>
               <property name="text">
-               <string>R_g_int [Ω]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="85" column="0">
-             <widget class="QLabel" name="label_29">
-              <property name="text">
-               <string>V_g_off [V]:</string>
+               <string>Delete</string>
               </property>
              </widget>
             </item>
@@ -5866,8 +5840,33 @@
               </property>
              </widget>
             </item>
-            <item row="15" column="7">
-             <widget class="QPushButton" name="button_create_transistor_diode_delete_curve_t_rthjc">
+            <item row="27" column="0">
+             <widget class="QLabel" name="label_create_transistor_r_g_int">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>R_g_int [Ω]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="24" column="7">
+             <widget class="QPushButton" name="button_create_transistor_diode_delete_curve_channel_data">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5916,28 +5915,6 @@
               </property>
              </widget>
             </item>
-            <item row="36" column="3" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_switch_added_curves_switching_losses">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>35</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>35</height>
-               </size>
-              </property>
-             </widget>
-            </item>
             <item row="39" column="6" colspan="2">
              <widget class="QLabel" name="label_12">
               <property name="sizePolicy">
@@ -5970,8 +5947,33 @@
               </property>
              </widget>
             </item>
-            <item row="24" column="7">
-             <widget class="QPushButton" name="button_create_transistor_diode_delete_curve_channel_data">
+            <item row="36" column="3" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_switch_added_curves_switching_losses">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>35</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="85" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_commutation_device"/>
+            </item>
+            <item row="28" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_r_th_cs">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -5991,7 +5993,10 @@
                </size>
               </property>
               <property name="text">
-               <string>Delete</string>
+               <string/>
+              </property>
+              <property name="placeholderText">
+               <string>e.g. 0 (mandatory)</string>
               </property>
              </widget>
             </item>
@@ -6039,9 +6044,6 @@
               </property>
              </widget>
             </item>
-            <item row="90" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_commutation_device"/>
-            </item>
             <item row="23" column="0">
              <widget class="QLabel" name="label_create_transistor_i_cont_5">
               <property name="sizePolicy">
@@ -6067,65 +6069,6 @@
               </property>
              </widget>
             </item>
-            <item row="28" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_r_th_cs">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="placeholderText">
-               <string>e.g. 0 (mandatory)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="43" column="6" colspan="2">
-             <widget class="QLabel" name="label_15">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Added Curves:</string>
-              </property>
-             </widget>
-            </item>
             <item row="9" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_c_th_vector">
               <property name="sizePolicy">
@@ -6148,6 +6091,28 @@
               </property>
               <property name="placeholderText">
                <string>e.g. 1 2 3 4 5</string>
+              </property>
+             </widget>
+            </item>
+            <item row="22" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_tr_c_o">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -6182,50 +6147,6 @@
               </property>
              </widget>
             </item>
-            <item row="22" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_tr_c_o">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="43" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_curve_c_iss_t_j">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
             <item row="33" column="7">
              <widget class="QLineEdit" name="lineEdit_create_transistor_diode_add_switching_losses_v_supply">
               <property name="sizePolicy">
@@ -6251,8 +6172,83 @@
               </property>
              </widget>
             </item>
-            <item row="82" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_measurement_date"/>
+            <item row="43" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_add_curve_c_iss_t_j">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="43" column="6" colspan="2">
+             <widget class="QLabel" name="label_15">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Added Curves:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="0">
+             <widget class="QLabel" name="label_create_transistor_housing_type">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Housing Type:</string>
+              </property>
+             </widget>
             </item>
             <item row="16" column="6" colspan="2">
              <widget class="Line" name="line_2">
@@ -6285,6 +6281,9 @@
               </property>
              </widget>
             </item>
+            <item row="80" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_load_inductance"/>
+            </item>
             <item row="62" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_soa_t_pulse_time_pulse">
               <property name="sizePolicy">
@@ -6307,8 +6306,11 @@
               </property>
              </widget>
             </item>
-            <item row="11" column="0">
-             <widget class="QLabel" name="label_create_transistor_housing_type">
+            <item row="82" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_measurement_date"/>
+            </item>
+            <item row="56" column="1">
+             <widget class="QPushButton" name="button_create_transistor_delete_curve_c_oss_normal">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -6328,12 +6330,31 @@
                </size>
               </property>
               <property name="text">
-               <string>Housing Type:</string>
+               <string>Delete</string>
               </property>
              </widget>
             </item>
-            <item row="80" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_load_inductance"/>
+            <item row="20" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_channel_data_v_g">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
             </item>
             <item row="9" column="1">
              <widget class="QLineEdit" name="lineEdit_create_transistor_housing_area">
@@ -6360,53 +6381,6 @@
               </property>
              </widget>
             </item>
-            <item row="29" column="3">
-             <widget class="QLabel" name="label_create_switch_switching_losses_temperature">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>T_j [°C]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="20" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_channel_data_v_g">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
             <item row="43" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_gate_charge_i_g">
               <property name="sizePolicy">
@@ -6429,8 +6403,8 @@
               </property>
              </widget>
             </item>
-            <item row="56" column="1">
-             <widget class="QPushButton" name="button_create_transistor_delete_curve_c_oss_normal">
+            <item row="29" column="3">
+             <widget class="QLabel" name="label_create_switch_switching_losses_temperature">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -6450,7 +6424,7 @@
                </size>
               </property>
               <property name="text">
-               <string>Delete</string>
+               <string>T_j [°C]:</string>
               </property>
              </widget>
             </item>
@@ -6548,6 +6522,53 @@
               </property>
              </widget>
             </item>
+            <item row="64" column="0" colspan="2">
+             <widget class="QPushButton" name="button_create_transistor_add_curve_c_rss_normal">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add C_rss_normal Curve</string>
+              </property>
+             </widget>
+            </item>
+            <item row="17" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_er_c_o">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item row="22" column="6" colspan="2">
              <widget class="QLabel" name="label_create_diode_channel_data_added_curves_2">
               <property name="sizePolicy">
@@ -6579,8 +6600,8 @@
               </property>
              </widget>
             </item>
-            <item row="17" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_er_c_o">
+            <item row="56" column="3" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_switch_added_curves_r_on">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -6590,39 +6611,14 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>25</height>
+                <height>35</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>25</height>
+                <height>35</height>
                </size>
-              </property>
-             </widget>
-            </item>
-            <item row="64" column="0" colspan="2">
-             <widget class="QPushButton" name="button_create_transistor_add_curve_c_rss_normal">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add C_rss_normal Curve</string>
               </property>
              </widget>
             </item>
@@ -6683,6 +6679,28 @@
               </property>
              </widget>
             </item>
+            <item row="31" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_switching_losses_v_g">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item row="46" column="1">
              <widget class="QPushButton" name="button_create_transistor_delete_curve_c_iss_normal">
               <property name="sizePolicy">
@@ -6708,30 +6726,8 @@
               </property>
              </widget>
             </item>
-            <item row="56" column="3" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_switch_added_curves_r_on">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>35</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>35</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="31" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_switching_losses_v_g">
+            <item row="19" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_er_v_gs">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -6774,6 +6770,28 @@
               </property>
               <property name="text">
                <string>C_th_vector [F]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="42" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_gate_charge_v_supply">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -6824,131 +6842,6 @@
               </property>
              </widget>
             </item>
-            <item row="42" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_add_gate_charge_v_supply">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="19" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_transistor_c_oss_er_v_gs">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="96" column="0" colspan="9">
-             <widget class="QPushButton" name="button_create_transistor_preview_transistor">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Preview Transistor on Virtual Datasheet</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_datasheet_date">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="placeholderText">
-               <string>e.g. YYYY-MM-DD</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_create_transistor_name">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Name:</string>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_technology">
               <property name="sizePolicy">
@@ -6990,8 +6883,8 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="4">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_t_j_max">
+            <item row="7" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_datasheet_date">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -7011,15 +6904,43 @@
                </size>
               </property>
               <property name="placeholderText">
-               <string>e.g. 175 (mandatory)</string>
+               <string>e.g. YYYY-MM-DD</string>
               </property>
              </widget>
             </item>
-            <item row="87" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_r_g_off"/>
+            <item row="91" column="0" colspan="9">
+             <widget class="QPushButton" name="button_create_transistor_preview_transistor">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Preview Transistor on Virtual Datasheet</string>
+              </property>
+             </widget>
             </item>
-            <item row="9" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_c_th_vector">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_create_transistor_name">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -7038,8 +6959,8 @@
                 <height>25</height>
                </size>
               </property>
-              <property name="placeholderText">
-               <string>e.g. 1 2 3 4 5</string>
+              <property name="text">
+               <string>Name:</string>
               </property>
              </widget>
             </item>
@@ -7087,8 +7008,8 @@
               </property>
              </widget>
             </item>
-            <item row="67" column="1">
-             <widget class="QPushButton" name="button_create_transistor_delete_curve_c_rss_normal">
+            <item row="4" column="4">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_switch_t_j_max">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -7107,8 +7028,61 @@
                 <height>25</height>
                </size>
               </property>
-              <property name="text">
-               <string>Delete</string>
+              <property name="placeholderText">
+               <string>e.g. 175 (mandatory)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_c_th_vector">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>e.g. 1 2 3 4 5</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_t_j_max">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>e.g. 175 (mandatory)</string>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -7140,34 +7114,6 @@
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_t_j_max">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="placeholderText">
-               <string>e.g. 175 (mandatory)</string>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -7227,8 +7173,8 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="3" colspan="2">
-             <widget class="Line" name="line_3">
+            <item row="67" column="1">
+             <widget class="QPushButton" name="button_create_transistor_delete_curve_c_rss_normal">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -7247,14 +7193,8 @@
                 <height>25</height>
                </size>
               </property>
-              <property name="frameShadow">
-               <enum>QFrame::Plain</enum>
-              </property>
-              <property name="lineWidth">
-               <number>3</number>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+              <property name="text">
+               <string>Delete</string>
               </property>
              </widget>
             </item>
@@ -7283,11 +7223,8 @@
               </property>
              </widget>
             </item>
-            <item row="97" column="0" colspan="9">
-             <widget class="QPushButton" name="button_create_transistor_create">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
+            <item row="5" column="3" colspan="2">
+             <widget class="Line" name="line_3">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -7306,17 +7243,14 @@
                 <height>25</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
               </property>
-              <property name="text">
-               <string>Load Transistor into Local Database</string>
+              <property name="lineWidth">
+               <number>3</number>
               </property>
-              <property name="checkable">
-               <bool>false</bool>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>
@@ -7367,10 +7301,40 @@
               </property>
              </widget>
             </item>
-            <item row="82" column="0">
-             <widget class="QLabel" name="label_26">
+            <item row="92" column="0" colspan="9">
+             <widget class="QPushButton" name="button_create_transistor_create">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
               <property name="text">
-               <string>Measurement Date:</string>
+               <string>Load Transistor into Local Database</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -7456,72 +7420,10 @@
               </property>
              </widget>
             </item>
-            <item row="34" column="0">
-             <widget class="QLabel" name="label_create_transistor_c_iss_fix">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
+            <item row="82" column="0">
+             <widget class="QLabel" name="label_26">
               <property name="text">
-               <string>C_iss_fix [F]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="20" column="0">
-             <widget class="QLabel" name="label_create_transistor_i_cont_4">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>V_ds [V]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="40" column="0">
-             <widget class="QPushButton" name="button_create_transistor_view_curve_v_ecoss">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>View</string>
+               <string>Measurement Date:</string>
               </property>
              </widget>
             </item>
@@ -7550,6 +7452,78 @@
               </property>
              </widget>
             </item>
+            <item row="34" column="0">
+             <widget class="QLabel" name="label_create_transistor_c_iss_fix">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>C_iss_fix [F]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="40" column="0">
+             <widget class="QPushButton" name="button_create_transistor_view_curve_v_ecoss">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>View</string>
+              </property>
+             </widget>
+            </item>
+            <item row="20" column="0">
+             <widget class="QLabel" name="label_create_transistor_i_cont_4">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>V_ds [V]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="79" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_comment"/>
+            </item>
             <item row="7" column="0">
              <widget class="QLabel" name="label_create_transistor_datasheet_date">
               <property name="sizePolicy">
@@ -7572,53 +7546,6 @@
               </property>
               <property name="text">
                <string>Datasheet Date:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="79" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_add_data_dpt_comment"/>
-            </item>
-            <item row="10" column="0">
-             <widget class="QLabel" name="label_create_transistor_cooling_area">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Cooling Area [m²]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="24" column="3">
-             <widget class="QPushButton" name="button_create_transistor_view_curve_switch_channel_data">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>View</string>
               </property>
              </widget>
             </item>
@@ -7654,6 +7581,50 @@
               </property>
              </widget>
             </item>
+            <item row="24" column="3">
+             <widget class="QPushButton" name="button_create_transistor_view_curve_switch_channel_data">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>View</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0">
+             <widget class="QLabel" name="label_create_transistor_cooling_area">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Cooling Area [m²]:</string>
+              </property>
+             </widget>
+            </item>
             <item row="21" column="3" colspan="2">
              <widget class="QPushButton" name="button_create_transistor_switch_add_curve_channel_data">
               <property name="sizePolicy">
@@ -7676,62 +7647,6 @@
               </property>
               <property name="text">
                <string>Add Curve</string>
-              </property>
-             </widget>
-            </item>
-            <item row="35" column="6" colspan="2">
-             <widget class="QLabel" name="label_create_diode_switching_losses_added_curves_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Added Curves:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" colspan="2">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_name">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="placeholderText">
-               <string>e.g. CREE_C3M0016120K (mandatory)</string>
               </property>
              </widget>
             </item>
@@ -7767,19 +7682,59 @@
               </property>
              </widget>
             </item>
-            <item row="93" column="0" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_added_dpt">
+            <item row="1" column="1" colspan="2">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_name">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>100</height>
+                <height>25</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>100</height>
+                <height>25</height>
                </size>
+              </property>
+              <property name="placeholderText">
+               <string>e.g. CREE_C3M0016120K (mandatory)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="35" column="6" colspan="2">
+             <widget class="QLabel" name="label_create_diode_switching_losses_added_curves_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Added Curves:</string>
               </property>
              </widget>
             </item>
@@ -7814,6 +7769,22 @@
               </property>
              </widget>
             </item>
+            <item row="88" column="0" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_added_dpt">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>100</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item row="5" column="6" colspan="2">
              <widget class="Line" name="line_4">
               <property name="sizePolicy">
@@ -7845,13 +7816,6 @@
               </property>
              </widget>
             </item>
-            <item row="88" column="0">
-             <widget class="QLabel" name="label_35">
-              <property name="text">
-               <string>T_j [°C]:</string>
-              </property>
-             </widget>
-            </item>
             <item row="42" column="6" colspan="2">
              <widget class="QPushButton" name="button_create_transistor_diode_add_curve_soa_t_pulse">
               <property name="sizePolicy">
@@ -7877,53 +7841,6 @@
               </property>
              </widget>
             </item>
-            <item row="45" column="0" colspan="2">
-             <widget class="QComboBox" name="comboBox_create_transistor_added_c_iss_normal">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>35</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>35</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_datasheet_version">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="placeholderText">
-               <string>e.g. 1.1</string>
-              </property>
-             </widget>
-            </item>
             <item row="10" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_c_th_total">
               <property name="sizePolicy">
@@ -7942,6 +7859,28 @@
                <size>
                 <width>16777215</width>
                 <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="45" column="0" colspan="2">
+             <widget class="QComboBox" name="comboBox_create_transistor_added_c_iss_normal">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>35</height>
                </size>
               </property>
              </widget>
@@ -8012,15 +7951,8 @@
               </property>
              </widget>
             </item>
-            <item row="87" column="0">
-             <widget class="QLabel" name="label_31">
-              <property name="text">
-               <string>R_g_off [Ω]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1" colspan="2">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_comment">
+            <item row="8" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_datasheet_version">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -8040,7 +7972,7 @@
                </size>
               </property>
               <property name="placeholderText">
-               <string/>
+               <string>e.g. 1.1</string>
               </property>
              </widget>
             </item>
@@ -8069,6 +8001,38 @@
               </property>
              </widget>
             </item>
+            <item row="4" column="1" colspan="2">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_comment">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="78" column="0">
+             <widget class="QLabel" name="label_22">
+              <property name="text">
+               <string>Dataset Type:</string>
+              </property>
+             </widget>
+            </item>
             <item row="41" column="7">
              <widget class="QLineEdit" name="lineEdit_create_transistor_diode_soa_t_pulse_time_pulse">
               <property name="sizePolicy">
@@ -8088,6 +8052,31 @@
                 <width>16777215</width>
                 <height>25</height>
                </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="6">
+             <widget class="QLabel" name="label_create_diode_manufracturer_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Chip-Manufacturer:</string>
               </property>
              </widget>
             </item>
@@ -8141,15 +8130,8 @@
               </property>
              </widget>
             </item>
-            <item row="78" column="0">
-             <widget class="QLabel" name="label_22">
-              <property name="text">
-               <string>Dataset Type:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="6">
-             <widget class="QLabel" name="label_create_diode_manufracturer_2">
+            <item row="21" column="0">
+             <widget class="QLabel" name="label_create_transistor_c_iss_fix_3">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -8168,8 +8150,14 @@
                 <height>25</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
               <property name="text">
-               <string>Chip-Manufacturer:</string>
+               <string>Equivalent C_oss_tr:</string>
               </property>
              </widget>
             </item>
@@ -8242,66 +8230,6 @@
               </property>
              </widget>
             </item>
-            <item row="21" column="0">
-             <widget class="QLabel" name="label_create_transistor_c_iss_fix_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Equivalent C_oss_tr:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="40" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_soa_t_pulse_t_c">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="28" column="6">
-             <widget class="QLabel" name="label_20">
-              <property name="text">
-               <string>Curve Type:</string>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="3">
              <widget class="QLabel" name="label_create_switch_technology">
               <property name="sizePolicy">
@@ -8329,6 +8257,35 @@
             </item>
             <item row="5" column="1">
              <widget class="QComboBox" name="comboBox_create_transistor_manufacturer">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="28" column="6">
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string>Curve Type:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="40" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_soa_t_pulse_t_c">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -8399,6 +8356,31 @@
               </property>
              </widget>
             </item>
+            <item row="21" column="6" colspan="2">
+             <widget class="QPushButton" name="button_create_transistor_diode_add_curve_channel_data">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add Curve</string>
+              </property>
+             </widget>
+            </item>
             <item row="25" column="3" colspan="2">
              <widget class="Line" name="line_7">
               <property name="sizePolicy">
@@ -8430,31 +8412,6 @@
               </property>
              </widget>
             </item>
-            <item row="21" column="6" colspan="2">
-             <widget class="QPushButton" name="button_create_transistor_diode_add_curve_channel_data">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add Curve</string>
-              </property>
-             </widget>
-            </item>
             <item row="12" column="4">
              <widget class="QLineEdit" name="lineEdit_create_transistor_switch_tau_total">
               <property name="sizePolicy">
@@ -8477,10 +8434,28 @@
               </property>
              </widget>
             </item>
-            <item row="84" column="0">
-             <widget class="QLabel" name="label_28">
-              <property name="text">
-               <string>V_g_on [V]:</string>
+            <item row="14" column="1">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_i_cont">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>e.g. 115 (mandatory)</string>
               </property>
              </widget>
             </item>
@@ -8503,25 +8478,6 @@
                 <width>16777215</width>
                 <height>35</height>
                </size>
-              </property>
-             </widget>
-            </item>
-            <item row="46" column="0">
-             <widget class="QPushButton" name="button_create_transistor_view_curve_c_iss_normal">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>View</string>
               </property>
              </widget>
             </item>
@@ -8572,39 +8528,8 @@
               </property>
              </widget>
             </item>
-            <item row="14" column="1">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_i_cont">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="placeholderText">
-               <string>e.g. 115 (mandatory)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="19" column="0">
-             <widget class="QLabel" name="label_create_transistor_i_cont_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+            <item row="46" column="0">
+             <widget class="QPushButton" name="button_create_transistor_view_curve_c_iss_normal">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -8618,57 +8543,7 @@
                </size>
               </property>
               <property name="text">
-               <string>V_gs [V]:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="27" column="3">
-             <widget class="QLabel" name="label_create_switch_switching_losses_turn_on_off">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>E_on/E_off:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="29" column="6">
-             <widget class="QLabel" name="label_create_diode_switching_losses_temperature_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>T_j [°C]:</string>
+               <string>View</string>
               </property>
              </widget>
             </item>
@@ -8697,33 +8572,8 @@
               </property>
              </widget>
             </item>
-            <item row="8" column="7">
-             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_r_th_total">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="placeholderText">
-               <string>e.g. 0 (mandatory)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="31" column="3">
-             <widget class="QLabel" name="label_create_switch_switching_losses_v_g">
+            <item row="29" column="6">
+             <widget class="QLabel" name="label_create_diode_switching_losses_temperature_2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -8743,7 +8593,57 @@
                </size>
               </property>
               <property name="text">
-               <string>V_g [V]:</string>
+               <string>T_j [°C]:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="27" column="3">
+             <widget class="QLabel" name="label_create_switch_switching_losses_turn_on_off">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>E_on/E_off:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="0">
+             <widget class="QLabel" name="label_create_transistor_i_cont_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>V_gs [V]:</string>
               </property>
              </widget>
             </item>
@@ -8791,8 +8691,8 @@
               </property>
              </widget>
             </item>
-            <item row="51" column="3">
-             <widget class="QLabel" name="label_create_switch_switching_losses_turn_on_off_3">
+            <item row="31" column="3">
+             <widget class="QLabel" name="label_create_switch_switching_losses_v_g">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -8812,9 +8712,37 @@
                </size>
               </property>
               <property name="text">
-               <string>I_channel [A]:</string>
+               <string>V_g [V]:</string>
               </property>
              </widget>
+            </item>
+            <item row="8" column="7">
+             <widget class="QLineEdit" name="lineEdit_create_transistor_diode_r_th_total">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>e.g. 0 (mandatory)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="83" column="1">
+             <widget class="QComboBox" name="comboBox_create_transistor_add_data_dpt_measurement_testbench"/>
             </item>
             <item row="10" column="6">
              <widget class="QLabel" name="label_create_diode_c_th_total_2">
@@ -8888,11 +8816,8 @@
               </property>
              </widget>
             </item>
-            <item row="83" column="1">
-             <widget class="QComboBox" name="comboBox_create_transistor_add_data_dpt_measurement_testbench"/>
-            </item>
-            <item row="67" column="4">
-             <widget class="QPushButton" name="button_create_transistor_switch_delete_curve_soa_t_pulse">
+            <item row="51" column="3">
+             <widget class="QLabel" name="label_create_switch_switching_losses_turn_on_off_3">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -8912,12 +8837,12 @@
                </size>
               </property>
               <property name="text">
-               <string>Delete</string>
+               <string>I_channel [A]:</string>
               </property>
              </widget>
             </item>
-            <item row="47" column="4">
-             <widget class="QPushButton" name="button_create_transistor_switch_delete_curve_gate_charge">
+            <item row="67" column="4">
+             <widget class="QPushButton" name="button_create_transistor_switch_delete_curve_soa_t_pulse">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -8957,6 +8882,31 @@
               </property>
               <property name="text">
                <string>View</string>
+              </property>
+             </widget>
+            </item>
+            <item row="47" column="4">
+             <widget class="QPushButton" name="button_create_transistor_switch_delete_curve_gate_charge">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Delete</string>
               </property>
              </widget>
             </item>
@@ -10342,8 +10292,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1824</width>
-             <height>1056</height>
+             <width>1836</width>
+             <height>1041</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout">
@@ -11259,8 +11209,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1824</width>
-             <height>1062</height>
+             <width>1836</width>
+             <height>1061</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
@@ -12859,7 +12809,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>32</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">

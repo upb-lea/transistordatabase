@@ -4,6 +4,7 @@ import warnings
 import pymongo
 from pymongo.errors import ServerSelectionTimeoutError
 
+
 # ---------------------------------
 # check functions
 # ---------------------------------
@@ -139,6 +140,7 @@ def check_float(float_to_check: int | float) -> bool:
     except ValueError:
         return False
 
+
 # ---------------------------------
 # functions to generate a transistor
 # ---------------------------------
@@ -177,6 +179,7 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
             merged_curve = np.append(merged_curve, [[curve[0][x]], [curve[1][x]]], axis=1)
             type(merged_curve)
     return merged_curve
+
 
 # ---------------------------------
 # Database interactions
@@ -297,6 +300,7 @@ def drop_local_tdb():
 class MissingServerConnection(ServerSelectionTimeoutError):
     pass
 
+
 # ---------------------------------
 # Functions for matlab exporter
 # ---------------------------------
@@ -355,3 +359,13 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
         International Conference of Power Electronics Intelligent Motion Power Quality 2006, PCIM 2006, p. 239 –244
     """
     return (v_gsth - v_driver_off) / i_off * (1 + c_ds / c_gd)
+
+
+def compare_list(parameter: list):
+    """
+    check through the list of value for odd one out.
+    """
+    for i, j in enumerate(parameter[:-1]):
+        if j != parameter[i + 1]:
+            return False
+    return True
