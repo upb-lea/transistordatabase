@@ -4798,6 +4798,61 @@ class Transistor:
         else:
             print('No new item to add!')
 
+    def compare_measurement_datasheet(self):
+
+        v_g_list = []
+        r_g_list = []
+        t_j_list = []
+
+        # check for measurements
+        if self.switch.e_on_meas != []:
+            for meas_object in self.switch.e_on_meas:
+                v_g_list.append(meas_object.v_g)
+                r_g_list.append(meas_object.r_g)
+                t_j_list.append(meas_object.t_j)
+
+                plt.plot(meas_object.graph_i_e[0], meas_object.graph_i_e[1], label=f"Measurement: v_g = {meas_object.v_g}, r_g = {meas_object.r_g}, v_supply = {meas_object.v_supply}")
+
+        # check for closest datasheet-data
+        if self.switch.e_on != []:
+            for count, v_g in enumerate(v_g_list):
+                self.update_wp(t_j_list[count], v_g, self.i_cont)
+                plt.plot(self.wp.e_on.graph_i_e[0], self.wp.e_on.graph_i_e[1], label=f"Datasheet: v_g = {self.wp.e_on.v_g}, r_g = {self.wp.e_on.r_g}, v_supply = {self.wp.e_on.v_supply}")
+
+        plt.xlabel('Current in A')
+        plt.ylabel('Eon / J')
+        plt.legend()
+        plt.grid()
+        plt.show()
+
+        v_g_list = []
+        r_g_list = []
+        t_j_list = []
+
+        # check for measurements
+        if self.switch.e_off_meas != []:
+            for meas_object in self.switch.e_off_meas:
+                v_g_list.append(meas_object.v_g)
+                r_g_list.append(meas_object.r_g)
+                t_j_list.append(meas_object.t_j)
+
+                plt.plot(meas_object.graph_i_e[0], meas_object.graph_i_e[1], label=f"Measurement: v_g = {meas_object.v_g}, r_g = {meas_object.r_g}, v_supply = {meas_object.v_supply}")
+
+        # check for closest datasheet-data
+        if self.switch.e_off != []:
+            for count, v_g in enumerate(v_g_list):
+                self.update_wp(t_j_list[count], v_g, self.i_cont)
+                plt.plot(self.wp.e_off.graph_i_e[0], self.wp.e_off.graph_i_e[1], label=f"Datasheet: v_g = {self.wp.e_off.v_g_off}, r_g = {self.wp.e_off.r_g}, v_supply = {self.wp.e_off.v_supply}")
+
+        plt.xlabel('Current in A')
+        plt.ylabel('Eoff / J')
+        plt.legend()
+        plt.grid()
+        plt.show()
+
+
+
+
 
 def check_duplicates(current_items: list[dict], item_to_append: dict) -> bool:
     """
