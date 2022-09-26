@@ -55,3 +55,4 @@ def compare(transistor_list: List, temperature: float, gatevoltage: float):
     axs[2, 0].set_ylabel('Energy in J')
     plt.tight_layout()
     plt.show()
+
