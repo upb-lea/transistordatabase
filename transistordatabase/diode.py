@@ -1,12 +1,15 @@
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
+from typing import List
+from scipy.spatial import distance
 import numpy as np
 
-# Third party libraries
-
 # Local libraries
-from tdb_classes import * # TODO Rework
+from transistordatabase.checker_functions import check_keys
+from transistordatabase.transistor import Transistor, get_img_raw_data
+from transistordatabase.data_classes import FosterThermalModel, ChannelData, SwitchEnergyData, LinearizedModel, SOA
+from transistordatabase.exceptions import MissingDataError
 
 class Diode:
     """
@@ -18,12 +21,12 @@ class Diode:
     manufacturer: str | None  #: Name of the manufacturer. (Optional key)
     technology: str | None  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7. (Optional key)
     # These are documented in their respective class definitions.
-    thermal_foster: Transistor.FosterThermalModel | None  #: Transient thermal_foster model.
-    channel: list[Transistor.ChannelData] | None  #: Diode forward voltage and forward current data.
-    e_rr: list[Transistor.SwitchEnergyData] | None  #: Reverse recovery energy data.
-    linearized_diode: list[Transistor.LinearizedModel] | None  #: Static data. Valid for a specific operating point.
+    thermal_foster: FosterThermalModel | None  #: Transient thermal_foster model.
+    channel: List[ChannelData] | None  #: Diode forward voltage and forward current data.
+    e_rr: List[SwitchEnergyData] | None  #: Reverse recovery energy data.
+    linearized_diode: List[LinearizedModel] | None  #: Static data. Valid for a specific operating point.
     t_j_max: float  #: Diode maximum junction temperature. Units in °C (Mandatory key)
-    soa: list[Transistor.SOA] | None  #: Safe operating area of Diode
+    soa: List[SOA] | None  #: Safe operating area of Diode
 
     def __init__(self, diode_args):
         """
@@ -40,7 +43,7 @@ class Diode:
         # attributes.
 
         # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
-        self.thermal_foster = Transistor.FosterThermalModel(diode_args.get('thermal_foster'))
+        self.thermal_foster = FosterThermalModel(diode_args.get('thermal_foster'))
         if Transistor.isvalid_dict(diode_args, 'Diode'):
             self.comment = diode_args.get('comment')
             self.manufacturer = diode_args.get('manufacturer')

@@ -1,12 +1,15 @@
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
+from typing import List, Dict, Tuple
+from scipy.spatial import distance
 import numpy as np
 
-# Third party libraries
-
 # Local libraries
-from tdb_classes import * # TODO Rework
+from transistordatabase.checker_functions import check_keys
+from transistordatabase.transistor import Transistor, get_img_raw_data
+from transistordatabase.data_classes import FosterThermalModel, ChannelData, SwitchEnergyData, LinearizedModel, TemperatureDependResistance, GateChargeCurve, SOA
+from transistordatabase.exceptions import MissingDataError
 
 class Switch:
     """Contains data associated with the switching-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
@@ -16,17 +19,17 @@ class Switch:
     manufacturer: str | None  #: Name of the manufacturer (Optional key)
     technology: str | None  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  (Optional key)
     # These are documented in their respective class definitions.
-    thermal_foster: Transistor.FosterThermalModel  #: Transient thermal_foster model. (Optional key)
-    channel: list[Transistor.ChannelData] | None  #: Switch channel voltage and current data.
-    e_on: list[Transistor.SwitchEnergyData] | None  #: Switch on energy data.
-    e_off: list[Transistor.SwitchEnergyData] | None  #: Switch of energy data.
-    e_on_meas: list[Transistor.SwitchEnergyData] | None  #: Switch on energy data.
-    e_off_meas: list[Transistor.SwitchEnergyData] | None  #: Switch on energy data.
-    linearized_switch: list[Transistor.LinearizedModel] | None  #: Static data valid for a specific operating point.
-    r_channel_th: list[Transistor.TemperatureDependResistance] | None  #: Temperature dependant on resistance.
-    charge_curve: list[Transistor.GateChargeCurve] | None  #: Gate voltage dependant charge characteristics
+    thermal_foster: FosterThermalModel  #: Transient thermal_foster model. (Optional key)
+    channel: List[ChannelData] | None  #: Switch channel voltage and current data.
+    e_on: List[SwitchEnergyData] | None  #: Switch on energy data.
+    e_off: List[SwitchEnergyData] | None  #: Switch of energy data.
+    e_on_meas: List[SwitchEnergyData] | None  #: Switch on energy data.
+    e_off_meas: List[SwitchEnergyData] | None  #: Switch on energy data.
+    linearized_switch: List[LinearizedModel] | None  #: Static data valid for a specific operating point.
+    r_channel_th: List[TemperatureDependResistance] | None  #: Temperature dependant on resistance.
+    charge_curve: List[GateChargeCurve] | None  #: Gate voltage dependant charge characteristics
     t_j_max: float   #: Maximum junction temperature. Units in °C (Mandatory key)
-    soa: list[Transistor.SOA] | None  #: Safe operating area of switch
+    soa: List[SOA] | None  #: Safe operating area of switch
 
     def __init__(self, switch_args):
         """
@@ -239,7 +242,7 @@ class Switch:
             self.r_channel_th = []
             self.charge_curve = []
 
-    def convert_to_dict(self) -> dict:
+    def convert_to_dict(self) -> Dict:
         """
         The method converts Switch object into dict datatype
 
@@ -259,8 +262,8 @@ class Switch:
         d['soa'] = [c.convert_to_dict() for c in self.soa]
         return d
 
-    def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list = None,
-                                switch_loss_dataset_type: str = "graph_i_e") -> dict:
+    def find_next_gate_voltage(self, req_gate_vltgs: Dict, export_type: str, check_specific_curves: List = None,
+                                switch_loss_dataset_type: str = "graph_i_e") -> Dict:
         """
         Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets. Applicable to either plecs exporter or gecko exporter
 
@@ -334,7 +337,7 @@ class Switch:
 
     def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
                         switch_energy_dataset_type: str = "graph_i_e") \
-            -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData, Transistor.SwitchEnergyData]:
+            -> Tuple[ChannelData, SwitchEnergyData, SwitchEnergyData]:
         """
         This function looks for the smallest distance to stored object value and returns this working point
 
@@ -695,7 +698,7 @@ class Switch:
         else:
             plt.show()
 
-    def collect_data(self) -> dict:
+    def collect_data(self) -> Dict:
         """
         Collects switch data in form of dictionary for generating virtual datasheet
 

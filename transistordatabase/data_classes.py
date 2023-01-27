@@ -6,10 +6,10 @@ import numpy as np
 import numpy.typing as npt
 import datetime
 
-# Third party libraries
-
 # Local libraries
-from tdb_classes import * # TODO Rework
+from transistordatabase.checker_functions import check_float
+from transistordatabase.helper_functions import isvalid_dict
+from transistordatabase.transistor import get_img_raw_data
 
 class GateChargeCurve:
     """ A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class"""
@@ -360,8 +360,8 @@ class SwitchEnergyData:
             'v_g': self.v_g,
         }
         # check dictionary
-        Transistor.isvalid_dict(args, 'SwitchEnergyData')
-        return Transistor.SwitchEnergyData(args)
+        isvalid_dict(args, 'SwitchEnergyData')
+        return SwitchEnergyData(args)
 
 class ChannelData:
         """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
@@ -540,7 +540,7 @@ class FosterThermalModel:
 
         .. note:: Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
         """
-        if Transistor.isvalid_dict(args, 'FosterThermalModel'):
+        if isvalid_dict(args, 'FosterThermalModel'):
             self.r_th_total = args.get('r_th_total')
             self.r_th_vector = args.get('r_th_vector')
             self.c_th_total = args.get('c_th_total')
