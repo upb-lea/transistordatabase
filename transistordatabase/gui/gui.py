@@ -770,6 +770,7 @@ class MainWindow(QMainWindow):
 
     def get_transistor_list(self):
         """
+        # TODO Now donw in database_manager
         Gets list of all transistors stored in local database and returns it
 
         :return: list with names of all transistors in local database

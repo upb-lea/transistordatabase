@@ -13,7 +13,7 @@ from bson.objectid import ObjectId
 
 # Local libraries
 from transistordatabase.checker_functions import check_realnum, check_str, check_2d_dataset
-from transistordatabase.database_handling import connect_local_tdb
+from transistordatabase.mongodb_handling import connect_local_tdb
 
 def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     """
