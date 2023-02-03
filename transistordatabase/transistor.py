@@ -49,8 +49,8 @@ class Transistor:
         - Groups data of all other classes for a single transistor. Methods are specified in such a way that only user-interaction with this class is necessary
         - Documentation on how to add or extract a transistor-object to/from the database can be found in
     """
-    # ToDo: Add database _id as attribute
-    _id: ObjectId  #: ID of the object being created. (Automatic key)
+    # ToDo: Add database id as attribute
+    id: int  #: ID of the object being created. (Automatic key)
     name: str  #: Name of the transistor. Choose as specific as possible. (Mandatory key)
     type: str  #: Specifies the type of module either e.g IGBT, MOSFET, SiC MOSFET etc. (Mandatory key)
     # User-specific data
@@ -120,9 +120,9 @@ class Transistor:
         try:
             if self.isvalid_dict(transistor_args, 'Transistor'):
                 if transistor_args.get('_id') is not None:
-                    self._id = transistor_args.get('_id')
+                    self.id = transistor_args.get('_id')
                 else:
-                    self._id = ObjectId()
+                    self.id = ObjectId()
                 self.name = transistor_args.get('name')
                 self.type = transistor_args.get('type')
                 self.author = transistor_args.get('author')
@@ -306,110 +306,7 @@ class Transistor:
         other_dict.pop('_id', None)
         return my_dict == other_dict
 
-    def save(self, collection: str = "local", overwrite: bool = None) -> None:
-        """
-        The method save the transistor object to local mongodb database.
-        Currently receives the execution instructions from update_from_fileexchange(..)
 
-        :param collection: By default local database is selected and "local" is provided as value
-        :type collection: str
-        :param overwrite: Indicates whether to overwrite the existing transistor object in the local database if a match is found
-        :type overwrite: bool or None
-
-        :return: None
-        :rtype: None
-        """
-        if collection == "local":
-            collection = connect_local_tdb()
-        transistor_dict = self.convert_to_dict()
-        if transistor_dict.get("_id") is not None:
-            _id = transistor_dict["_id"]
-            if collection.find_one({"_id": _id}) is not None:
-                if not isinstance(overwrite, bool):
-                    raise pymongo.errors.DuplicateKeyError(
-                        "A transistor object with {0} is already present in the TDB. Please specify,"
-                        " whether the newly saved Transistor should replace the old one or whether it should be saved as a copy. "
-                        "This can be done by setting the optional argument 'overwrite' to either True or False.".format(_id))
-                if not overwrite:
-                    del transistor_dict["_id"]
-                    collection.insert_one(transistor_dict)
-                if overwrite:
-                    collection.replace_one({"_id": _id}, transistor_dict)
-            else:
-                collection.insert_one(transistor_dict)
-        else:
-            collection.insert_one(transistor_dict)
-
-    def delete(self, collection: str = 'local') -> None:
-        """
-        The method deletes the transistor object from the local mongodb database.
-
-        :param collection: By default local database is selected and "local" is provided as value
-        :type collection: str
-
-        :return: None
-        :rtype: None
-        """
-        if collection == "local":
-            collection = connect_local_tdb()
-        transistor_dict = self.convert_to_dict()
-        if transistor_dict.get("_id") is not None:
-            _id = transistor_dict["_id"]
-            if collection.find_one({"_id": _id}) is not None:
-                collection.delete_one({"_id": _id})
-            else:
-                print("Can not find transistor in the database with same 'id' to delete.")
-        else:
-            print("Transistor can not be deleted. Has no internal 'id'.")
-
-    def export_json_old(self, path: str = None) -> None:
-        """
-        Exports the transistor object to .json file, e.g. to share this file on file exchange on github
-
-        :param path: path to export
-        :type path: str or None (default)
-
-        :raises TypeError: Raised if the provided path is not a string type
-        """
-        transistor_dict = self.convert_to_dict()
-        try:
-            save_path = pathlib.Path(path)
-        except:
-            if path is None:
-                save_path = pathlib.Path.cwd()
-                with open(save_path.joinpath(transistor_dict['name'] + '.json'), 'w') as fp:
-                    json.dump(transistor_dict, fp, indent=2, default=json_util.default)
-                print(f"Saved json-file {transistor_dict['name'] + '.json'} to {save_path.as_uri()}")
-            else:
-                raise TypeError("path = {0} ist not a string.".format(path))
-        else:
-            if path is None:
-                save_path = pathlib.Path.cwd()
-            with open(save_path.joinpath(transistor_dict['name'] + '.json'), 'w') as fp:
-                json.dump(transistor_dict, fp, default=json_util.default)
-            print(f"Saved json-file {transistor_dict['name'] + '.json'} to {save_path.as_uri()}")
-
-    def export_json(self, path: str = None) -> None:
-        save_path = None
-        if path is None:
-            save_path = pathlib.Path.cwd()
-        else:
-            if os.path.isfile(path):
-                save_path = path
-        if save_path is not None:
-            with open(save_path.joinpath(self.name + '.json'), "w") as fd:
-                fd.write(jsonpickle.encode(self, indent=2))
-
-    def import_json(self, path):
-        load_path = None
-        if path is None:
-            load_path = pathlib.Path.cwd()
-        else:
-            if os.path.isfile(path):
-                load_path = path
-        if load_path is not None:
-            with open(load_path.joinpath(self.name + '.json'), "w") as fd:
-                pass
 
     def convert_to_dict(self) -> Dict:
         """
@@ -2205,7 +2102,7 @@ class Transistor:
         """
 
         collection = connect_local_tdb()
-        transistor_id = {'_id': self._id}
+        transistor_id = {'_id': self.id}
 
         if measurement_data['e_off_meas'] is not None:
             if isinstance(measurement_data.get('e_off_meas'), list):
@@ -2292,7 +2189,7 @@ class Transistor:
         :return: updated transistor switch or diode object with added soa characteristics
         """
         soa_list = []
-        transistor_id = {'_id': self._id}
+        transistor_id = {'_id': self.id}
 
         if switch_type == 'switch':
             if clear:
@@ -2363,7 +2260,7 @@ class Transistor:
         :return: updated transistor object with added gate charge characteristics
         """
         charge_list = []
-        transistor_id = {'_id': self._id}
+        transistor_id = {'_id': self.id}
         if clear:
             self.switch.charge_curve = []
         # gathering existing data if any
@@ -2419,7 +2316,7 @@ class Transistor:
         :return: updated transistor object with added gate charge characteristics
         """
         r_channel_list = []
-        transistor_id = {'_id': self._id}
+        transistor_id = {'_id': self.id}
         if clear:
             self.switch.r_channel_th = []
         # gathering existing data if any
@@ -3001,135 +2898,6 @@ def get_gatedefaults(transistor_type: str) -> List:
     return gate_voltages
 
 
-def load(transistor: Union[str, Dict], collection_name: str = "local"):
-    """
-    load a transistor from your local mongodb-database
-
-    :param transistor: transistor name that needs to be loaded, see example
-    :type transistor: str
-    :param collection_name: mongodb connection, predefined value
-    :type collection_name: str
-
-    :return: transistor object
-    :rtype: Transistor
-
-    :Example:
-
-    >>> import transistordatabase as tdb
-    >>> transistor_loaded = tdb.load('Infineon_FF200R12KE3')
-    """
-    try:
-        find_filter = {'name': transistor} if type(transistor) == str else transistor
-        if collection_name == "local":
-            mongodb_collection = connect_local_tdb()
-        else:
-            # TODO: support other collections. As of now, other database connections also connects to local-tdb
-            warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
-            mongodb_collection = connect_local_tdb()
-        # ToDo: Implement case where different transistors fit the filter criteria.
-        selected_trans_dict = mongodb_collection.find_one(find_filter)
-        if selected_trans_dict is None:
-            raise MissingDataError('Selected Transistor {0} does not exists in local database'.format(find_filter['name']))
-        return convert_dict_to_transistor_object(selected_trans_dict)
-    except MissingDataError as e:
-        print(e.args[0])
-
-
-def convert_dict_to_transistor_object(db_dict: dict) -> Transistor:
-    """
-    Converts a dictionary to a transistor object.
-    This is a helper function of the following functions:
-
-    - parallel_transistors()
-    - load()
-    - import_json()
-
-    :param db_dict: transistor dictionary
-    :type db_dict: dict
-
-    :return: Transistor object
-    :rtype: Transistor object
-    """
-    # Convert transistor_args
-    transistor_args = db_dict
-    if 'c_oss' in transistor_args and transistor_args['c_oss'] is not None:
-        for i in range(len(transistor_args['c_oss'])):
-            transistor_args['c_oss'][i]['graph_v_c'] = np.array(transistor_args['c_oss'][i]['graph_v_c'])
-    if 'c_iss' in transistor_args and transistor_args['c_iss'] is not None:
-        for i in range(len(transistor_args['c_iss'])):
-            transistor_args['c_iss'][i]['graph_v_c'] = np.array(transistor_args['c_iss'][i]['graph_v_c'])
-    if 'c_rss' in transistor_args and transistor_args['c_rss'] is not None:
-        for i in range(len(transistor_args['c_rss'])):
-            transistor_args['c_rss'][i]['graph_v_c'] = np.array(transistor_args['c_rss'][i]['graph_v_c'])
-    if 'graph_v_ecoss' in transistor_args and transistor_args['graph_v_ecoss'] is not None:
-        transistor_args['graph_v_ecoss'] = np.array(transistor_args['graph_v_ecoss'])
-    if 'raw_measurement_data' in transistor_args:
-        for i in range(len(transistor_args['raw_measurement_data'])):
-            for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_vds'])):
-                transistor_args['raw_measurement_data'][i]['dpt_on_vds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_vds'][u])
-            for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_on_id'])):
-                transistor_args['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_on_id'][u])
-            for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_vds'])):
-                transistor_args['raw_measurement_data'][i]['dpt_off_vds'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_vds'][u])
-            for u in range(len(transistor_args['raw_measurement_data'][i]['dpt_off_id'])):
-                transistor_args['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transistor_args['raw_measurement_data'][i]['dpt_off_id'][u])
-
-    # Convert switch_args
-    switch_args = db_dict['switch']
-    if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
-        switch_args['thermal_foster']['graph_t_rthjc'] = np.array(switch_args['thermal_foster']['graph_t_rthjc'])
-    for i in range(len(switch_args['channel'])):
-        switch_args['channel'][i]['graph_v_i'] = np.array(switch_args['channel'][i]['graph_v_i'])
-    for i in range(len(switch_args['e_on'])):
-        if switch_args['e_on'][i]['dataset_type'] == 'graph_r_e':
-            switch_args['e_on'][i]['graph_r_e'] = np.array(switch_args['e_on'][i]['graph_r_e'])
-        elif switch_args['e_on'][i]['dataset_type'] == 'graph_i_e':
-            switch_args['e_on'][i]['graph_i_e'] = np.array(switch_args['e_on'][i]['graph_i_e'])
-    if 'e_on_meas' in switch_args:
-        for i in range(len(switch_args['e_on_meas'])):
-            if switch_args['e_on_meas'][i]['dataset_type'] == 'graph_r_e':
-                switch_args['e_on_meas'][i]['graph_r_e'] = np.array(switch_args['e_on_meas'][i]['graph_r_e'])
-            elif switch_args['e_on_meas'][i]['dataset_type'] == 'graph_i_e':
-                switch_args['e_on_meas'][i]['graph_i_e'] = np.array(switch_args['e_on_meas'][i]['graph_i_e'])
-    for i in range(len(switch_args['e_off'])):
-        if switch_args['e_off'][i]['dataset_type'] == 'graph_r_e':
-            switch_args['e_off'][i]['graph_r_e'] = np.array(switch_args['e_off'][i]['graph_r_e'])
-        elif switch_args['e_off'][i]['dataset_type'] == 'graph_i_e':
-            switch_args['e_off'][i]['graph_i_e'] = np.array(switch_args['e_off'][i]['graph_i_e'])
-    if 'e_off_meas' in switch_args:
-        for i in range(len(switch_args['e_off_meas'])):
-            if switch_args['e_off_meas'][i]['dataset_type'] == 'graph_r_e':
-                switch_args['e_off_meas'][i]['graph_r_e'] = np.array(switch_args['e_off_meas'][i]['graph_r_e'])
-            elif switch_args['e_off_meas'][i]['dataset_type'] == 'graph_i_e':
-                switch_args['e_off_meas'][i]['graph_i_e'] = np.array(switch_args['e_off_meas'][i]['graph_i_e'])
-    if 'charge_curve' in switch_args:
-        for i in range(len(switch_args['charge_curve'])):
-            switch_args['charge_curve'][i]['graph_q_v'] = np.array(switch_args['charge_curve'][i]['graph_q_v'])
-    if 'r_channel_th' in switch_args:
-        for i in range(len(switch_args['r_channel_th'])):
-            switch_args['r_channel_th'][i]['graph_t_r'] = np.array(switch_args['r_channel_th'][i]['graph_t_r'])
-    if 'soa' in switch_args:
-        for i in range(len(switch_args['soa'])):
-            switch_args['soa'][i]['graph_i_v'] = np.array(switch_args['soa'][i]['graph_i_v'])
-
-    # Convert diode_args
-    diode_args = db_dict['diode']
-    if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
-        diode_args['thermal_foster']['graph_t_rthjc'] = np.array(diode_args['thermal_foster']['graph_t_rthjc'])
-    for i in range(len(diode_args['channel'])):
-        diode_args['channel'][i]['graph_v_i'] = np.array(diode_args['channel'][i]['graph_v_i'])
-    for i in range(len(diode_args['e_rr'])):
-        if diode_args['e_rr'][i]['dataset_type'] == 'graph_r_e':
-            diode_args['e_rr'][i]['graph_r_e'] = np.array(diode_args['e_rr'][i]['graph_r_e'])
-        elif diode_args['e_rr'][i]['dataset_type'] == 'graph_i_e':
-            diode_args['e_rr'][i]['graph_i_e'] = np.array(diode_args['e_rr'][i]['graph_i_e'])
-    if 'soa' in diode_args:
-        for i in range(len(diode_args['soa'])):
-            diode_args['soa'][i]['graph_i_v'] = np.array(diode_args['soa'][i]['graph_i_v'])
-
-    return Transistor(transistor_args, switch_args, diode_args)
-
-
 def update_from_fileexchange(collection: str = "local", overwrite: bool = True) -> None:
     """
     Update your local transistor database from transistordatabase-fileexchange from github
@@ -3200,30 +2968,6 @@ def update_from_fileexchange(collection: str = "local", overwrite: bool = True) 
                     print(f"Update Transistor: {transistor.name}")
 
 
-def import_json(path: str) -> Transistor:
-    """
-    Import a json-file and return a transistor class object.
-    Note: The transistor is NOT stored in your local database!
-
-    :param path: path to the .json-file
-    :type path: str
-
-    :return: transistor dictionary, loaded from the .json-file
-    :rtype: Transistor
-
-    :Example:
-
-    >>> import transistordatabase as tdb
-    >>> transistor_imported = tdb.import_json('CREE_C3M0016120K.json')
-    """
-    if isinstance(path, str):
-        with open(path, 'r') as transistor_json_file:
-            transistor_dict = transistor_json_file.read()
-        return convert_dict_to_transistor_object(json_util.loads(transistor_dict))
-    else:
-        TypeError("path = {0} ist not a string.".format(path))
-
-
 def matlab_compatibility_test(Transistor, attribute):
     """
     checks attribute for occurrences of None an replace it with np.nan
@@ -3248,7 +2992,6 @@ def matlab_compatibility_test(Transistor, attribute):
 
     except AttributeError:
         return np.nan
-
 
 
 def dpt_save_data(measurement_dict: Dict) -> Dict:
