@@ -6,8 +6,6 @@ from scipy import integrate
 from scipy.spatial import distance
 from scipy.optimize import curve_fit
 from datetime import datetime
-import xml.etree.ElementTree as et
-import jsonpickle
 import numpy as np
 import numpy.typing as npt
 import re
@@ -309,6 +307,7 @@ class Transistor:
 
 
     def convert_to_dict(self) -> Dict:
+        # TODO Maybe move this to the DatabaseManager class as a static function? Since the load from dict function is there too.
         """
         Converts the transistor object in scope to a dictionary datatype
 

@@ -12,7 +12,7 @@ from transistordatabase.mongodb_handling import connect_local_tdb, drop_local_td
 class OperationMode(Enum):
     JSON = "json"
     SQLITE = "sqlite"
-    MONGODB = "mongodb" # Shall be deprecated
+    MONGODB = "mongodb" # Shall be deprecated?
 
 class DatabaseManager:
     """This class shall manage the whole transistor database. It represents the whole database as an object and contains
@@ -150,7 +150,11 @@ class DatabaseManager:
             raise Exception("Please select an operation mode for the database manager.")
 
         if self.operation_mode == OperationMode.JSON:
-            raise NotImplementedError("Current operation is not implemented.")
+            existing_files = os.listdir(self.json_folder)
+            if str(transistor_id) in existing_files:
+                os.remove(os.path.join(self.json_folder, str(transistor_id)))
+            else:
+                print(f"Can not find transistor with id {transistor_id} in the database. Therefore it cannot be deleted.")
         elif self.operation_mode == OperationMode.SQLITE:
             raise NotImplementedError("Current operation is not implemented.")
         elif self.operation_mode == OperationMode.MONGODB:
@@ -196,17 +200,29 @@ class DatabaseManager:
             raise Exception("Please select an operation mode for the database manager.")
 
         if self.operation_mode == OperationMode.JSON:
-            pass
+            # Since the name of the transistor is not encoded in the file name it is necessary to decoe very transistor file to get the name.
+            transistor_list = []
+            existing_files = os.listdir(self.json_folder)
+            for file in existing_files:
+                with open(os.path.join(self.json_folder, file), "r") as fd:
+                    transistor_dict = json.load(fd)
+                    transistor_list.append((transistor_dict["name"], transistor_dict["id"]))
+
+            return transistor_list
         elif self.operation_mode == OperationMode.SQLITE:
             pass
         elif self.operation_mode == OperationMode.MONGODB:
-            mongodb_collection = connect_local_tdb()
-            returned_cursor = mongodb_collection.find()
-            name_list = []
+            transistor_list = []
+            returned_cursor = self.mongodb_collection.find()
             for tran in returned_cursor:
-                name_list.append(tran['name'])
+                transistor_list.append((tran['name'], tran["id"]))
 
-            return name_list
+            return transistor_list
+
+    @staticmethod
+    def export_single_transistor_to_json(transistor: Transistor, file_path: str):
+        with open(file_path, "w") as fd:
+            json.dump(transistor.convert_to_dict(), fd, indent=2)
 
     @staticmethod
     def convert_dict_to_transistor_object(transformer_dict: dict) -> Transistor:
