@@ -6,8 +6,8 @@ from scipy.spatial import distance
 import numpy as np
 
 # Local libraries
+from transistordatabase.helper_functions import get_img_raw_data, isvalid_dict
 from transistordatabase.checker_functions import check_keys
-from transistordatabase.transistor import Transistor, get_img_raw_data
 from transistordatabase.data_classes import FosterThermalModel, ChannelData, SwitchEnergyData, LinearizedModel, TemperatureDependResistance, GateChargeCurve, SOA
 from transistordatabase.exceptions import MissingDataError
 
@@ -44,8 +44,8 @@ class Switch:
         """
         # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty attributes.
         # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
-        self.thermal_foster = Transistor.FosterThermalModel(switch_args.get('thermal_foster'))
-        if Transistor.isvalid_dict(switch_args, 'Switch'):
+        self.thermal_foster = FosterThermalModel(switch_args.get('thermal_foster'))
+        if isvalid_dict(switch_args, 'Switch'):
             self.t_j_max = switch_args.get('t_j_max')
             self.comment = switch_args.get('comment')
             self.manufacturer = switch_args.get('manufacturer')
@@ -58,11 +58,11 @@ class Switch:
                     # Loop through list and check each dict for validity. Only create ChannelData objects from valid
                     # dicts. 'None' and empty dicts are ignored.
                     for dataset in switch_args.get('channel'):
-                        if Transistor.isvalid_dict(dataset, 'Switch_ChannelData'):
-                            self.channel.append(Transistor.ChannelData(dataset))
-                elif Transistor.isvalid_dict(switch_args.get('channel'), 'Switch_ChannelData'):
+                        if isvalid_dict(dataset, 'Switch_ChannelData'):
+                            self.channel.append(ChannelData(dataset))
+                elif isvalid_dict(switch_args.get('channel'), 'Switch_ChannelData'):
                     # Only create ChannelData objects from valid dicts
-                    self.channel.append(Transistor.ChannelData(switch_args.get('channel')))
+                    self.channel.append(ChannelData(switch_args.get('channel')))
             except KeyError as error:
                 # If KeyError occurs during for loop, raise KeyError and add index of list occurrence to the message
                 dict_list = switch_args.get('channel')
@@ -81,8 +81,8 @@ class Switch:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in switch_args.get('e_on'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.e_on.append(Transistor.SwitchEnergyData(dataset))
+                        if isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.e_on.append(SwitchEnergyData(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = switch_args.get('e_on')
@@ -91,16 +91,16 @@ class Switch:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Switch-SwitchEnergyData dictionaries for e_on: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(switch_args.get('e_on'), 'SwitchEnergyData'):
+            elif isvalid_dict(switch_args.get('e_on'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
-                self.e_on.append(Transistor.SwitchEnergyData(switch_args.get('e_on')))
+                self.e_on.append(SwitchEnergyData(switch_args.get('e_on')))
 
             self.e_off = []  # Default case: Empty list
             if isinstance(switch_args.get('e_off'), list):
                 for dataset in switch_args.get('e_off'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.e_off.append(Transistor.SwitchEnergyData(dataset))
+                        if isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.e_off.append(SwitchEnergyData(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = switch_args.get('e_off')
@@ -109,8 +109,8 @@ class Switch:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Switch-SwitchEnergyData dictionaries for e_off: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
-                self.e_off.append(Transistor.SwitchEnergyData(switch_args.get('e_off')))
+            elif isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
+                self.e_off.append(SwitchEnergyData(switch_args.get('e_off')))
 
             self.e_on_meas = []  # Default case: Empty list
             if isinstance(switch_args.get('e_on_meas'), list):
@@ -118,8 +118,8 @@ class Switch:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in switch_args.get('e_on_meas'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.e_on_meas.append(Transistor.SwitchEnergyData(dataset))
+                        if isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.e_on_meas.append(SwitchEnergyData(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = switch_args.get('e_on_meas')
@@ -128,16 +128,16 @@ class Switch:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(switch_args.get('e_on_meas'), 'SwitchEnergyData'):
+            elif isvalid_dict(switch_args.get('e_on_meas'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
-                self.e_on_meas.append(Transistor.SwitchEnergyData(switch_args.get('e_on_meas')))
+                self.e_on_meas.append(SwitchEnergyData(switch_args.get('e_on_meas')))
 
             self.e_off_meas = []  # Default case: Empty list
             if isinstance(switch_args.get('e_off_meas'), list):
                 for dataset in switch_args.get('e_off_meas'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.e_off_meas.append(Transistor.SwitchEnergyData(dataset))
+                        if isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.e_off_meas.append(SwitchEnergyData(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = switch_args.get('e_off_meas')
@@ -146,8 +146,8 @@ class Switch:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Switch-SwitchEnergyData dictionaries for e_off_meas: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(switch_args.get('e_off_meas'), 'SwitchEnergyData'):
-                self.e_off_meas.append(Transistor.SwitchEnergyData(switch_args.get('e_off_meas')))
+            elif isvalid_dict(switch_args.get('e_off_meas'), 'SwitchEnergyData'):
+                self.e_off_meas.append(SwitchEnergyData(switch_args.get('e_off_meas')))
 
             self.linearized_switch = []  # Default case: Empty list
             if isinstance(switch_args.get('linearized_switch'), list):
@@ -155,8 +155,8 @@ class Switch:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in switch_args.get('linearized_switch'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'Switch_LinearizedModel'):
-                            self.linearized_switch.append(Transistor.LinearizedModel(dataset))
+                        if isvalid_dict(dataset, 'Switch_LinearizedModel'):
+                            self.linearized_switch.append(LinearizedModel(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = switch_args.get('linearized_switch')
@@ -165,9 +165,9 @@ class Switch:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Switch-LinearizedModel dictionaries for e_on: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(switch_args.get('linearized_switch'), 'Switch_LinearizedModel'):
+            elif isvalid_dict(switch_args.get('linearized_switch'), 'Switch_LinearizedModel'):
                 # Only create LinearizedModel objects from valid dicts
-                self.linearized_switch.append(Transistor.LinearizedModel(switch_args.get('linearized_switch')))
+                self.linearized_switch.append(LinearizedModel(switch_args.get('linearized_switch')))
 
             self.r_channel_th = []  # Default case: Empty list
             if isinstance(switch_args.get('r_channel_th'), list):
@@ -175,8 +175,8 @@ class Switch:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in switch_args.get('r_channel_th'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'TemperatureDependResistance'):
-                            self.r_channel_th.append(Transistor.TemperatureDependResistance(dataset))
+                        if isvalid_dict(dataset, 'TemperatureDependResistance'):
+                            self.r_channel_th.append(TemperatureDependResistance(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = switch_args.get('r_channel_th')
@@ -185,9 +185,9 @@ class Switch:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Switch-TemperatureDependResistance dictionaries for r_channel_th: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(switch_args.get('r_channel_th'), 'TemperatureDependResistance'):
+            elif isvalid_dict(switch_args.get('r_channel_th'), 'TemperatureDependResistance'):
                 # Only create TemperatureDependResistance objects form valid dicts
-                self.r_channel_th.append(Transistor.TemperatureDependResistance(switch_args.get('r_channel_th')))
+                self.r_channel_th.append(TemperatureDependResistance(switch_args.get('r_channel_th')))
 
             self.charge_curve = []  # Default case: Empty list
             if isinstance(switch_args.get('charge_curve'), list):
@@ -195,8 +195,8 @@ class Switch:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in switch_args.get('charge_curve'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'GateChargeCurve'):
-                            self.charge_curve.append(Transistor.GateChargeCurve(dataset))
+                        if isvalid_dict(dataset, 'GateChargeCurve'):
+                            self.charge_curve.append(GateChargeCurve(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = switch_args.get('charge_curve')
@@ -205,9 +205,9 @@ class Switch:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Switch-GateChargeCurve dictionaries for charge_curve: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(switch_args.get('charge_curve'), 'GateChargeCurve'):
+            elif isvalid_dict(switch_args.get('charge_curve'), 'GateChargeCurve'):
                 # Only create GateChargeCurve objects form valid dicts
-                self.charge_curve.append(Transistor.GateChargeCurve(switch_args.get('charge_curve')))
+                self.charge_curve.append(GateChargeCurve(switch_args.get('charge_curve')))
 
             self.soa = []  # Default case: Empty list
             if isinstance(switch_args.get('soa'), list):
@@ -215,8 +215,8 @@ class Switch:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in switch_args.get('soa'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SOA'):
-                            self.soa.append(Transistor.SOA(dataset))
+                        if isvalid_dict(dataset, 'SOA'):
+                            self.soa.append(SOA(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = switch_args.get('soa')
@@ -225,9 +225,9 @@ class Switch:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of soa "
                                         f"dictionaries: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(switch_args.get('soa'), 'SOA'):
+            elif isvalid_dict(switch_args.get('soa'), 'SOA'):
                 # Only create SOA objects from valid dicts
-                self.soa.append(Transistor.SOA(switch_args.get('soa')))
+                self.soa.append(SOA(switch_args.get('soa')))
 
         else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
             self.comment = None

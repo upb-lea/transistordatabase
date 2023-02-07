@@ -2,9 +2,6 @@
 import pymongo
 from pymongo.errors import ServerSelectionTimeoutError
 
-# Local libraries
-from transistordatabase.exceptions import MissingServerConnection
-
 def connect_tdb(host: str):
     """
     A method for establishing connection with transistordatabase_exchange.

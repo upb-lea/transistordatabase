@@ -32,6 +32,7 @@ from bson import json_util
 from .constants import *
 from .helper_functions import *
 from transistordatabase.checker_functions import check_duplicates, check_float
+from transistordatabase.helper_functions import get_img_raw_data, isvalid_dict
 from transistordatabase.data_classes import SwitchEnergyData, RawMeasurementData, EffectiveOutputCapacitance, VoltageDependentCapacitance
 from transistordatabase.switch import Switch
 from transistordatabase.diode import Diode
@@ -116,7 +117,7 @@ class Transistor:
         :raises ValueError: Raised if index based search for module_manufacturer or housing_type values fails
         """
         try:
-            if self.isvalid_dict(transistor_args, 'Transistor'):
+            if isvalid_dict(transistor_args, 'Transistor'):
                 if transistor_args.get('_id') is not None:
                     self.id = transistor_args.get('_id')
                 else:
@@ -145,7 +146,7 @@ class Transistor:
                 # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
                 # Import list of valid housing types from "housing_types.txt"
                 # add housing types to the working direction
-                housing_types_file = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
+                housing_types_file = os.path.join(os.path.dirname(__file__), r'data/housing_types.txt')
                 with open(housing_types_file, "r") as housing_types_txt:
                     housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines() if not line.startswith("#")]
                 # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
@@ -158,7 +159,7 @@ class Transistor:
 
                 # Import list of valid module manufacturers from "module_manufacturers.txt"
                 # add manufacturer names to the working direction
-                module_owner_file = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
+                module_owner_file = os.path.join(os.path.dirname(__file__), r'data/module_manufacturers.txt')
                 with open(module_owner_file, "r") as module_owner_txt:
                     module_owners = [line.replace("\n", "") for line in module_owner_txt.readlines() if
                                      not line.startswith("#")]
@@ -182,8 +183,8 @@ class Transistor:
                     # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in transistor_args.get('c_oss'):
                         try:
-                            if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                                self.c_oss.append(Transistor.VoltageDependentCapacitance(dataset))
+                            if isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                                self.c_oss.append(VoltageDependentCapacitance(dataset))
                         # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                         except KeyError as error:
                             dict_list = transistor_args.get('c_oss')
@@ -192,9 +193,9 @@ class Transistor:
                             error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_oss "
                                           f"dictionaries: ",) + error.args
                             raise
-                elif Transistor.isvalid_dict(transistor_args.get('c_oss'), 'VoltageDependentCapacitance'):
+                elif isvalid_dict(transistor_args.get('c_oss'), 'VoltageDependentCapacitance'):
                     # Only create VoltageDependentCapacitance objects from valid dicts
-                    self.c_oss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_oss')))
+                    self.c_oss.append(VoltageDependentCapacitance(transistor_args.get('c_oss')))
 
                 self.c_iss = []  # Default case: Empty list
                 if isinstance(transistor_args.get('c_iss'), list):
@@ -202,8 +203,8 @@ class Transistor:
                     # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in transistor_args.get('c_iss'):
                         try:
-                            if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                                self.c_iss.append(Transistor.VoltageDependentCapacitance(dataset))
+                            if isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                                self.c_iss.append(VoltageDependentCapacitance(dataset))
                         # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                         except KeyError as error:
                             dict_list = transistor_args.get('c_iss')
@@ -212,9 +213,9 @@ class Transistor:
                             error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_iss "
                                           f"dictionaries: ",) + error.args
                             raise
-                elif Transistor.isvalid_dict(transistor_args.get('c_iss'), 'VoltageDependentCapacitance'):
+                elif isvalid_dict(transistor_args.get('c_iss'), 'VoltageDependentCapacitance'):
                     # Only create VoltageDependentCapacitance objects from valid dicts
-                    self.c_iss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_iss')))
+                    self.c_iss.append(VoltageDependentCapacitance(transistor_args.get('c_iss')))
 
                 self.c_rss = []  # Default case: Empty list
                 if isinstance(transistor_args.get('c_rss'), list):
@@ -222,8 +223,8 @@ class Transistor:
                     # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in transistor_args.get('c_rss'):
                         try:
-                            if Transistor.isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                                self.c_rss.append(Transistor.VoltageDependentCapacitance(dataset))
+                            if isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                                self.c_rss.append(VoltageDependentCapacitance(dataset))
                         # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                         except KeyError as error:
                             dict_list = transistor_args.get('c_rss')
@@ -232,9 +233,9 @@ class Transistor:
                             error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_rss "
                                           f"dictionaries: ",) + error.args
                             raise
-                elif Transistor.isvalid_dict(transistor_args.get('c_rss'), 'VoltageDependentCapacitance'):
+                elif isvalid_dict(transistor_args.get('c_rss'), 'VoltageDependentCapacitance'):
                     # Only create VoltageDependentCapacitance objects from valid dicts
-                    self.c_rss.append(Transistor.VoltageDependentCapacitance(transistor_args.get('c_rss')))
+                    self.c_rss.append(VoltageDependentCapacitance(transistor_args.get('c_rss')))
                 self.graph_v_ecoss = transistor_args.get('graph_v_ecoss')
 
                 self.raw_measurement_data = []
@@ -243,8 +244,8 @@ class Transistor:
                     # valid dicts. 'None' and empty dicts are ignored.
                     for dataset in transistor_args.get('raw_measurement_data'):
                         try:
-                            if Transistor.isvalid_dict(dataset, 'RawMeasurementData'):
-                                self.raw_measurement_data.append(Transistor.RawMeasurementData(dataset))
+                            if isvalid_dict(dataset, 'RawMeasurementData'):
+                                self.raw_measurement_data.append(RawMeasurementData(dataset))
                         # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                         except KeyError as error:
                             dict_list = transistor_args.get('raw_measurement_data')
@@ -253,19 +254,19 @@ class Transistor:
                             error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] "
                                           f"in list of raw_measurement_data "f"dictionaries: ",) + error.args
                             raise
-                elif Transistor.isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
+                elif isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
                     # Only create RawMeasurementData objects from valid dicts
-                    self.raw_measurement_data.append(Transistor.RawMeasurementData(transistor_args.get('raw_measurement_data')))
+                    self.raw_measurement_data.append(RawMeasurementData(transistor_args.get('raw_measurement_data')))
 
                 self.c_oss_er = None
-                if Transistor.isvalid_dict(transistor_args.get('c_oss_er'), 'EffectiveOutputCapacitance'):
+                if isvalid_dict(transistor_args.get('c_oss_er'), 'EffectiveOutputCapacitance'):
                     # Only create EffectiveOutputCapacitance objects from valid dicts
-                    self.c_oss_er = Transistor.EffectiveOutputCapacitance(transistor_args.get('c_oss_er'))
+                    self.c_oss_er = EffectiveOutputCapacitance(transistor_args.get('c_oss_er'))
 
                 self.c_oss_tr = None
-                if Transistor.isvalid_dict(transistor_args.get('c_oss_tr'), 'EffectiveOutputCapacitance'):
+                if isvalid_dict(transistor_args.get('c_oss_tr'), 'EffectiveOutputCapacitance'):
                     # Only create EffectiveOutputCapacitance objects from valid dicts
-                    self.c_oss_tr = Transistor.EffectiveOutputCapacitance(transistor_args.get('c_oss_tr'))
+                    self.c_oss_tr = EffectiveOutputCapacitance(transistor_args.get('c_oss_tr'))
             else:
                 # ToDo: Is this a value or a type error?
                 # ToDo: Move these raises to isvalid_dict() by checking dict_type for 'None' or empty dicts?
@@ -273,8 +274,8 @@ class Transistor:
                 raise TypeError("Dictionary 'transistor_args' is empty or 'None'. This is not allowed since following keys"
                                 "are mandatory: 'name', 'type', 'author', 'manufacturer', 'housing_area', "
                                 "'cooling_area', 'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont'")
-            self.diode = self.Diode(diode_args)
-            self.switch = self.Switch(switch_args)
+            self.diode = Diode(diode_args)
+            self.switch = Switch(switch_args)
 
             # calculate r_th and c_th from impedance curves
             # This will be uncommented, due to re-assigning the parameters at every transistor reload or at transistor
@@ -2107,8 +2108,8 @@ class Transistor:
             if isinstance(measurement_data.get('e_off_meas'), list):
                 for dataset in measurement_data.get('e_off_meas'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.switch.e_off_meas.append(Transistor.SwitchEnergyData(dataset))
+                        if isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.switch.e_off_meas.append(SwitchEnergyData(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = measurement_data.get('e_off_meas')
@@ -2117,8 +2118,8 @@ class Transistor:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                       f"Switch-SwitchEnergyData dictionaries for e_off_meas: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(measurement_data.get('e_off_meas'), 'SwitchEnergyData'):
-                self.switch.e_off_meas.append(Transistor.SwitchEnergyData(measurement_data.get('e_off_meas')))
+            elif isvalid_dict(measurement_data.get('e_off_meas'), 'SwitchEnergyData'):
+                self.switch.e_off_meas.append(SwitchEnergyData(measurement_data.get('e_off_meas')))
 
             transistor_dict = self.switch.convert_to_dict()
             new_value = {'$set': {'switch.e_off_meas': transistor_dict['e_off_meas']}}
@@ -2130,8 +2131,8 @@ class Transistor:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in measurement_data.get('e_on_meas'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.switch.e_on_meas.append(Transistor.SwitchEnergyData(dataset))
+                        if isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.switch.e_on_meas.append(SwitchEnergyData(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = measurement_data.get('e_on_meas')
@@ -2140,9 +2141,9 @@ class Transistor:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                       f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(measurement_data.get('e_on_meas'), 'SwitchEnergyData'):
+            elif isvalid_dict(measurement_data.get('e_on_meas'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
-                self.switch.e_on_meas.append(Transistor.SwitchEnergyData(measurement_data.get('e_on_meas')))
+                self.switch.e_on_meas.append(SwitchEnergyData(measurement_data.get('e_on_meas')))
 
             transistor_dict = self.switch.convert_to_dict()
             new_value = {'$set': {'switch.e_on_meas': transistor_dict['e_on_meas']}}
@@ -2154,8 +2155,8 @@ class Transistor:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in measurement_data.get('raw_measurement_data'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'RawMeasurementData'):
-                            self.raw_measurement_data.append(Transistor.RawMeasurementData(dataset))
+                        if isvalid_dict(dataset, 'RawMeasurementData'):
+                            self.raw_measurement_data.append(RawMeasurementData(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = measurement_data.get('raw_measurement_data')
@@ -2164,10 +2165,10 @@ class Transistor:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] "
                                       f"in list of raw_measurement_data "f"dictionaries: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(measurement_data.get('raw_measurement_data'), 'RawMeasurementData'):
+            elif isvalid_dict(measurement_data.get('raw_measurement_data'), 'RawMeasurementData'):
                 # Only create RawMeasurementData objects from valid dicts
                 self.raw_measurement_data.append(
-                    Transistor.RawMeasurementData(measurement_data.get('raw_measurement_data')))
+                    RawMeasurementData(measurement_data.get('raw_measurement_data')))
 
             transistor_dict = self.convert_to_dict()
             new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
@@ -2213,7 +2214,7 @@ class Transistor:
         if isinstance(soa_data, list):
             for i, soa_data_item in enumerate(soa_data):
                 try:
-                    if Transistor.isvalid_dict(soa_data_item, 'SOA') and check_duplicates(soa_list, soa_data_item):
+                    if isvalid_dict(soa_data_item, 'SOA') and check_duplicates(soa_list, soa_data_item):
                         soa_list.append(soa_data_item)
                 # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                 except KeyError as error:
@@ -2222,7 +2223,7 @@ class Transistor:
                     error.args = (f"KeyError occurred for index [{str(i)}] in list of "
                                   f"Transistor-soa dictionary: ",) + error.args
                     raise
-        elif Transistor.isvalid_dict(soa_data, 'SOA') and check_duplicates(soa_list, soa_data):
+        elif isvalid_dict(soa_data, 'SOA') and check_duplicates(soa_list, soa_data):
             soa_list.append(soa_data)
 
         # appending the list to the transistor object
@@ -2231,14 +2232,14 @@ class Transistor:
             if switch_type == 'switch':
                 self.switch.soa.clear()
                 for soa_item in soa_list:
-                    self.switch.soa.append(Transistor.SOA(soa_item))
+                    self.switch.soa.append(SOA(soa_item))
                     soa_item['graph_i_v'] = soa_item['graph_i_v'].tolist()
                 soa_object = {'$set': {'switch.soa': soa_list}}
                 collection.update_one(transistor_id, soa_object)
             elif switch_type == 'diode':
                 self.diode.soa.clear()
                 for soa_item in soa_list:
-                    self.diode.soa.append(Transistor.SOA(soa_item))
+                    self.diode.soa.append(SOA(soa_item))
                     soa_item['graph_i_v'] = soa_item['graph_i_v'].tolist()
                 soa_object = {'$set': {'diode.soa': soa_list}}
                 collection.update_one(transistor_id, soa_object)
@@ -2277,7 +2278,7 @@ class Transistor:
         if isinstance(charge_data, list):
             for i, charge_data_item in enumerate(charge_data):
                 try:
-                    if Transistor.isvalid_dict(charge_data_item, 'GateChargeCurve') and check_duplicates(charge_list, charge_data_item):
+                    if isvalid_dict(charge_data_item, 'GateChargeCurve') and check_duplicates(charge_list, charge_data_item):
                         charge_list.append(charge_data_item)
                 # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                 except KeyError as error:
@@ -2286,14 +2287,14 @@ class Transistor:
                     error.args = (f"KeyError occurred for index [{str(i)}] in list of "
                                   f"Transistor-switch-gatecharge dictionary: ",) + error.args
                     raise
-        elif Transistor.isvalid_dict(charge_data, 'GateChargeCurve') and check_duplicates(charge_list, charge_data):
+        elif isvalid_dict(charge_data, 'GateChargeCurve') and check_duplicates(charge_list, charge_data):
             charge_list.append(charge_data)
 
         # appending the list to the transistor object
         if len(charge_list) > init_length:
             self.switch.charge_curve.clear()
             for charge_item in charge_list:
-                self.switch.charge_curve.append(Transistor.GateChargeCurve(charge_item))
+                self.switch.charge_curve.append(GateChargeCurve(charge_item))
                 charge_item['graph_q_v'] = charge_item['graph_q_v'].tolist()
             charge_object = {'$set': {'switch.charge_curve': charge_list}}
             collection = connect_local_tdb()
@@ -2333,7 +2334,7 @@ class Transistor:
         if isinstance(r_channel_data, list):
             for index, r_channel_data_item in enumerate(r_channel_data):
                 try:
-                    if Transistor.isvalid_dict(r_channel_data_item, 'TemperatureDependResistance') and check_duplicates(r_channel_list, r_channel_data_item):
+                    if isvalid_dict(r_channel_data_item, 'TemperatureDependResistance') and check_duplicates(r_channel_list, r_channel_data_item):
                         r_channel_list.append(r_channel_data_item)
                 # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                 except KeyError as error:
@@ -2342,14 +2343,14 @@ class Transistor:
                     error.args = (f"KeyError occurred for index [{str(index)}] in list of "
                                   f"Transistor-switch-r_channel_th dictionary: ",) + error.args
                     raise
-        elif Transistor.isvalid_dict(r_channel_data, 'TemperatureDependResistance') and check_duplicates(r_channel_list, r_channel_data):
+        elif isvalid_dict(r_channel_data, 'TemperatureDependResistance') and check_duplicates(r_channel_list, r_channel_data):
             r_channel_list.append(r_channel_data)
 
         # appending the list to the transistor object
         if len(r_channel_list) > init_length:
             self.switch.r_channel_th.clear()
             for r_channel_item in r_channel_list:
-                self.switch.r_channel_th.append(Transistor.TemperatureDependResistance(r_channel_item))
+                self.switch.r_channel_th.append(TemperatureDependResistance(r_channel_item))
                 r_channel_item['graph_t_r'] = r_channel_item['graph_t_r'].tolist()
             r_channel_object = {'$set': {'switch.r_channel_th': r_channel_list}}
             collection = connect_local_tdb()
@@ -2412,7 +2413,7 @@ class Transistor:
 
 
 def export_all_datasheets(filter_list: list = None):
-    """
+    """ TODO Move to DatabaseManager
     A method to export all the available transistor data present in the local mongoDB database
 
     :param filter_list: a list of transistor names that needs to be exported in specific
@@ -2732,22 +2733,6 @@ def attach_units(trans: Dict, devices: Dict):
     return trans_sorted, diode_sorted, switch_sorted
 
 
-def get_img_raw_data(plot):
-    """
-    A helper method to convert the plot images to raw data which is further used to display plots in virtual datasheet
-
-    :param plot: pyplot object
-
-    :return: decoded raw image data to utf-8
-    """
-    buf = io.BytesIO()
-    plot.gcf().set_size_inches(3.5, 2.2)
-    plot.savefig(buf, format='png', bbox_inches='tight')
-    encoded_img_data = base64.b64encode(buf.getvalue())
-    plot.close()
-    return encoded_img_data.decode('UTF-8')
-
-
 def get_vc_plots(cap_data: Dict):
     """
     A helper function to plot and convert voltage dependant capacitance plots in raw data format. Invoked internally by export_datasheet() method.
@@ -2898,7 +2883,7 @@ def get_gatedefaults(transistor_type: str) -> List:
 
 
 def update_from_fileexchange(collection: str = "local", overwrite: bool = True) -> None:
-    """
+    """ TODO Move to DatabaseManager
     Update your local transistor database from transistordatabase-fileexchange from github
 
     :param collection: name of mongodb collection

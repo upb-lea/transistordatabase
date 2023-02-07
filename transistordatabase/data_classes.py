@@ -1,15 +1,14 @@
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
-from typing import Dict, Union
+from typing import Dict, Union, List
+from datetime import datetime
 import numpy as np
 import numpy.typing as npt
-import datetime
 
 # Local libraries
 from transistordatabase.checker_functions import check_float
-from transistordatabase.helper_functions import isvalid_dict
-from transistordatabase.transistor import get_img_raw_data
+from transistordatabase.helper_functions import isvalid_dict, get_img_raw_data
 
 class GateChargeCurve:
     """ A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class"""
@@ -240,7 +239,7 @@ class SwitchEnergyData:
     dataset_type: str  #: Single, graph_r_e, graph_i_e (Mandatory key)
     # Additional measurement information.
     comment: str | None  #: Comment for additional information e.g. on who made these measurements
-    measurement_date: "datetime.datetime" | None  #: Specifies the date and time at which the measurement was done.
+    measurement_date: datetime | None  #: Specifies the date and time at which the measurement was done.
     measurement_testbench: str | None  #: Specifies the testbench used for the measurement.
     commutation_device: str | None  #: Second device used in half-bridge test condition
     # Test conditions. These must be given as scalars. Create additional objects for e.g. different temperatures.
@@ -625,11 +624,11 @@ class RawMeasurementData:
     # Type of the dataset:
     # dpt_u_i: U/t I/t graph from double pulse measurements
     dataset_type: str  #: e.g. dpt_u_i (Mandatory key)
-    dpt_on_vds: list[npt.NDArray[np.float64]] | None  #: measured Vds data at turn on event. Units in V and s
-    dpt_on_id: list[npt.NDArray[np.float64]] | None  #: measured Id data at turn on event. Units in A and s
-    dpt_off_vds: list[npt.NDArray[np.float64]] | None  #: measured Vds data at turn off event. Units in V and s
-    dpt_off_id: list[npt.NDArray[np.float64]] | None  #: measured Vds data at turn off event. Units in A and s
-    measurement_date: "datetime.datetime" | None  #: Specifies the measurements date and time
+    dpt_on_vds: List[npt.NDArray[np.float64]] | None  #: measured Vds data at turn on event. Units in V and s
+    dpt_on_id: List[npt.NDArray[np.float64]] | None  #: measured Id data at turn on event. Units in A and s
+    dpt_off_vds: List[npt.NDArray[np.float64]] | None  #: measured Vds data at turn off event. Units in V and s
+    dpt_off_id: List[npt.NDArray[np.float64]] | None  #: measured Vds data at turn off event. Units in A and s
+    measurement_date: datetime | None  #: Specifies the measurements date and time
     measurement_testbench: str | None  #: Specifies the testbench used for the measurement.
     commutation_device: str | None  #: Second device used in half-bridge test condition
     comment: str | None  #: Comment for additional information e.g. on who made these measurements
@@ -638,13 +637,13 @@ class RawMeasurementData:
     v_supply: float | None  #: Supply voltage. Units in V
     v_g: float | None  #: Gate voltage. Units in V
     v_g_off: float | None  #: Gate voltage for turn off. Units in V
-    r_g: list[npt.NDArray[np.float64]] | None  #: gate resistance. Units in Ohm
-    r_g_off: list[npt.NDArray[np.float64]] | None  #: gate resistance. Units in Ohm
+    r_g: List[npt.NDArray[np.float64]] | None  #: gate resistance. Units in Ohm
+    r_g_off: List[npt.NDArray[np.float64]] | None  #: gate resistance. Units in Ohm
     load_inductance: float | None  #: Load inductance. Units in µH
     commutation_inductance: float | None  #: Commutation inductance. Units in µH
 
-    e_off_meas = Union[Dict[str], None] # Union[] is used here because | somehow didn't work
-    e_on_meas = Union[Dict[str], None]
+    e_off_meas = Union[Dict, None] # Union[] is used here because | somehow didn't work
+    e_on_meas = Union[Dict, None]
 
     def __init__(self, args):
         """

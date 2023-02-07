@@ -6,8 +6,8 @@ from scipy.spatial import distance
 import numpy as np
 
 # Local libraries
+from transistordatabase.helper_functions import get_img_raw_data, isvalid_dict
 from transistordatabase.checker_functions import check_keys
-from transistordatabase.transistor import Transistor, get_img_raw_data
 from transistordatabase.data_classes import FosterThermalModel, ChannelData, SwitchEnergyData, LinearizedModel, SOA
 from transistordatabase.exceptions import MissingDataError
 
@@ -44,7 +44,7 @@ class Diode:
 
         # ToDo: Is this the right behavior or should the 'thermal_foster' attribute be left empty instead?
         self.thermal_foster = FosterThermalModel(diode_args.get('thermal_foster'))
-        if Transistor.isvalid_dict(diode_args, 'Diode'):
+        if isvalid_dict(diode_args, 'Diode'):
             self.comment = diode_args.get('comment')
             self.manufacturer = diode_args.get('manufacturer')
             self.technology = diode_args.get('technology')
@@ -56,12 +56,12 @@ class Diode:
                     # Loop through list and check each dict for validity. Only create ChannelData objects from valid
                     # dicts. 'None' and empty dicts are ignored.
                     for dataset in diode_args.get('channel'):
-                        if Transistor.isvalid_dict(dataset, 'Diode_ChannelData'):
-                            self.channel.append(Transistor.ChannelData(dataset))
+                        if isvalid_dict(dataset, 'Diode_ChannelData'):
+                            self.channel.append(ChannelData(dataset))
                             # If  occurs during this, raise KeyError and add index of list occurrence to the message
-                elif Transistor.isvalid_dict(diode_args.get('channel'), 'Diode_ChannelData'):
+                elif isvalid_dict(diode_args.get('channel'), 'Diode_ChannelData'):
                     # Only create ChannelData objects from valid dicts
-                    self.channel.append(Transistor.ChannelData(diode_args.get('channel')))
+                    self.channel.append(ChannelData(diode_args.get('channel')))
             except KeyError as error:
                 dict_list = diode_args.get('channel')
                 if not error.args:
@@ -79,8 +79,8 @@ class Diode:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in diode_args.get('e_rr'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SwitchEnergyData'):
-                            self.e_rr.append(Transistor.SwitchEnergyData(dataset))
+                        if isvalid_dict(dataset, 'SwitchEnergyData'):
+                            self.e_rr.append(SwitchEnergyData(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = diode_args.get('e_rr')
@@ -89,9 +89,9 @@ class Diode:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Diode-SwitchEnergyData dictionaries for e_rr: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(diode_args.get('e_rr'), 'SwitchEnergyData'):
+            elif isvalid_dict(diode_args.get('e_rr'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
-                self.e_rr.append(Transistor.SwitchEnergyData(diode_args.get('e_rr')))
+                self.e_rr.append(SwitchEnergyData(diode_args.get('e_rr')))
 
             self.linearized_diode = []  # Default case: Empty list
             if isinstance(diode_args.get('linearized_diode'), list):
@@ -99,8 +99,8 @@ class Diode:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in diode_args.get('linearized_diode'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'Diode_LinearizedModel'):
-                            self.linearized_diode.append(Transistor.LinearizedModel(dataset))
+                        if isvalid_dict(dataset, 'Diode_LinearizedModel'):
+                            self.linearized_diode.append(LinearizedModel(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = diode_args.get('linearized_diode')
@@ -109,9 +109,9 @@ class Diode:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
                                         f"Diode-LinearizedModel dictionaries: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(diode_args.get('linearized_diode'), 'Diode_LinearizedModel'):
+            elif isvalid_dict(diode_args.get('linearized_diode'), 'Diode_LinearizedModel'):
                 # Only create LinearizedModel objects from valid dicts
-                self.linearized_diode.append(Transistor.LinearizedModel(diode_args.get('linearized_diode')))
+                self.linearized_diode.append(LinearizedModel(diode_args.get('linearized_diode')))
 
             self.soa = []  # Default case: Empty list
             if isinstance(diode_args.get('soa'), list):
@@ -119,8 +119,8 @@ class Diode:
                 # valid dicts. 'None' and empty dicts are ignored.
                 for dataset in diode_args.get('soa'):
                     try:
-                        if Transistor.isvalid_dict(dataset, 'SOA'):
-                            self.soa.append(Transistor.SOA(dataset))
+                        if isvalid_dict(dataset, 'SOA'):
+                            self.soa.append(SOA(dataset))
                     # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
                     except KeyError as error:
                         dict_list = diode_args.get('soa')
@@ -129,9 +129,9 @@ class Diode:
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of soa "
                                         f"dictionaries: ",) + error.args
                         raise
-            elif Transistor.isvalid_dict(diode_args.get('soa'), 'SOA'):
+            elif isvalid_dict(diode_args.get('soa'), 'SOA'):
                 # Only create SOA objects from valid dicts
-                self.soa.append(Transistor.SOA(diode_args.get('soa')))
+                self.soa.append(SOA(diode_args.get('soa')))
 
         else:  # Can be constructed from empty or 'None' argument dictionary since no attributes are mandatory.
             self.comment = None
@@ -210,7 +210,7 @@ class Diode:
 
     def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
                         switch_energy_dataset_type: str = "graph_i_e") \
-            -> tuple[Transistor.ChannelData, Transistor.SwitchEnergyData]:
+            -> tuple[ChannelData, SwitchEnergyData]:
         """
         This function looks for the smallest distance to stored object value and returns this working point
 

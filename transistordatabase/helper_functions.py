@@ -50,55 +50,6 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     return merged_curve
 
 
-def print_tdb(filters: List[str] | None = None, collection_name: str = "local") -> List[str]:
-    """
-    Print all transistorelements stored in the local database
-
-    :param filters: filters for searching the database, e.g. 'name' or 'type'
-    :type filters: List[str]
-    :param collection_name: Choose database name in local mongodb client. Default name is "collection"
-    :type collection_name: str
-
-    :return: Return a list with all transistor objects fitting to the search-filter
-    :rtype: list
-
-    :Example:
-
-    >>> import transistordatabase as tdb
-    >>> tdb.print_tdb()
-    >>> # or
-    >>> tdb.print_tdb(collection = 'type')
-    """
-    # Note: Never use mutable default arguments
-    # see https://florimond.dev/en/posts/2018/08/python-mutable-defaults-are-the-source-of-all-evil/
-    # This is the better solution
-    filters = filters or []
-
-    if collection_name == "local":
-        mongodb_collection = connect_local_tdb()
-    else:
-        # TODO: support other collections. As of now, other database connections also connects to local-tdb
-        warnings.warn("Connection of other databases than the local on not implemented yet. Connect so local database")
-        mongodb_collection = connect_local_tdb()
-    if not isinstance(filters, list):
-        if isinstance(filters, str):
-            filters = [filters]
-        else:
-            raise TypeError(
-                "The 'filters' argument must be specified as a list of strings or a single string but is"
-                f" {type(filters)} instead.")
-    if "name" not in filters:
-        filters.append("name")
-    """Filters must be specified according to the respective objects they're associated with. 
-    e.g. 'type' for type of Transistor or 'diode.technology' for technology of Diode."""
-    returned_cursor = mongodb_collection.find({}, filters)
-    name_list = []
-    for tran in returned_cursor:
-        print(tran)
-        name_list.append(tran['name'])
-    return name_list
-
-
 def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: float | List[float],
                                    v_driver_off: float) -> float:
     """
@@ -322,7 +273,7 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
             if dataset_dict.get('type') not in supported_types:
                 raise ValueError(f"Transistor type currently not supported. 'type' must be in "
                                  f"{supported_types}")
-            text_file_dict = {'manufacturer': 'module_manufacturers.txt', 'housing_type': 'housing_types.txt'}
+            text_file_dict = {'manufacturer': r'data/module_manufacturers.txt', 'housing_type': r'data/housing_types.txt'}
             for key, filename in text_file_dict.items():
                 file = os.path.join(os.path.dirname(__file__), filename)
                 with open(file, "r") as file_txt:
@@ -402,3 +353,18 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
                 all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
             return True
 
+
+def get_img_raw_data(plot):
+    """
+    A helper method to convert the plot images to raw data which is further used to display plots in virtual datasheet
+
+    :param plot: pyplot object
+
+    :return: decoded raw image data to utf-8
+    """
+    buf = io.BytesIO()
+    plot.gcf().set_size_inches(3.5, 2.2)
+    plot.savefig(buf, format='png', bbox_inches='tight')
+    encoded_img_data = base64.b64encode(buf.getvalue())
+    plot.close()
+    return encoded_img_data.decode('UTF-8')
