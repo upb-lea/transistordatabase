@@ -15,6 +15,8 @@ from bson.objectid import ObjectId
 from transistordatabase.checker_functions import check_realnum, check_str, check_2d_dataset
 from transistordatabase.mongodb_handling import connect_local_tdb
 
+transistor_name_regex = "(\S*)( \((\d*)\))?"
+
 def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     """
     Merges two equal curves, one of which contains an enlarged section of the first curve.
@@ -142,6 +144,27 @@ def compare_plot(transistor_list: List, temperature: float, gatevoltage: float):
     axs[2, 0].set_ylabel('Energy in J')
     plt.tight_layout()
     plt.show()
+
+
+def isvalid_transistor_name(transistor_name):
+    """Checks if the given transistor name is valid."""
+    return False if re.match(transistor_name_regex, transistor_name) is None else True
+
+
+def get_copy_transistor_name(current_name: str) -> str:
+    """Returns the current name but with an index at the end similar to windows copies.
+    '{current_name} (i)'
+    """
+    result = re.match(transistor_name_regex, current_name)
+    if len(result.groups) == 2:
+        # Name is default-name -> ' (1)' will be added.
+        return f"{current_name} (1)"
+    elif len(result.group) == 4:
+        # Name is already a copy-name -> Copy number will be raised
+        index = result.group(4)
+        return f"{current_name[-2]}{index+1})"
+    else:
+        raise Exception(f"Given transistor name {current_name} is not a valid name and therefore a copy-name cannot be created.")
 
 
 def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:

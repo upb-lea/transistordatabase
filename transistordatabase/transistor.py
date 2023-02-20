@@ -49,7 +49,7 @@ class Transistor:
         - Documentation on how to add or extract a transistor-object to/from the database can be found in
     """
     # ToDo: Add database id as attribute
-    id: int  #: ID of the object being created. (Automatic key)
+    id: int  #: ID of the object being created. (Automatic key) Only Used in MongoDB
     name: str  #: Name of the transistor. Choose as specific as possible. (Mandatory key)
     type: str  #: Specifies the type of module either e.g IGBT, MOSFET, SiC MOSFET etc. (Mandatory key)
     # User-specific data

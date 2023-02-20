@@ -10,23 +10,15 @@ import uuid
 # Local libraries
 from transistordatabase.transistor import Transistor
 from transistordatabase.mongodb_handling import connect_local_tdb, drop_local_tdb
+from transistordatabase.helper_functions import get_copy_transistor_name, isvalid_transistor_name
 
 class OperationMode(Enum):
     JSON = "json"
-    SQLITE = "sqlite"
     MONGODB = "mongodb" # Shall be deprecated?
 
 class DatabaseManager:
-    """This class shall manage the whole transistor database. It represents the whole database as an object and contains
-    every needed information.
-    Imports/exports as well as the interface to the gui shall be managed by this class
-
-    This manager shall know 2 operation modes:
-    1. Database saved as multilple json files
-    2. Database saved in a "real" Database (most likely sqlite?)
-    3. Database saved like in previously in a mongodb database
-
-    It shall abstract the operation mode from the external users (such as the gui or a possible python code interface which then can easily be implemented)
+    """The DatabaseManager is the base class of the transistordatabase. After creation a operation mode must be set (either JSON or MongoDB) and
+    then from the DatabaseManager the Transistor data can be acessed.
     """
     operation_mode: OperationMode
     # mongodb_collection which type?
@@ -54,20 +46,6 @@ class DatabaseManager:
             os.makedirs(json_folder_path)
 
         self.json_folder = json_folder_path
-
-    def set_operation_mode_sqlite(self, db_path: str) -> None:
-        """
-        Sets the operation mode to sqlite database.
-
-        :param db_path: File path to the sqlite file.
-        :type db_path: str
-        """
-        if self.operation_mode is not None:
-            raise Exception("DatabaseManager operation mode can only be set once.")
-        self.operation_mode = OperationMode.SQLITE
-
-        # TODO Set sqlite path
-        raise Exception("Not implemented yet.")
 
     def set_operation_mode_mongodb(self, collection: str = "local") -> None:
         """
@@ -101,10 +79,10 @@ class DatabaseManager:
         transistor_dict = transistor.convert_to_dict()
 
         if self.operation_mode == OperationMode.JSON:
-            transistor_path = os.path.join(self.json_folder, f"{transistor.id}-{transistor.name}.json")
-            if str(transistor.id) in os.listdir(self.json_folder):
+            transistor_path = os.path.join(self.json_folder, f"{transistor.name}.json")
+            if str(transistor.name) in os.listdir(self.json_folder):
                 if overwrite is None:
-                    print(f"A transistor object with id {transistor.id} already exists. \
+                    print(f"A transistor object with name {transistor.name} already exists. \
                     If you want to override it please set the override argument to true, if you want to create a copy with a \
                     different id please set it to false")
                     return
@@ -112,38 +90,36 @@ class DatabaseManager:
                     with open(transistor_path, "w") as fd:
                         json.dump(transistor_dict, fd, indent=2)
                 else:
-                    new_id = uuid.uuid4()
-                    name = transistor_dict["name"]
-                    transistor_dict["id"] = new_id
-                    with open(os.path.join(self.json_folder, f"{new_id}-{name}.json")):
+                    new_name = get_copy_transistor_name(transistor_dict["name"])
+                    with open(os.path.join(self.json_folder, f"{new_name}.json")):
                         json.dump(transistor_dict, fd, indent=2)
             else:
                 with open(transistor_path, "w") as fd:
+                    del transistor_dict["id"]
                     json.dump(transistor_dict, fd, indent=2)
 
-        elif self.operation_mode == OperationMode.SQLITE:
-            raise NotImplementedError("Current operation is not implemented.")
         elif self.operation_mode == OperationMode.MONGODB:
-            if self.mongodb_collection.find_one({"_id": uuid.uuid4()}) is not None:
+            if self.mongodb_collection.find_one({"_id": transistor.id}) is not None:
                 if overwrite is None:
                     print(f"A transistor object with id {transistor.id} already exists in the database. \
                     If you want to override it please set the override argument to true, if you want to create a copy with a \
                     different id please set it to false")
                     return
                 if overwrite:
-                    self.mongodb_collection.replace_one({"_id": uuid.uuid4()}, transistor_dict)
+                    self.mongodb_collection.replace_one({"_id": transistor.id}, transistor_dict)
                 else:
                     del transistor_dict["_id"]
+                    transistor_dict["name"] = get_copy_transistor_name(transistor_dict["name"])
                     self.mongodb_collection.insert_one(transistor_dict)
             else:
                 self.mongodb_collection.insert_one(transistor_dict)
 
-    def delete_transistor(self, transistor_id: int) -> None:
+    def delete_transistor(self, transistor_name: str) -> None:
         """
         Deletes the transistor with the given id from the database.
 
-        :param transistor_id: Id of the transistor
-        :type transistor_id: int
+        :param transistor_name: Name of the transistor
+        :type transistor_name: str
         """
         if self.operation_mode == None:
             raise Exception("Please select an operation mode for the database manager.")
@@ -151,24 +127,22 @@ class DatabaseManager:
         if self.operation_mode == OperationMode.JSON:
             existing_files = os.listdir(self.json_folder)
             for file in existing_files:
-                if file.endswith(".json") and file.startswith(str(transistor_id)):
+                if file.endswith(".json") and file[:-5] == transistor_name and isvalid_transistor_name(file[:-5]):
                     os.remove(os.path.join(self.json_folder, file))
             else:
-                print(f"Can not find transistor with id {transistor_id} in the database. Therefore it cannot be deleted.")
-        elif self.operation_mode == OperationMode.SQLITE:
-            raise NotImplementedError("Current operation is not implemented.")
+                print(f"Can not find transistor with name {transistor_name} in the database. Therefore it cannot be deleted.")
         elif self.operation_mode == OperationMode.MONGODB:
-            if self.mongodb_collection.find_one({"_id": transistor_id}) is not None:
-                self.mongodb_collection.delete_one({"_id": transistor_id})
+            if self.mongodb_collection.find_one({"name": transistor_name}) is not None:
+                self.mongodb_collection.delete_one({"name": transistor_name})
             else:
-                print(f"Can not find transistor with id {transistor_id} in the database. Therefore it cannot be deleted.")
+                print(f"Can not find transistor with name {transistor_name} in the database. Therefore it cannot be deleted.")
 
-    def load_transistor(self, transistor_id: int) -> Transistor:
+    def load_transistor(self, transistor_name: str) -> Transistor:
         """
         Loads a transistor from the database. The database is determined by the operation mode.
 
-        :param transistor_id: Id of the transistor
-        :type transistor_id: int
+        :param transistor_name: Name of the transistor
+        :type transistor_name: str
         :return: Desired Transistor object
         :rtype: Transistor
         """
@@ -178,23 +152,22 @@ class DatabaseManager:
         if self.operation_mode == OperationMode.JSON:
             existing_files = os.listdir(self.json_folder)
             for file_name in existing_files:
-                if file_name.endswith(".json") and file_name.startswith(str(transistor_id)):
-                    with open(os.path.join(self.json_folder, f"{file_name}.json"), "r") as fd:
+                if file_name.endswith(".json") and file_name.startswith(str(transistor_name)) and isvalid_transistor_name(file_name[:-5]):
+                    with open(os.path.join(self.json_folder, file_name), "r") as fd:
                         return DatabaseManager.convert_dict_to_transistor_object(json.load(fd))
-            print(f"Transitor with id {transistor_id} not found.") 
-        elif self.operation_mode == OperationMode.SQLITE:
-            raise NotImplementedError("Current operation is not implemented.")
+            print(f"Transitor with name {transistor_name} not found.") 
         elif self.operation_mode == OperationMode.MONGODB:
-            return self.convert_dict_to_transistor_object(self.mongodb_collection.find_one({"_id": transistor_id}))
+            print(transistor_name)
+            return self.convert_dict_to_transistor_object(self.mongodb_collection.find_one({"name": transistor_name}))
 
         return None
 
-    def get_transistor_names_list(self) -> List[Tuple]:
+    def get_transistor_names_list(self) -> List[str]:
         """
-        Returns a list containing every transistor name and its id.
+        Returns a list containing every transistor name.
 
-        :return: List containing the names and ids.
-        :rtype:  List[Tuple(str, int)]
+        :return: List containing the names.
+        :rtype:  List[str]
         """
         if self.operation_mode == None:
             raise Exception("Please select an operation mode for the database manager.")
@@ -203,19 +176,15 @@ class DatabaseManager:
             transistor_list = []
             existing_files = os.listdir(self.json_folder)
             for file in existing_files:
-                re_result = re.match("(\d+)-(\S+).json", file)
-                transistor_id = re_result.group(1)
-                transistor_name = re_result.group(2)
-                transistor_list.append(tuple(transistor_name, transistor_id))
+                if isvalid_transistor_name(file[:-5]):
+                    transistor_list.append(file[:-5])
 
             return transistor_list
-        elif self.operation_mode == OperationMode.SQLITE:
-            pass
         elif self.operation_mode == OperationMode.MONGODB:
             transistor_list = []
             returned_cursor = self.mongodb_collection.find()
             for tran in returned_cursor:
-                transistor_list.append((tran['name'], tran["_id"]))
+                transistor_list.append(tran['name'])
 
             return transistor_list
 
@@ -255,9 +224,33 @@ class DatabaseManager:
                 name_list.append(tran['name'])
             return name_list
         elif self.operation_mode == OperationMode.JSON:
-            raise Exception("Print tdb is currently not implemented for json operation mode")
-        elif self.operation_mode == OperationMode.SQLITE:
-            pass
+            all_transistor_names = self.get_transistor_names_list()
+            all_transistors = []
+            for transistor_name in all_transistor_names:
+                all_transistors.append(self.load_transistor(transistor_name))
+            print(all_transistors)
+            return all_transistors
+            """
+            for transistor_name in all_transistor_names:
+                transistor_dict = self.load_transistor(transistor_name)
+                # Check if filters apply
+                if not filters:
+                    filtered_transistors.append(transistor_dict)
+                else:
+                    check = True
+                    for key, value in filters.items():
+                        parameters = key.split(".")
+                        if len(parameters) == 1:
+                            if transistor_dict[key] != value:
+                                check = False
+                                continue
+                        elif len(parameters) == 2:
+                            if transistor_dict[parameters[0]][parameters[1]] != value:
+                                check = False
+                                continue
+                    if check:
+                        filtered_transistors.append(transistor_dict)
+            """
 
     @staticmethod
     def export_single_transistor_to_json(transistor: Transistor, file_path: str):
