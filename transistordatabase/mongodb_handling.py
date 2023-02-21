@@ -39,7 +39,7 @@ def connect_local_tdb():
               'https://docs.mongodb.com/manual/administration/install-community/'
         raise MissingServerConnection(msg)
     else:
-        return my_client.transistor_database.collection
+        return my_client["local"]["transistor_database"]
 
 
 def drop_local_tdb():

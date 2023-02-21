@@ -1,34 +1,27 @@
 # Python standard libraries
 from enum import Enum
-from typing import List, Tuple
+from typing import List
 import numpy as np
 import os
 import json
-import re
-import uuid
 
 # Local libraries
 from transistordatabase.transistor import Transistor
-from transistordatabase.mongodb_handling import connect_local_tdb, drop_local_tdb
+from transistordatabase.mongodb_handling import connect_local_tdb
 from transistordatabase.helper_functions import get_copy_transistor_name, isvalid_transistor_name
 
 class OperationMode(Enum):
     JSON = "json"
-    MONGODB = "mongodb" # Shall be deprecated?
+    MONGODB = "mongodb"
 
 class DatabaseManager:
     """The DatabaseManager is the base class of the transistordatabase. After creation a operation mode must be set (either JSON or MongoDB) and
     then from the DatabaseManager the Transistor data can be acessed.
     """
     operation_mode: OperationMode
-    # mongodb_collection which type?
 
     def __init__(self):
         self.operation_mode = None
-
-    def __del__(self):
-        if self.operation_mode == OperationMode.MONGODB:
-            drop_local_tdb()
 
     def set_operation_mode_json(self, json_folder_path: str) -> None:
         """
@@ -99,14 +92,14 @@ class DatabaseManager:
                     json.dump(transistor_dict, fd, indent=2)
 
         elif self.operation_mode == OperationMode.MONGODB:
-            if self.mongodb_collection.find_one({"_id": transistor.id}) is not None:
+            if self.mongodb_collection.find_one({"_id": transistor._id}) is not None:
                 if overwrite is None:
-                    print(f"A transistor object with id {transistor.id} already exists in the database. \
+                    print(f"A transistor object with id {transistor._id} already exists in the database. \
                     If you want to override it please set the override argument to true, if you want to create a copy with a \
                     different id please set it to false")
                     return
                 if overwrite:
-                    self.mongodb_collection.replace_one({"_id": transistor.id}, transistor_dict)
+                    self.mongodb_collection.replace_one({"_id": transistor._id}, transistor_dict)
                 else:
                     del transistor_dict["_id"]
                     transistor_dict["name"] = get_copy_transistor_name(transistor_dict["name"])
@@ -157,7 +150,6 @@ class DatabaseManager:
                         return DatabaseManager.convert_dict_to_transistor_object(json.load(fd))
             print(f"Transitor with name {transistor_name} not found.") 
         elif self.operation_mode == OperationMode.MONGODB:
-            print(transistor_name)
             return self.convert_dict_to_transistor_object(self.mongodb_collection.find_one({"name": transistor_name}))
 
         return None
@@ -217,40 +209,21 @@ class DatabaseManager:
         """Filters must be specified according to the respective objects they're associated with. 
         e.g. 'type' for type of Transistor or 'diode.technology' for technology of Diode."""
         if self.operation_mode == OperationMode.MONGODB:
-            returned_cursor = self.mongodb_collection.find({}, filters)
-            name_list = []
+            returned_cursor = self.mongodb_collection.find({})
+            transistor_list = []
             for tran in returned_cursor:
-                print(tran)
-                name_list.append(tran['name'])
-            return name_list
+                transistor = self.convert_dict_to_transistor_object(tran)
+                transistor_list.append(transistor)
+            print(transistor_list)
+            return transistor_list
         elif self.operation_mode == OperationMode.JSON:
             all_transistor_names = self.get_transistor_names_list()
-            all_transistors = []
+            transistor_list = []
             for transistor_name in all_transistor_names:
-                all_transistors.append(self.load_transistor(transistor_name))
-            print(all_transistors)
-            return all_transistors
-            """
-            for transistor_name in all_transistor_names:
-                transistor_dict = self.load_transistor(transistor_name)
-                # Check if filters apply
-                if not filters:
-                    filtered_transistors.append(transistor_dict)
-                else:
-                    check = True
-                    for key, value in filters.items():
-                        parameters = key.split(".")
-                        if len(parameters) == 1:
-                            if transistor_dict[key] != value:
-                                check = False
-                                continue
-                        elif len(parameters) == 2:
-                            if transistor_dict[parameters[0]][parameters[1]] != value:
-                                check = False
-                                continue
-                    if check:
-                        filtered_transistors.append(transistor_dict)
-            """
+                transistor = self.load_transistor(transistor_name)
+                transistor_list.append(transistor)
+            print(transistor_list)
+            return transistor_list
 
     @staticmethod
     def export_single_transistor_to_json(transistor: Transistor, file_path: str):

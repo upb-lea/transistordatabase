@@ -49,7 +49,7 @@ class Transistor:
         - Documentation on how to add or extract a transistor-object to/from the database can be found in
     """
     # ToDo: Add database id as attribute
-    id: int  #: ID of the object being created. (Automatic key) Only Used in MongoDB
+    _id: int  #: ID of the object being created. (Automatic key) Only Used in MongoDB
     name: str  #: Name of the transistor. Choose as specific as possible. (Mandatory key)
     type: str  #: Specifies the type of module either e.g IGBT, MOSFET, SiC MOSFET etc. (Mandatory key)
     # User-specific data
@@ -119,9 +119,9 @@ class Transistor:
         try:
             if isvalid_dict(transistor_args, 'Transistor'):
                 if transistor_args.get('_id') is not None:
-                    self.id = transistor_args.get('_id')
+                    self._id = transistor_args.get('_id')
                 else:
-                    self.id = ObjectId()
+                    self._id = ObjectId()
                 self.name = transistor_args.get('name')
                 self.type = transistor_args.get('type')
                 self.author = transistor_args.get('author')
@@ -306,6 +306,8 @@ class Transistor:
         return my_dict == other_dict
 
 
+    def __repr__(self) -> str:
+        return f"{self.name}, {self.type}, {self.manufacturer}"
 
     def convert_to_dict(self) -> Dict:
         # TODO Maybe move this to the DatabaseManager class as a static function? Since the load from dict function is there too.
@@ -2102,7 +2104,7 @@ class Transistor:
         """
 
         collection = connect_local_tdb()
-        transistor_id = {'_id': self.id}
+        transistor_id = {'_id': self._id}
 
         if measurement_data['e_off_meas'] is not None:
             if isinstance(measurement_data.get('e_off_meas'), list):
@@ -2189,7 +2191,7 @@ class Transistor:
         :return: updated transistor switch or diode object with added soa characteristics
         """
         soa_list = []
-        transistor_id = {'_id': self.id}
+        transistor_id = {'_id': self._id}
 
         if switch_type == 'switch':
             if clear:
@@ -2260,7 +2262,7 @@ class Transistor:
         :return: updated transistor object with added gate charge characteristics
         """
         charge_list = []
-        transistor_id = {'_id': self.id}
+        transistor_id = {'_id': self._id}
         if clear:
             self.switch.charge_curve = []
         # gathering existing data if any
@@ -2316,7 +2318,7 @@ class Transistor:
         :return: updated transistor object with added gate charge characteristics
         """
         r_channel_list = []
-        transistor_id = {'_id': self.id}
+        transistor_id = {'_id': self._id}
         if clear:
             self.switch.r_channel_th = []
         # gathering existing data if any
