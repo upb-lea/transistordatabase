@@ -7,8 +7,8 @@ import json
 
 # Local libraries
 from transistordatabase.transistor import Transistor
-from transistordatabase.mongodb_handling import connect_local_tdb
-from transistordatabase.helper_functions import get_copy_transistor_name, isvalid_transistor_name
+from transistordatabase.mongodb_handling import connect_local_tdb 
+from transistordatabase.helper_functions import get_copy_transistor_name, isvalid_transistor_name, read_data_file
 
 class OperationMode(Enum):
     JSON = "json"
@@ -19,9 +19,18 @@ class DatabaseManager:
     then from the DatabaseManager the Transistor data can be acessed.
     """
     operation_mode: OperationMode
+    tdb_directory: str
+
+    housing_types: List[str]
+    module_manufacturers: List[str]
 
     def __init__(self):
         self.operation_mode = None
+        self.tdb_directory = os.path.dirname(os.path.abspath(__file__))
+
+        # Load housing_types and module_manufacturers
+        self.housing_types = read_data_file(os.path.join(self.tdb_directory, "data", "housing_types.txt"))
+        self.module_manufacturers = read_data_file(os.path.join(self.tdb_directory, "data", "module_manufacturers.txt"))
 
     def set_operation_mode_json(self, json_folder_path: str) -> None:
         """
@@ -230,8 +239,7 @@ class DatabaseManager:
         with open(file_path, "w") as fd:
             json.dump(transistor.convert_to_dict(), fd, indent=2)
 
-    @staticmethod
-    def convert_dict_to_transistor_object(transformer_dict: dict) -> Transistor:
+    def convert_dict_to_transistor_object(self, transformer_dict: dict) -> Transistor:
         """
         Converts a dictionary to a transistor object.
         This is a helper function of the following functions:
@@ -322,4 +330,4 @@ class DatabaseManager:
             for i in range(len(diode_args['soa'])):
                 diode_args['soa'][i]['graph_i_v'] = np.array(diode_args['soa'][i]['graph_i_v'])
 
-        return Transistor(transformer_dict, switch_args, diode_args)
+        return Transistor(transformer_dict, switch_args, diode_args, self.housing_types, self.module_manufacturers)

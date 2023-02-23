@@ -17,6 +17,24 @@ from transistordatabase.mongodb_handling import connect_local_tdb
 
 transistor_name_regex = "(\S*)( \((\d*)\))?"
 
+def read_data_file(file_path):
+    """Reads data from a given file (Used for housing_types.txt and module_manufacturers.txt)
+    """
+    if not os.path.isfile(file_path):
+        raise Exception(f"File {file_path} does not exist.")
+    
+    data = []
+
+    with open(file_path, "r") as fd:
+        for line in fd.readlines():
+            if line.startswith("#"):
+                continue
+
+            data.append(str(line))
+
+    return data
+
+
 def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     """
     Merges two equal curves, one of which contains an enlarged section of the first curve.

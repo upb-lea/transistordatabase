@@ -100,7 +100,7 @@ class Transistor:
     t_c_max: float  #: Module specific maximum junction temperature. Units in °C (Optional key)
     r_g_int: float  #: Internal gate resistance. Units in Ohm (Mandatory key)
 
-    def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict) -> None:
+    def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict, possible_housing_types: List[str], possible_module_manufacturers: List[str]) -> None:
         """
         Takes in the following dictionary arguments for creating and initializing the transistor object. isvalid_dict() method is applied on transistor_args object
         to validate the argument. Else TypeError exception is raised. Module manufacturer type and housing type data validations are performed for matching the given
@@ -112,6 +112,10 @@ class Transistor:
         :type switch_args: dict
         :param diode_args: diode argument object
         :type diode_args: dict
+        :param possible_housing_types: List of housing types which are valid
+        :type possible_housing_types: List[str]
+        :param possible_module_manufacturers: List of module manufacturers which are valid
+        :type possible_module_manufacturers: List[str]
 
         :raises TypeError: Raised if isvalid_dict() return false
         :raises ValueError: Raised if index based search for module_manufacturer or housing_type values fails
@@ -143,33 +147,28 @@ class Transistor:
                 self.c_oss_fix = transistor_args.get('c_oss_fix')
                 self.c_iss_fix = transistor_args.get('c_iss_fix')
                 self.c_rss_fix = transistor_args.get('c_rss_fix')
-                # ToDo: This is a little ugly because the file "housing_types.txt" has to be opened twice.
-                # Import list of valid housing types from "housing_types.txt"
-                # add housing types to the working direction
-                housing_types_file = os.path.join(os.path.dirname(__file__), r'data/housing_types.txt')
-                with open(housing_types_file, "r") as housing_types_txt:
-                    housing_types = [line.replace("\n", "") for line in housing_types_txt.readlines() if not line.startswith("#")]
-                # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
-                alphanum_housing_types = [re.sub("[^A-Za-z0-9]+", "", line).lstrip().lower() for line in housing_types]
-                housing_type = transistor_args.get('housing_type')
-                # Get index where the housing_type was found in "housing_types.txt"
-                idx = alphanum_housing_types.index(re.sub("[^A-Za-z0-9]+", "", housing_type).lstrip().lower())
-                # Don't use the name in transistor_args but the matching name in "housing_types.txt"
-                self.housing_type = housing_types[idx]
-
-                # Import list of valid module manufacturers from "module_manufacturers.txt"
-                # add manufacturer names to the working direction
-                module_owner_file = os.path.join(os.path.dirname(__file__), r'data/module_manufacturers.txt')
-                with open(module_owner_file, "r") as module_owner_txt:
-                    module_owners = [line.replace("\n", "") for line in module_owner_txt.readlines() if
-                                     not line.startswith("#")]
-                # Remove all non alphanumeric characters from housing_type names and convert to lowercase for comparison
-                alphanum_module_owners = [re.sub("[^A-Za-z]+", "", line).lstrip().lower() for line in module_owners]
-                module_owner = transistor_args.get('manufacturer')
-                # Get index where the module_manufacturer was found in "module_manufacturers.txt"
-                idx = alphanum_module_owners.index(re.sub("[^A-Za-z]+", "", module_owner).lstrip().lower())
-                # Don't use the name in transistor_args but the matching name in "module_manufacturers.txt"
-                self.manufacturer = module_owners[idx]
+            
+                # Check housing type and module manufacturer for validity
+                # TODO Could be own function?
+                found = False
+                given_housing_type = transistor_args.get('housing_type')
+                for housing_type in possible_housing_types:
+                    if housing_type.lstrip().lower() == given_housing_type:
+                        self.housing_type = housing_type
+                        found = True
+                        break
+                if not found:
+                    raise ValueError("Housing type was not valid.")
+                
+                found = False
+                given_module_manufacturer = transistor_args.get('module_manufacturer')
+                for module_manufacturer in possible_module_manufacturers:
+                    if module_manufacturer.lstrip().lower() == given_module_manufacturer:
+                        self.manufacturer = module_manufacturer
+                        found = True
+                        break
+                if not found:
+                    raise ValueError("Module manufacturer was not valid.")
 
                 self.r_th_cs = transistor_args.get('r_th_cs')
                 self.r_th_switch_cs = transistor_args.get('r_th_switch_cs')
@@ -177,86 +176,11 @@ class Transistor:
                 self.v_abs_max = transistor_args.get('v_abs_max')
                 self.i_abs_max = transistor_args.get('i_abs_max')
                 self.i_cont = transistor_args.get('i_cont')
-                self.c_oss = []  # Default case: Empty list
-                if isinstance(transistor_args.get('c_oss'), list):
-                    # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
-                    # valid dicts. 'None' and empty dicts are ignored.
-                    for dataset in transistor_args.get('c_oss'):
-                        try:
-                            if isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                                self.c_oss.append(VoltageDependentCapacitance(dataset))
-                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                        except KeyError as error:
-                            dict_list = transistor_args.get('c_oss')
-                            if not error.args:
-                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_oss "
-                                          f"dictionaries: ",) + error.args
-                            raise
-                elif isvalid_dict(transistor_args.get('c_oss'), 'VoltageDependentCapacitance'):
-                    # Only create VoltageDependentCapacitance objects from valid dicts
-                    self.c_oss.append(VoltageDependentCapacitance(transistor_args.get('c_oss')))
-
-                self.c_iss = []  # Default case: Empty list
-                if isinstance(transistor_args.get('c_iss'), list):
-                    # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
-                    # valid dicts. 'None' and empty dicts are ignored.
-                    for dataset in transistor_args.get('c_iss'):
-                        try:
-                            if isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                                self.c_iss.append(VoltageDependentCapacitance(dataset))
-                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                        except KeyError as error:
-                            dict_list = transistor_args.get('c_iss')
-                            if not error.args:
-                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_iss "
-                                          f"dictionaries: ",) + error.args
-                            raise
-                elif isvalid_dict(transistor_args.get('c_iss'), 'VoltageDependentCapacitance'):
-                    # Only create VoltageDependentCapacitance objects from valid dicts
-                    self.c_iss.append(VoltageDependentCapacitance(transistor_args.get('c_iss')))
-
-                self.c_rss = []  # Default case: Empty list
-                if isinstance(transistor_args.get('c_rss'), list):
-                    # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
-                    # valid dicts. 'None' and empty dicts are ignored.
-                    for dataset in transistor_args.get('c_rss'):
-                        try:
-                            if isvalid_dict(dataset, 'VoltageDependentCapacitance'):
-                                self.c_rss.append(VoltageDependentCapacitance(dataset))
-                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                        except KeyError as error:
-                            dict_list = transistor_args.get('c_rss')
-                            if not error.args:
-                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of c_rss "
-                                          f"dictionaries: ",) + error.args
-                            raise
-                elif isvalid_dict(transistor_args.get('c_rss'), 'VoltageDependentCapacitance'):
-                    # Only create VoltageDependentCapacitance objects from valid dicts
-                    self.c_rss.append(VoltageDependentCapacitance(transistor_args.get('c_rss')))
+                self.c_oss = self.convert_voltage_dependent_capacitance(transistor_args.get('c_oss'), "c_oss")
+                self.c_iss = self.convert_voltage_dependent_capacitance(transistor_args.get('c_iss'), "c_iss")
+                self.c_rss = self.convert_voltage_dependent_capacitance(transistor_args.get('c_rss'), "c_rss")
+                self.raw_measurement_data = self.convert_raw_measurement_data(transistor_args.get('raw_measurement_data'), "raw_measurement_data")
                 self.graph_v_ecoss = transistor_args.get('graph_v_ecoss')
-
-                self.raw_measurement_data = []
-                if isinstance(transistor_args.get('raw_measurement_data'), list):
-                    # Loop through list and check each dict for validity. Only create RawMeasurementData objects from
-                    # valid dicts. 'None' and empty dicts are ignored.
-                    for dataset in transistor_args.get('raw_measurement_data'):
-                        try:
-                            if isvalid_dict(dataset, 'RawMeasurementData'):
-                                self.raw_measurement_data.append(RawMeasurementData(dataset))
-                        # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
-                        except KeyError as error:
-                            dict_list = transistor_args.get('raw_measurement_data')
-                            if not error.args:
-                                error.args = ('',)  # This syntax is necessary because error.args is a tuple
-                            error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] "
-                                          f"in list of raw_measurement_data "f"dictionaries: ",) + error.args
-                            raise
-                elif isvalid_dict(transistor_args.get('raw_measurement_data'), 'RawMeasurementData'):
-                    # Only create RawMeasurementData objects from valid dicts
-                    self.raw_measurement_data.append(RawMeasurementData(transistor_args.get('raw_measurement_data')))
 
                 self.c_oss_er = None
                 if isvalid_dict(transistor_args.get('c_oss_er'), 'EffectiveOutputCapacitance'):
@@ -287,6 +211,76 @@ class Transistor:
         except Exception as e:
             print('Exception occurred: Selected datasheet or module could not be created or loaded\n' + str(e))
             raise
+
+    def convert_raw_measurement_data(self, input: List | Dict, name: str = None) -> List[RawMeasurementData]:
+        """Converts input (list or dict) to list of raw_measurement_data
+
+        :param input: Input data
+        :type input: List | Dict
+        :param name: Name of variable, only used for error message, optional
+        :type name: str, optional
+        :return: List of RawMeasurementData objects
+        :rtype: List[RawMeasurementData]
+        """
+        output_list = []
+        if isinstance(input, List):
+            # Loop through list and check each dict for validity. Only create RawMeasurementData objects from
+            # valid dicts. 'None' and empty dicts are ignored.
+            for index, dataset in enumerate(input):
+                try:
+                    if isvalid_dict(dataset, 'RawMeasurementData'):
+                        output_list.append(RawMeasurementData(dataset))
+                # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                except KeyError as error:
+                    if not error.args:
+                        error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                    if name is None:
+                        error.args = (f"KeyError occurred for index [{index}] in list {input} "
+                                        f"dictionaries: ",) + error.args
+                    else:
+                        error.args = (f"KeyError occurred for index [{index}] in list of {name} "
+                                        f"dictionaries: ",) + error.args
+                    raise
+        elif isvalid_dict(input, 'RawMeasurementData'):
+            # Only create RawMeasurementData objects from valid dicts
+            output_list.append(RawMeasurementData(input))
+
+        return output_list
+
+    def convert_voltage_dependent_capacitance(self, input: List | Dict, name: str = None) -> List[VoltageDependentCapacitance]:
+        """Converts input (list or dict) to list of raw_measurement_data
+
+        :param input: Input data
+        :type input: List | Dict
+        :param name: Name of variable, only used for error message, optional
+        :type name: str, optional
+        :return: List of VoltageDependentCapacitance objects
+        :rtype: List[VoltageDependentCapacitance]
+        """
+        output_list = []
+        if isinstance(input, List):
+            # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
+            # valid dicts. 'None' and empty dicts are ignored.
+            for index, dataset in enumerate(input):
+                try:
+                    if isvalid_dict(dataset, 'VoltageDependentCapacitance'):
+                        output_list.append(VoltageDependentCapacitance(dataset))
+                # If KeyError occurs during this, raise KeyError and add index of list occurrence to the message
+                except KeyError as error:
+                    if not error.args:
+                        error.args = ('',)  # This syntax is necessary because error.args is a tuple
+                    if name is None:
+                        error.args = (f"KeyError occurred for index [{index}] in list {input} "
+                                        f"dictionaries: ",) + error.args
+                    else:
+                        error.args = (f"KeyError occurred for index [{index}] in list of {name} "
+                                        f"dictionaries: ",) + error.args
+                    raise
+        elif isvalid_dict(input, 'VoltageDependentCapacitance'):
+            # Only create VoltageDependentCapacitance objects from valid dicts
+            output_list.append(VoltageDependentCapacitance(input))
+
+        return output_list
 
     def __eq__(self, other) -> bool:
         """
