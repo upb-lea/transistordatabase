@@ -8,7 +8,6 @@ import numpy as np
 import sys
 import os
 import re
-import pathlib
 import base64
 import io
 
@@ -169,11 +168,11 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
                     if re.sub(snub, "", dataset_value).lstrip().lower() not in alphanum_values:
                         name = key.capitalize().replace("_", " ")
                         if name == 'Housing type':
-                            housing_file_path = pathlib.Path(os.path.join(os.path.dirname(__file__), 'housing_types.txt')).as_uri()
+                            housing_file_path = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
                             raise ValueError('{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported housing types.'.format(name, dataset_value, name, alphanum_values,
                                                                                                                                                              housing_file_path))
                         elif name == 'Manufacturer':
-                            module_file_path = pathlib.Path(os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')).as_uri()
+                            module_file_path = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
                             raise ValueError(
                                 '{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported module manufacturers.'.format(name, dataset_value, name, alphanum_values,
                                                                                                                                                        module_file_path))
@@ -371,8 +370,8 @@ def read_data_file(file_path):
     data = []
 
     with open(file_path, "r") as fd:
-        for line in fd.readlines():
-            if line.startswith("#"):
+        for line in fd.read().splitlines():
+            if line.startswith("#") or line.isspace() or not line:
                 continue
 
             data.append(str(line))
@@ -409,8 +408,8 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
         return True
 
     def handle_print_finished(filepath, status):
-        print(f"Export virtual datasheet {name_item} to {pathlib.Path.cwd().as_uri()}")
-        print(f"Open Datasheet here: {pathlib.Path(filepath).as_uri()}")
+        print(f"Export virtual datasheet {name_item} to {os.getcwd()}")
+        print(f"Open Datasheet here: {os.getcwd()}")
         if not fetch_next():
             app.quit()
 

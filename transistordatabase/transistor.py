@@ -144,23 +144,25 @@ class Transistor:
                 # TODO Could be own function?
                 found = False
                 given_housing_type = transistor_args.get('housing_type')
-                for housing_type in possible_housing_types:
-                    if housing_type.lstrip().lower() == given_housing_type:
-                        self.housing_type = housing_type
-                        found = True
-                        break
+                if given_housing_type is not None:
+                    for housing_type in possible_housing_types:
+                        if housing_type.lstrip().lower() == given_housing_type.lstrip().lower():
+                            self.housing_type = housing_type
+                            found = True
+                            break
                 if not found:
-                    raise ValueError("Housing type was not valid.")
+                    raise ValueError(f"Housing type {given_housing_type} is not valid.")
                 
                 found = False
-                given_module_manufacturer = transistor_args.get('module_manufacturer')
-                for module_manufacturer in possible_module_manufacturers:
-                    if module_manufacturer.lstrip().lower() == given_module_manufacturer:
-                        self.manufacturer = module_manufacturer
-                        found = True
-                        break
+                given_module_manufacturer = transistor_args.get('manufacturer')
+                if given_module_manufacturer is not None:
+                    for module_manufacturer in possible_module_manufacturers:
+                        if module_manufacturer.lstrip().lower() == given_module_manufacturer.lstrip().lower():
+                            self.manufacturer = module_manufacturer
+                            found = True
+                            break
                 if not found:
-                    raise ValueError("Module manufacturer was not valid.")
+                    raise ValueError(f"Module manufacturer {given_module_manufacturer} is not valid.")
 
                 self.r_th_cs = transistor_args.get('r_th_cs')
                 self.r_th_switch_cs = transistor_args.get('r_th_switch_cs')

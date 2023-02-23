@@ -38,7 +38,6 @@ class DatabaseManager:
         self.housing_types = read_data_file(os.path.join(self.tdb_directory, "data", "housing_types.txt"))
         self.module_manufacturers = read_data_file(os.path.join(self.tdb_directory, "data", "module_manufacturers.txt"))
 
-
     def set_operation_mode_json(self, json_folder_path: str) -> None:
         """
         Sets operation mode to json. In order to function properly it is necessary that the given folder path
@@ -102,11 +101,11 @@ class DatabaseManager:
                         json.dump(transistor_dict, fd, indent=2)
                 else:
                     new_name = get_copy_transistor_name(transistor_dict["name"])
+                    del transistor_dict["_id"]
                     with open(os.path.join(self.json_folder, f"{new_name}.json")):
                         json.dump(transistor_dict, fd, indent=2)
             else:
                 with open(transistor_path, "w") as fd:
-                    del transistor_dict["id"]
                     json.dump(transistor_dict, fd, indent=2)
 
         elif self.operation_mode == OperationMode.MONGODB:
@@ -167,7 +166,7 @@ class DatabaseManager:
             for file_name in existing_files:
                 if file_name.endswith(".json") and file_name.startswith(str(transistor_name)) and isvalid_transistor_name(file_name[:-5]):
                     with open(os.path.join(self.json_folder, file_name), "r") as fd:
-                        return DatabaseManager.convert_dict_to_transistor_object(json.load(fd))
+                        return self.convert_dict_to_transistor_object(json.load(fd))
             print(f"Transitor with name {transistor_name} not found.") 
         elif self.operation_mode == OperationMode.MONGODB:
             return self.convert_dict_to_transistor_object(self.mongodb_collection.find_one({"name": transistor_name}))
