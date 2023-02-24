@@ -266,8 +266,7 @@ class DatabaseManager:
         if not index_response.ok:
             raise Exception(f"Index file was not found. URL: {index_url}")
         
-        transistor_urls = [line for line in index_response.iter_lines()]
-        for transistor_url in transistor_urls:
+        for transistor_url in index_response.iter_lines():
             transistor_response = requests.get(transistor_url)
             if not transistor_response.ok:
                 print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")

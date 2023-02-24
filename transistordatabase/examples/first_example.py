@@ -48,9 +48,7 @@ def example_json_database():
 def example_mongodb_database():
     tdb_mongodb = DatabaseManager()
     tdb_mongodb.set_operation_mode_mongodb()
-    #tdb_mongodb.print_tdb()
-    t1 = tdb_mongodb.load_transistor("ROHMSemiconductor_SCT3120AW7")
-    print(t1.convert_to_dict()["_id"])
+    tdb_mongodb.print_tdb()
 
 def example_update_from_online_database():
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example_downloaded")
