@@ -1963,13 +1963,11 @@ class Transistor:
 
     def add_dpt_measurement(self, measurement_data):
         """
-        This method adds new measurement data to the transistor object and saves changes to the database.
+        This method adds new measurement data to the transistor object.
 
         :param measurement_data: Dict of data you want to add to given attribute.
         :type measurement_data: dict
         """
-
-        collection = connect_local_tdb()
         transistor_id = {'_id': self._id}
 
         if measurement_data['e_off_meas'] is not None:
@@ -1988,10 +1986,6 @@ class Transistor:
                         raise
             elif isvalid_dict(measurement_data.get('e_off_meas'), 'SwitchEnergyData'):
                 self.switch.e_off_meas.append(SwitchEnergyData(measurement_data.get('e_off_meas')))
-
-            transistor_dict = self.switch.convert_to_dict()
-            new_value = {'$set': {'switch.e_off_meas': transistor_dict['e_off_meas']}}
-            collection.update_one(transistor_id, new_value)
 
         if measurement_data['e_on_meas'] is not None:
             if isinstance(measurement_data.get('e_on_meas'), list):
@@ -2012,10 +2006,6 @@ class Transistor:
             elif isvalid_dict(measurement_data.get('e_on_meas'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
                 self.switch.e_on_meas.append(SwitchEnergyData(measurement_data.get('e_on_meas')))
-
-            transistor_dict = self.switch.convert_to_dict()
-            new_value = {'$set': {'switch.e_on_meas': transistor_dict['e_on_meas']}}
-            collection.update_one(transistor_id, new_value)
 
         if measurement_data['raw_measurement_data'] is not None:
             if isinstance(measurement_data.get('raw_measurement_data'), list):
@@ -2038,14 +2028,9 @@ class Transistor:
                 self.raw_measurement_data.append(
                     RawMeasurementData(measurement_data.get('raw_measurement_data')))
 
-            transistor_dict = self.convert_to_dict()
-            new_value = {'$set': {'raw_measurement_data': transistor_dict['raw_measurement_data']}}
-            collection.update_one(transistor_id, new_value)
-
     def add_soa_data(self, soa_data: Union[Dict, List], switch_type: str, clear: bool = False):
         """
         A transistor method to add the SOA class object to the loaded transistor.switch.soa or transistor.diode.soa attribute.
-        .. note:: Transistor object must be loaded first before calling this method
 
         :param soa_data: argument represents the soa dictionaries objects that needs to be added to transistor switch or diode object
         :type soa_data: dict or list
@@ -2057,7 +2042,6 @@ class Transistor:
         :return: updated transistor switch or diode object with added soa characteristics
         """
         soa_list = []
-        transistor_id = {'_id': self._id}
 
         if switch_type == 'switch':
             if clear:
@@ -2073,6 +2057,7 @@ class Transistor:
                 soa_list.append(soa_item.convert_to_dict())
         init_length = len(soa_list)
         # Convert 2D list ot 2D numpy array for comparison
+        # TODO Does this work??
         for index, dataset in enumerate(soa_list):
             for key, item in dataset.items():
                 if isinstance(dataset[key], list):
@@ -2096,22 +2081,15 @@ class Transistor:
 
         # appending the list to the transistor object
         if len(soa_list) > init_length:
-            collection = connect_local_tdb()
             if switch_type == 'switch':
                 self.switch.soa.clear()
                 for soa_item in soa_list:
                     self.switch.soa.append(SOA(soa_item))
-                    soa_item['graph_i_v'] = soa_item['graph_i_v'].tolist()
-                soa_object = {'$set': {'switch.soa': soa_list}}
-                collection.update_one(transistor_id, soa_object)
             elif switch_type == 'diode':
                 self.diode.soa.clear()
                 for soa_item in soa_list:
                     self.diode.soa.append(SOA(soa_item))
-                    soa_item['graph_i_v'] = soa_item['graph_i_v'].tolist()
-                soa_object = {'$set': {'diode.soa': soa_list}}
-                collection.update_one(transistor_id, soa_object)
-            print('Updated successfully!')
+            print('Updated Switch.SOA successfully!')
         else:
             print('No new item to add!')
 
@@ -2163,11 +2141,7 @@ class Transistor:
             self.switch.charge_curve.clear()
             for charge_item in charge_list:
                 self.switch.charge_curve.append(GateChargeCurve(charge_item))
-                charge_item['graph_q_v'] = charge_item['graph_q_v'].tolist()
-            charge_object = {'$set': {'switch.charge_curve': charge_list}}
-            collection = connect_local_tdb()
-            collection.update_one(transistor_id, charge_object)
-            print('Updated successfully!')
+            print('Updated Switch.Charge_Curve successfully!')
         else:
             print('No new item to add!')
 
@@ -2219,11 +2193,7 @@ class Transistor:
             self.switch.r_channel_th.clear()
             for r_channel_item in r_channel_list:
                 self.switch.r_channel_th.append(TemperatureDependResistance(r_channel_item))
-                r_channel_item['graph_t_r'] = r_channel_item['graph_t_r'].tolist()
-            r_channel_object = {'$set': {'switch.r_channel_th': r_channel_list}}
-            collection = connect_local_tdb()
-            collection.update_one(transistor_id, r_channel_object)
-            print('Updated successfully!')
+            print('Updated Switch.r_channel_th successfully!')
         else:
             print('No new item to add!')
 
