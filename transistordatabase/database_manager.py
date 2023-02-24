@@ -6,8 +6,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import os
 import json
-import git
-import shutil
+import requests
 import glob
 
 # Local libraries
@@ -87,7 +86,8 @@ class DatabaseManager:
             raise Exception("Please select an operation mode for the database manager.")
 
         transistor_dict = transistor.convert_to_dict()
-
+        if "_id" in transistor_dict:
+            del transistor_dict["_id"]
         if self.operation_mode == OperationMode.JSON:
             transistor_path = os.path.join(self.json_folder, f"{transistor.name}.json")
             if str(transistor.name) in os.listdir(self.json_folder):
@@ -247,9 +247,11 @@ class DatabaseManager:
             return transistor_list
 
     
-    def update_from_fileexchange(self, overwrite: bool = True) -> None:
-        """Update your local transistor database from transistordatabase-fileexchange from github
+    def update_from_fileexchange(self, index_url, overwrite: bool = True) -> None:
+        """Update your local transistor database from transistordatabase-fileexchange from given index-file url.
 
+        :param index_url: URL to the index file which contains the links to all the transistor files (json formatted).
+        :type index_url: str
         :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
         :type overwrite: bool
 
@@ -259,56 +261,22 @@ class DatabaseManager:
         print("Note: Please make sure that you have installed the latest version of the transistor database, "
             "especially if the update_from_fileexchange()-method ends in an error. "
             "Find the latest version here: https://pypi.org/project/transistordatabase/")
-        # Check if the local repository exists, if yes load the repo information
-        repo_url = f"https://github.com/upb-lea/transistordatabase_File_Exchange"
-        module_file_path = os.path.dirname(os.path.abspath(__file__))
-        local_dir = os.path.join(module_file_path, "cloned_repo_TDB_File_Exchange")
+        # Read links from index_url
+        index_response = requests.get(index_url)
+        if not index_response.ok:
+            raise Exception(f"Index file was not found. URL: {index_url}")
         
-        # Load repository
-        try:
-            # Raises InvalidGitRepositoryError when not in a repo
-            repo = git.Repo(local_dir, search_parent_directories=False)
-            # check that the repository loaded correctly
-            if not repo.bare:
-                print('Repo at {} successfully loaded.'.format(repo.working_tree_dir))
-                print("Remote: " + repo.remote("origin").url)
-                # If the loaded repo is dirty discard the local changes
-                if repo.is_dirty():
-                    repo.git.reset('--hard')
-                try:
-                    repo.remotes.origin.pull()
-                except:
-                    print("----------------------------------------------------------------------")
-                    print("No internet connection, please make sure that you have internet access")
-                    print("----------------------------------------------------------------------")
-            else:
-                print('Could not load repository at {} :('.format(repo.working_tree_dir))
-                raise git.exc.InvalidGitRepositoryError
-        except git.exc.InvalidGitRepositoryError:
-            # Occurs if repo couldn't be located, initially check if cloned_repo folder exists and deletes it before cloning from remote
-            if os.path.isdir(local_dir):
-                for root, dirs, files in os.walk(local_dir):
-                    for dir in dirs:
-                        os.chmod(os.path.join(root, dir), os.stat.S_IRWXU)
-                    for file in files:
-                        os.chmod(os.path.join(root, file), os.stat.S_IRWXU)
-                shutil.rmtree(local_dir)
-            git.Repo.clone_from(repo_url, local_dir)
-        except git.exc.NoSuchPathError:
-            # if local repository doesn't exits, clone from remote branch
-            git.Repo.clone_from(repo_url, local_dir)
+        transistor_urls = [line for line in index_response.iter_lines()]
+        for transistor_url in transistor_urls:
+            transistor_response = requests.get(transistor_url)
+            if not transistor_response.ok:
+                print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
+                continue
 
-        # Load transistors from downloaded repository
-        for subdir, dirs, files in os.walk(local_dir):
-            for file in files:
-                filepath = os.path.join(local_dir, file)
-                if file.endswith(".json") and isvalid_transistor_name(file[:-5]):
-                    try:
-                        with open(filepath, "r") as fd:
-                            self.save_transistor(self.convert_dict_to_transistor_object(json.load(fd)), overwrite)
-                    except Exception as e:
-                        raise Exception(f"Failed to save transistor: {filepath}")
-                        #warnings.warn("Failed to save Transistor : " + filepath)
+            transistor = self.convert_dict_to_transistor_object(transistor_response.json())
+            self.save_transistor(transistor, overwrite)
+
+        print("Database updated!")
 
     
     def export_all_datasheets(self, filter_list: list = None):

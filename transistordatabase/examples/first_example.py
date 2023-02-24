@@ -48,11 +48,21 @@ def example_json_database():
 def example_mongodb_database():
     tdb_mongodb = DatabaseManager()
     tdb_mongodb.set_operation_mode_mongodb()
-    tdb_mongodb.print_tdb()
+    #tdb_mongodb.print_tdb()
+    t1 = tdb_mongodb.load_transistor("ROHMSemiconductor_SCT3120AW7")
+    print(t1.convert_to_dict()["_id"])
+
+def example_update_from_online_database():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example_downloaded")
+    index_url = r"https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/index.txt"
+    db = DatabaseManager()
+    db.set_operation_mode_json(path)
+    db.update_from_fileexchange(index_url)
 
 if __name__ == "__main__":
     #extract_from_mongodb_to_json()
     #example_json_database()
-    example_mongodb_database()
+    #example_mongodb_database()
     #insert_mongodb_from_json()
+    example_update_from_online_database()
 

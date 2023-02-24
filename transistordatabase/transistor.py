@@ -305,6 +305,10 @@ class Transistor:
         :return: Transistor object in dict type
         :rtype: dict
         """
+        if isinstance(self._id, ObjectId):
+            # Set to none so there is no problem with serializing it.
+            # Since the name is the new identifier, _id is not needed, but is created within the mongodb database
+            self._id = None
         d = dict(vars(self))
         d.pop('wp', None)  # remove wp from converting. wp will not be stored to .json files
         d['diode'] = self.diode.convert_to_dict()
