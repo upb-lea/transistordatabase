@@ -1,0 +1,13 @@
+CREE
+Fuji Electric
+GaN Systems
+Hitachi ABB
+Infineon
+Mitsubishi Electric
+ON Semiconductor
+ROHM Semiconductor
+Semikron
+Texas Instruments
+UnitedSiC
+Vincotech
+Wolfspeed

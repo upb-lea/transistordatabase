@@ -770,6 +770,7 @@ class MainWindow(QMainWindow):
 
     def get_transistor_list(self):
         """
+        # TODO Now donw in database_manager
         Gets list of all transistors stored in local database and returns it
 
         :return: list with names of all transistors in local database
@@ -3389,6 +3390,13 @@ class MainWindow(QMainWindow):
         except:
             self.show_popup_message("Error: No transistor selected!")
 
+    def check_value_is_in_between(self, min, max, value):
+        # TODO Could be put in tdb functions?
+        if not value or (float(min) < float(value) < float(max)):
+            return True
+
+        return False
+
     def search_database_load_data(self):
         """
         Loads the data from the transistordatabase into the tableWidget while taking into account all the set filters
@@ -3746,101 +3754,92 @@ class MainWindow(QMainWindow):
             cooling_area_max = self.lineEdit_search_database_cooling_area_max.text()
         else:
             cooling_area_max = 100000
+        # TODO Currently it is not possible to filter for None values. Should this be an option?
 
-        try:
-            transistordatabase_filtered = []
-            for i in range(len(transistordatabase)):
-                if type.lower() in str(transistordatabase[i]["type"]).lower() and \
-                        name.lower() in str(transistordatabase[i]["name"]).lower() and \
-                        id.lower() in str(transistordatabase[i]["_id"]).lower() and \
-                        author.lower() in str(transistordatabase[i]["author"]).lower() and \
-                        technology.lower() in str(transistordatabase[i]["technology"]).lower() and \
-                        template_version.lower() in str(transistordatabase[i]["template_version"]).lower() and \
-                        template_date.lower() in str(transistordatabase[i]["template_date"]).lower() and \
-                        creation_date.lower() in str(transistordatabase[i]["creation_date"]).lower() and \
-                        last_modified.lower() in str(transistordatabase[i]["last_modified"]).lower() and \
-                        comment.lower() in str(transistordatabase[i]["comment"]).lower() and \
-                        datasheet_hyperlink.lower() in str(transistordatabase[i]["datasheet_hyperlink"]).lower() and \
-                        datasheet_date.lower() in str(transistordatabase[i]["datasheet_date"]).lower() and \
-                        datasheet_version.lower() in str(transistordatabase[i]["datasheet_version"]).lower() and \
-                        housing_type.lower() in str(transistordatabase[i]["housing_type"]).lower() and \
-                        manufacturer.lower() in str(transistordatabase[i]["manufacturer"]).lower() and \
-                        switch_comment.lower() in str(transistordatabase[i]["switch_comment"]).lower() and \
-                        switch_manufacturer.lower() in str(transistordatabase[i]["switch_manufacturer"]).lower() and \
-                        switch_technology.lower() in str(transistordatabase[i]["switch_technology"]).lower() and \
-                        diode_comment.lower() in str(transistordatabase[i]["diode_comment"]).lower() and \
-                        diode_manufacturer.lower() in str(transistordatabase[i]["diode_manufacturer"]).lower() and \
-                        diode_technology.lower() in str(transistordatabase[i]["diode_technology"]).lower() and \
-                        float(i_abs_max_min) < float(transistordatabase[i]["i_abs_max"]) < float(i_abs_max_max) and \
-                        float(t_c_max_min) < float(transistordatabase[i]["t_c_max"]) < float(t_c_max_max) and \
-                        float(r_g_int_min) < float(transistordatabase[i]["r_g_int"]) < float(r_g_int_max) and \
-                        float(r_g_on_recommended_min) < float(transistordatabase[i]["r_g_on_recommended"]) < float(
-                    r_g_on_recommended_max) and \
-                        float(r_g_off_recommended_min) < float(transistordatabase[i]["r_g_off_recommended"]) < float(
-                    r_g_off_recommended_max) and \
-                        float(c_oss_fix_min) < float(transistordatabase[i]["c_oss_fix"]) < float(c_oss_fix_max) and \
-                        float(c_iss_fix_min) < float(transistordatabase[i]["c_iss_fix"]) < float(c_iss_fix_max) and \
-                        float(c_rss_fix_min) < float(transistordatabase[i]["c_rss_fix"]) < float(c_rss_fix_max) and \
-                        float(r_th_cs_min) < float(transistordatabase[i]["r_th_cs"]) < float(r_th_cs_max) and \
-                        float(r_th_switch_cs_min) < float(transistordatabase[i]["r_th_switch_cs"]) < float(
-                    r_th_switch_cs_max) and \
-                        float(r_th_diode_cs_min) < float(transistordatabase[i]["r_th_diode_cs"]) < float(
-                    r_th_diode_cs_max) and \
-                        float(v_abs_max_min) < float(transistordatabase[i]["v_abs_max"]) < float(v_abs_max_max) and \
-                        float(i_cont_min) < float(transistordatabase[i]["i_cont"]) < float(i_cont_max) and \
-                        float(switch_t_j_max_min) < float(transistordatabase[i]["switch_t_j_max"]) < float(
-                    switch_t_j_max_max) and \
-                        float(diode_t_j_max_min) < float(transistordatabase[i]["diode_t_j_max"]) < float(
-                    diode_t_j_max_max) and \
-                        float(housing_area_min) < float(transistordatabase[i]["housing_area"]) < float(
-                    housing_area_max) and \
-                        float(cooling_area_min) < float(transistordatabase[i]["cooling_area"]) < float(
-                    cooling_area_max):
-                    transistordatabase_filtered.append(transistordatabase[i])
+        transistordatabase_filtered = []
+        for i in range(len(transistordatabase)):
+            if type.lower() in str(transistordatabase[i]["type"]).lower() and \
+                    name.lower() in str(transistordatabase[i]["name"]).lower() and \
+                    id.lower() in str(transistordatabase[i]["_id"]).lower() and \
+                    author.lower() in str(transistordatabase[i]["author"]).lower() and \
+                    technology.lower() in str(transistordatabase[i]["technology"]).lower() and \
+                    template_version.lower() in str(transistordatabase[i]["template_version"]).lower() and \
+                    template_date.lower() in str(transistordatabase[i]["template_date"]).lower() and \
+                    creation_date.lower() in str(transistordatabase[i]["creation_date"]).lower() and \
+                    last_modified.lower() in str(transistordatabase[i]["last_modified"]).lower() and \
+                    comment.lower() in str(transistordatabase[i]["comment"]).lower() and \
+                    datasheet_hyperlink.lower() in str(transistordatabase[i]["datasheet_hyperlink"]).lower() and \
+                    datasheet_date.lower() in str(transistordatabase[i]["datasheet_date"]).lower() and \
+                    datasheet_version.lower() in str(transistordatabase[i]["datasheet_version"]).lower() and \
+                    housing_type.lower() in str(transistordatabase[i]["housing_type"]).lower() and \
+                    manufacturer.lower() in str(transistordatabase[i]["manufacturer"]).lower() and \
+                    switch_comment.lower() in str(transistordatabase[i]["switch_comment"]).lower() and \
+                    switch_manufacturer.lower() in str(transistordatabase[i]["switch_manufacturer"]).lower() and \
+                    switch_technology.lower() in str(transistordatabase[i]["switch_technology"]).lower() and \
+                    diode_comment.lower() in str(transistordatabase[i]["diode_comment"]).lower() and \
+                    diode_manufacturer.lower() in str(transistordatabase[i]["diode_manufacturer"]).lower() and \
+                    diode_technology.lower() in str(transistordatabase[i]["diode_technology"]).lower() and \
+                    self.check_value_is_in_between(i_abs_max_min, i_abs_max_max, transistordatabase[i]["i_abs_max"]) and \
+                    self.check_value_is_in_between(t_c_max_min, t_c_max_max, transistordatabase[i]["t_c_max"]) and \
+                    self.check_value_is_in_between(r_g_int_min, r_g_int_max, transistordatabase[i]["r_g_int"]) and \
+                    self.check_value_is_in_between(r_g_on_recommended_min, r_g_on_recommended_max, transistordatabase[i]["r_g_on_recommended"]) and \
+                    self.check_value_is_in_between(r_g_off_recommended_min, r_g_off_recommended_max, transistordatabase[i]["r_g_off_recommended"]) and \
+                    self.check_value_is_in_between(c_oss_fix_min, c_oss_fix_max, transistordatabase[i]["c_oss_fix"]) and \
+                    self.check_value_is_in_between(c_iss_fix_min, c_iss_fix_max, transistordatabase[i]["c_iss_fix"]) and \
+                    self.check_value_is_in_between(c_rss_fix_min, c_rss_fix_max, transistordatabase[i]["c_rss_fix"]) and \
+                    self.check_value_is_in_between(r_th_cs_min, r_th_cs_max, transistordatabase[i]["r_th_cs"]) and \
+                    self.check_value_is_in_between(r_th_switch_cs_min, r_th_switch_cs_max, transistordatabase[i]["r_th_switch_cs"]) and \
+                    self.check_value_is_in_between(r_th_diode_cs_min, r_th_diode_cs_max, transistordatabase[i]["r_th_diode_cs"]) and \
+                    self.check_value_is_in_between(v_abs_max_min, v_abs_max_max, transistordatabase[i]["v_abs_max"]) and \
+                    self.check_value_is_in_between(i_cont_min, i_cont_max, transistordatabase[i]["i_cont"]) and \
+                    self.check_value_is_in_between(switch_t_j_max_min, switch_t_j_max_max, transistordatabase[i]["switch_t_j_max"]) and \
+                    self.check_value_is_in_between(diode_t_j_max_min, diode_t_j_max_max, transistordatabase[i]["diode_t_j_max"]) and \
+                    self.check_value_is_in_between(housing_area_min, housing_area_max, transistordatabase[i]["housing_area"]) and \
+                    self.check_value_is_in_between(cooling_area_min, cooling_area_max, transistordatabase[i]["cooling_area"]):
+                transistordatabase_filtered.append(transistordatabase[i])
 
-            for transistor in transistordatabase_filtered:
-                for key in keys_to_remove:
-                    del transistor[key]
+        print(len(transistordatabase_filtered))
+        for transistor in transistordatabase_filtered:
+            for key in keys_to_remove:
+                del transistor[key]
 
-                for key in transistordatabase_keys:
-                    if transistor[key] == 0:
-                        transistor[key] = ""
-
-            transistordatabase_keys_upper = []
-            unit = ""
             for key in transistordatabase_keys:
-                if key == "t_c_max" or key == "switch_t_j_max" or key == "diode_t_j_max":
-                    unit = " [°C]"
-                if key == "housing_area" or key == "cooling_area":
-                    unit = " [m²]"
-                if key == "r_g_int" or key == "r_g_on_recommended" or key == "r_g_off_recommended" or key == "r_th_cs" or key == "r_th_switch_cs" or key == "r_th_diode_cs":
-                    unit = " [Ω]"
-                if key == "c_oss_fix" or key == "c_iss_fix" or key == "c_rss_fix":
-                    unit = " [F]"
-                if key == "v_abs_max":
-                    unit = " [V]"
-                if key == "i_abs_max" or key == "i_cont":
-                    unit = " [A]"
-                transistordatabase_keys_upper.append(
-                    str(transistordatabase_keys[transistordatabase_keys.index(key)].upper()) + str(unit))
-                unit = ""
+                if transistor[key] == 0:
+                    transistor[key] = ""
 
-            row = 0
-            column = 0
-            self.tableWidget_search_database.setRowCount(len(transistordatabase_filtered))
-            self.tableWidget_search_database.setColumnCount(len(transistordatabase_keys))
-            self.tableWidget_search_database.setHorizontalHeaderLabels(transistordatabase_keys_upper)
-            for transistor in transistordatabase_filtered:
-                for key in transistordatabase_keys:
-                    item = QtWidgets.QTableWidgetItem()
-                    try:
-                        item.setData(QtCore.Qt.DisplayRole, float(transistor[key]))
-                    except:
-                        item.setData(QtCore.Qt.DisplayRole, str(transistor[key]))
-                    self.tableWidget_search_database.setItem(row, column, item)
-                    column = column + 1
-        except:
-            pass
+        transistordatabase_keys_upper = []
+        unit = ""
+        for key in transistordatabase_keys:
+            if key == "t_c_max" or key == "switch_t_j_max" or key == "diode_t_j_max":
+                unit = " [°C]"
+            if key == "housing_area" or key == "cooling_area":
+                unit = " [m²]"
+            if key == "r_g_int" or key == "r_g_on_recommended" or key == "r_g_off_recommended" or key == "r_th_cs" or key == "r_th_switch_cs" or key == "r_th_diode_cs":
+                unit = " [Ω]"
+            if key == "c_oss_fix" or key == "c_iss_fix" or key == "c_rss_fix":
+                unit = " [F]"
+            if key == "v_abs_max":
+                unit = " [V]"
+            if key == "i_abs_max" or key == "i_cont":
+                unit = " [A]"
+            transistordatabase_keys_upper.append(
+                str(transistordatabase_keys[transistordatabase_keys.index(key)].upper()) + str(unit))
+            unit = ""
+
+        row = 0
+        column = 0
+        self.tableWidget_search_database.setRowCount(len(transistordatabase_filtered))
+        self.tableWidget_search_database.setColumnCount(len(transistordatabase_keys))
+        self.tableWidget_search_database.setHorizontalHeaderLabels(transistordatabase_keys_upper)
+        for transistor in transistordatabase_filtered:
+            for key in transistordatabase_keys:
+                item = QtWidgets.QTableWidgetItem()
+                try:
+                    item.setData(QtCore.Qt.DisplayRole, float(transistor[key]))
+                except:
+                    item.setData(QtCore.Qt.DisplayRole, str(transistor[key]))
+                self.tableWidget_search_database.setItem(row, column, item)
+                column = column + 1
 
     ###Exporting Tools###
 
