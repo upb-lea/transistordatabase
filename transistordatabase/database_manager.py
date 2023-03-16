@@ -167,7 +167,7 @@ class DatabaseManager:
                 if file_name.endswith(".json") and file_name.startswith(str(transistor_name)) and isvalid_transistor_name(file_name[:-5]):
                     with open(os.path.join(self.json_folder, file_name), "r") as fd:
                         return self.convert_dict_to_transistor_object(json.load(fd))
-            print(f"Transitor with name {transistor_name} not found.") 
+            print(f"Transitor with name {transistor_name} not found.")
         elif self.operation_mode == OperationMode.MONGODB:
             return self.convert_dict_to_transistor_object(self.mongodb_collection.find_one({"name": transistor_name}))
 
