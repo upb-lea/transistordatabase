@@ -46,7 +46,7 @@ their Transistors. The python interface can also be used to implemement optimiza
 Then there is a GUI which is mostly used to manage the Database and visualize different properties of the stored Transistors.
 As the third feature the Transistordatabase can be updated by an Online-Database. You can choose to work with our Online Repository or create your own if needed. 
 
-1. Python interface
+Python interface
 *******************************
 
 Use the transistor data in you self-written optimization program, see figure:
@@ -62,7 +62,7 @@ Use the transistor data in you self-written optimization program, see figure:
     :align: center
     :alt: optimization
 
-2. GUI
+GUI
 *******************************
 
 * Manage, store and search the transistors
@@ -84,7 +84,7 @@ Here are some screenshots of the GUI:
     :alt: gui_create_transistor
 
 
-3. Transistordatabase Fileexchange
+Transistordatabase Fileexchange
 *******************************
 
 `This <https://github.com/upb-lea/transistordatabase_File_Exchange>`__ repository contains the Transistors currently added to the Transistordatabase.
