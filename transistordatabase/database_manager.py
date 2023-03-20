@@ -7,7 +7,7 @@ import numpy as np
 import os
 import json
 import requests
-import glob
+import glob # Can this be removed?
 
 # Local libraries
 from transistordatabase.transistor import Transistor
@@ -29,13 +29,19 @@ class DatabaseManager:
     housing_types: List[str]
     module_manufacturers: List[str]
 
+    module_manufacturers_file_path: str
+    housing_types_file_path: str
+
     def __init__(self):
         self.operation_mode = None
         self.tdb_directory = os.path.dirname(os.path.abspath(__file__))
 
         # Load housing_types and module_manufacturers
-        self.housing_types = read_data_file(os.path.join(self.tdb_directory, "data", "housing_types.txt"))
-        self.module_manufacturers = read_data_file(os.path.join(self.tdb_directory, "data", "module_manufacturers.txt"))
+        self.housing_types_file_path = os.path.join(self.tdb_directory, "data", "housing_types.txt")
+        self.housing_types = read_data_file(self.housing_types_file_path)
+
+        self.module_manufacturers_file_path = os.path.join(self.tdb_directory, "data", "module_manufacturers.txt")
+        self.module_manufacturers = read_data_file(self.module_manufacturers_file_path)
 
     def set_operation_mode_json(self, json_folder_path: str) -> None:
         """
@@ -247,8 +253,8 @@ class DatabaseManager:
             return transistor_list
 
     
-    def update_from_fileexchange(self, index_url, overwrite: bool = True) -> None:
-        """Update your local transistor database from transistordatabase-fileexchange from given index-file url.
+    def update_from_fileexchange(self, index_url: str, overwrite: bool = True, module_manufacturers_url: str = None, housing_types_url: str = None) -> None:
+        """Update your local transistor database from transistordatabase-fileexchange from given index-file url. Also updates module manufacturers and housing types.
 
         :param index_url: URL to the index file which contains the links to all the transistor files (json formatted).
         :type index_url: str
@@ -275,9 +281,31 @@ class DatabaseManager:
             transistor = self.convert_dict_to_transistor_object(transistor_response.json())
             self.save_transistor(transistor, overwrite)
 
-        print("Database updated!")
+        # Get module manufactuers and housing types if URLs are given
+        # Then overwrite local files and update lists
+        if module_manufacturers_url is not None:
+            module_manufacturers_response = requests.get(module_manufacturers_url)
+            if not module_manufacturers_response.ok:
+                raise Exception(f"Given module manufacturers file was not found. URL: {module_manufacturers_url}")
 
-    
+            with open(self.module_manufacturers_file_path, "w") as fd:
+                fd.write(module_manufacturers_response.text)
+
+            self.module_manufacturers = read_data_file(self.module_manufacturers_file_path)
+            print("Updated module manufacturers.")
+
+        if housing_types_url is not None:
+            housing_types_response = requests.get(housing_types_url)
+            if not housing_types_response.ok:
+                raise Exception(f"Given housing types file was not found. URL: {housing_types_response}")
+
+            with open(self.housing_types_file_path, "w") as fd:
+                fd.write(housing_types_response.text)
+
+            self.housing_types = read_data_file(self.housing_types_file_path)
+            print("Updated housing types.")
+
+
     def export_all_datasheets(self, filter_list: list = None):
         """A method to export all the available transistor data present in the local mongoDB database
 
