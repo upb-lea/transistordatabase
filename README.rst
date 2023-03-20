@@ -47,6 +47,8 @@ Then there is a GUI which is mostly used to manage the Database and visualize di
 As the third feature the Transistordatabase can be updated by an Online-Database. You can choose to work with our Online Repository or create your own if needed. 
 
 1. Python interface
+*******************************
+
 Use the transistor data in you self-written optimization program, see figure:
 
 * Automatic calculate your converter losses with many different transistors
@@ -61,6 +63,7 @@ Use the transistor data in you self-written optimization program, see figure:
     :alt: optimization
 
 2. GUI
+*******************************
 
 * Manage, store and search the transistors
 * Export transistor models to programs like GeckoCIRCUITS, PLECS, Matlab/Octave
@@ -82,6 +85,7 @@ Here are some screenshots of the GUI:
 
 
 3. Transistordatabase Fileexchange
+*******************************
 
 `This <https://github.com/upb-lea/transistordatabase_File_Exchange>`__ repository contains the Transistors currently added to the Transistordatabase.
 Every Transistor from this repository can be automatically downloaded to your local Database. Since this only relies on the index.txt containing the links
