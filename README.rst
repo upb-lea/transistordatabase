@@ -97,46 +97,26 @@ Installation
 Windows
 *******
 
-Install Mongodb
----------------
-For the first usage, you need to install mongodb. Install with standard settings. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`__.
-
-Install git
-------------
-`Git Installation file <https://git-scm.com/download/win>`_.
-If you already have git installed, make sure you are using the latest version.
-
-.. note::
-    During installation, you will be asked 'Which editor would you like Git to use?'. Default is 'Vim', but it is one of the most complex one for beginners. Switch to 'Notepad++', 'Nano' or another one.
-
 Install Python
 --------------
 Install latest Python version: `Link <https://www.python.org/>`__.
 
-Install Pycharm
+Install Pycharm (optional)
 ---------------
 `Installation file <https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC>`_.
 
 Download and run executable
 ---------------------------
-Download exe-file here:
+Download exe-file here: ...
 
 
 Linux
 *****
-Archlinux / Manjaro
-
-Enable Arch-User-Repository `(AUR) <https://aur.archlinux.org/packages/mongodb-bin/>`_.
-
-.. code-block::
-
-   sudo pacman -Syu mongodb-bin git pycharm
-
 Ubuntu
 
 .. code-block::
 
-   sudo apt install python3 python3-pip git
+   sudo apt install python3 python3-pip
 
 .. note::
     Install pycharm from Snapstore
@@ -153,33 +133,22 @@ Complete minimal python example
 Copy this example to a new pycharm project.
 
 .. code-block::
+    from transistordatabase.database_manager import DatabaseManager
 
-    # load the python package
-    import transistordatabase as tdb
+    # Path for json files
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example")
 
-    # update the database from the online git-repository
-    tdb.update_from_fileexchange()
+    # Create DatabaseManager instance and set it to json format
+    tdb_json = DatabaseManager()
+    tdb_json.set_operation_mode_json(path)
 
-    # print the database
-    tdb.print_tdb()
+    # Print database
+    tdb_json.print_tdb()
 
-    # load a transistor from the database
-    transistor_loaded = tdb.load('CREE_C3M0016120K')
-
-    # export a virtual datasheet
-    transistor_loaded.export_datasheet()
-
-On the output line, you should see a message which links to the datasheet file. Click on it to view the datasheet in your browser. If this works, you have set up the transistor database correctly.
 
 ##########################
 transistordatabase's usage
 ##########################
-
-Import transistordatabase to your python program
-
-.. code-block::
-
-    import transistordatabase as tdb
 
 Generate a new transistor
 *************************
@@ -236,52 +205,19 @@ In many cases, two capacity curves are specified in the data sheets. One curve f
 				   ...
                    }
 
-Update and load and share transistors
-*************************************
+Example Code
+*************
 
-Update transistors from file exchange
--------------------------------------
-There is a file exchange to share transistor objects. The repository can be found `here <https://github.com/upb-lea/transistordatabase_File_Exchange>`__. To update your local transistordatabase type in to your python code
+For example code please have a look at the examples/first_example.py file.
 
-.. code-block::
 
-    tdb.update_from_fileexchange()
+Publishing transistors
+************************
 
-After this, you can find new or updated transistor files in your local transistordatabase.
+If you want to publish your transistors please have a look at this repository: `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`__
+This repository contains some transistor data. You can upload your transistors by generating a pull request.
+If you don't want to create a github account, you can also send the .json file to this :email:`email address <tdb@lea.upb.de>`.
 
-Search the database
--------------------
-Print all transistors inside the database
-
-.. code-block::
-
-    tdb.print_tdb()
-
-If you want to store the transistor list, this function returns the names in a variable. Next option is the usage of filters, e.g. print the housing type and the hyperlink to the datasheet. All database entries can be used as filter.
-
-.. code-block::
-
-    tdb.print_TDB(['housing_type','datasheet_hyperlink'])
-
-Load a transistor from the database
------------------------------------
-
-.. code-block::
-
-    transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
-
-Share your transistors with the world
--------------------------------------
-Use your local generated transistor, load it into your workspace and export it, e.g.
-
-.. code-block::
-
-    transistor_loaded = load('CREE_C3M0016120K')
-    transistor_loaded.export_json()
-
-You can upload this file to the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`__  by generating a pull request.
-
-if you don't want to create a github account, you can also send the .json file to this :email:`email address <tdb@lea.upb.de>`.
 
 Usage of Transistor.wp. in your programs
 *********************************************
@@ -444,6 +380,14 @@ A .mat-file is generated, the exporting path will be displayed in the python con
 .. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Matlab.png
     :align: center
     :alt: Matlab .mat exporter usage example
+
+For developers
+***********************
+
+Currently the transistordatabase does not only support a json format but also a mongodb database.
+Therefore mongodb needs to be installed:
+Install with standard settings. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`__.
+
 
 #######
 Others
