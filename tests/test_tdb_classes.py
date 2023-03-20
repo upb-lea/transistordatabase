@@ -8,6 +8,9 @@ import mongomock
 from unittest.mock import patch
 import os
 
+################
+#### DEPRECATED - May not work since refactoring
+################
 
 @pytest.fixture()
 def my_transistor():

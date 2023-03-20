@@ -278,19 +278,26 @@ class Transistor:
 
     def __eq__(self, other) -> bool:
         """
-        This method checks if the passed transistor object and the transistor object in scope are both same by matching their object id's
+        This method checks if the passed transistor object and the transistor object in scope are both same by converting them
+        to dict and checking the dict for equality (without the id).
 
         :param other: Expects transistor object
         :return: True or False
         :rtype: bool
         """
+        # TODO Is this the fastest way to check for equality?
         if not isinstance(other, Transistor):
             # don't attempt to compare against unrelated types
             return NotImplemented
+        
         my_dict = self.convert_to_dict()
-        my_dict.pop('_id', None)
         other_dict = other.convert_to_dict()
-        other_dict.pop('_id', None)
+
+        if "_id" in my_dict:
+            del my_dict["_id"]
+        if "_id" in other_dict:
+            del other_dict["_id"]
+
         return my_dict == other_dict
 
 
