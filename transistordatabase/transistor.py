@@ -318,6 +318,7 @@ class Transistor:
             self._id = None
         d = dict(vars(self))
         d.pop('wp', None)  # remove wp from converting. wp will not be stored to .json files
+        d.pop('_id', None)
         d['diode'] = self.diode.convert_to_dict()
         d['switch'] = self.switch.convert_to_dict()
         d['c_oss_er'] = self.c_oss_er.convert_to_dict() if self.c_oss_er is not None else None

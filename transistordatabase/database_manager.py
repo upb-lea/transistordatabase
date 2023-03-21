@@ -7,6 +7,7 @@ import numpy as np
 import os
 import json
 import requests
+import deepdiff
 import glob # Can this be removed?
 
 # Local libraries
@@ -260,6 +261,10 @@ class DatabaseManager:
         :type index_url: str
         :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
         :type overwrite: bool
+        :param module_manufacturers_url: URL to the module manufacturers file
+        :type module_manufacturers_url: str
+        :param housing_types_url: URL to the housing typess file
+        :type housing_types_url: str
 
         :return: None
         :rtype: None
@@ -305,6 +310,55 @@ class DatabaseManager:
             self.housing_types = read_data_file(self.housing_types_file_path)
             print("Updated housing types.")
 
+
+    def compare_with_fileexchange(self, index_url: str, output_file: str):
+        """Compares the current database with the given database from the fileexchange.
+        Writes the difference in the given output_file.
+
+        :param index_url: URL to the index file containing links to the Transistors of the Database.
+        :type index_url: str
+        :param output_file: File path to the file where the diff is written
+        :type output_file: str
+        """
+        current_transistor_list = self.get_transistor_names_list()
+
+        # Read links from index_url
+        diff_dict = {} # Dictionary containing the key as the name of the transistor and the value is the diff text.
+        index_response = requests.get(index_url)
+        if not index_response.ok:
+            raise Exception(f"Index file was not found. URL: {index_url}")
+        
+        for transistor_url in index_response.iter_lines():
+            transistor_response = requests.get(transistor_url)
+            if not transistor_response.ok:
+                print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
+                continue
+
+            downloaded_transistor_dict = transistor_response.json()
+            downloaded_transistor_name = downloaded_transistor_dict["name"]
+            if downloaded_transistor_name in current_transistor_list:
+                existing_transistor_dict = self.load_transistor(downloaded_transistor_name).convert_to_dict()
+                # Here it is necessary to first get the deepdiff as json and then back to a dictionary. Because when calling DeepDiff().to_dict() it wouldn't be
+                # json serializable due to a datatype called PrettyOrderedSet.
+                # And since the to_json returns a srting it needs to be converted back to a dict in order to be represented well in the output file.
+                diff = json.loads(deepdiff.DeepDiff(existing_transistor_dict, downloaded_transistor_dict).to_json())
+                if diff:
+                    diff_dict[downloaded_transistor_name] = diff
+                current_transistor_list.remove(downloaded_transistor_name)
+            else:
+                # Transistor is not in local database
+                diff_dict[downloaded_transistor_name] = "Transistor missing in local database."
+
+        for not_found_transistor in current_transistor_list:
+            # Transistor was installed locally but not in database
+            diff_dict[not_found_transistor] = "Transistor exists in local database but is not on the given fileexchange."
+
+        if not diff_dict:
+            print("The local database is equal to the given fileexchange database.") 
+        else:
+            print("There are differences found between the local database and the given fileexchange database. Please have a look at the output file.")
+            with open(output_file, "w") as fd:
+                json.dump(diff_dict, fd, indent=2)
 
     def export_all_datasheets(self, filter_list: list = None):
         """A method to export all the available transistor data present in the local mongoDB database
