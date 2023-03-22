@@ -34,15 +34,21 @@ class DatabaseManager:
     housing_types_file_path: str
 
 
-    def __init__(self):
+    def __init__(self, housing_types_file_path: str = None, module_manufacturers_file_path: str = None):
         self.operation_mode = None
         self.tdb_directory = os.path.dirname(os.path.abspath(__file__))
 
         # Load housing_types and module_manufacturers
-        self.housing_types_file_path = os.path.join(self.tdb_directory, "data", "housing_types.txt")
+        if housing_types_file_path is None:
+            self.housing_types_file_path = os.path.join(self.tdb_directory, "data", "housing_types.txt")
+        else:
+            self.housing_types_file_path = housing_types_file_path
         self.housing_types = read_data_file(self.housing_types_file_path)
 
-        self.module_manufacturers_file_path = os.path.join(self.tdb_directory, "data", "module_manufacturers.txt")
+        if module_manufacturers_file_path is None:
+            self.module_manufacturers_file_path = os.path.join(self.tdb_directory, "data", "module_manufacturers.txt")
+        else:
+            self.module_manufacturers_file_path = module_manufacturers_file_path
         self.module_manufacturers = read_data_file(self.module_manufacturers_file_path)
 
 
@@ -364,6 +370,7 @@ class DatabaseManager:
             print("There are differences found between the local database and the given fileexchange database. Please have a look at the output file.")
             with open(output_file, "w") as fd:
                 json.dump(diff_dict, fd, indent=2)
+
 
     def export_all_datasheets(self, filter_list: list = None):
         """A method to export all the available transistor data present in the local mongoDB database
