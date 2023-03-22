@@ -52,12 +52,9 @@ def example_mongodb_database():
 
 def example_update_from_online_database():
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example_downloaded")
-    index_url = r"https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/index.txt"
-    module_manufacturers_url = r"https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/module_manufacturers.txt"
-    housing_types_url = r"https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/housing_types.txt"
     db = DatabaseManager()
     db.set_operation_mode_json(path)
-    db.update_from_fileexchange(index_url, True, module_manufacturers_url, housing_types_url)
+    db.update_from_fileexchange(True)
 
     # Compare local database to exchange database:
     #diff_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "diff.json")

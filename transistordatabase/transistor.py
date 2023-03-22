@@ -361,7 +361,7 @@ class Transistor:
                         'v_supply': 1,
                         'r_g': 1,
                         "graph_i_e": [np.array([[0, 0], [0, 0]]), np.array([[0, 0], [0, 0]])]}
-                self.wp.e_rr = self.SwitchEnergyData(args)
+                self.wp.e_rr = SwitchEnergyData(args)
             # ToDo: This could be handled more nicely by implementing another method for Diode and Channel class so the
             #  object can "linearize itself".
             self.wp.diode_v_channel, self.wp.diode_r_channel = \

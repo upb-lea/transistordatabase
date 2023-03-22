@@ -33,6 +33,7 @@ class DatabaseManager:
     module_manufacturers_file_path: str
     housing_types_file_path: str
 
+
     def __init__(self):
         self.operation_mode = None
         self.tdb_directory = os.path.dirname(os.path.abspath(__file__))
@@ -44,10 +45,11 @@ class DatabaseManager:
         self.module_manufacturers_file_path = os.path.join(self.tdb_directory, "data", "module_manufacturers.txt")
         self.module_manufacturers = read_data_file(self.module_manufacturers_file_path)
 
-    def set_operation_mode_json(self, json_folder_path: str) -> None:
+
+    def set_operation_mode_json(self, json_folder_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database")) -> None:
         """
         Sets operation mode to json. In order to function properly it is necessary that the given folder path
-        is empty and is only used by this database.
+        is empty and is only used by this database. If no path is given the transistordatabase will be created in the package folder.
 
         :param json_path: Path to json folder.
         :type json_path: str
@@ -254,9 +256,12 @@ class DatabaseManager:
             return transistor_list
 
     
-    def update_from_fileexchange(self, index_url: str, overwrite: bool = True, module_manufacturers_url: str = None, housing_types_url: str = None) -> None:
+    def update_from_fileexchange(self, overwrite: bool = True, index_url: str = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/index.txt",
+                                    module_manufacturers_url: str = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/module_manufacturers.txt",
+                                    housing_types_url: str = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/housing_types.txt") -> None:
         """Update your local transistor database from transistordatabase-fileexchange from given index-file url. Also updates module manufacturers and housing types.
-
+        If no index_url or module_manufacturers_url or housing_types_url is given the default Transistordatabase Fileexchange URLs are taken.
+        
         :param index_url: URL to the index file which contains the links to all the transistor files (json formatted).
         :type index_url: str
         :param overwrite: True to overwrite existing transistor objects in local database, False to not overwrite existing transistor objects in local database.
