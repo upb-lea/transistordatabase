@@ -55,7 +55,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_search_database">
        <attribute name="title">
@@ -218,11 +218,11 @@
           <property name="columnCount">
            <number>100</number>
           </property>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>200</number>
-          </attribute>
           <attribute name="horizontalHeaderMinimumSectionSize">
            <number>0</number>
+          </attribute>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>200</number>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>false</bool>
@@ -524,38 +524,41 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>342</width>
-             <height>1061</height>
+             <width>331</width>
+             <height>993</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="24" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_r_g_off_recommended">
+            <item row="23" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_g_off_recommended_min">
               <property name="maximumSize">
                <size>
-                <width>140</width>
+                <width>40</width>
                 <height>16777215</height>
                </size>
               </property>
-              <property name="text">
-               <string>R_g_off_recommended</string>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
-            <item row="14" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_datasheet_version">
+            <item row="31" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_th_diode_cs_min">
               <property name="maximumSize">
                <size>
-                <width>140</width>
+                <width>40</width>
                 <height>16777215</height>
                </size>
               </property>
-              <property name="text">
-               <string>Datasheet Version</string>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
-            <item row="20" column="2">
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_name"/>
+            </item>
+            <item row="19" column="2">
              <widget class="QLineEdit" name="lineEdit_search_database_cooling_area_min">
               <property name="maximumSize">
                <size>
@@ -568,27 +571,8 @@
               </property>
              </widget>
             </item>
-            <item row="37" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_switch_comment">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="32" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_r_th_diode_cs">
+            <item row="10" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_comment">
               <property name="maximumSize">
                <size>
                 <width>140</width>
@@ -596,12 +580,25 @@
                </size>
               </property>
               <property name="text">
-               <string>R_th_diode_cs</string>
+               <string>Comment</string>
               </property>
              </widget>
             </item>
-            <item row="21" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_t_c_max_min">
+            <item row="21" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_r_g_int">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>R_g_int</string>
+              </property>
+             </widget>
+            </item>
+            <item row="29" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_th_cs_min">
               <property name="maximumSize">
                <size>
                 <width>40</width>
@@ -613,8 +610,34 @@
               </property>
              </widget>
             </item>
-            <item row="34" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_i_abs_max_max">
+            <item row="3" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_type">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Type</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_author">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Author</string>
+              </property>
+             </widget>
+            </item>
+            <item row="44" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_diode_t_j_max_min">
               <property name="maximumSize">
                <size>
                 <width>40</width>
@@ -626,8 +649,73 @@
               </property>
              </widget>
             </item>
-            <item row="44" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_diode_technology">
+            <item row="22" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_g_on_recommended_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="31" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_th_diode_cs_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_last_modified">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Last Modified</string>
+              </property>
+             </widget>
+            </item>
+            <item row="25" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_c_iss_fix_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_housing_area_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_template_date">
               <property name="minimumSize">
                <size>
                 <width>80</width>
@@ -645,7 +733,120 @@
               </property>
              </widget>
             </item>
-            <item row="14" column="1">
+            <item row="26" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_c_rss_fix_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_datasheet_date">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Datasheet Date</string>
+              </property>
+             </widget>
+            </item>
+            <item row="42" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_diode_manufacturer">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_contains">
+              <property name="text">
+               <string>contains</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="20" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_t_c_max">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>T_c_max</string>
+              </property>
+             </widget>
+            </item>
+            <item row="32" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_v_abs_max_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_comment">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="34" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_i_cont_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
              <widget class="QLineEdit" name="lineEdit_search_database_datasheet_version">
               <property name="minimumSize">
                <size>
@@ -664,8 +865,8 @@
               </property>
              </widget>
             </item>
-            <item row="8" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_template_date">
+            <item row="34" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_i_cont">
               <property name="maximumSize">
                <size>
                 <width>140</width>
@@ -673,12 +874,12 @@
                </size>
               </property>
               <property name="text">
-               <string>Template Date</string>
+               <string>I_cont</string>
               </property>
              </widget>
             </item>
-            <item row="37" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_switch_comment">
+            <item row="29" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_r_th_cs">
               <property name="maximumSize">
                <size>
                 <width>140</width>
@@ -686,12 +887,12 @@
                </size>
               </property>
               <property name="text">
-               <string>Switch Comment</string>
+               <string>R_th_cs</string>
               </property>
              </widget>
             </item>
-            <item row="45" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_diode_t_j_max">
+            <item row="42" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_diode_manufacturer">
               <property name="maximumSize">
                <size>
                 <width>140</width>
@@ -699,12 +900,12 @@
                </size>
               </property>
               <property name="text">
-               <string>Diode T_j_max</string>
+               <string>Diode Manufacturer</string>
               </property>
              </widget>
             </item>
-            <item row="45" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_diode_t_j_max_min">
+            <item row="25" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_c_iss_fix_min">
               <property name="maximumSize">
                <size>
                 <width>40</width>
@@ -716,65 +917,8 @@
               </property>
              </widget>
             </item>
-            <item row="10" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_last_modified">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="38" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_switch_manufacturer">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_template_version">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="25" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_c_oss_fix">
+            <item row="11" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_datasheet_hyperlink">
               <property name="maximumSize">
                <size>
                 <width>140</width>
@@ -782,12 +926,51 @@
                </size>
               </property>
               <property name="text">
-               <string>C_oss_fix</string>
+               <string>Datasheet Hyperlink</string>
               </property>
              </widget>
             </item>
-            <item row="31" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_th_switch_cs_min">
+            <item row="41" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_diode_comment">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Diode Comment</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_template_version">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Template Version</string>
+              </property>
+             </widget>
+            </item>
+            <item row="16" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_housing_type">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Housing Type</string>
+              </property>
+             </widget>
+            </item>
+            <item row="39" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_switch_t_j_max_min">
               <property name="maximumSize">
                <size>
                 <width>40</width>
@@ -799,46 +982,7 @@
               </property>
              </widget>
             </item>
-            <item row="34" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_i_abs_max_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="32" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_th_diode_cs_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="33" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_v_abs_max_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="1">
+            <item row="8" column="1">
              <widget class="QLineEdit" name="lineEdit_search_database_creation_date">
               <property name="minimumSize">
                <size>
@@ -857,7 +1001,331 @@
               </property>
              </widget>
             </item>
-            <item row="42" column="1">
+            <item row="32" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_v_abs_max_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_technology">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Technology</string>
+              </property>
+             </widget>
+            </item>
+            <item row="24" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_c_oss_fix_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_cooling_area">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Cooling Area</string>
+              </property>
+             </widget>
+            </item>
+            <item row="24" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_c_oss_fix">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>C_oss_fix</string>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_housing_area">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Housing Area</string>
+              </property>
+             </widget>
+            </item>
+            <item row="31" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_r_th_diode_cs">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>R_th_diode_cs</string>
+              </property>
+             </widget>
+            </item>
+            <item row="33" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_i_abs_max_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="22" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_g_on_recommended_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="44" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_diode_t_j_max_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="36" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_switch_comment">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Switch Comment</string>
+              </property>
+             </widget>
+            </item>
+            <item row="16" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_housing_type">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_cooling_area_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="21" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_g_int_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="32" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_v_abs_max">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>V_abs_max</string>
+              </property>
+             </widget>
+            </item>
+            <item row="30" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_th_switch_cs_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="33" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_i_abs_max_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="26" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_c_rss_fix_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_technology">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_manufacturer">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Manufacturer</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_name">
+              <property name="text">
+               <string>Name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="37" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_switch_manufacturer">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="39" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_switch_t_j_max">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Switch T_j_max</string>
+              </property>
+             </widget>
+            </item>
+            <item row="43" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_diode_technology">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Diode Technology</string>
+              </property>
+             </widget>
+            </item>
+            <item row="41" column="1">
              <widget class="QLineEdit" name="lineEdit_search_database_diode_comment">
               <property name="minimumSize">
                <size>
@@ -877,198 +1345,6 @@
              </widget>
             </item>
             <item row="24" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_g_off_recommended_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="23" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_r_g_on_recommended">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>R_g_on_recommended</string>
-              </property>
-             </widget>
-            </item>
-            <item row="40" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_switch_t_j_max_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="31" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_r_th_switch_cs">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>R_th_switch_cs</string>
-              </property>
-             </widget>
-            </item>
-            <item row="45" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_diode_t_j_max_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_contains">
-              <property name="text">
-               <string>contains</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="24" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_g_off_recommended_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="26" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_c_iss_fix_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="27" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_c_rss_fix">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>C_rss_fix</string>
-              </property>
-             </widget>
-            </item>
-            <item row="30" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_th_cs_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="43" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_diode_manufacturer">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Diode Manufacturer</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_last_modified">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Last Modified</string>
-              </property>
-             </widget>
-            </item>
-            <item row="33" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_v_abs_max_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="13" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_datasheet_date">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Datasheet Date</string>
-              </property>
-             </widget>
-            </item>
-            <item row="30" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_r_th_cs">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>R_th_cs</string>
-              </property>
-             </widget>
-            </item>
-            <item row="25" column="3">
              <widget class="QLineEdit" name="lineEdit_search_database_c_oss_fix_max">
               <property name="maximumSize">
                <size>
@@ -1081,294 +1357,7 @@
               </property>
              </widget>
             </item>
-            <item row="8" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_template_date">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
             <item row="30" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_th_cs_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="17" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_housing_type">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="23" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_g_on_recommended_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="42" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_diode_comment">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Diode Comment</string>
-              </property>
-             </widget>
-            </item>
-            <item row="21" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_t_c_max">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>T_c_max</string>
-              </property>
-             </widget>
-            </item>
-            <item row="17" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_housing_type">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Housing Type</string>
-              </property>
-             </widget>
-            </item>
-            <item row="35" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_i_cont_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="39" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_switch_technology">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="20" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_cooling_area">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Cooling Area</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_comment">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Comment</string>
-              </property>
-             </widget>
-            </item>
-            <item row="23" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_g_on_recommended_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="26" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_c_iss_fix_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="33" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_v_abs_max">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>V_abs_max</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_technology">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Technology</string>
-              </property>
-             </widget>
-            </item>
-            <item row="19" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_housing_area_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="16" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_manufacturer">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Manufacturer</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_name"/>
-            </item>
-            <item row="22" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_g_int_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_author">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Author</string>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_datasheet_hyperlink">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="31" column="3">
              <widget class="QLineEdit" name="lineEdit_search_database_r_th_switch_cs_max">
               <property name="maximumSize">
                <size>
@@ -1381,175 +1370,7 @@
               </property>
              </widget>
             </item>
-            <item row="19" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_housing_area">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Housing Area</string>
-              </property>
-             </widget>
-            </item>
-            <item row="22" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_r_g_int">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>R_g_int</string>
-              </property>
-             </widget>
-            </item>
-            <item row="21" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_t_c_max_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="44" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_diode_technology">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Diode Technology</string>
-              </property>
-             </widget>
-            </item>
-            <item row="27" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_c_rss_fix_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="35" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_i_cont_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_datasheet_hyperlink">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Datasheet Hyperlink</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_technology">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_template_version">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Template Version</string>
-              </property>
-             </widget>
-            </item>
-            <item row="40" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_switch_t_j_max_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="16" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_manufacturer">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="35" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_i_cont">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>I_cont</string>
-              </property>
-             </widget>
-            </item>
-            <item row="34" column="0">
+            <item row="33" column="0">
              <widget class="QCheckBox" name="checkBox_search_database_i_abs_max">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1574,8 +1395,8 @@
               </property>
              </widget>
             </item>
-            <item row="43" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_diode_manufacturer">
+            <item row="38" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_switch_technology">
               <property name="minimumSize">
                <size>
                 <width>80</width>
@@ -1593,53 +1414,8 @@
               </property>
              </widget>
             </item>
-            <item row="26" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_c_iss_fix">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>C_iss_fix</string>
-              </property>
-             </widget>
-            </item>
-            <item row="38" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_switch_manufacturer">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Switch Manufacturer</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_author">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="27" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_c_rss_fix_max">
+            <item row="39" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_switch_t_j_max_max">
               <property name="maximumSize">
                <size>
                 <width>40</width>
@@ -1648,6 +1424,19 @@
               </property>
               <property name="clearButtonEnabled">
                <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="38" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_switch_technology">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Switch Technology</string>
               </property>
              </widget>
             </item>
@@ -1661,18 +1450,21 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_greater_than">
-              <property name="text">
-               <string>min</string>
+            <item row="25" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_c_iss_fix">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
+              <property name="text">
+               <string>C_iss_fix</string>
               </property>
              </widget>
             </item>
-            <item row="22" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_g_int_min">
+            <item row="18" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_housing_area_max">
               <property name="maximumSize">
                <size>
                 <width>40</width>
@@ -1684,33 +1476,33 @@
               </property>
              </widget>
             </item>
-            <item row="11" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_comment">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="7" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_template_date">
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>140</width>
                 <height>16777215</height>
                </size>
               </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_name">
               <property name="text">
-               <string>Name</string>
+               <string>Template Date</string>
               </property>
              </widget>
             </item>
-            <item row="13" column="1">
+            <item row="23" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_r_g_off_recommended">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>R_g_off_recommended</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="1">
              <widget class="QLineEdit" name="lineEdit_search_database_datasheet_date">
               <property name="minimumSize">
                <size>
@@ -1729,8 +1521,8 @@
               </property>
              </widget>
             </item>
-            <item row="19" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_housing_area_max">
+            <item row="34" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_i_cont_max">
               <property name="maximumSize">
                <size>
                 <width>40</width>
@@ -1742,24 +1534,17 @@
               </property>
              </widget>
             </item>
-            <item row="39" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_switch_technology">
-              <property name="maximumSize">
+            <item row="9" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_last_modified">
+              <property name="minimumSize">
                <size>
-                <width>140</width>
-                <height>16777215</height>
+                <width>80</width>
+                <height>0</height>
                </size>
               </property>
-              <property name="text">
-               <string>Switch Technology</string>
-              </property>
-             </widget>
-            </item>
-            <item row="20" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_cooling_area_max">
               <property name="maximumSize">
                <size>
-                <width>40</width>
+                <width>80</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -1768,46 +1553,7 @@
               </property>
              </widget>
             </item>
-            <item row="9" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_creation_date">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Creation Date</string>
-              </property>
-             </widget>
-            </item>
-            <item row="25" column="2">
-             <widget class="QLineEdit" name="lineEdit_search_database_c_oss_fix_min">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="40" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_switch_t_j_max">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Switch T_j_max</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
+            <item row="3" column="1">
              <widget class="QLineEdit" name="lineEdit_search_database_type">
               <property name="minimumSize">
                <size>
@@ -1826,59 +1572,8 @@
               </property>
              </widget>
             </item>
-            <item row="32" column="3">
-             <widget class="QLineEdit" name="lineEdit_search_database_r_th_diode_cs_max">
-              <property name="maximumSize">
-               <size>
-                <width>40</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_type">
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Type</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QCheckBox" name="checkBox_search_database_id">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>ID</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_search_database_id">
+            <item row="11" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_datasheet_hyperlink">
               <property name="minimumSize">
                <size>
                 <width>80</width>
@@ -1893,6 +1588,267 @@
               </property>
               <property name="clearButtonEnabled">
                <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_creation_date">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Creation Date</string>
+              </property>
+             </widget>
+            </item>
+            <item row="20" column="2">
+             <widget class="QLineEdit" name="lineEdit_search_database_t_c_max_min">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_greater_than">
+              <property name="text">
+               <string>min</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="30" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_r_th_switch_cs">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>R_th_switch_cs</string>
+              </property>
+             </widget>
+            </item>
+            <item row="44" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_diode_t_j_max">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Diode T_j_max</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_datasheet_version">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Datasheet Version</string>
+              </property>
+             </widget>
+            </item>
+            <item row="20" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_t_c_max_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="26" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_c_rss_fix">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>C_rss_fix</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_template_version">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="29" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_th_cs_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="23" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_g_off_recommended_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_manufacturer">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="36" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_switch_comment">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="37" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_switch_manufacturer">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Switch Manufacturer</string>
+              </property>
+             </widget>
+            </item>
+            <item row="21" column="3">
+             <widget class="QLineEdit" name="lineEdit_search_database_r_g_int_max">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="43" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_diode_technology">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="lineEdit_search_database_author">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="22" column="0">
+             <widget class="QCheckBox" name="checkBox_search_database_r_g_on_recommended">
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>R_g_on_recommended</string>
               </property>
              </widget>
             </item>
@@ -1928,9 +1884,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-2038</y>
-             <width>1367</width>
-             <height>2834</height>
+             <y>0</y>
+             <width>1379</width>
+             <height>2742</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
@@ -10292,8 +10248,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1836</width>
-             <height>1041</height>
+             <width>1830</width>
+             <height>1017</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout">
@@ -11209,8 +11165,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1836</width>
-             <height>1061</height>
+             <width>1830</width>
+             <height>1038</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
@@ -12809,7 +12765,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">

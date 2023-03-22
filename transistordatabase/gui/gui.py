@@ -590,7 +590,6 @@ class MainWindow(QMainWindow):
         self.button_update_from_fileexchange.clicked.connect(self.update_database_from_fileexchange)
 
         # connect all checkBoxes(when state changed) and lineEdits(when text changed) to the functions to load data into the tableWidget
-        self.checkBox_search_database_id.stateChanged.connect(self.search_database_load_data)
         self.checkBox_search_database_name.stateChanged.connect(self.search_database_load_data)
         self.checkBox_search_database_type.stateChanged.connect(self.search_database_load_data)
         self.checkBox_search_database_author.stateChanged.connect(self.search_database_load_data)
@@ -665,7 +664,6 @@ class MainWindow(QMainWindow):
         self.lineEdit_search_database_switch_t_j_max_max.textChanged.connect(self.search_database_load_data)
         self.lineEdit_search_database_diode_t_j_max_max.textChanged.connect(self.search_database_load_data)
 
-        self.lineEdit_search_database_id.textChanged.connect(self.search_database_load_data)
         self.lineEdit_search_database_name.textChanged.connect(self.search_database_load_data)
         self.lineEdit_search_database_type.textChanged.connect(self.search_database_load_data)
         self.lineEdit_search_database_author.textChanged.connect(self.search_database_load_data)
@@ -820,8 +818,7 @@ class MainWindow(QMainWindow):
 
         :return: all_settings_dict: dict containing the name of each widget and its value
         """
-        search_database_settings_dict = {"checkBox_search_database_id": self.checkBox_search_database_id.isChecked(),
-                                         "checkBox_search_database_name": self.checkBox_search_database_name.isChecked(),
+        search_database_settings_dict = {"checkBox_search_database_name": self.checkBox_search_database_name.isChecked(),
                                          "checkBox_search_database_type": self.checkBox_search_database_type.isChecked(),
                                          "checkBox_search_database_author": self.checkBox_search_database_author.isChecked(),
                                          "checkBox_search_database_technology": self.checkBox_search_database_technology.isChecked(),
@@ -858,7 +855,6 @@ class MainWindow(QMainWindow):
                                          "checkBox_search_database_diode_manufacturer": self.checkBox_search_database_diode_manufacturer.isChecked(),
                                          "checkBox_search_database_diode_technology": self.checkBox_search_database_diode_technology.isChecked(),
                                          "checkBox_search_database_diode_t_j_max": self.checkBox_search_database_diode_t_j_max.isChecked(),
-                                         "lineEdit_search_database_id": self.lineEdit_search_database_id.text(),
                                          "lineEdit_search_database_name": self.lineEdit_search_database_name.text(),
                                          "lineEdit_search_database_type": self.lineEdit_search_database_type.text(),
                                          "lineEdit_search_database_author": self.lineEdit_search_database_author.text(),
@@ -1087,7 +1083,6 @@ class MainWindow(QMainWindow):
         :param all_settings_dict: dict containing all settings
         :return: None
         """
-        self.checkBox_search_database_id.setChecked(all_settings_dict["checkBox_search_database_id"])
         self.checkBox_search_database_name.setChecked(all_settings_dict["checkBox_search_database_name"])
         self.checkBox_search_database_type.setChecked(all_settings_dict["checkBox_search_database_type"])
         self.checkBox_search_database_author.setChecked(all_settings_dict["checkBox_search_database_author"])
@@ -1148,7 +1143,6 @@ class MainWindow(QMainWindow):
             all_settings_dict["checkBox_search_database_diode_technology"])
         self.checkBox_search_database_diode_t_j_max.setChecked(
             all_settings_dict["checkBox_search_database_diode_t_j_max"])
-        self.lineEdit_search_database_id.setText(all_settings_dict["lineEdit_search_database_id"])
         self.lineEdit_search_database_name.setText(all_settings_dict["lineEdit_search_database_name"])
         self.lineEdit_search_database_type.setText(all_settings_dict["lineEdit_search_database_type"])
         self.lineEdit_search_database_author.setText(all_settings_dict["lineEdit_search_database_author"])
@@ -2840,12 +2834,6 @@ class MainWindow(QMainWindow):
         :return: None
         """
         dict = self.create_transistor()
-        transistor_new = dict["transistor"]
-
-        transistor_old = self.tdb.load_transistor(transistor_new.name)
-
-        id = transistor_old._id
-
         transistor_new = Transistor(dict["transistor_args"], dict["switch_args"], dict["diode_args"])
 
         # Add new DPT data to overwritten transistor object
@@ -3491,10 +3479,6 @@ class MainWindow(QMainWindow):
                 if transistor[key] == None:
                     transistor[key] = 0
 
-        if self.lineEdit_search_database_id.text() != "":
-            id = self.lineEdit_search_database_id.text()
-        else:
-            id = ""
         if self.lineEdit_search_database_name.text() != "":
             name = self.lineEdit_search_database_name.text()
         else:
@@ -3825,7 +3809,7 @@ class MainWindow(QMainWindow):
         # Maybe a path for the json file can be given as a parameter?
         transistor = self.tdb.load_transistor(self.comboBox_export_transistor.currentText())
         json_path = os.path.join(os.getcwd(), f"{transistor.name}.json")
-        with open(json_path) as fd:
+        with open(json_path, "w") as fd:
             json.dump(transistor.convert_to_dict(), fd)
         self.show_popup_message(
             f"Exported a json file for {transistor.name} to {json_path}")
