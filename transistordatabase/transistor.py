@@ -1084,6 +1084,44 @@ class Transistor:
 
         # plt.tight_layout()
         plt.show()
+        
+    def raw_measurement_data_plots(self):
+        
+        '''takes the raw measurement data attribute and traverses through 
+        the list for each present method and loads the ids and vds data for
+        in 3 separate lists.'''
+        
+        plots_vds_id_t=[]  
+        for k in self.raw_measurement_data:
+            raw_data_vds = k.dpt_on_vds
+            raw_data_ids = k.dpt_on_id
+            for i in range(len(raw_data_ids)):
+                time_val = []
+                vds_val = []
+                id_val = []
+                for j in range(len(raw_data_ids[i])):
+                    time_val.append(raw_data_vds[i][j][0])
+                    vds_val.append(raw_data_vds[i][j][1])
+                    id_val.append(raw_data_ids[i][j][1])
+                plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
+                
+    
+    def plot_curves(self, arr1, arr2, arr3, buffer_req: bool = False):
+        plots = plt.figure()
+        plot_vds = plots.add_subplot(111)
+        plot_vds.set_xlabel('time (s)')
+        plot_vds.set_ylabel('Voltage (V)', color='tab:red')
+        plot_vds.plot(arr1,arr2, color='red')
+        plot_vds.tick_params(axis='y', labelcolor='tab:red')
+        plot_ids = plot_vds.twinx()
+        plot_ids.set_ylabel('Current (A)', color='tab:blue')
+        plot_ids.plot(arr1,arr3)
+        plot_ids.tick_params(axis='y', labelcolor='tab:blue')
+        plots.tight_layout()
+        plt.title("Raw Measurement Data Characteristics")
+        plt.legend()
+        plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+        return plots   
 
     def export_datasheet(self, build_collection=False) -> str | None:
         """
