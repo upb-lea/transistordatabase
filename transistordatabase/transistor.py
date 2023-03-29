@@ -1087,11 +1087,16 @@ class Transistor:
         
     def raw_measurement_data_plots(self):
         
-        '''takes the raw measurement data attribute and traverses through 
+        '''
+        Takes the raw measurement data attribute and traverses through 
         the list for each present method and loads the ids and vds data for
-        in 3 separate lists.'''
+        in 3 separate lists.
         
-        plots_vds_id_t=[]  
+        return  plots in img form in a list   
+        rtype None
+        '''
+        
+        plots_vds_id_t=[]     
         for k in self.raw_measurement_data:
             raw_data_vds = k.dpt_on_vds
             raw_data_ids = k.dpt_on_id
@@ -1106,22 +1111,35 @@ class Transistor:
                 plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
                 
     
-    def plot_curves(self, arr1, arr2, arr3, buffer_req: bool = False):
+    def plot_curves(self, time_array, vds_values, ids_values, buffer_req: bool = False):
+        
+        ''' 
+        Takes three lists of time, vds and id values and generates a combined plot.
+        Calls the get_img_raw_data function for returning img form of the plot and returns the images.
+        
+        :param time_array : time values in the raw measurement data 
+        :param vds_values : vds values in the raw measurement data
+        :param id_values : id values in the raw measurement data  
+        return image form of the plot
+        rtype decoded raw image data to utf-8
+        
+        '''
+        
         plots = plt.figure()
         plot_vds = plots.add_subplot(111)
-        plot_vds.set_xlabel('time (s)')
+        plot_vds.set_xlabel('Time (s)')
         plot_vds.set_ylabel('Voltage (V)', color='tab:red')
-        plot_vds.plot(arr1,arr2, color='red')
+        plot_vds.plot(time_array,vds_values, color='red')
         plot_vds.tick_params(axis='y', labelcolor='tab:red')
         plot_ids = plot_vds.twinx()
         plot_ids.set_ylabel('Current (A)', color='tab:blue')
-        plot_ids.plot(arr1,arr3)
+        plot_ids.plot(time_array,ids_values)
         plot_ids.tick_params(axis='y', labelcolor='tab:blue')
         plots.tight_layout()
         plt.title("Raw Measurement Data Characteristics")
         plt.legend()
         plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
-        return plots   
+        return get_img_raw_data(plots)   
 
     def export_datasheet(self, build_collection=False) -> str | None:
         """
@@ -1140,10 +1158,14 @@ class Transistor:
         """
         # listV = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         pdf_data = {}
+        
         devices = {}
         skip_ids = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
-        pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
+        if (len(self.raw_measurement_data) > 0):
+            pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots), 'raw_measurement_plots': self.raw_measurement_data_plots(self)}    
+        else:
+            pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
         # pdfData['c_plots'] = get_vc_plots(cap_plots)
         # pdfData['soa'] = self.plot_soa(True)
         for attr in dir(self):
