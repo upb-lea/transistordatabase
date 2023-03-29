@@ -1093,7 +1093,7 @@ class Transistor:
         in 3 separate lists.
         
         return  plots in img form in a list   
-        rtype None
+        rtype list of plots 
         '''
         
         plots_vds_id_t=[]     
@@ -1109,6 +1109,7 @@ class Transistor:
                     vds_val.append(raw_data_vds[i][j][1])
                     id_val.append(raw_data_ids[i][j][1])
                 plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
+        return plots_vds_id_t
                 
     
     def plot_curves(self, time_array, vds_values, ids_values, buffer_req: bool = False):
