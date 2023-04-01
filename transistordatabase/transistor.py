@@ -1099,9 +1099,10 @@ class Transistor:
         rtype list of img plots along test conditions
         '''
         
-        plots_vds_id_t = []     
+        plots_vds_id_t = []
+        test_conditions = []     
         for raw_measurements in self.raw_measurement_data:
-            test_conditions = []
+            conditions = []
             raw_data_vds = raw_measurements.dpt_on_vds
             raw_data_ids = raw_measurements.dpt_on_id
             for i in range(len(raw_data_ids)):
@@ -1113,15 +1114,16 @@ class Transistor:
                     vds_val.append(raw_data_vds[i][j][1])
                     id_val.append(raw_data_ids[i][j][1])
                 plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
-            test_conditions.append(raw_measurements.t_j)
-            test_conditions.append(raw_measurements.v_supply)
-            test_conditions.append(raw_measurements.v_g)
-            test_conditions.append(raw_measurements.v_g_off)
-            test_conditions.append(raw_measurements.r_g)
-            test_conditions.append(raw_measurements.r_g_off)
-            test_conditions.append(raw_measurements.load_inductance)
-            test_conditions.append(raw_measurements.commutation_inductance)
-            plots_vds_id_t.append(test_conditions)
+            conditions.append(raw_measurements.t_j)
+            conditions.append(raw_measurements.v_supply)
+            conditions.append(raw_measurements.v_g)
+            conditions.append(raw_measurements.v_g_off)
+            conditions.append(raw_measurements.r_g)
+            conditions.append(raw_measurements.r_g_off)
+            conditions.append(raw_measurements.load_inductance)
+            conditions.append(raw_measurements.commutation_inductance)
+            test_conditions.append(conditions)
+        plots_vds_id_t.append(test_conditions)
         return plots_vds_id_t
                 
     
@@ -1177,7 +1179,8 @@ class Transistor:
         skip_ids = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
         if (len(self.raw_measurement_data) > 0):
-            pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots), 'raw_measurement_plots': self.raw_measurement_data_plots(self)}    
+            plots = [self.raw_measurement_data_plots(self)[:-1]]
+            pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots), 'raw_measurement_plots': plots}    
         else:
             pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
         # pdfData['c_plots'] = get_vc_plots(cap_plots)
