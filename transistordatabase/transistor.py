@@ -1090,16 +1090,20 @@ class Transistor:
         '''
         Takes the raw measurement data attribute and traverses through 
         the list for each present method and loads the ids and vds data for
-        in 3 separate lists.
+        in 3 separate lists. The three lists are used as input for plot_curves function which
+        returns the combined and scaled plots for the data. The combined plots are returned in img bytes format
+        using the get_img_raw_data function. The img plots are then stored in plots_vds_id_t list.
+        The test conditions of the data are then also added in a list form to the plots_vds_id_t. 
         
-        return  plots in img form in a list   
-        rtype list of plots 
+        return  plots in img form along test conditions in a list   
+        rtype list of img plots along test conditions
         '''
         
-        plots_vds_id_t=[]     
-        for k in self.raw_measurement_data:
-            raw_data_vds = k.dpt_on_vds
-            raw_data_ids = k.dpt_on_id
+        plots_vds_id_t = []     
+        for raw_measurements in self.raw_measurement_data:
+            test_conditions = []
+            raw_data_vds = raw_measurements.dpt_on_vds
+            raw_data_ids = raw_measurements.dpt_on_id
             for i in range(len(raw_data_ids)):
                 time_val = []
                 vds_val = []
@@ -1109,6 +1113,15 @@ class Transistor:
                     vds_val.append(raw_data_vds[i][j][1])
                     id_val.append(raw_data_ids[i][j][1])
                 plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
+            test_conditions.append(raw_measurements.t_j)
+            test_conditions.append(raw_measurements.v_supply)
+            test_conditions.append(raw_measurements.v_g)
+            test_conditions.append(raw_measurements.v_g_off)
+            test_conditions.append(raw_measurements.r_g)
+            test_conditions.append(raw_measurements.r_g_off)
+            test_conditions.append(raw_measurements.load_inductance)
+            test_conditions.append(raw_measurements.commutation_inductance)
+            plots_vds_id_t.append(test_conditions)
         return plots_vds_id_t
                 
     
