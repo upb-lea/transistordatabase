@@ -1102,7 +1102,7 @@ class Transistor:
         plots_vds_id_t = []
         test_conditions = []     
         for raw_measurements in self.raw_measurement_data:
-            conditions = []
+            conditions = {}
             raw_data_vds = raw_measurements.dpt_on_vds
             raw_data_ids = raw_measurements.dpt_on_id
             for i in range(len(raw_data_ids)):
@@ -1114,14 +1114,14 @@ class Transistor:
                     vds_val.append(raw_data_vds[i][j][1])
                     id_val.append(raw_data_ids[i][j][1])
                 plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
-            conditions.append(raw_measurements.t_j)
-            conditions.append(raw_measurements.v_supply)
-            conditions.append(raw_measurements.v_g)
-            conditions.append(raw_measurements.v_g_off)
-            conditions.append(raw_measurements.r_g)
-            conditions.append(raw_measurements.r_g_off)
-            conditions.append(raw_measurements.load_inductance)
-            conditions.append(raw_measurements.commutation_inductance)
+            conditions['T_j_°C'] = raw_measurements.t_j
+            conditions['V_supply_V'] = raw_measurements.v_supply
+            conditions['V_gate_V'] = raw_measurements.v_g
+            conditions['V_gate_off_V'] =  raw_measurements.v_g_off
+            conditions['R_g_Ohms'] = raw_measurements.r_g
+            conditions['R_g_off_Ohms'] = raw_measurements.r_g_off
+            conditions['L_load_uH'] = raw_measurements.load_inductance
+            conditions['L_commutation_uH'] = raw_measurements.commutation_inductance
             test_conditions.append(conditions)
         plots_vds_id_t.append(test_conditions)
         return plots_vds_id_t
@@ -1179,7 +1179,8 @@ class Transistor:
         skip_ids = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
         if (len(self.raw_measurement_data) > 0):
-            plots = [self.raw_measurement_data_plots(self)[:-1]]
+            conditions = self.raw_measurement_data_plots(self)[-1]
+            plots = self.raw_measurement_data_plots(self)[:-1]
             pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots), 'raw_measurement_plots': plots}    
         else:
             pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
