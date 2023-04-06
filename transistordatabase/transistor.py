@@ -1105,14 +1105,14 @@ class Transistor:
             conditions = {}
             raw_data_vds = raw_measurements.dpt_on_vds
             raw_data_ids = raw_measurements.dpt_on_id
-            for i in range(len(raw_data_ids)):
+            for measurement_count,measurement in enumerate(raw_data_ids):
                 time_val = []
                 vds_val = []
                 id_val = []
-                for j in range(len(raw_data_ids[i])):
-                    time_val.append(raw_data_vds[i][j][0])
-                    vds_val.append(raw_data_vds[i][j][1])
-                    id_val.append(raw_data_ids[i][j][1])
+                for measurement_point,point_data in enumerate(measurement):
+                    time_val.append(point_data[0])
+                    vds_val.append(raw_data_vds[measurement_count][measurement_point][1])
+                    id_val.append(point_data[1])
                 plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
             conditions['T_j_°C'] = raw_measurements.t_j
             conditions['V_supply_V'] = raw_measurements.v_supply
