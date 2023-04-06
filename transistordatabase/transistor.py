@@ -1179,9 +1179,10 @@ class Transistor:
         skip_ids = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
         if (len(self.raw_measurement_data) > 0):
-            conditions = self.raw_measurement_data_plots(self)[-1]
-            plots = self.raw_measurement_data_plots(self)[:-1]
-            pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots), 'raw_measurement_plots': plots}    
+            raw_measurement_plots = self.raw_measurement_data_plots(self)
+            conditions = raw_measurement_plots[-1]
+            plots = raw_measurement_plots[:-1]
+            pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots), 'raw_measurement_plots': plots,'raw_measurements_test_conditions':conditions}    
         else:
             pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
         # pdfData['c_plots'] = get_vc_plots(cap_plots)
@@ -2356,15 +2357,26 @@ def attach_units(trans: Dict, devices: Dict):
                         ('R_g_off_recommended', 'R_g,off-recommended', 'Ohms')]
     maxratings_list = [('V_abs_max', 'V_abs,max', 'V'), ('I_abs_max', 'I_abs,max', 'A'), ('I_cont', 'I_cont', 'A'), ('T_j_max', 'T_j,max', '°C'), ('T_c_max', 'T_c,max', '°C')]
     cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F'), ('C_oss_er', 'C_oss,er', 'F'), ('C_oss_tr', 'C_oss,tr', 'F')]
+    
     trans_sorted = {}
     diode_sorted = {}
     switch_sorted = {}
-    for list_unit in [maxratings_list, standard_list, mechthermal_list, cap_list]:
-        for tuple_unit in list_unit:
-            try:
-                trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
-            except KeyError:
-                pass
+    if ('raw_measurements_test_conditions') in trans.keys():
+        raw_measurements_test_conditions = [('T_j_°C','T,j','°C'),('V_supply_V','V,supply','V'),('V_gate_V','V,gate','V'),('V_gate_off_V','V,gate,off','V'),('R_g_Ohms','R,g','Ohms'),('R_g_off_Ohms','R,g,off','Ohms'),('L_load_uH','L,load','uH'),('L_commutation_uH','L,commutation','uH')]
+        for list_unit in [maxratings_list, standard_list, mechthermal_list, cap_list, raw_measurements_test_conditions]:
+                for tuple_unit in list_unit:
+                    try:
+                        trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
+                    except KeyError:
+                        pass
+    else:
+        for list_unit in [maxratings_list, standard_list, mechthermal_list, cap_list]:
+                for tuple_unit in list_unit:
+                    try:
+                        trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
+                    except KeyError:
+                        pass
+
     if len(trans.keys()) > 0:
         trans_sorted.update(trans)
 
