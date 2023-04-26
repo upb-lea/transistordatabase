@@ -65,51 +65,10 @@
 	{% endif %}
 {% endfor %}
 
-<!--******* raw_measurement_plots ********* 
-{% for i in range(trans['raw_measurement_data']['raw_measurement_plots'] | length) %}
-	{% if trans['raw_measurement_data']['raw_measurement_plots'][i] is not none  %}
-		{% do raw_measurement_plot.update({i:trans['raw_measurement_data']['raw_measurement_plots'][i]}) %}
-	{% endif %}
-{% endfor %}
--->
-
 <!-- ***** Page count setup ******* -->
 {% if switch_plots|length > 6 %}
 	{% set pagesReqForSwitch = 2 %}
 {% endif %}
-
-
-<!--
-{% if trans['raw_measurement_data']|length > 0 %}
-	{% for j in trans['raw_measurement_data'] %}	
-		{% for i in j %}
-			{% if i is mapping %}
-				{% for key,items in i.items() %}
-						{% if key == 'total graphs' %}
-							{% set x = x + i[key] %}
-							{% if x > 6 %}
-								{% set x = x / 6 %}
-								{% set x =  x|round|int %}
-								{% if x < (i[key]/6) %}
-									{% set ns.pagesReqForRawData = x + 1 %}					
-								{% else %}
-									{% set ns.pagesReqForRawData = x %}
-								{% endif %}
-							{% else %}
-								{% set ns.pagesReqForRawData = 1 %}					
-							{% endif %}
-						{% endif %}
-				{% endfor %}
-			{% endif %}
-		{% endfor %}
-	{% endfor %}
-{% endif %}
-<div>
-	{{pagesReqForRawData}}
-</div>
-
--->
-
 {% if diode_plots|length > 6 %}
 	{% set pagesReqForDiode = 2 %}
 {% endif %}
@@ -129,12 +88,12 @@
 	  {% if not key == 'plots'and not key == 'raw_measurement_data' and not key == 'Raw_measurement_data' %}
 	  
 	  <tr>
-		  {% set split_list = key.split('_') %}
+		{% set split_list = key.split('_') %}
 		  <td style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
-		  {% if value is string %}
+		{% if value is string %}
 			<td style="font-family: Tahoma;">{{ value }}</td>
 			<td `="text-align:center"> - </td>
-		  {% else %}
+		{% else %}
 			{% if key == 'Datasheet hyperlink' %}
 				<td class="value" style="font-family: Tahoma;"><a href= {{ value[0] }}> {{trans["Manufacturer"][0]}}</a></td>
 			{% else %}
@@ -321,7 +280,7 @@
 					<tr>
 					<th colspan=3><h4 style="text-align:center">{{trans["Type"][0]}} Raw Measurement Data</h4></th>
 					</tr>
-					{% for key,items in i.items() %}
+					{% for key,item in i.items() %}
 						{% if key == 'total graphs' %}
 							{% set x = x + i[key] %}
 							{% if x > 6 %}
@@ -338,19 +297,21 @@
 						{% else %}
 							<tr>
 								{% set split_list = key.split('_') %}
-								<td class="spec" style="font-weight:600; font-family: Garamond">{{ key }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}	</sub>{% endif %}</td>
-								{% if key is string %}
-										<td class="item" style="font-family: Tahoma;">{{ items[0] }}</td>
-										<td class="unit" style="text-align:center"> - </td>
-								{% else %}
-										<td class="item" style="font-family: Tahoma;">{{ items[0] }}</td>
-										{% if item[0] is none %}
-											<td class="unit" style="text-align:center"> - </td>
-										{% else %}
-											<td class="unit" style="text-align:center">{{ items[1] }}</td>
-										{% endif %}
-								{% endif %}
-										</tr>
+								<td class="spec" style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
+								{% if items is string %}
+								   <td class="value" style="font-family: Tahoma;">{{ item[0] }}</td>
+								   <td class="unit" style="text-align:center"> - </td>
+							   {% else %}
+								   
+								   {% if item[0] is none %}
+								   <td class="value" style="text-align:center">-</td>
+								   <td class="unit" style="text-align:center"> - </td>
+								   {% else %}
+								   <td class="value" style="font-family: Tahoma;">{{ item[0]}}</td>
+								   <td class="unit" style="text-align:center">{{ item[1] }}</td>
+								   {% endif %}
+							   {% endif %}
+							</tr>
 						{% endif %}
 					{% endfor %}
 				</table>
