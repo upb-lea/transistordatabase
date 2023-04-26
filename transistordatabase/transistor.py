@@ -1,6 +1,6 @@
 # Python standard libraries
 from __future__ import annotations
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 from typing import Dict, List, Union, Tuple
 from scipy import integrate
 from scipy.spatial import distance
@@ -16,7 +16,6 @@ import collections
 import base64
 import io
 
-# Random Comment
 # Third party libraries
 from jinja2 import Environment, FileSystemLoader
 from bson.objectid import ObjectId
@@ -92,7 +91,7 @@ class Transistor:
     i_cont: float | None  #: Module specific continuous current. Units in  A e.g. Fuji = I_c, Semikron = I_c,nom (Mandatory key)
     t_c_max: float  #: Module specific maximum junction temperature. Units in °C (Optional key)
     r_g_int: float  #: Internal gate resistance. Units in Ohm (Mandatory key)
-
+    #raw_measurement_plots = []
     def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict, possible_housing_types: List[str], possible_module_manufacturers: List[str]) -> None:
         """
         Takes in the following dictionary arguments for creating and initializing the transistor object. isvalid_dict() method is applied on transistor_args object
@@ -635,7 +634,6 @@ class Transistor:
             dataset = candidate_datasets[0]
         return dataset
 
-
     def get_object_i_e_simplified(self, e_on_off_rr: str, t_j: float):
         """
         Function to get the loss graphs out of the transistor class, simplified version
@@ -1085,9 +1083,9 @@ class Transistor:
 
         # plt.tight_layout()
         plt.show()
-        
-    def raw_measurement_data_plots(self):
-        
+     
+    def raw_measurement_data_plots(self) -> list:
+        #print("Here in raw measurement data plots")
         '''
         Takes the raw measurement data attribute and traverses through 
         the list for each present method and loads the ids and vds data for
@@ -1099,11 +1097,13 @@ class Transistor:
         return  plots in img form along test conditions in a list   
         rtype list of img plots along test conditions
         '''
-        
+        graph_count = 0
         plots_vds_id_t = []
-        test_conditions = []     
+        plots_with_conditions = []     
         for raw_measurements in self.raw_measurement_data:
+            graph_count = 0
             conditions = {}
+            plots_vds_id_t = []
             raw_data_vds = raw_measurements.dpt_on_vds
             raw_data_ids = raw_measurements.dpt_on_id
             for measurement_count,measurement in enumerate(raw_data_ids):
@@ -1115,19 +1115,20 @@ class Transistor:
                     vds_val.append(raw_data_vds[measurement_count][measurement_point][1])
                     id_val.append(point_data[1])
                 plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
-            conditions['T_j_°C'] = raw_measurements.t_j
-            conditions['V_supply_V'] = raw_measurements.v_supply
-            conditions['V_gate_V'] = raw_measurements.v_g
-            conditions['V_gate_off_V'] =  raw_measurements.v_g_off
-            conditions['R_g_Ohms'] = raw_measurements.r_g
-            conditions['R_g_off_Ohms'] = raw_measurements.r_g_off
-            conditions['L_load_uH'] = raw_measurements.load_inductance
-            conditions['L_commutation_uH'] = raw_measurements.commutation_inductance
-            test_conditions.append(conditions)
-        plots_vds_id_t.append(test_conditions)
-        return plots_vds_id_t
+                graph_count+=1
+            conditions['T_j'] = [raw_measurements.t_j,'°C']
+            conditions['V_supply'] = [raw_measurements.v_supply,'V']
+            conditions['V_gate'] = [raw_measurements.v_g,'V']
+            conditions['V_gate_off'] =  [raw_measurements.v_g_off,'V']
+            conditions['R_g'] = [raw_measurements.r_g,'Ohms']
+            conditions['R_goff'] = [raw_measurements.r_g_off,'Ohms']
+            conditions['L_load'] = [raw_measurements.load_inductance,'uH']
+            conditions['L_commutation'] = [raw_measurements.commutation_inductance,'uH']
+            conditions["total graphs"] = graph_count
+            plots_with_conditions.append([conditions,plots_vds_id_t,])
+        return plots_with_conditions
                 
-    
+   
     def plot_curves(self, time_array, vds_values, ids_values, buffer_req: bool = False):
         
         ''' 
@@ -1139,24 +1140,23 @@ class Transistor:
         :param id_values : id values in the raw measurement data  
         return image form of the plot
         rtype decoded raw image data to utf-8
-        
         '''
-        
-        plots = plt.figure()
-        plot_vds = plots.add_subplot(111)
-        plot_vds.set_xlabel('Time (s)')
-        plot_vds.set_ylabel('Voltage (V)', color='tab:red')
-        plot_vds.plot(time_array,vds_values, color='red')
-        plot_vds.tick_params(axis='y', labelcolor='tab:red')
-        plot_ids = plot_vds.twinx()
-        plot_ids.set_ylabel('Current (A)', color='tab:blue')
-        plot_ids.plot(time_array,ids_values)
-        plot_ids.tick_params(axis='y', labelcolor='tab:blue')
-        plots.tight_layout()
-        plt.title("Raw Measurement Data Characteristics")
-        plt.legend()
+        color = 'tab:blue'
+        plt.xlabel('time (s)')
+        plt.ylabel('Voltage (V)', color=color)
+        plt.plot(time_array,vds_values, color=color)
+        plt.tick_params(axis='y', labelcolor=color)
+        plot_ids = plt.twinx()
+        color = 'tab:red'
+        plot_ids.set_ylabel('Current (A)', color=color)
+        plot_ids.plot(time_array,ids_values, color=color)
+        plot_ids.tick_params(axis='y', labelcolor=color)
+        plt.tight_layout()
         plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
-        return get_img_raw_data(plots)   
+        return get_img_raw_data_2(plt)
+        
+        
+        
 
     def export_datasheet(self, build_collection=False) -> str | None:
         """
@@ -1173,17 +1173,18 @@ class Transistor:
 
         .. todo:: Instead of html file, generating a pdf file without third party requirements is a better option
         """
-        # listV = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         pdf_data = {}
-        
+        raw_measurement_plots={}
         devices = {}
         skip_ids = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
         if (len(self.raw_measurement_data) > 0):
-            raw_measurement_plots = self.raw_measurement_data_plots(self)
-            conditions = raw_measurement_plots[-1]
-            plots = raw_measurement_plots[:-1]
-            pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots), 'raw_measurement_plots': plots,'raw_measurements_test_conditions':conditions}    
+            raw_measurement_plots = self.raw_measurement_data_plots()
+            #print(raw_measurement_plots)
+            #conditions = raw_measurement_plots[-1]
+            #plots = raw_measurement_plots[:-1]   
+            pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
+            pdf_data.update({'raw_measurement_data': raw_measurement_plots})    
         else:
             pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
         # pdfData['c_plots'] = get_vc_plots(cap_plots)
@@ -1197,6 +1198,7 @@ class Transistor:
                 elif (attr == 'c_oss_er' or attr == 'c_oss_tr') and getattr(self, attr) is not None:  # to be modified for boundary case
                     pdf_data[attr.capitalize()] = getattr(self, attr).c_o
         trans, diode, switch = attach_units(pdf_data, devices)
+        #print(trans)
         img_path = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
         image_file_obj = open(img_path, "rb")
         image_binary_bytes = image_file_obj.read()
@@ -1214,8 +1216,8 @@ class Transistor:
         if not build_collection:
             html_to_pdf(html, pdf_name, pdf_path)
         else:
-            return html
-
+            return html  
+        
     def export_simulink_loss_model(self, r_g_on: float = None, r_g_off: float = None, v_supply: float = None,
                                    normalize_t_to_v: float = 10) -> None:
         """
@@ -2362,7 +2364,8 @@ def attach_units(trans: Dict, devices: Dict):
     trans_sorted = {}
     diode_sorted = {}
     switch_sorted = {}
-    if ('raw_measurements_test_conditions') in trans.keys():
+    if ('raw_measurement_data') in trans.keys():
+        print(trans.keys())
         raw_measurements_test_conditions = [('T_j_°C','T,j','°C'),('V_supply_V','V,supply','V'),('V_gate_V','V,gate','V'),('V_gate_off_V','V,gate,off','V'),('R_g_Ohms','R,g','Ohms'),('R_g_off_Ohms','R,g,off','Ohms'),('L_load_uH','L,load','uH'),('L_commutation_uH','L,commutation','uH')]
         for list_unit in [maxratings_list, standard_list, mechthermal_list, cap_list, raw_measurements_test_conditions]:
                 for tuple_unit in list_unit:
