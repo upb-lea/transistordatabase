@@ -524,8 +524,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>331</width>
-             <height>993</height>
+             <width>332</width>
+             <height>1588</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
@@ -1275,6 +1275,9 @@
             </item>
             <item row="1" column="0">
              <widget class="QCheckBox" name="checkBox_search_database_name">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Name</string>
               </property>
@@ -1885,8 +1888,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1379</width>
-             <height>2742</height>
+             <width>991</width>
+             <height>2898</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
@@ -10248,8 +10251,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1830</width>
-             <height>1017</height>
+             <width>1824</width>
+             <height>1056</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout">
@@ -11165,8 +11168,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1830</width>
-             <height>1038</height>
+             <width>1824</width>
+             <height>1062</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
@@ -12765,7 +12768,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>21</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">
