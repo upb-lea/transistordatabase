@@ -687,7 +687,6 @@ class MainWindow(QMainWindow):
 
         # load data into the tableWidget when starting the program
         self.search_database_load_data()
-
         # Search Database: set input masks and validators
         self.lineEdit_search_database_housing_area_min.setValidator(QDoubleValidator())
         self.lineEdit_search_database_housing_area_max.setValidator(QDoubleValidator())
@@ -4240,137 +4239,139 @@ class MainWindow(QMainWindow):
         comboBox_compare_v_g_on_transistor.clear()
         comboBox_compare_v_g_off_transistor.clear()
 
-        available_v_g_on_transistor = [str(channel.v_g) for channel in transistor.switch.channel]
-        available_v_g_on_transistor_cleared = []
+        if transistor is not None:
+            available_v_g_on_transistor = [str(channel.v_g) for channel in transistor.switch.channel]
+            available_v_g_on_transistor_cleared = []
+        
+                
+            for v_g in available_v_g_on_transistor:
+                if v_g not in available_v_g_on_transistor_cleared and v_g != "None":
+                    available_v_g_on_transistor_cleared.append(v_g)
 
-        for v_g in available_v_g_on_transistor:
-            if v_g not in available_v_g_on_transistor_cleared and v_g != "None":
-                available_v_g_on_transistor_cleared.append(v_g)
+            comboBox_compare_v_g_on_transistor.addItems(available_v_g_on_transistor_cleared)
+            comboBox_compare_v_g_on_transistor.setCurrentText(
+                str(max(channel.v_g for channel in transistor.switch.channel)))
 
-        comboBox_compare_v_g_on_transistor.addItems(available_v_g_on_transistor_cleared)
-        comboBox_compare_v_g_on_transistor.setCurrentText(
-            str(max(channel.v_g for channel in transistor.switch.channel)))
+            if transistor.type.lower() != "igbt":
+                available_v_g_off_transistor = [str(channel.v_g) for channel in transistor.diode.channel]
+                available_v_g_off_transistor_cleared = []
 
-        if transistor.type.lower() != "igbt":
-            available_v_g_off_transistor = [str(channel.v_g) for channel in transistor.diode.channel]
-            available_v_g_off_transistor_cleared = []
+                for v_g in available_v_g_off_transistor:
+                    if v_g not in available_v_g_off_transistor_cleared and v_g != "None":
+                        available_v_g_off_transistor_cleared.append(v_g)
 
-            for v_g in available_v_g_off_transistor:
-                if v_g not in available_v_g_off_transistor_cleared and v_g != "None":
-                    available_v_g_off_transistor_cleared.append(v_g)
+                comboBox_compare_v_g_off_transistor.addItems(available_v_g_off_transistor_cleared)
+                comboBox_compare_v_g_off_transistor.setCurrentText(
+                    str(min(channel.v_g for channel in transistor.diode.channel)))
 
-            comboBox_compare_v_g_off_transistor.addItems(available_v_g_off_transistor_cleared)
-            comboBox_compare_v_g_off_transistor.setCurrentText(
-                str(min(channel.v_g for channel in transistor.diode.channel)))
-
-        try:
-            t_j_available_unfiltered = [i for i in [e_on.t_j for e_on in transistor.switch.e_on]]
-            t_j_available_unfiltered = np.sort(t_j_available_unfiltered)
-            t_j_available = []
-            for i in t_j_available_unfiltered:
-                if i not in t_j_available:
-                    t_j_available.append(i)
-
-            r_g_on_max_list = np.zeros_like(t_j_available)
-
-            for i in range(len(t_j_available)):
-                r_e_object_on = transistor.get_object_r_e_simplified(e_on_off_rr="e_on",
-                                                                     t_j=t_j_available[i],
-                                                                     v_g=max([i for i in [e_on.v_g for e_on in
-                                                                                          transistor.switch.e_on] if
-                                                                              i is not None]),
-                                                                     v_supply=max(
-                                                                         [i for i in [e_on.v_supply for e_on in
-                                                                                      transistor.switch.e_on] if
-                                                                          i is not None]),
-                                                                     normalize_t_to_v=10)
-
-                r_g_on_max_list[i] = np.amax(r_e_object_on.graph_r_e[0]) * 10000
-
-            r_g_on_max = floor(10 * min(r_g_on_max_list) / 10000) / 10
-            slider_compare_r_g_on_transistor.setMinimum(0)
-            slider_compare_r_g_on_transistor.setMaximum(int(r_g_on_max * 100))
-            slider_compare_r_g_on_transistor.setValue(int(r_g_on_max * 100))
-            label_compare_r_g_on_value_transistor.setText(str(r_g_on_max))
-
-        except:
             try:
-                r_g_on = max([i for i in [e_on.r_g for e_on in transistor.switch.e_on] if i is not None])
-                slider_compare_r_g_on_transistor.setMinimum(int(r_g_on * 100))
-                slider_compare_r_g_on_transistor.setMaximum(int(r_g_on * 100))
-                # self.show_popup_message(f"No energy data for different turn on gate resistor for <b>{transistor.name}</b> available!")
-            except:
-                # self.show_popup_message(f"No turn-on energy data for <b>{transistor.name}</b> available!")
-                slider_compare_r_g_on_transistor.setMinimum(0)
-                slider_compare_r_g_on_transistor.setMaximum(0)
-
-        try:
-            t_j_available_unfiltered = [i for i in [e_off.t_j for e_off in transistor.switch.e_off]]
-            t_j_available_unfiltered = np.sort(t_j_available_unfiltered)
-            t_j_available = []
-            for i in t_j_available_unfiltered:
-                if i not in t_j_available:
-                    t_j_available.append(i)
-
-            r_g_off_max_list = np.zeros_like(t_j_available)
-
-            for i in range(len(t_j_available)):
-                r_e_object_off = transistor.get_object_r_e_simplified(e_on_off_rr="e_off",
-                                                                      t_j=t_j_available[i],
-                                                                      v_g=max([i for i in [e_off.v_g for e_off in
-                                                                                           transistor.switch.e_off] if
-                                                                               i is not None]),
-                                                                      v_supply=max(
-                                                                          [i for i in [e_off.v_supply for e_off in
-                                                                                       transistor.switch.e_off] if
-                                                                           i is not None]),
-                                                                      normalize_t_to_v=10)
-                r_g_off_max_list[i] = np.amax(r_e_object_off.graph_r_e[0]) * 10000
-
-            r_g_off_max = floor(10 * min(r_g_off_max_list) / 10000) / 10
-
-            if transistor.type == "IGBT":
-                t_j_available_unfiltered = [i for i in [e_rr.t_j for e_rr in transistor.diode.e_rr]]
+                t_j_available_unfiltered = [i for i in [e_on.t_j for e_on in transistor.switch.e_on]]
                 t_j_available_unfiltered = np.sort(t_j_available_unfiltered)
                 t_j_available = []
                 for i in t_j_available_unfiltered:
                     if i not in t_j_available:
                         t_j_available.append(i)
 
-                r_g_rr_max_list = np.zeros_like(t_j_available)
+                r_g_on_max_list = np.zeros_like(t_j_available)
 
                 for i in range(len(t_j_available)):
-                    r_e_object_rr = transistor.get_object_r_e_simplified(e_on_off_rr="e_rr",
-                                                                         t_j=t_j_available[i],
-                                                                         v_g=min([i for i in [e_rr.v_g for e_rr in
-                                                                                              transistor.diode.e_rr]
-                                                                                  if
-                                                                                  i is not None]),
-                                                                         v_supply=max([i for i in
-                                                                                       [e_rr.v_supply for e_rr in
-                                                                                        transistor.diode.e_rr] if
-                                                                                       i is not None]),
-                                                                         normalize_t_to_v=10)
-                    r_g_rr_max_list[i] = np.amax(r_e_object_rr.graph_r_e[0]) * 10000
+                    r_e_object_on = transistor.get_object_r_e_simplified(e_on_off_rr="e_on",
+                                                                        t_j=t_j_available[i],
+                                                                        v_g=max([i for i in [e_on.v_g for e_on in
+                                                                                            transistor.switch.e_on] if
+                                                                                i is not None]),
+                                                                        v_supply=max(
+                                                                            [i for i in [e_on.v_supply for e_on in
+                                                                                        transistor.switch.e_on] if
+                                                                            i is not None]),
+                                                                        normalize_t_to_v=10)
 
-                r_g_rr_max = floor(10 * min(r_g_rr_max_list) / 10000) / 10
+                    r_g_on_max_list[i] = np.amax(r_e_object_on.graph_r_e[0]) * 10000
 
-            r_g_off_max = min(r_g_off_max, r_g_rr_max)
+                r_g_on_max = floor(10 * min(r_g_on_max_list) / 10000) / 10
+                slider_compare_r_g_on_transistor.setMinimum(0)
+                slider_compare_r_g_on_transistor.setMaximum(int(r_g_on_max * 100))
+                slider_compare_r_g_on_transistor.setValue(int(r_g_on_max * 100))
+                label_compare_r_g_on_value_transistor.setText(str(r_g_on_max))
 
-            slider_compare_r_g_off_transistor.setMinimum(0)
-            slider_compare_r_g_off_transistor.setMaximum(int(r_g_off_max * 100))
-            slider_compare_r_g_off_transistor.setValue(int(r_g_off_max * 100))
-            label_compare_r_g_off_value_transistor.setText(str(r_g_off_max))
-        except:
-            try:
-                r_g_off = max([i for i in [e_off.r_g for e_off in transistor.switch.e_off] if i is not None])
-                slider_compare_r_g_off_transistor.setMinimum(int(r_g_off * 100))
-                slider_compare_r_g_off_transistor.setMaximum(int(r_g_off * 100))
-                # self.show_popup_message(f"No energy data for different turn off gate resistor for <b>{transistor.name}</b> available!")
             except:
-                # self.show_popup_message(f"No turn-off energy data for <b>{transistor.name}</b> available!")
+                try:
+                    r_g_on = max([i for i in [e_on.r_g for e_on in transistor.switch.e_on] if i is not None])
+                    slider_compare_r_g_on_transistor.setMinimum(int(r_g_on * 100))
+                    slider_compare_r_g_on_transistor.setMaximum(int(r_g_on * 100))
+                    # self.show_popup_message(f"No energy data for different turn on gate resistor for <b>{transistor.name}</b> available!")
+                except:
+                    # self.show_popup_message(f"No turn-on energy data for <b>{transistor.name}</b> available!")
+                    slider_compare_r_g_on_transistor.setMinimum(0)
+                    slider_compare_r_g_on_transistor.setMaximum(0)
+
+            try:
+                t_j_available_unfiltered = [i for i in [e_off.t_j for e_off in transistor.switch.e_off]]
+                t_j_available_unfiltered = np.sort(t_j_available_unfiltered)
+                t_j_available = []
+                for i in t_j_available_unfiltered:
+                    if i not in t_j_available:
+                        t_j_available.append(i)
+
+                r_g_off_max_list = np.zeros_like(t_j_available)
+
+                for i in range(len(t_j_available)):
+                    r_e_object_off = transistor.get_object_r_e_simplified(e_on_off_rr="e_off",
+                                                                        t_j=t_j_available[i],
+                                                                        v_g=max([i for i in [e_off.v_g for e_off in
+                                                                                            transistor.switch.e_off] if
+                                                                                i is not None]),
+                                                                        v_supply=max(
+                                                                            [i for i in [e_off.v_supply for e_off in
+                                                                                        transistor.switch.e_off] if
+                                                                            i is not None]),
+                                                                        normalize_t_to_v=10)
+                    r_g_off_max_list[i] = np.amax(r_e_object_off.graph_r_e[0]) * 10000
+
+                r_g_off_max = floor(10 * min(r_g_off_max_list) / 10000) / 10
+
+                if transistor.type == "IGBT":
+                    t_j_available_unfiltered = [i for i in [e_rr.t_j for e_rr in transistor.diode.e_rr]]
+                    t_j_available_unfiltered = np.sort(t_j_available_unfiltered)
+                    t_j_available = []
+                    for i in t_j_available_unfiltered:
+                        if i not in t_j_available:
+                            t_j_available.append(i)
+
+                    r_g_rr_max_list = np.zeros_like(t_j_available)
+
+                    for i in range(len(t_j_available)):
+                        r_e_object_rr = transistor.get_object_r_e_simplified(e_on_off_rr="e_rr",
+                                                                            t_j=t_j_available[i],
+                                                                            v_g=min([i for i in [e_rr.v_g for e_rr in
+                                                                                                transistor.diode.e_rr]
+                                                                                    if
+                                                                                    i is not None]),
+                                                                            v_supply=max([i for i in
+                                                                                        [e_rr.v_supply for e_rr in
+                                                                                            transistor.diode.e_rr] if
+                                                                                        i is not None]),
+                                                                            normalize_t_to_v=10)
+                        r_g_rr_max_list[i] = np.amax(r_e_object_rr.graph_r_e[0]) * 10000
+
+                    r_g_rr_max = floor(10 * min(r_g_rr_max_list) / 10000) / 10
+
+                r_g_off_max = min(r_g_off_max, r_g_rr_max)
+
                 slider_compare_r_g_off_transistor.setMinimum(0)
-                slider_compare_r_g_off_transistor.setMaximum(0)
+                slider_compare_r_g_off_transistor.setMaximum(int(r_g_off_max * 100))
+                slider_compare_r_g_off_transistor.setValue(int(r_g_off_max * 100))
+                label_compare_r_g_off_value_transistor.setText(str(r_g_off_max))
+            except:
+                try:
+                    r_g_off = max([i for i in [e_off.r_g for e_off in transistor.switch.e_off] if i is not None])
+                    slider_compare_r_g_off_transistor.setMinimum(int(r_g_off * 100))
+                    slider_compare_r_g_off_transistor.setMaximum(int(r_g_off * 100))
+                    # self.show_popup_message(f"No energy data for different turn off gate resistor for <b>{transistor.name}</b> available!")
+                except:
+                    # self.show_popup_message(f"No turn-off energy data for <b>{transistor.name}</b> available!")
+                    slider_compare_r_g_off_transistor.setMinimum(0)
+                    slider_compare_r_g_off_transistor.setMaximum(0)
 
     def comboBox_compare_transistor1_changed(self):
         """
@@ -4589,29 +4590,28 @@ class MainWindow(QMainWindow):
         :return: None
         """
         transistor = self.tdb.load_transistor(comboBox_topology_transistor.currentText())
-
         comboBox_topology_v_g_on_transistor.clear()
         available_v_g_on_transistor = [str(channel.v_g) for channel in transistor.switch.channel]
         available_v_g_on_transistor_cleared = [available_v_g_on_transistor[i] for i in
-                                               range(len(available_v_g_on_transistor)) if
-                                               i == available_v_g_on_transistor.index(
-                                                   available_v_g_on_transistor[i])]
+                                            range(len(available_v_g_on_transistor)) if
+                                            i == available_v_g_on_transistor.index(
+                                                available_v_g_on_transistor[i])]
         comboBox_topology_v_g_on_transistor.addItems(available_v_g_on_transistor_cleared)
         comboBox_topology_v_g_on_transistor.setCurrentText(
             str(max(channel.v_g for channel in transistor.switch.channel)))
 
         try:
             r_e_object_on = transistor.get_object_r_e_simplified(e_on_off_rr="e_on",
-                                                                 t_j=max([i for i in [e_on.t_j for e_on in
-                                                                                      transistor.switch.e_on] if
-                                                                          i is not None]),
-                                                                 v_g=max([i for i in [e_on.v_g for e_on in
-                                                                                      transistor.switch.e_on] if
-                                                                          i is not None]),
-                                                                 v_supply=max([i for i in [e_on.v_supply for e_on in
-                                                                                           transistor.switch.e_on] if
-                                                                               i is not None]),
-                                                                 normalize_t_to_v=10)
+                                                                t_j=max([i for i in [e_on.t_j for e_on in
+                                                                                    transistor.switch.e_on] if
+                                                                        i is not None]),
+                                                                v_g=max([i for i in [e_on.v_g for e_on in
+                                                                                    transistor.switch.e_on] if
+                                                                        i is not None]),
+                                                                v_supply=max([i for i in [e_on.v_supply for e_on in
+                                                                                        transistor.switch.e_on] if
+                                                                            i is not None]),
+                                                                normalize_t_to_v=10)
             r_g_on_max = floor(10 * (np.amax(r_e_object_on.graph_r_e[0]))) / 10
             slider_topology_r_g_on_transistor.setMinimum(0)
             slider_topology_r_g_on_transistor.setMaximum(int(r_g_on_max * 100))
@@ -4634,33 +4634,33 @@ class MainWindow(QMainWindow):
 
         try:
             r_e_object_off = transistor.get_object_r_e_simplified(e_on_off_rr="e_off",
-                                                                  t_j=max([i for i in [e_off.t_j for e_off in
-                                                                                       transistor.switch.e_off] if
-                                                                           i is not None]),
-                                                                  v_g=min([i for i in [e_off.v_g for e_off in
-                                                                                       transistor.switch.e_off] if
-                                                                           i is not None]),
-                                                                  v_supply=max([i for i in
+                                                                t_j=max([i for i in [e_off.t_j for e_off in
+                                                                                    transistor.switch.e_off] if
+                                                                        i is not None]),
+                                                                v_g=min([i for i in [e_off.v_g for e_off in
+                                                                                    transistor.switch.e_off] if
+                                                                        i is not None]),
+                                                                v_supply=max([i for i in
                                                                                 [e_off.v_supply for e_off in
-                                                                                 transistor.switch.e_off] if
+                                                                                transistor.switch.e_off] if
                                                                                 i is not None]),
-                                                                  normalize_t_to_v=10)
+                                                                normalize_t_to_v=10)
             r_g_off_max = floor(10 * np.amax(r_e_object_off.graph_r_e[0])) / 10
             slider_topology_r_g_off_transistor.setMinimum(0)
 
             if transistor.type == "IGBT":
                 r_e_object_rr = transistor.get_object_r_e_simplified(e_on_off_rr="e_rr",
-                                                                     t_j=max([i for i in [e_rr.t_j for e_rr in
-                                                                                          transistor.diode.e_rr] if
-                                                                              i is not None]),
-                                                                     v_g=min([i for i in [e_rr.v_g for e_rr in
-                                                                                          transistor.diode.e_rr] if
-                                                                              i is not None]),
-                                                                     v_supply=max([i for i in
-                                                                                   [e_rr.v_supply for e_rr in
+                                                                    t_j=max([i for i in [e_rr.t_j for e_rr in
+                                                                                        transistor.diode.e_rr] if
+                                                                            i is not None]),
+                                                                    v_g=min([i for i in [e_rr.v_g for e_rr in
+                                                                                        transistor.diode.e_rr] if
+                                                                            i is not None]),
+                                                                    v_supply=max([i for i in
+                                                                                [e_rr.v_supply for e_rr in
                                                                                     transistor.diode.e_rr] if
-                                                                                   i is not None]),
-                                                                     normalize_t_to_v=10)
+                                                                                i is not None]),
+                                                                    normalize_t_to_v=10)
                 r_g_rr_max = floor(10 * (np.amax(r_e_object_rr.graph_r_e[0]))) / 10
                 r_g_max_off_rr1 = min(r_g_off_max, r_g_rr_max)
                 slider_topology_r_g_off_transistor.setMaximum(int(r_g_max_off_rr1 * 100))
