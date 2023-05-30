@@ -60,12 +60,32 @@ class DatabaseManager:
         :param json_path: Path to json folder.
         :type json_path: str
         """
+        index_url = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/index.txt"
         if self.operation_mode is not None:
             raise Exception("DatabaseManager operation mode can only be set once.")
         self.operation_mode = OperationMode.JSON
 
         if not os.path.isdir(json_folder_path):
             os.makedirs(json_folder_path)
+            index_response = requests.get(index_url)
+            if not index_response.ok:
+                raise Exception(f"Index file was not found. URL: {index_url}")
+        
+            for transistor_url in index_response.iter_lines():
+                transistor_response = requests.get(transistor_url)
+                print(transistor_url)
+                filename = transistor_url.split('/')[-1].encode()
+                print(filename)
+                if not transistor_response.ok:
+                    print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
+                    continue
+                else:
+                    file_path = os.path.join(json_folder_path, filename)
+                    with open(file_path, 'w') as file:
+                        file.write(transistor_response)
+
+
+            
 
         self.json_folder = json_folder_path
 

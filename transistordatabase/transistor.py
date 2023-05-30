@@ -1183,6 +1183,7 @@ class Transistor:
             #print(raw_measurement_plots)
             #conditions = raw_measurement_plots[-1]
             #plots = raw_measurement_plots[:-1]   
+            print(raw_measurement_plots[0])
             pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
             pdf_data.update({'raw_measurement_data': raw_measurement_plots})    
         else:
@@ -2365,7 +2366,6 @@ def attach_units(trans: Dict, devices: Dict):
     diode_sorted = {}
     switch_sorted = {}
     if ('raw_measurement_data') in trans.keys():
-        print(trans.keys())
         raw_measurements_test_conditions = [('T_j_°C','T,j','°C'),('V_supply_V','V,supply','V'),('V_gate_V','V,gate','V'),('V_gate_off_V','V,gate,off','V'),('R_g_Ohms','R,g','Ohms'),('R_g_off_Ohms','R,g,off','Ohms'),('L_load_uH','L,load','uH'),('L_commutation_uH','L,commutation','uH')]
         for list_unit in [maxratings_list, standard_list, mechthermal_list, cap_list, raw_measurements_test_conditions]:
                 for tuple_unit in list_unit:
