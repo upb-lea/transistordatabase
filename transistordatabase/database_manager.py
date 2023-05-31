@@ -67,30 +67,30 @@ class DatabaseManager:
 
         if not os.path.isdir(json_folder_path):
             os.makedirs(json_folder_path)
+            self.json_folder = json_folder_path
             index_response = requests.get(index_url)
+            print(index_response)
             if not index_response.ok:
                 raise Exception(f"Index file was not found. URL: {index_url}")
-            self.update_from_fileexchange()
-        
-            # for transistor_url in index_response.iter_lines():
-            #     transistor_response = requests.get(transistor_url)
-            #     print(transistor_url)
-            #
-            #     #filename = transistor_url.split('/')[-1].encode()
-            #     filename = "trial"
-            #     print(filename)
-            #     if not transistor_response.ok:
-            #         print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
-            #         continue
-            #     else:
-            #         file_path = os.path.join(json_folder_path, filename)
-            #         with open(file_path, 'w') as file:
-            #             file.write(transistor_response)
+
+            for transistor_url in index_response.iter_lines():
+                transistor_response = requests.get(transistor_url)
+                print(transistor_url)
+
+                # filename = transistor_url.split('/')[-1].decode()
+                filename = transistor_url.decode().split('/')[-1]
+                print(filename)
+                if not transistor_response.ok:
+                    print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
+                    continue
+                else:
+                    transistor = self.convert_dict_to_transistor_object(transistor_response.json())
+                    self.save_transistor(transistor, True)
 
 
             
 
-        self.json_folder = json_folder_path
+
 
 
     def set_operation_mode_mongodb(self, collection: str = "local") -> None:
