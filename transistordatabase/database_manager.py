@@ -70,19 +70,22 @@ class DatabaseManager:
             index_response = requests.get(index_url)
             if not index_response.ok:
                 raise Exception(f"Index file was not found. URL: {index_url}")
+            self.update_from_fileexchange()
         
-            for transistor_url in index_response.iter_lines():
-                transistor_response = requests.get(transistor_url)
-                print(transistor_url)
-                filename = transistor_url.split('/')[-1].encode()
-                print(filename)
-                if not transistor_response.ok:
-                    print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
-                    continue
-                else:
-                    file_path = os.path.join(json_folder_path, filename)
-                    with open(file_path, 'w') as file:
-                        file.write(transistor_response)
+            # for transistor_url in index_response.iter_lines():
+            #     transistor_response = requests.get(transistor_url)
+            #     print(transistor_url)
+            #
+            #     #filename = transistor_url.split('/')[-1].encode()
+            #     filename = "trial"
+            #     print(filename)
+            #     if not transistor_response.ok:
+            #         print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
+            #         continue
+            #     else:
+            #         file_path = os.path.join(json_folder_path, filename)
+            #         with open(file_path, 'w') as file:
+            #             file.write(transistor_response)
 
 
             
