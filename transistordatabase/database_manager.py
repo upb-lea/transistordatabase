@@ -87,6 +87,9 @@ class DatabaseManager:
                     transistor = self.convert_dict_to_transistor_object(transistor_response.json())
                     self.save_transistor(transistor, True)
 
+        else:
+            self.json_folder = json_folder_path
+
 
             
 
@@ -427,7 +430,7 @@ class DatabaseManager:
             print("Nothing to export, please recheck inputs")
 
 
-    def convert_dict_to_transistor_object(self, transformer_dict: dict) -> Transistor:
+    def convert_dict_to_transistor_object(self, transistor_dict: dict) -> Transistor:
         """
         Converts a dictionary to a transistor object.
         This is a helper function of the following functions:
@@ -443,30 +446,30 @@ class DatabaseManager:
         :rtype: Transistor object
         """
         # Convert transistor_args
-        if 'c_oss' in transformer_dict and transformer_dict['c_oss'] is not None:
-            for i in range(len(transformer_dict['c_oss'])):
-                transformer_dict['c_oss'][i]['graph_v_c'] = np.array(transformer_dict['c_oss'][i]['graph_v_c'])
-        if 'c_iss' in transformer_dict and transformer_dict['c_iss'] is not None:
-            for i in range(len(transformer_dict['c_iss'])):
-                transformer_dict['c_iss'][i]['graph_v_c'] = np.array(transformer_dict['c_iss'][i]['graph_v_c'])
-        if 'c_rss' in transformer_dict and transformer_dict['c_rss'] is not None:
-            for i in range(len(transformer_dict['c_rss'])):
-                transformer_dict['c_rss'][i]['graph_v_c'] = np.array(transformer_dict['c_rss'][i]['graph_v_c'])
-        if 'graph_v_ecoss' in transformer_dict and transformer_dict['graph_v_ecoss'] is not None:
-            transformer_dict['graph_v_ecoss'] = np.array(transformer_dict['graph_v_ecoss'])
-        if 'raw_measurement_data' in transformer_dict:
-            for i in range(len(transformer_dict['raw_measurement_data'])):
-                for u in range(len(transformer_dict['raw_measurement_data'][i]['dpt_on_vds'])):
-                    transformer_dict['raw_measurement_data'][i]['dpt_on_vds'][u] = np.array(transformer_dict['raw_measurement_data'][i]['dpt_on_vds'][u])
-                for u in range(len(transformer_dict['raw_measurement_data'][i]['dpt_on_id'])):
-                    transformer_dict['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transformer_dict['raw_measurement_data'][i]['dpt_on_id'][u])
-                for u in range(len(transformer_dict['raw_measurement_data'][i]['dpt_off_vds'])):
-                    transformer_dict['raw_measurement_data'][i]['dpt_off_vds'][u] = np.array(transformer_dict['raw_measurement_data'][i]['dpt_off_vds'][u])
-                for u in range(len(transformer_dict['raw_measurement_data'][i]['dpt_off_id'])):
-                    transformer_dict['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transformer_dict['raw_measurement_data'][i]['dpt_off_id'][u])
+        if 'c_oss' in transistor_dict and transistor_dict['c_oss'] is not None:
+            for i in range(len(transistor_dict['c_oss'])):
+                transistor_dict['c_oss'][i]['graph_v_c'] = np.array(transistor_dict['c_oss'][i]['graph_v_c'])
+        if 'c_iss' in transistor_dict and transistor_dict['c_iss'] is not None:
+            for i in range(len(transistor_dict['c_iss'])):
+                transistor_dict['c_iss'][i]['graph_v_c'] = np.array(transistor_dict['c_iss'][i]['graph_v_c'])
+        if 'c_rss' in transistor_dict and transistor_dict['c_rss'] is not None:
+            for i in range(len(transistor_dict['c_rss'])):
+                transistor_dict['c_rss'][i]['graph_v_c'] = np.array(transistor_dict['c_rss'][i]['graph_v_c'])
+        if 'graph_v_ecoss' in transistor_dict and transistor_dict['graph_v_ecoss'] is not None:
+            transistor_dict['graph_v_ecoss'] = np.array(transistor_dict['graph_v_ecoss'])
+        if 'raw_measurement_data' in transistor_dict:
+            for i in range(len(transistor_dict['raw_measurement_data'])):
+                for u in range(len(transistor_dict['raw_measurement_data'][i]['dpt_on_vds'])):
+                    transistor_dict['raw_measurement_data'][i]['dpt_on_vds'][u] = np.array(transistor_dict['raw_measurement_data'][i]['dpt_on_vds'][u])
+                for u in range(len(transistor_dict['raw_measurement_data'][i]['dpt_on_id'])):
+                    transistor_dict['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transistor_dict['raw_measurement_data'][i]['dpt_on_id'][u])
+                for u in range(len(transistor_dict['raw_measurement_data'][i]['dpt_off_vds'])):
+                    transistor_dict['raw_measurement_data'][i]['dpt_off_vds'][u] = np.array(transistor_dict['raw_measurement_data'][i]['dpt_off_vds'][u])
+                for u in range(len(transistor_dict['raw_measurement_data'][i]['dpt_off_id'])):
+                    transistor_dict['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transistor_dict['raw_measurement_data'][i]['dpt_off_id'][u])
 
         # Convert switch_args
-        switch_args = transformer_dict['switch']
+        switch_args = transistor_dict['switch']
         if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
             switch_args['thermal_foster']['graph_t_rthjc'] = np.array(switch_args['thermal_foster']['graph_t_rthjc'])
         for i in range(len(switch_args['channel'])):
@@ -504,7 +507,7 @@ class DatabaseManager:
                 switch_args['soa'][i]['graph_i_v'] = np.array(switch_args['soa'][i]['graph_i_v'])
 
         # Convert diode_args
-        diode_args = transformer_dict['diode']
+        diode_args = transistor_dict['diode']
         if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
             diode_args['thermal_foster']['graph_t_rthjc'] = np.array(diode_args['thermal_foster']['graph_t_rthjc'])
         for i in range(len(diode_args['channel'])):
@@ -518,7 +521,7 @@ class DatabaseManager:
             for i in range(len(diode_args['soa'])):
                 diode_args['soa'][i]['graph_i_v'] = np.array(diode_args['soa'][i]['graph_i_v'])
 
-        return Transistor(transformer_dict, switch_args, diode_args, self.housing_types, self.module_manufacturers)
+        return Transistor(transistor_dict, switch_args, diode_args, self.housing_types, self.module_manufacturers)
 
 
     def parallel_transistors(self, transistor: Transistor, count_parallels: int = 2) -> Transistor:
