@@ -24,7 +24,7 @@ def my_transistor():
     comment = 'test_comment'
     manufacturer = 'Fuji Electric'
     datasheet_hyperlink = 'hyperlink'
-    datasheet_date = datetime.datetime.utcnow()
+    datasheet_date = "2023-xx-xx" #datetime.datetime.utcnow()
     datasheet_version = "1.0.0"
     housing_area = 367e-6
     cooling_area = 160e-6
@@ -134,7 +134,12 @@ def my_transistor():
 
 def test_transistor(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
     # transistor_args test
     assert transistor.name == transistor_args['name']
     assert transistor.type == transistor_args['type']
@@ -212,7 +217,12 @@ def test_calc_thermal_params(my_transistor):
     :return: assertion based result
     """
     transistor_args, switch_args, diode_args = my_transistor
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
     tst_type = 'switch'
     poly_len = 3
     fixed_rth_value = 0.5
@@ -365,10 +375,19 @@ def test_export_json(my_transistor):
     Test for incorrect inputs.
     """
     transistor_args, switch_args, diode_args = my_transistor
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
-    with pytest.raises(TypeError):
-        transistor.export_json(123)
-        transistor.export_json("/not/existing/path/")
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    tdb_json = tdb.DatabaseManager()
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
+    tdb_json.export_single_transistor_to_json(transistor, os.path.join(os.getcwd(), "trial.json"))
+
+    with pytest.raises(FileNotFoundError):
+        tdb_json.export_single_transistor_to_json(transistor, "/not/existing/path/")
+
 
 
 def test_check_realnum():
