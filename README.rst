@@ -1,14 +1,54 @@
 .. sectnum::
 
+###########################
+Transistordatabase
+###########################
+
+The Transistordatabase is a tool developed by LEA from the University Paderborn which helps working with choosing transistors for the developement of electronics.
+When it comes to the point of choosing a transistor, there is typically a lot of trouble with different programs. Often there are multiple programs for
+calculating transistor parameters and a schematic simulator to verify the results.
+Now your colleague is working on a different electronics topology and may use different programs. This is a problem because in most cases your transistors will never be
+compatible with the ones from your colleague. The Transistordatabase now solves this problem:
+Here Transistors can be saved in a database and makes them easy to interchange between platforms. It is possible to export
+Transistor data to various simulation software and share it to a colleague using a .json-File.
+
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Why_transistordatabase.png
+    :align: center
+    :alt: Why transistor database?
+
+
+Functionality overview
+***********************
+
+Here are some examples on the functionality of the Transistordatabase:
+
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Workflow.png
+    :align: center
+    :alt: Workflow
+
+* digitize transistor datasheet parameters and graphs and save it to the TDB (Transistordatabase)
+* use this data for calculations in python (e.g. some loss calulations for a boost-converter)
+* export this data to matlab for calculations in matlab
+* export transistors to GeckoCIRCUITS simulation program
+* export transistors to Simulink simulation program
+* export transistors to PLECS simulation program
+
+.. note::
+    Development status: Alpha
+
 
 ###########################
 Features
 ###########################
 
+There are 3 features implemented in the Transistordatabase. First is the python interface which can be used to manage the Database and
+their Transistors. The python interface can also be used to implemement optimization routines.
+Then there is a GUI which is mostly used to manage the Database and visualize different properties of the stored Transistors.
+As the third feature the Transistordatabase can be updated by an Online-Database. You can choose to work with our Online Repository or create your own if needed. 
 
-The key feature is the Python interface, to use the transistor data in self-written optimization routines.
+Python interface
+*******************************
 
-1. Python interface
 Use the transistor data in you self-written optimization program, see figure:
 
 * Automatic calculate your converter losses with many different transistors
@@ -18,20 +58,18 @@ Use the transistor data in you self-written optimization program, see figure:
 * Functions provided, to calculate the output capacitances Energy from the C_oss-curve 
 * Use own loss measurements for above features (coming soon)
 
-2. GUI
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/documentation/workflow_wp.png
+    :align: center
+    :alt: optimization
+
+GUI
+*******************************
 
 * Manage, store and search the transistors
 * Export transistor models to programs like GeckoCIRCUITS, PLECS, Matlab/Octave
 * Compare transistors (interpolate switch loss data for new gate resistors and temperatures, ...)
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/documentation/workflow_wp.png
-    :align: center
-    :alt: optimization
-
-
-###########################
-GUI Screenshots
-###########################
+Here are some screenshots of the GUI:
 
 .. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_database.png
     :align: center
@@ -46,48 +84,16 @@ GUI Screenshots
     :alt: gui_create_transistor
 
 
-Download and installation for windows
-*************************************
-(For other operating systems, scroll down)
+Transistordatabase Fileexchange
+*******************************
 
-* Download and install `Git Installation file <https://git-scm.com/download/win>`_.
-* Download and install mongodb. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`_.
-* Download and run the transistordatabase `here <https://groups.uni-paderborn.de/lea/public/downloads/transistordatabase.zip>`_.
+`This <https://github.com/upb-lea/transistordatabase_File_Exchange>`__ repository contains the Transistors currently added to the Transistordatabase.
+Every Transistor from this repository can be automatically downloaded to your local Database. Since this only relies on the index.txt containing the links
+to each transistor which shall be downloaded it is possible to create your own repository. Next to the Transistor updates there is a list of housing types and
+module manufacturers which are supported by the Database which are also set in the Fileexchange respository.
 
-###########################
-Why the transistordatabase?
-###########################
-
-When developing electronics, you need to calculate and simulate your schematic before building up the hardware. When it comes to the point of choosing a transistor, there is typically a lot of trouble with different programs. In typical cases, you use more than one program for your calculation, e.g. a self-written program for a first guess, and a schematic simulator to verify your results. Your colleague is working on another electronics topology, may using two other programs. Both of you have stored a few transistor-files on your computers. But due to other programs and another way of using them in a self-written program, your transistors will never be compatible with your colleagures program. If he want's to use your transistors, he needs to generate them compleatly new from the datasheets to be compatible with his programs. Sharing programs and transistors will result in frustraction. This happens also in the same office (university / company / students).
-
-The transistordatabase counteracts this problem. By a defined file format, you can handle these objects, export it to some propretery simulation software and share it by a .json-file to your colleagues or share it with the world by using the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`__.
-
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Why_transistordatabase.png
-    :align: center
-    :alt: Why transistor database?
-
-Functionality overview
-***********************
-
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Workflow.png
-    :align: center
-    :alt: Workflow
-
-Functionality examples:
-
-* digitize transistor datasheet parameters and graphs and save it to the TDB
-* use this data for calculations in python (e.g. some loss calulations for a boost-converter)
-* export this data to matlab for calculations in matlab
-* export transistors to GeckoCIRCUITS simulation program
-* export transistors to Simulink simulation program
-* export transistors to PLECS simulation program
-
-.. note::
-    Development status: Alpha
-
-Complete documentation
-**********************
-The complete documentation can be found `here <https://upb-lea.github.io/transistordatabase/main/transistordatabase.html>`__.
+You can publish your own Transistors to this repository by generating a pull request.
+If you don't want to create a github account, you can also send the .json file to this :email:`email address <tdb@lea.upb.de>`.
 
 
 ############
@@ -97,46 +103,26 @@ Installation
 Windows
 *******
 
-Install Mongodb
----------------
-For the first usage, you need to install mongodb. Install with standard settings. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`__.
-
-Install git
-------------
-`Git Installation file <https://git-scm.com/download/win>`_.
-If you already have git installed, make sure you are using the latest version.
-
-.. note::
-    During installation, you will be asked 'Which editor would you like Git to use?'. Default is 'Vim', but it is one of the most complex one for beginners. Switch to 'Notepad++', 'Nano' or another one.
-
 Install Python
 --------------
 Install latest Python version: `Link <https://www.python.org/>`__.
 
-Install Pycharm
+Install Pycharm (optional)
 ---------------
 `Installation file <https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC>`_.
 
 Download and run executable
 ---------------------------
-Download exe-file here:
+Download exe-file `here <https://groups.uni-paderborn.de/lea/public/downloads/transistordatabase.zip>`_
 
 
 Linux
 *****
-Archlinux / Manjaro
-
-Enable Arch-User-Repository `(AUR) <https://aur.archlinux.org/packages/mongodb-bin/>`_.
-
-.. code-block::
-
-   sudo pacman -Syu mongodb-bin git pycharm
-
 Ubuntu
 
 .. code-block::
 
-   sudo apt install python3 python3-pip git
+   sudo apt install python3 python3-pip
 
 .. note::
     Install pycharm from Snapstore
@@ -148,38 +134,35 @@ As a base interpreter, select 'C:\Users\xxxxxx\AppData\Local\Programs\Python\Pyt
 Navigate to file -> settings -> Project -> Python Interpreter -> '+' -> search for 'transistordatabase' -> 'Install Package' |br|
 
 
-Complete minimal python example
+##########################
+Complete documentation
+##########################
+The complete documentation can be found `here <https://upb-lea.github.io/transistordatabase/main/transistordatabase.html>`__.
+
+
+##########################
+Usage
+##########################
+
+Minimal python example
 *******************************
-Copy this example to a new pycharm project.
 
 .. code-block::
+    from transistordatabase.database_manager import DatabaseManager
 
-    # load the python package
-    import transistordatabase as tdb
+    # Path for json files
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example")
 
-    # update the database from the online git-repository
-    tdb.update_from_fileexchange()
+    # Create DatabaseManager instance and set it to json format
+    tdb_json = DatabaseManager()
+    tdb_json.set_operation_mode_json(path)
 
-    # print the database
-    tdb.print_tdb()
+    # Print database
+    tdb_json.print_tdb()
 
-    # load a transistor from the database
-    transistor_loaded = tdb.load('CREE_C3M0016120K')
+In addition to that in `this <https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/housing_types.txt>`_ file there are
+more simple examples.
 
-    # export a virtual datasheet
-    transistor_loaded.export_datasheet()
-
-On the output line, you should see a message which links to the datasheet file. Click on it to view the datasheet in your browser. If this works, you have set up the transistor database correctly.
-
-##########################
-transistordatabase's usage
-##########################
-
-Import transistordatabase to your python program
-
-.. code-block::
-
-    import transistordatabase as tdb
 
 Generate a new transistor
 *************************
@@ -236,52 +219,8 @@ In many cases, two capacity curves are specified in the data sheets. One curve f
 				   ...
                    }
 
-Update and load and share transistors
-*************************************
 
-Update transistors from file exchange
--------------------------------------
-There is a file exchange to share transistor objects. The repository can be found `here <https://github.com/upb-lea/transistordatabase_File_Exchange>`__. To update your local transistordatabase type in to your python code
 
-.. code-block::
-
-    tdb.update_from_fileexchange()
-
-After this, you can find new or updated transistor files in your local transistordatabase.
-
-Search the database
--------------------
-Print all transistors inside the database
-
-.. code-block::
-
-    tdb.print_tdb()
-
-If you want to store the transistor list, this function returns the names in a variable. Next option is the usage of filters, e.g. print the housing type and the hyperlink to the datasheet. All database entries can be used as filter.
-
-.. code-block::
-
-    tdb.print_TDB(['housing_type','datasheet_hyperlink'])
-
-Load a transistor from the database
------------------------------------
-
-.. code-block::
-
-    transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
-
-Share your transistors with the world
--------------------------------------
-Use your local generated transistor, load it into your workspace and export it, e.g.
-
-.. code-block::
-
-    transistor_loaded = load('CREE_C3M0016120K')
-    transistor_loaded.export_json()
-
-You can upload this file to the `transistor database file exchange git repository <https://github.com/upb-lea/transistordatabase_File_Exchange>`__  by generating a pull request.
-
-if you don't want to create a github account, you can also send the .json file to this :email:`email address <tdb@lea.upb.de>`.
 
 Usage of Transistor.wp. in your programs
 *********************************************
@@ -445,9 +384,17 @@ A .mat-file is generated, the exporting path will be displayed in the python con
     :align: center
     :alt: Matlab .mat exporter usage example
 
+
 #######
 Others
 #######
+
+For developers
+***********************
+
+Currently the transistordatabase does not only support a json format but also a mongodb database.
+Therefore mongodb needs to be installed:
+Install with standard settings. Use the MongoDB community server, as platform, choose windows `Link <https://www.mongodb.com/try/download/community>`__.
 
 Roadmap
 *******

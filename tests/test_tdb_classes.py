@@ -1,13 +1,16 @@
 import copy
 import transistordatabase as tdb
 import numpy as np
-import datetime
 import pytest
 from pytest import approx
 import mongomock
 from unittest.mock import patch
 import os
+import json
 
+################
+#### DEPRECATED - May not work since refactoring
+################
 
 @pytest.fixture()
 def my_transistor():
@@ -21,7 +24,7 @@ def my_transistor():
     comment = 'test_comment'
     manufacturer = 'Fuji Electric'
     datasheet_hyperlink = 'hyperlink'
-    datasheet_date = datetime.datetime.utcnow()
+    datasheet_date = "2023-xx-xx" #datetime.datetime.utcnow()
     datasheet_version = "1.0.0"
     housing_area = 367e-6
     cooling_area = 160e-6
@@ -131,7 +134,12 @@ def my_transistor():
 
 def test_transistor(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
     # transistor_args test
     assert transistor.name == transistor_args['name']
     assert transistor.type == transistor_args['type']
@@ -209,7 +217,12 @@ def test_calc_thermal_params(my_transistor):
     :return: assertion based result
     """
     transistor_args, switch_args, diode_args = my_transistor
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
     tst_type = 'switch'
     poly_len = 3
     fixed_rth_value = 0.5
@@ -282,9 +295,13 @@ def data_setup_for_gecko_exporter(request):
     :return: dict with read .scl files generated after the act process
 
     """
+    tdb_json = tdb.DatabaseManager()
+    tdb_json.set_operation_mode_json()
+
     actual_data = {}
     actual_data['case'] = request.param['case']
-    transistor_test_data = tdb.import_json(request.param['file'])
+    with open(request.param['file'], "r") as fd:
+        transistor_test_data = tdb_json.convert_dict_to_transistor_object(json.load(fd))
     if request.param['case'] == 2:
         for index in range(len(transistor_test_data.switch.e_on) - 1, -1, -1):
             if transistor_test_data.switch.e_on[index].dataset_type == 'graph_r_e':
@@ -362,10 +379,19 @@ def test_export_json(my_transistor):
     Test for incorrect inputs.
     """
     transistor_args, switch_args, diode_args = my_transistor
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
-    with pytest.raises(TypeError):
-        transistor.export_json(123)
-        transistor.export_json("/not/existing/path/")
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    tdb_json = tdb.DatabaseManager()
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
+    tdb_json.export_single_transistor_to_json(transistor, os.path.join(os.getcwd(), "trial.json"))
+
+    with pytest.raises(FileNotFoundError):
+        tdb_json.export_single_transistor_to_json(transistor, "/not/existing/path/")
+
 
 
 def test_check_realnum():
@@ -406,7 +432,13 @@ def test_connect_local_tdb(connect_local_tdb):
 def my_database(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
     switch_args['soa'].clear()
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
+
     mocked_mongo = mongomock.MongoClient()
     fake_collection = mocked_mongo['transistor_database_fake'].collection
     transistor_dict = transistor.convert_to_dict()
@@ -437,29 +469,10 @@ def test_add_soa_data(my_database, monkeypatch):
 
     transistor, fake_collection = my_database
 
-    def mock_return():
-        return fake_collection
-
-    monkeypatch.setattr('transistordatabase.tdb_classes.connect_local_tdb', mock_return)
-
     soa_list_one = copy.deepcopy([soa_object_one, soa_object_two])
     transistor.add_soa_data(soa_list_one, 'switch', True)
-    local_transistor = fake_collection.find_one({'_id': transistor._id})
-    assert len(local_transistor['switch']['soa']) == len(transistor.switch.soa)
+    assert 2 == len(transistor.switch.soa)
 
-    local_soa_list = []
-    for soa_item in local_transistor['switch']['soa']:
-        local_soa_list.append(soa_item)
-    for index, item in enumerate(soa_list_one):
-        for key in item:
-            if isinstance(item[key], np.ndarray):
-                item[key] = item[key].tolist()
-            assert item[key] == local_soa_list[index][key]
-    # deep copy is necessary as the graph_v_i in list format is modified when the add_soa_data is called
-    soa_list_two = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three])
-    transistor.add_soa_data(soa_list_two, 'switch')
-    local_transistor = fake_collection.find_one({'_id': transistor._id})
-    assert len(local_transistor['switch']['soa']) == 3
     # deep copy is necessary as the graph_v_i in list format is modified when the add_soa_data is called
     soa_list_three = copy.deepcopy([soa_object_one, soa_object_two, soa_object_three, soa_object_one])
     transistor.add_soa_data(soa_list_three, 'switch')
@@ -491,26 +504,10 @@ def test_add_gate_charge_data(my_database, monkeypatch):
     def mock_return():
         return fake_collection
 
-    monkeypatch.setattr('transistordatabase.tdb_classes.connect_local_tdb', mock_return)
-
     qc_list_one = copy.deepcopy([switch_charge_curves_100])
     transistor.add_gate_charge_data(qc_list_one, True)
-    local_transistor = fake_collection.find_one({'_id': transistor._id})
-    assert len(local_transistor['switch']['charge_curve']) == len(transistor.switch.charge_curve)
+    assert 1 == len(transistor.switch.charge_curve)
 
-    local_qc_list = []
-    for charge_item in local_transistor['switch']['charge_curve']:
-        local_qc_list.append(charge_item)
-    for index, item in enumerate(qc_list_one):
-        for key in item:
-            if isinstance(item[key], np.ndarray):
-                item[key] = item[key].tolist()
-            assert item[key] == local_qc_list[index][key]
-    # deep copy is necessary as the graph_q_v in list format is modified when the add_gate_charge_data is called
-    qc_list_two = copy.deepcopy([switch_charge_curves_100, switch_charge_curves_400])
-    transistor.add_gate_charge_data(qc_list_two)
-    local_transistor = fake_collection.find_one({'_id': transistor._id})
-    assert len(local_transistor['switch']['charge_curve']) == 2
     # deep copy is necessary as the graph_q_v in list format is modified when the add_gate_charge_data is called
     qc_list_three = copy.deepcopy([switch_charge_curves_400, switch_charge_curves_400, switch_charge_curves_100, switch_charge_curves_100])
     transistor.add_gate_charge_data(qc_list_three)
@@ -537,29 +534,10 @@ def test_add_temp_depend_resis_data(my_database, monkeypatch):
 
     transistor, fake_collection = my_database
 
-    def mock_return():
-        return fake_collection
-
-    monkeypatch.setattr('transistordatabase.tdb_classes.connect_local_tdb', mock_return)
-
     rth_list_one = copy.deepcopy([switch_ron_args])
     transistor.add_temp_depend_resistor_data(rth_list_one, True)
-    local_transistor = fake_collection.find_one({'_id': transistor._id})
-    assert len(local_transistor['switch']['r_channel_th']) == len(transistor.switch.r_channel_th)
+    assert 1 == len(transistor.switch.r_channel_th)
 
-    local_rth_list = []
-    for rth_item in local_transistor['switch']['r_channel_th']:
-        local_rth_list.append(rth_item)
-    for index, item in enumerate(rth_list_one):
-        for key in item:
-            if isinstance(item[key], np.ndarray):
-                item[key] = item[key].tolist()
-            assert item[key] == local_rth_list[index][key]
-    # deep copy is necessary as the graph_t_r in list format is modified when the add_temp_depend_resis_data is called
-    rth_list_two = copy.deepcopy([switch_ron_args, switch_ron_args_2])
-    transistor.add_temp_depend_resistor_data(rth_list_two)
-    local_transistor = fake_collection.find_one({'_id': transistor._id})
-    assert len(local_transistor['switch']['r_channel_th']) == 2
     # deep copy is necessary as the graph_t_r in list format is modified when the add_temp_depend_resis_data is called
     rth_list_three = copy.deepcopy([switch_ron_args_2, switch_ron_args_2, switch_ron_args, switch_ron_args])
     transistor.add_temp_depend_resistor_data(rth_list_three)
@@ -570,21 +548,32 @@ def test_get_object_i_e_simplified(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
     switch_energy_new = {'dataset_type': 'graph_i_e', 't_j': 25, 'v_supply': 600, 'v_g': 12,
                          'r_g': 1, 'graph_i_e': np.array([[1, 2, 3], [4, 5, 6]])}
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
 
     with pytest.raises(ValueError):
         transistor.get_object_i_e_simplified("e_off", 200)
     i_e_object, r_e_object = transistor.get_object_i_e_simplified("e_off", 25)
     assert r_e_object is None
     # When i_e object list has more than one matching items at t_j
-    transistor.switch.e_off.append(tdb.Transistor.SwitchEnergyData(switch_energy_new))
+    transistor.switch.e_off.append(tdb.SwitchEnergyData(switch_energy_new))
     i_e_object, r_e_object = transistor.get_object_i_e_simplified("e_off", 25)
     assert r_e_object is not None
 
 
 def test_get_object_r_e_simplified(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
     with pytest.raises(ValueError):
         transistor.get_object_r_e_simplified("e_off", 25, 15, 1000, 10)
     r_e_object = transistor.get_object_r_e_simplified("e_off", 200, 60, 600, 10)

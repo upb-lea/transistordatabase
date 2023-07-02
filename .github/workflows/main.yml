@@ -37,6 +37,7 @@ jobs:
           echo Start testing...
           cd tests/
           pytest test_tdb_classes.py
+          pytest test_database_manager.py
           echo tests finished.
           
       - name: Install sphinx and build documentation with sphinx

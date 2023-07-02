@@ -1,0 +1,77 @@
+#General
+TO220
+TO247
+TO263
+TO92
+MLPQ
+MLPM
+MLPD
+DRMLF
+DFN
+TDFN
+UTDFN
+XDFN
+QFN
+QFN-TEP
+TQFN
+VQFN
+DHVQFN
+UFQFPN
+
+#Semikron
+Skiip
+MiniSkiipI
+MiniSkiipII
+MiniSkiipIII
+Semitop
+Semitop2
+Semitop3
+Semitop4
+Semitrans
+Semitrans2
+Semitrans3
+Semitrans4
+Semitrans5
+Semitrans6
+Semitrans7
+Semitrans8
+Semitrans9
+Semitrans10
+Semitrans20
+SEMiX3
+SEMiX5
+SEMiX6
+SKM
+
+#Fuji Electric
+M254
+M256
+M260
+M263
+M271
+M272
+M274
+M275
+M276
+M277
+M278
+M282
+M285
+M286
+M291
+M292
+62mm
+45mm
+#CREE
+HM62mm
+FM3
+XM3
+
+#Mitsubishi Electric
+std type
+NX type
+NX type (press-fit)
+
+#Plecs importer
+PLECS Import
+GaNPX

@@ -1,5 +1,11 @@
 __version__ = "0.4.1"
-from .tdb_constants import *
-from .tdb_classes import *
-from .tdb_functions import *
-from .tdb_compare import *
+from transistordatabase.constants import *
+from transistordatabase.mongodb_handling import *
+from transistordatabase.checker_functions import *
+from transistordatabase.helper_functions import *
+from transistordatabase.data_classes import *
+from transistordatabase.transistor import *
+from transistordatabase.diode import *
+from transistordatabase.switch import *
+from transistordatabase.exceptions import *
+from transistordatabase.database_manager import *

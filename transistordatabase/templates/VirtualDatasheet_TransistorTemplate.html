@@ -4,10 +4,17 @@
 <!-- ********** code is for checking if the energy and img plots exists for extending html page ************* -->
 {% set pagesReqForDiode = 1 %}
 {% set pagesReqForSwitch = 1 %}
+{% set ns = namespace(pagesReqForRawData = 0) %}
+{% set x = 0 %}
+{% set count = 0 %}
+{% set raw_measurement_object_count = 0 %}
+
 
 {% set diode_plots = {} %}
 {% set switch_plots = {} %}
 {% set trans_plots = {} %}
+{% set raw_measurement_plot = {} %}
+
 {% set trans_title = {'c_plots': 'Voltage dependant Capacitance'} %}
 {% set switch_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs Energy curves', 'energy_plots_r': 'Rg vs Energy curves', 'r_channel_th_plot':'On Resistance plots', 'charge_curve':'Gate charge,Qg','imp_plot':'Impedance plot', 'soa':'Safe operating Area'} %}
 {% set diode_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs Energy curves', 'energy_plots_r': 'Rg vs Energy curves', 'imp_plot':'Impedance plot', 'soa':'Safe operating Area' } %}
@@ -53,7 +60,7 @@
 
 <!--******* transistor ********* -->
 {% for key, item in trans['plots'].items() %}
-	{% if item is not none %}
+	{% if item is not none  %}
 	{% do trans_plots.update({key: item}) %}
 	{% endif %}
 {% endfor %}
@@ -62,7 +69,6 @@
 {% if switch_plots|length > 6 %}
 	{% set pagesReqForSwitch = 2 %}
 {% endif %}
-
 {% if diode_plots|length > 6 %}
 	{% set pagesReqForDiode = 2 %}
 {% endif %}
@@ -79,14 +85,15 @@
 		<th class="unit"><div class="h4style">Units</div></th>
 	  </tr>
 	  {% for key, value in trans.items() %}
-	  {% if not key == 'plots' %}
+	  {% if not key == 'plots'and not key == 'raw_measurement_data' and not key == 'Raw_measurement_data' %}
+	  
 	  <tr>
-		  {% set split_list = key.split('_') %}
+		{% set split_list = key.split('_') %}
 		  <td style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
-		  {% if value is string %}
+		{% if value is string %}
 			<td style="font-family: Tahoma;">{{ value }}</td>
-			<td style="text-align:center"> - </td>
-		  {% else %}
+			<td `="text-align:center"> - </td>
+		{% else %}
 			{% if key == 'Datasheet hyperlink' %}
 				<td class="value" style="font-family: Tahoma;"><a href= {{ value[0] }}> {{trans["Manufacturer"][0]}}</a></td>
 			{% else %}
@@ -145,7 +152,7 @@
 			<tr>
 			{% set split_list = key.split('_') %}
 			<td class="spec" style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
-			 {% if value is string %}
+			{% if value is string %}
 				<td class="value" style="font-family: Tahoma;">{{ value }}</td>
 				<td class="unit" style="text-align:center"> - </td>
 			{% else %}
@@ -179,8 +186,10 @@
 			   </div>
 		  </div>
 	</div>
-	{% endif %}
-												<!-- **************** Switch plots start from here ****************** -->
+{% endif %}
+
+											
+	<!-- **************** Switch plots start from here ****************** -->
 {% set s_plotted_keys = [] %}
 {% for index in range(pagesReqForSwitch) %}
 	{% set count = [] %}
@@ -255,4 +264,91 @@
 	</div>
 {% endfor %}
 
+	<!-- **************** raw_measurement_plots  ********************* -->
+	
+
+	{% if trans['raw_measurement_data']|length > 0 %}
+		{% set raw_plotted_keys = [] %}
+		{% for j in trans['raw_measurement_data'] %}	
+			{% for i in j %}
+				{% if i is mapping %}
+				<div style="page-break-before:always;" class="pageCSS">
+					<br>
+					<br>
+					<!-- ********** switch specifications table ************* -->
+				<table class="tableCSS">
+					<tr>
+					<th colspan=3><h4 style="text-align:center">{{trans["Type"][0]}} Raw Measurement Data</h4></th>
+					</tr>
+					{% for key,item in i.items() %}
+						{% if key == 'total graphs' %}
+							{% set x = x + i[key] %}
+							{% if x > 6 %}
+								{% set x = x / 6 %}
+								{% set x =  x|round|int %}
+								{% if x < (i[key]/6) %}
+									{% set ns.pagesReqForRawData = x + 1 %}					
+								{% else %}
+									{% set ns.pagesReqForRawData = x %}
+								{% endif %}
+							{% else %}
+								{% set ns.pagesReqForRawData = 1 %}					
+							{% endif %}
+						{% else %}
+							<tr>
+								{% set split_list = key.split('_') %}
+								<td class="spec" style="font-weight:600; font-family: Garamond">{{ split_list[0] }}{% if split_list|length > 1 %}<sub>{{split_list[1]}}</sub>{% endif %}</td>
+								{% if items is string %}
+								   <td class="value" style="font-family: Tahoma;">{{ item[0] }}</td>
+								   <td class="unit" style="text-align:center"> - </td>
+							   {% else %}
+								   
+								   {% if item[0] is none %}
+								   <td class="value" style="text-align:center">-</td>
+								   <td class="unit" style="text-align:center"> - </td>
+								   {% else %}
+								   <td class="value" style="font-family: Tahoma;">{{ item[0]}}</td>
+								   <td class="unit" style="text-align:center">{{ item[1] }}</td>
+								   {% endif %}
+							   {% endif %}
+							</tr>
+						{% endif %}
+					{% endfor %}
+				</table>
+				</div>	
+				{% else  %}
+					{% for  raw_data_plots_count in range(i|length) %}
+						{% if i[raw_data_plots_count] is not none  %}
+							{% do raw_measurement_plot.update({raw_data_plots_count:i[raw_data_plots_count]}) %}
+						{% endif %}
+					{% endfor %}	
+					{% for k in range(ns.pagesReqForRawData) %}
+						{% set  count = namespace(value=0) %}		
+							<div style="page-break-before:always;" class="pageCSS">
+								<h3 class="textalign"> {{trans["Type"][0]}} Raw Measurement Data Plots </h3>
+									<div class="container">
+										<div class="row">
+											{% for key, plot in raw_measurement_plot.items() %}
+												{% if key not in raw_plotted_keys%}
+													{% if plot is not none %}
+														{%if key is number %} 
+															{%if count.value < 6%}
+																<div class="thumb">			
+																<img id="key" src="data:image/png;base64,{{ plot }}" class="img">
+																</div>
+																{% do raw_plotted_keys.append(key)%}
+																{% set count.value = count.value + 1 %}
+															{% endif %}
+														{% endif %}
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										</div>
+									</div>
+							</div>		
+					{% endfor %}
+				{% endif %}
+			{%endfor%}
+		{% endfor %}				
+	{%endif%}
 {% endblock %}
