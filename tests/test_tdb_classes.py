@@ -7,6 +7,7 @@ from pytest import approx
 import mongomock
 from unittest.mock import patch
 import os
+import json
 
 ################
 #### DEPRECATED - May not work since refactoring
@@ -295,9 +296,13 @@ def data_setup_for_gecko_exporter(request):
     :return: dict with read .scl files generated after the act process
 
     """
+    tdb_json = tdb.DatabaseManager()
+    tdb_json.set_operation_mode_json()
+
     actual_data = {}
     actual_data['case'] = request.param['case']
-    transistor_test_data = tdb.import_json(request.param['file'])
+    with open(request.param['file'], "r") as fd:
+        transistor_test_data = tdb_json.convert_dict_to_transistor_object(json.load(fd))
     if request.param['case'] == 2:
         for index in range(len(transistor_test_data.switch.e_on) - 1, -1, -1):
             if transistor_test_data.switch.e_on[index].dataset_type == 'graph_r_e':
