@@ -597,21 +597,32 @@ def test_get_object_i_e_simplified(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
     switch_energy_new = {'dataset_type': 'graph_i_e', 't_j': 25, 'v_supply': 600, 'v_g': 12,
                          'r_g': 1, 'graph_i_e': np.array([[1, 2, 3], [4, 5, 6]])}
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
 
     with pytest.raises(ValueError):
         transistor.get_object_i_e_simplified("e_off", 200)
     i_e_object, r_e_object = transistor.get_object_i_e_simplified("e_off", 25)
     assert r_e_object is None
     # When i_e object list has more than one matching items at t_j
-    transistor.switch.e_off.append(tdb.Transistor.SwitchEnergyData(switch_energy_new))
+    transistor.switch.e_off.append(tdb.SwitchEnergyData(switch_energy_new))
     i_e_object, r_e_object = transistor.get_object_i_e_simplified("e_off", 25)
     assert r_e_object is not None
 
 
 def test_get_object_r_e_simplified(my_transistor):
     transistor_args, switch_args, diode_args = my_transistor
-    transistor = tdb.Transistor(transistor_args, switch_args, diode_args)
+    possible_housing_types = ['TO247']
+    possible_module_manufacturers = ["Fuji Electric"]
+
+    transistor = tdb.Transistor(transistor_args, switch_args, diode_args,
+                                possible_housing_types=possible_housing_types,
+                                possible_module_manufacturers=possible_module_manufacturers)
     with pytest.raises(ValueError):
         transistor.get_object_r_e_simplified("e_off", 25, 15, 1000, 10)
     r_e_object = transistor.get_object_r_e_simplified("e_off", 200, 60, 600, 10)
