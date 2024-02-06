@@ -1,5 +1,6 @@
+"""Handling of exceptions."""
 class MissingDataError(Exception):
-    """Custom exception class for plecs_exporter"""
+    """Custom exception class for plecs_exporter."""
 
     # define the error codes & messages here
     em = {1101: "Switch conduction channel information is missing, cannot export to",

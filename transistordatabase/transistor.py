@@ -42,6 +42,7 @@ class Transistor:
         - Groups data of all other classes for a single transistor. Methods are specified in such a way that only user-interaction with this class is necessary
         - Documentation on how to add or extract a transistor-object to/from the database can be found in
     """
+
     # ToDo: Add database id as attribute
     _id: int  #: ID of the object being created. (Automatic key) Only Used in MongoDB
     name: str  #: Name of the transistor. Choose as specific as possible. (Mandatory key)
@@ -214,7 +215,8 @@ class Transistor:
             raise
 
     def convert_raw_measurement_data(self, input: List | Dict, name: str = None) -> List[RawMeasurementData]:
-        """Converts input (list or dict) to list of raw_measurement_data
+        """
+        Convert input (list or dict) to list of raw_measurement_data.
 
         :param input: Input data
         :type input: List | Dict
@@ -249,7 +251,8 @@ class Transistor:
         return output_list
 
     def convert_voltage_dependent_capacitance(self, input: List | Dict, name: str = None) -> List[VoltageDependentCapacitance]:
-        """Converts input (list or dict) to list of raw_measurement_data
+        """
+        Convert input (list or dict) to list of raw_measurement_data.
 
         :param input: Input data
         :type input: List | Dict
@@ -339,8 +342,9 @@ class Transistor:
 
     def update_wp(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str = "both", normalize_t_to_v=10) -> None:
         """
-        Fills the .wp-class, a temporary storage for self-written user-programs
-        Searches for the input values and fills the .wp-class with data next to this points
+        Fill the .wp-class, a temporary storage for self-written user-programs.
+
+        Searches for the input values and fills the .wp-class with data next to this points.
 
         :param t_j: junction temperature
         :type t_j: float
@@ -431,9 +435,9 @@ class Transistor:
 
     def quickstart_wp(self) -> None:
         """
-        Function to fill out the .wp-class by just one command 'quickstart_wp()'.
-        Uses typical working points
+        Fill out the .wp-class by just one command 'quickstart_wp()'.
 
+        Uses typical working points
          - channel linearization next to v_g = 15V, i_cont and t_j = t_j_abs_max - 25 degree
          - switching loss curves next to t_j = t_j_abs_max - 25 degree
 
@@ -456,7 +460,7 @@ class Transistor:
 
     def calc_v_qoss(self) -> np.array:
         """
-        Calculates q_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
+        Calculate q_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss.
 
         :return: q_oss numpy array
         :rtype: np.array
@@ -488,7 +492,7 @@ class Transistor:
 
     def plot_v_qoss(self, buffer_req: bool = False):
         """
-        Plots v_qoss with method calc_v_qoss
+        Plot v_qoss with method calc_v_qoss.
 
         :param buffer_req: Internally required for generating virtual datasheets
         :type buffer_req: bool
@@ -509,7 +513,7 @@ class Transistor:
 
     def get_object_v_i(self, switch_or_diode: str, t_j: float, v_g: float) -> List:
         """
-        Used for getting a channel curve including boundary conditions
+        Get a channel curve including boundary conditions.
 
         :param switch_or_diode: 'switch' or 'diode'
         :type switch_or_diode: float
@@ -572,7 +576,7 @@ class Transistor:
 
     def get_object_i_e(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, r_g: float) -> List:
         """
-        Function to get the loss graphs out of the transistor class
+        Get the loss graphs out of the transistor class.
 
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
         :type e_on_off_rr: str
@@ -637,7 +641,7 @@ class Transistor:
 
     def get_object_i_e_simplified(self, e_on_off_rr: str, t_j: float):
         """
-        Function to get the loss graphs out of the transistor class, simplified version
+        Get the loss graphs out of the transistor class, simplified version.
 
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
         :type e_on_off_rr: str
@@ -693,7 +697,8 @@ class Transistor:
 
     def get_object_r_e_simplified(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, normalize_t_to_v: float) -> List:
         """
-        Function to get the loss graphs out of the transistor class, simplified version
+        Get the loss graphs out of the transistor class, simplified version.
+
         :param e_on_off_rr: can be the following: 'e_on', 'e_off' or 'e_rr'
         :type e_on_off_rr: str
         :param t_j: junction temperature
@@ -745,6 +750,7 @@ class Transistor:
             -> SwitchEnergyData:
         """
         Calculate loss curves for other gate resistor than the standard one.
+
         This function uses i_e loss curve in combination with r_e loss curve, to calculate a new i_e loss curve for
         a chosen gate resistor. Also voltage correction is implemented (e.g. half voltage compared to datasheet means half losses)
 
@@ -801,7 +807,7 @@ class Transistor:
     def calc_i_e_curve_using_r_e_curve(self, i_e_object: SwitchEnergyData, r_e_object: SwitchEnergyData,
                                        r_g: float, v_supply_chosen: float) -> np.array:
         """
-        Calculates the loss energy curve at the provided gate resistance value based on the r_e_graph data
+        Calculate the loss energy curve at the provided gate resistance value based on the r_e_graph data.
 
         :param i_e_object: selected loss energy curve object of datatype = 'graph_i_e'
         :type i_e_object: Transistor.SwitchEnergyData
@@ -856,7 +862,6 @@ class Transistor:
             - Error handling
             - Unittest for this method
         """
-
         # in case of failure, return None
         v_channel = None
         r_channel = None
@@ -1029,7 +1034,8 @@ class Transistor:
 
     def compare_channel_linearized(self, i_channel: float, t_j: float = 150, v_g: float = 15) -> None:
         """
-        Shows channel plots for switch and diode comparing the linearized graph and the original graph.
+        Show channel plots for switch and diode comparing the linearized graph and the original graph.
+
         This function searches for the closest available curves for given arguments t_j and v_g
 
         :param i_channel: current to linearize the channel
@@ -1042,7 +1048,6 @@ class Transistor:
         :return: Plot, showing original channel data and linearized channel data
         :rtype: None
         """
-
         # search for closest objects
         switch_channel, eon, eoff = self.switch.find_approx_wp(t_j, v_g, normalize_t_to_v=10, switch_energy_dataset_type="graph_i_e")
         diode_channel, err = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v=10,
@@ -1093,7 +1098,7 @@ class Transistor:
      
     def raw_measurement_data_plots(self) -> list:
         """
-        Takes the raw measurement data attribute and traverses through 
+        Take the raw measurement data attribute and traverses through
         the list for each present method and loads the ids and vds data for
         in 3 separate lists. The three lists are used as input for plot_curves function which
         returns the combined and scaled plots for the data. The combined plots are returned in img bytes format
@@ -1135,9 +1140,9 @@ class Transistor:
         return plots_with_conditions
 
     def plot_curves(self, time_array, vds_values, ids_values, buffer_req: bool = False):
-        
-        ''' 
-        Takes three lists of time, vds and id values and generates a combined plot.
+        """ 
+        Take three lists of time, vds and id values and generates a combined plot.
+
         Calls the get_img_raw_data function for returning img form of the plot and returns the images.
         
         :param time_array : time values in the raw measurement data 
@@ -1145,7 +1150,7 @@ class Transistor:
         :param id_values : id values in the raw measurement data  
         return image form of the plot
         rtype decoded raw image data to utf-8
-        '''
+        """
         color = 'tab:blue'
         plt.xlabel('time (s)')
         plt.ylabel('Voltage (V)', color=color)
@@ -1162,7 +1167,7 @@ class Transistor:
 
     def export_datasheet(self, build_collection=False) -> str | None:
         """
-        Generates and exports the virtual datasheet in form of pdf
+        Generate and export the virtual datasheet in form of a pdf-file.
 
         :return: pdf file is created in the current working directory
         :rtype: None
@@ -1224,8 +1229,9 @@ class Transistor:
     def export_simulink_loss_model(self, r_g_on: float = None, r_g_off: float = None, v_supply: float = None,
                                    normalize_t_to_v: float = 10) -> None:
         """
-        Exports a simulation model for simulink inverter loss models,
-        see https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
+        Export a simulation model for simulink inverter loss models.
+
+        See also: https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
 
         :param r_g_on: gate turn on resistance, optional
         :type r_g_on: float
@@ -1414,7 +1420,7 @@ class Transistor:
 
     def export_matlab(self) -> None:
         """
-        Exports a transistor dictionary to a matlab dictionary
+        Export a transistor dictionary to a matlab dictionary.
 
         :return: File stored in current working path
         :rtype: None
@@ -1439,7 +1445,7 @@ class Transistor:
 
     def collect_i_e_and_r_e_combination(self, switch_type: str, loss_type: str) -> Tuple[List, List]:
         """
-        A function to gather the i_e and r_e graph combinations from the available energy curves which are further used in gecko circuit exporter function
+        Gather the i_e and r_e graph combinations from the available energy curves which are further used in gecko circuit exporter function.
 
         :param switch_type: argument to specify if either 'switch' or 'diode' energy curve to be considered
         :type switch_type: str
@@ -1474,7 +1480,7 @@ class Transistor:
     def export_geckocircuits(self, recheck: bool = True, v_supply: float = None, v_g_on: float = None,
                              v_g_off: float = None, r_g_on: float = None, r_g_off: float = None) -> None:
         """
-        Export transistor data to GeckoCIRCUITS
+        Export transistor data to GeckoCIRCUITS.
 
         :param recheck: Default to set to true, to enable the neighbouring select feature of the exporter
         :type recheck: bool
@@ -1500,7 +1506,6 @@ class Transistor:
 
         .. note:: These .scl files are then imported as semiconductor characteristics inside geckoCIRCUITS
         """
-
         # programming notes
         # exporting the diode:
         # diode off losses:
@@ -1788,7 +1793,7 @@ class Transistor:
 
     def export_plecs(self, recheck: bool = True, gate_voltages=None) -> None:
         """
-        Generates and exports the switch and diode .xmls files to be imported into plecs simulator
+        Generate and export the switch and diode .xmls files to be imported into plecs simulator.
 
         :param recheck: enables the selection of gate voltages near to the provided values if not found
         :type recheck: bool
@@ -1837,9 +1842,10 @@ class Transistor:
 
     class WP:
         """
-         The WP class is intended for user calculations in Python. It is used to access transistor data in user-written programs.
-         It allows the user to linearize the channel and store the result in transistor.wp. Switching loss curves can be stored
-         for specific boundary conditions, so that the same variable is always accessed in the self-written program, regardless of the transistor.
+        WP class is intended for user calculations in Python. It is used to access transistor data in user-written programs.
+
+        It allows the user to linearize the channel and store the result in transistor.wp. Switching loss curves can be stored
+        for specific boundary conditions, so that the same variable is always accessed in the self-written program, regardless of the transistor.
 
         The class WP...
 
@@ -1847,6 +1853,7 @@ class Transistor:
         - Is always exported as None to .json or to the database.
         - Is a temporary workspace.
         """
+
         # type hints
         switch_v_channel: float | None
         switch_r_channel: float | None
@@ -1879,7 +1886,9 @@ class Transistor:
 
     def validate_transistor(self) -> Dict:
         """
-        A helper function for plecs exporter. Checks if curve characteristics and thermal network parameters of both switch and diode to be None or empty
+        Check the transistor object if it is valid for plecs exporter.
+
+        Checks if curve characteristics and thermal network parameters of both switch and diode to be None or empty
         Appends corresponding codes for further verification in get_curve_data(..) method
 
         .. todo: May rename to 'plecs_validate_transistor'
@@ -2072,7 +2081,7 @@ class Transistor:
 
     def add_dpt_measurement(self, measurement_data):
         """
-        This method adds new measurement data to the transistor object.
+        Add new measurement data to the transistor object.
 
         :param measurement_data: Dict of data you want to add to given attribute.
         :type measurement_data: dict
@@ -2139,7 +2148,7 @@ class Transistor:
 
     def add_soa_data(self, soa_data: Union[Dict, List], switch_type: str, clear: bool = False):
         """
-        A transistor method to add the SOA class object to the loaded transistor.switch.soa or transistor.diode.soa attribute.
+        Add the SOA class object to the loaded transistor.switch.soa or transistor.diode.soa attribute.
 
         :param soa_data: argument represents the soa dictionaries objects that needs to be added to transistor switch or diode object
         :type soa_data: dict or list
@@ -2204,7 +2213,8 @@ class Transistor:
 
     def add_gate_charge_data(self, charge_data: Union[Dict, List], clear: bool = False):
         """
-        A transistor method to add the GateChargeCurve class objects to the loaded transistor.switch.charge_curve attribute.
+        Add the GateChargeCurve class objects to the loaded transistor.switch.charge_curve attribute.
+
         .. note:: Transistor object must be loaded first before calling this method
 
         :param charge_data: argument represents the gatechargecurve dictionaries objects that needs to be added to transistor object
@@ -2256,7 +2266,8 @@ class Transistor:
 
     def add_temp_depend_resistor_data(self, r_channel_data: Union[Dict, List], clear: bool = False):
         """
-        A transistor method to add the TemperatureDependResistance class objects to the loaded transistor.switch.r_channel_th attribute.
+        Add the TemperatureDependResistance class objects to the loaded transistor.switch.r_channel_th attribute.
+
         .. note:: Transistor object must be loaded first before calling this method
 
         :param r_channel_data: argument represents the TemperatureDependResistance dictionaries objects that needs
@@ -2366,7 +2377,7 @@ class Transistor:
 
 def attach_units(trans: Dict, devices: Dict):
     """
-    The function will attach units for the virtual datasheet parameters when a call is made in export_datasheet() method.
+    Attach units for the virtual datasheet parameters when a call is made in export_datasheet() method.
 
     :param trans: pdf data which contains the transistor related generic information
     :type trans: dict

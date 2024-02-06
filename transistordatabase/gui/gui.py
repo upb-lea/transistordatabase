@@ -741,7 +741,6 @@ class MainWindow(QMainWindow):
         Email workflow to start a request for adding a new transistor to the transistordatabase file exchange.
         This routine will open the mailprogram with predefined adresses. The .json file needs to be added manually.
         """
-
         transistor = self.get_marked_transistor()
         transistor.export_json()
 
@@ -2522,7 +2521,6 @@ class MainWindow(QMainWindow):
 
         :return: transistor object
         """
-
         # TRANSISTOR PARAMETERS #
 
         try:
@@ -3961,14 +3959,12 @@ class MainWindow(QMainWindow):
         """
         Adds a Matplotlib figure to a QWidget and creates a plot based on all the possible inputs and selections
 
-
         :param widget_compare_plot: widget for the matplotlib figure
         :type widget_compare_plot: QWidget
         :param matplotlibwidget_compare: matplotlib figure
         :param comboBox_compare_plot: comboBox to choose plot
         :return: None
         """
-
         matplotlibwidget.axis.clear()
         self.layout = QVBoxLayout(widget_plot)
         self.layout.addWidget(matplotlibwidget)
@@ -4485,7 +4481,6 @@ class MainWindow(QMainWindow):
 
         :return: None
         """
-
         if self.comboBox_topology_topology.currentText() == "Buck-Converter":
             self.label_picture_topology.setMaximumSize(QtCore.QSize(450, 115))
             self.label_picture_topology.setPixmap(QtGui.QPixmap(resource_path("buck_converter_schematic.png")))
@@ -4551,7 +4546,6 @@ class MainWindow(QMainWindow):
         :param comboBox_topology_plot_line_contour: ComboBox to choose between line-plot and contour-plot
         :return: None
         """
-
         items_comboBox_y_z_axis = ["RMS Current Transistor1 [A]",
                                    "RMS Current Diode Transistor2 [A]",
                                    "Mean Current Transistor1 [A]",
@@ -4770,7 +4764,7 @@ class MainWindow(QMainWindow):
                              comboBox_topology_plot_y_axis, comboBox_topology_plot_z_axis,
                              comboBox_topology_line_contour, converter):
         """
-        Adds a Matplotlib figure to a QWidget and creates a plot based on all the possible inputs and selections using
+        Add a Matplotlib figure to a QWidget and creates a plot based on all the possible inputs and selections using
         the calculation-functions from buck_converter_functions.py, boost_converter_functions.py and buck_boost_converter_functions.py.
 
         :param widget_topology_plot: widget for the Matplotlib figure
@@ -4782,7 +4776,6 @@ class MainWindow(QMainWindow):
         :param converter: "buck_converter", "boost_converter" or "buck_boost_converter"
         :return: None
         """
-
         annotations_list = []
 
         def clicked(event):
@@ -5360,7 +5353,7 @@ class MainWindow(QMainWindow):
 
     def get_converter(self):
         """
-        Returns a converter_functions python file depending on which converter is currently selected
+        Return a converter_functions python file depending on which converter is currently selected.
 
         :return: converter_functions python file
         """
@@ -5375,7 +5368,7 @@ class MainWindow(QMainWindow):
 
     def topology_pop_out_plot1(self):
         """
-        Opens new window with plot1 from Topology Calculator
+        Open a new window with plot1 from Topology Calculator.
 
         :return:
         """
@@ -5706,7 +5699,6 @@ class InformationWindow(QMainWindow):
 
         :return: None
         """
-
         MainWindow.button_create_transistor_create.setDisabled(True)
 
         self.close()
@@ -5854,6 +5846,7 @@ class EmittingStream(QtCore.QObject):
 
     :return: None
     """
+
     text_written = QtCore.pyqtSignal(str)
 
     def write(self, text):

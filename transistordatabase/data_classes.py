@@ -11,7 +11,7 @@ from transistordatabase.checker_functions import check_float
 from transistordatabase.helper_functions import isvalid_dict, get_img_raw_data
 
 class GateChargeCurve:
-    """ A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class"""
+    """A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class"""
 
     v_supply: float  #: same as drain-to-source (v_ds)/ collector-emitter (v_ce) voltages
     t_j: float  #: junction temperature
@@ -21,7 +21,7 @@ class GateChargeCurve:
 
     def __init__(self, args):
         """
-        Initialization method for GateChargeCurve object
+        Initialize a GateChargeCurve object.
 
         :param args: arguments to be passed for initialization
         """
@@ -35,7 +35,7 @@ class GateChargeCurve:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts GateChargeCurve object into dict datatype
+        Convert a GateChargeCurve object into dict datatype.
 
         :return: GateChargeCurve object of dict type
         :rtype: dict
@@ -48,7 +48,7 @@ class GateChargeCurve:
 
     def get_plots(self, ax=None):
         """
-        Plots gate charge vs gate source/ gate emitter voltage of switch type mosfet and igbt respectively
+        Plot the gate charge vs. gate source/ gate emitter voltage of switch type mosfet and igbt respectively.
 
         :param ax: figure axes to append the curves
 
@@ -68,7 +68,7 @@ class GateChargeCurve:
             plt.show()
 
 class SOA:
-    """ A class to hold safe operating area characteristics of transistor type which is added as a optional attribute inside transistor class"""
+    """A class to hold safe operating area characteristics of transistor type which is added as a optional attribute inside transistor class"""
 
     t_c: float | None  #: case temperature
     time_pulse: float | None  #: applied pulse duration
@@ -101,7 +101,7 @@ class SOA:
 
     def get_plots(self, ax=None):
         """
-        Plots drain current/reverse diode current vs drain-to-source voltage/diode applied reverse voltage of switch type mosfet/igbt
+        Plot drain current/reverse diode current vs drain-to-source voltage/diode applied reverse voltage of switch type mosfet/igbt.
 
         :param ax: figure axes to append the curves
 
@@ -122,8 +122,9 @@ class SOA:
 
 class TemperatureDependResistance:
     """
-    class to store temperature dependant resistance curve
+    Store temperature dependant resistance curve.
     """
+
     i_channel: float  #: channel current at which the graph is recorded
     v_g: float  #: gate voltage
     dataset_type: str  #: curve datatype, can be either 't_r' or 't_factor'. 't_factor' is used to denote normalized gate curves
@@ -146,7 +147,7 @@ class TemperatureDependResistance:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts TemperatureDependResistance object into dict datatype
+        Convert a TemperatureDependResistance object into dict datatype.
 
         :return: TemperatureDependResistance object of dict type
         :rtype: dict
@@ -159,7 +160,7 @@ class TemperatureDependResistance:
 
     def get_plots(self, ax=None):
         """
-        Plots On resistance vs Junction temperature
+        Plot the on-resistance vs. Junction temperature.
 
         :param ax: figure axes to append the curves
 
@@ -181,8 +182,9 @@ class TemperatureDependResistance:
 
 class EffectiveOutputCapacitance:
     """
-    The class EffectiveOutputCapacitance is used to record energy related or time related output capacitance of the switch.
+    Record energy related or time related output capacitance of the switch.
     """
+
     c_o: float  #: Value of the fixed output capacitance. Units in F
     v_gs: float  #: Gate to source voltage of the switch. Units in V
     v_ds: float  #: Drain to source voltage of the switch ex: V_DS = (0-400V) i.e v_ds=400 (max value, min assumed a 0). Units in V
@@ -201,7 +203,7 @@ class EffectiveOutputCapacitance:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts EffectiveOutputCapacitance object into dict datatype
+        Convert a EffectiveOutputCapacitance object into dict datatype.
 
         :return: EffectiveOutputCapacitance object of dict type
         :rtype: dict
@@ -309,11 +311,11 @@ class SwitchEnergyData:
 
     def convert_to_dict(self) -> dict:
         """
-            The method converts SwitchEnergyData object into dict datatype
+        Convert a SwitchEnergyData object into dict datatype.
 
-            :return: SwitchEnergyData object of dict type
-            :rtype: dict
-            """
+        :return: SwitchEnergyData object of dict type
+        :rtype: dict
+        """
         d = dict(vars(self))
         for att_key in d:
             if isinstance(d[att_key], np.ndarray):
@@ -322,7 +324,7 @@ class SwitchEnergyData:
 
     def plot_graph(self) -> None:
         """
-        Plots switch / diode energy curve characteristics (either from graph_i_e or graph_r_e dataset)
+        Plot switch / diode energy curve characteristics (either from graph_i_e or graph_r_e dataset).
 
         :return: Respective plots are displayed
         :rtype: None
@@ -370,7 +372,8 @@ class ChannelData:
     """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
     For different temperatures: Create additional ChannelData-objects and store them as a list in the respective
     Diode- or Switch-object.
-    This data can be used to linearize the transistor at a specific operating point """
+    This data can be used to linearize the transistor at a specific operating point
+    """
 
     # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
     t_j: float  #: Junction temperature of switch\diode. (Mandatory key)
@@ -381,7 +384,7 @@ class ChannelData:
 
     def __init__(self, args):
         """
-        Initialization method for ChannelData object
+        Initialize a ChannelData object.
 
         :param args: arguments to be passed for initialization
         """
@@ -393,7 +396,7 @@ class ChannelData:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts ChannelData object into dict datatype
+        Convert a ChannelData object into dict datatype.
 
         :return: ChannelData object of dict type
         :rtype: dict
@@ -422,7 +425,9 @@ class ChannelData:
 
 class LinearizedModel:
     """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
-    t_j, i_channel and (not for all diode types) v_g."""
+    t_j, i_channel and (not for all diode types) v_g.
+    """
+
     t_j: float  #: Junction temperature of diode\switch. Units in K  (Mandatory key)
     v_g: float | None  #: Gate voltage of switch or diode. Units in V (Mandatory for Switch, Optional for some Diode types)
     i_channel: float  #: Channel current of diode\switch. Units in A (Mandatory key)
@@ -431,7 +436,7 @@ class LinearizedModel:
 
     def __init__(self, args):
         """
-        Initialization method for linearizedmodel object
+        Initialize a linearizedmodel object.
 
         :param args: arguments to passed for initialization
         """
@@ -455,6 +460,7 @@ class VoltageDependentCapacitance:
     """Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
     For different temperatures: Create additional VoltageDependentCapacitance-objects and store them as a list in the transistor-object.
     """
+
     # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
     t_j: float  #: Junction temperature (Mandatory key)
     # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the capacitance.
@@ -474,7 +480,7 @@ class VoltageDependentCapacitance:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts VoltageDependentCapacitance object into dict datatype
+        Convert a VoltageDependentCapacitance object into dict datatype.
 
         :return: VoltageDependentCapacitance object of dict type
         :rtype: dict
@@ -487,7 +493,8 @@ class VoltageDependentCapacitance:
 
     def get_plots(self, ax=None, label=None):
         """
-        Plots the voltage dependant capacitance graph_v_c of the VoltageDependentCapacitance object.
+        Plot the voltage dependant capacitance graph_v_c of the VoltageDependentCapacitance object.
+
         Also attaches the plot to figure axes for the purpose virtual datasheet if ax argument is specified
 
         :param ax: figure axes for making the graph_v_c plot in virtual datasheet
@@ -540,7 +547,7 @@ class FosterThermalModel:
 
     def __init__(self, args):
         """
-        Initialization method of FosterThermalModel object
+        Initialize a FosterThermalModel object.
 
         :param args: argument to be passed for initialization
         :type args: dict
@@ -566,7 +573,7 @@ class FosterThermalModel:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts FosterThermalModel object into dict datatype
+        Convert a FosterThermalModel object into dict datatype.
 
         :return: FosterThermalModel of dict type
         :rtype: dict
@@ -655,11 +662,10 @@ class RawMeasurementData:
 
     def __init__(self, args):
         """
-        Initialization method for RawMeasurementData object
+        Initialize a RawMeasurementData object.
 
         :param args: arguments to be passed for initialization
         """
-
         self.dataset_type = args.get('dataset_type')
         self.comment = args.get('dataset_type')
         if self.dataset_type == 'dpt_u_i' or self.dataset_type == 'dpt_u_i_r':
@@ -700,21 +706,20 @@ class RawMeasurementData:
 
     def dpt_calculate_energies(self, integration_interval: str, dataset_type: str, energies: str, mode: str):
         """
-            Imports double pulse measurements and calculates switching losses to each given working point.
+        Import double pulse measurements and calculates switching losses to each given working point.
 
-            [1] options for the integration interval are based on following paper:
-            Link: https://ieeexplore.ieee.org/document/8515553
+        [1] options for the integration interval are based on following paper:
+        Link: https://ieeexplore.ieee.org/document/8515553
 
-            :param integration_interval: calculation standards for switching losses
-            :type integration_interval: str
-            :param dataset_type: defines what measurement set should should be calculated
-            :type dataset_type: str
-            :param energies: defines which switching energies should be calculated
-            :type energies: str
+        :param integration_interval: calculation standards for switching losses
+        :type integration_interval: str
+        :param dataset_type: defines what measurement set should should be calculated
+        :type dataset_type: str
+        :param energies: defines which switching energies should be calculated
+        :type energies: str
 
 
-            """
-
+        """
         if integration_interval == 'IEC 60747-9':
             off_vds_limit = 0.1
             off_is_limit = 0.02

@@ -1,3 +1,4 @@
+"""Diode class."""
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
@@ -12,10 +13,8 @@ from transistordatabase.data_classes import FosterThermalModel, ChannelData, Swi
 from transistordatabase.exceptions import MissingDataError
 
 class Diode:
-    """
-    Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
-    multiple channel- and e_rr- datasets.
-        """
+    """Data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple channel- and e_rr- datasets."""
+
     # Metadata
     comment: str | None  #: Comment if any specified by the user. (Optional key)
     manufacturer: str | None  #: Name of the manufacturer. (Optional key)
@@ -28,16 +27,15 @@ class Diode:
     t_j_max: float  #: Diode maximum junction temperature. Units in °C (Mandatory key)
     soa: List[SOA] | None  #: Safe operating area of Diode
 
-    def __init__(self, diode_args):
+    def __init__(self, diode_args: dict):
         """
-        Initialization method of Diode object
+        Initialize a Diode object.
 
         :param diode_args: argument to be passed for initialization
+        :type diode_args: dict
 
         :raises KeyError: Expected during the channel/e_rr instance initialization
         :raises ValueError: Expected during the channel/e_rr instance initialization
-
-
         """
         # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty
         # attributes.
@@ -143,12 +141,11 @@ class Diode:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts Diode object into dict datatype
+        Convert a Diode object into dict datatype.
 
         :return: Diode object of dict type
         :rtype: dict
         """
-
         d = dict(vars(self))
         d['thermal_foster'] = self.thermal_foster.convert_to_dict()
         d['channel'] = [c.convert_to_dict() for c in self.channel]
@@ -160,7 +157,8 @@ class Diode:
     def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list = None,
                                diode_loss_dataset_type: str = "graph_i_e"):
         """
-        Finds the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+        Find the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+
         The diode has only turn-off gate voltage which is the switch turn-on gate voltage
 
         :param req_gate_vltgs: the provided gate voltages to find the nearest neighbour to the corresponding key-value pairs
@@ -213,7 +211,7 @@ class Diode:
                        switch_energy_dataset_type: str = "graph_i_e") \
             -> tuple[ChannelData, SwitchEnergyData]:
         """
-        This function looks for the smallest distance to stored object value and returns this working point
+        Search for the smallest distance to stored object value and returns this working point.
 
         :param t_j: junction temperature
         :type t_j: float
@@ -365,7 +363,7 @@ class Diode:
 
     def plot_energy_data_r(self, buffer_req: bool = False):
         """
-            Plots all diode energy r-e characteristic curves
+        Plot all diode energy r-e characteristic curves.
 
         :param buffer_req: internally required for generating virtual datasheets
         :type buffer_req: bool
@@ -408,12 +406,12 @@ class Diode:
 
     def plot_soa(self, buffer_req: bool = False):
         """
-            A helper function to plot and convert safe operating region characteristic plots in raw data format.
+        Helper function to plot and convert safe operating region characteristic plots in raw data format.
 
-            :param buffer_req: internally required for generating virtual datasheets
+        :param buffer_req: internally required for generating virtual datasheets
 
-            :return: Respective plots are displayed
-            """
+        :return: Respective plots are displayed
+        """
         if not self.soa:
             return None
         fig = plt.figure()
@@ -436,7 +434,7 @@ class Diode:
 
     def collect_data(self) -> dict:
         """
-        Collects diode data in form of dictionary for generating virtual datasheet
+        Collect diode data in form of dictionary for generating virtual datasheet.
 
         :return: Diode data in form of dictionary
         :rtype: dict

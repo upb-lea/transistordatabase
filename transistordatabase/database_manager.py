@@ -17,13 +17,18 @@ from transistordatabase.helper_functions import get_copy_transistor_name, isvali
 from transistordatabase.checker_functions import check_float
 
 class OperationMode(Enum):
+    """Operation mode definitions."""
     JSON = "json"
     MONGODB = "mongodb"
 
 class DatabaseManager:
-    """The DatabaseManager is the base class of the transistordatabase. After creation a operation mode must be set (either JSON or MongoDB) and
-    then from the DatabaseManager the Transistor data can be acessed.
     """
+    Base class of the transistordatabase.
+
+    After creation, a operation mode must be set (either JSON or MongoDB) and
+    then from the DatabaseManager the Transistor data can be accessed.
+    """
+
     operation_mode: OperationMode
     tdb_directory: str
 
@@ -106,8 +111,9 @@ class DatabaseManager:
 
     def save_transistor(self, transistor: Transistor, overwrite: bool = None) -> None:
         """
-        The method save the transistor object to the desired database depending on the set operation mode.
-        Currently receives the execution instructions from update_from_fileexchange(..)
+        Save the transistor object to the desired database depending on the set operation mode.
+
+        Receives the execution instructions from update_from_fileexchange(..).
 
         :param transistor: The transistor object which shall be stored in the database.
         :type collection: Transistor
@@ -205,7 +211,7 @@ class DatabaseManager:
 
     def get_transistor_names_list(self) -> List[str]:
         """
-        Returns a list containing every transistor name.
+        Return a list containing every transistor name.
 
         :return: List containing the names.
         :rtype:  List[str]
@@ -233,7 +239,7 @@ class DatabaseManager:
 
     def print_tdb(self, filters: List[str] = None) -> List[str]:
         """
-        Print all transistorelements stored in the local database
+        Print all transistor elements stored in the local database.
 
         :param filters: filters for searching the database, e.g. 'name' or 'type'
         :type filters: List[str]
@@ -338,7 +344,9 @@ class DatabaseManager:
             print("Updated housing types.")
 
     def compare_with_fileexchange(self, index_url: str, output_file: str):
-        """Compares the current database with the given database from the fileexchange.
+        """
+        Compare the current database with the given database from the fileexchange.
+
         Writes the difference in the given output_file.
 
         :param index_url: URL to the index file containing links to the Transistors of the Database.
@@ -387,7 +395,8 @@ class DatabaseManager:
                 json.dump(diff_dict, fd, indent=2)
 
     def export_all_datasheets(self, filter_list: list = None):
-        """A method to export all the available transistor data present in the local mongoDB database
+        """
+        Export all the available transistor data present in the local mongoDB database.
 
         :param filter_list: a list of transistor names that needs to be exported in specific
         :type filter_list: list
@@ -419,9 +428,9 @@ class DatabaseManager:
 
     def convert_dict_to_transistor_object(self, transistor_dict: dict) -> Transistor:
         """
-        Converts a dictionary to a transistor object.
-        This is a helper function of the following functions:
+        Convert a dictionary to a transistor object.
 
+        This is a helper function of the following functions:
         - parallel_transistors()
         - load()
         - import_json()
@@ -673,12 +682,13 @@ class DatabaseManager:
 
     @staticmethod
     def export_single_transistor_to_json(transistor: Transistor, file_path: str):
+        """Export a single transistor object to a json file."""
         with open(file_path, "w") as fd:
             json.dump(transistor.convert_to_dict(), fd, indent=2)
 
     @staticmethod
     def dpt_save_data(measurement_dict: Dict) -> Dict:
-        """Imports double pulse measurements and calculates switching losses to each given working point.
+        """Import double pulse measurements and calculates switching losses to each given working point.
 
         Note: This function brings the measurement data to a dictionary.
         It does not store the data to the transistor!
@@ -710,7 +720,6 @@ class DatabaseManager:
         >>> dpt_energies_dict = tdb.dpt_save_data(dpt_save_dict)
 
         """
-
         if measurement_dict.get('integration_interval') == 'IEC 60747-9':
             # FETs
             off_vds_limit = 0.1

@@ -1,5 +1,5 @@
 # On and Off gate voltages
-"""IGBT Module Constants"""
+"""IGBT Module Constants."""
 IGBT_VG_ON = 15
 IGBT_VG_OFF = -15
 DIODE_VGS = 0

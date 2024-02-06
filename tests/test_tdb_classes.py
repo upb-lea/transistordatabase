@@ -355,12 +355,12 @@ def data_setup_for_gecko_exporter(request):
 
 def test_export_geckocircuits(data_setup_for_gecko_exporter):
     """
-       Test case for the transistor method to check if the gecko exporter handles the 4 possible cases while exporting a transistor to .scl files
+    Test case for the transistor method to check if the gecko exporter handles the 4 possible cases while exporting a transistor to .scl files
 
-       :param data_setup_for_gecko_exporter: a fixture to arrange the required transistor object and recording the results that obtained during act operation.
-       The recorded results are used for assertion
+    :param data_setup_for_gecko_exporter: a fixture to arrange the required transistor object and recording the results that obtained during act operation.
+    The recorded results are used for assertion
 
-       :return: assertion based result
+    :return: assertion based result
     """
     actual_data = data_setup_for_gecko_exporter
     expected = {}

@@ -56,7 +56,6 @@ def plot_all_energy_data(transistor, matplotlibwidget, switch_diode):
     :return: None
 
     """
-
     annotations_list = []
 
     def clicked(event):
@@ -162,7 +161,6 @@ def plot_all_energy_data_r_g(transistor, matplotlibwidget, switch_diode):
     :param switch_diode: "switch" or "diode"
     :return: None
     """
-
     annotations_list = []
 
     def clicked(event):
@@ -269,7 +267,6 @@ def plot_all_channel_data(transistor, matplotlibwidget, switch_diode):
     :param switch_diode: "switch" or "diode"
     :return: None
     """
-
     annotations_list = []
 
     def clicked(event):
@@ -416,7 +413,6 @@ def plot_e_on(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j
 
     :return: None
     """
-
     annotations_list = []
 
     def clicked(event):
@@ -556,7 +552,6 @@ def plot_e_off(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_
 
     :return: None
     """
-
     annotations_list = []
 
     def clicked(event):
@@ -699,7 +694,6 @@ def plot_e_rr(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j
 
     :return: None
     """
-
     annotations_list = []
 
     def clicked(event):
@@ -833,7 +827,6 @@ def plot_channel(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, 
 
     :return: None
     """
-
     annotations_list = []
 
     def clicked(event):
@@ -1000,7 +993,6 @@ def plot_v_eoss(transistor1, transistor2, transistor3, matplotlibwidget):
     :param matplotlibwidget: matplotlibwidget object
     :return:
     """
-
     annotations_list = []
 
     def clicked(event):
@@ -1046,7 +1038,6 @@ def plot_v_qoss(transistor1, transistor2, transistor3, matplotlibwidget):
 
     :return:
     """
-
     annotations_list = []
 
     def clicked(event):

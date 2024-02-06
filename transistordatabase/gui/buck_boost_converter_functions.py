@@ -400,7 +400,6 @@ def f_m_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transistor1
     :param transistor2: transistor object for transistor1
     :return: m_p_on1: turn-on switching losses transistor1
     """
-
     channel = f_m_calc_channel(f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2), v_g_on1, transistor1, transistor2)
     v_channel1 = channel[0]
     v_channel2 = channel[1]
@@ -452,7 +451,6 @@ def f_m_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transisto
     :param transistor2: transistor object for transistor1
     :return: m_p_off1: turn-off switching losses transistor1
     """
-
     # turn-off current for transistor1 is i_peak for CCM and DCM
     m_i_off1 = f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2)
 

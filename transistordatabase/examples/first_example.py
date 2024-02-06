@@ -8,6 +8,7 @@ import os
 from transistordatabase.database_manager import DatabaseManager
 
 def extract_from_mongodb_to_json():
+    """Extract transistors from the mongo-database to single json-files."""
     tdb = DatabaseManager()
     tdb.set_operation_mode_mongodb()
     transistor_names = tdb.get_transistor_names_list()
@@ -24,6 +25,7 @@ def extract_from_mongodb_to_json():
         tdb_json.save_transistor(transistor, overwrite=False)
 
 def insert_mongodb_from_json():
+    """Add transistors from json files to the mongo-db database."""
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example")
     tdb_json = DatabaseManager()
     tdb_json.set_operation_mode_json(path)
@@ -39,17 +41,20 @@ def insert_mongodb_from_json():
         tdb_mongodb.save_transistor(transistor)
 
 def example_json_database():
+    """Example for the json database operation mode (recommended)."""
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example")
     tdb_json = DatabaseManager()
     tdb_json.set_operation_mode_json(path)
     tdb_json.print_tdb()
 
 def example_mongodb_database():
+    """Example for the mongo-db operation mode (optional, not recommended)."""
     tdb_mongodb = DatabaseManager()
     tdb_mongodb.set_operation_mode_mongodb()
     tdb_mongodb.print_tdb()
 
 def example_update_from_online_database():
+    """Update the local database from the online database."""
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example_downloaded")
     db = DatabaseManager()
     db.set_operation_mode_json(path)

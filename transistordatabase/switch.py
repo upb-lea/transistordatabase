@@ -1,3 +1,4 @@
+"""Switch class."""
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
@@ -14,7 +15,9 @@ from transistordatabase.exceptions import MissingDataError
 
 class Switch:
     """Contains data associated with the switching-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
-    channel-, e_on- and e_off-datasets. """
+    channel-, e_on- and e_off-datasets.
+    """
+
     # Metadata
     comment: str | None  #: Comment if any to be specified (Optional key)
     manufacturer: str | None  #: Name of the manufacturer (Optional key)
@@ -34,7 +37,7 @@ class Switch:
 
     def __init__(self, switch_args):
         """
-        Initialization method of Switch object
+        Initializes the Switch object.
 
         :param switch_args: argument to be passed for initialization
 
@@ -245,7 +248,7 @@ class Switch:
 
     def convert_to_dict(self) -> Dict:
         """
-        The method converts Switch object into dict datatype
+        Convert Switch object into dict datatype.
 
         :return: Switch object of dict type
         :rtype: dict
@@ -267,6 +270,7 @@ class Switch:
                                switch_loss_dataset_type: str = "graph_i_e") -> Dict:
         """
         Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+
         Applicable to either plecs exporter or gecko exporter
 
         :param req_gate_vltgs: the provided gate voltages for find the nearest neighbour to the corresponding key-value pairs
@@ -343,7 +347,7 @@ class Switch:
                        switch_energy_dataset_type: str = "graph_i_e") \
             -> Tuple[ChannelData, SwitchEnergyData, SwitchEnergyData]:
         """
-        This function looks for the smallest distance to stored object value and returns this working point
+        Search for the smallest distance to stored object value and returns this working point.
 
         :param t_j: junction temperature
         :type t_j: float
@@ -392,7 +396,7 @@ class Switch:
 
     def plot_channel_data_vge(self, gatevoltage: float) -> None:
         """
-        Plot channel data with a chosen gate-voltage
+        Plot channel data with a chosen gate-voltage.
 
         :param gatevoltage: gatevoltage at which the channel curves are selected and plotted
         :type gatevoltage: float
@@ -415,7 +419,7 @@ class Switch:
 
     def plot_channel_data_temp(self, temperature: float) -> None:
         """
-        Plot channel data with chosen temperature
+        Plot channel data with chosen temperature.
 
         :param temperature: junction temperature at which the channel curves are selected and plotted
         :param temperature: float
@@ -423,7 +427,6 @@ class Switch:
         :return: Respective plots are displayed
         :rtype: None
         """
-
         plt.figure()
         for i_channel in np.array(range(0, len(self.channel))):
             if self.channel[i_channel].t_j == temperature:
@@ -439,14 +442,13 @@ class Switch:
 
     def plot_all_channel_data(self, buffer_req: bool = False):
         """
-        Plot all switch channel characteristic curves
+        Plot all switch channel characteristic curves.
 
         :param buffer_req: internally required for generating virtual datasheets
         :param buffer_req: bool
 
         :return: Respective plots are displayed
         """
-
         # ToDo: only 12(?) colors available. Change linestyle for more curves.
         categorize_with_temp_plots = {}
         categorize_with_vgs_plots = {}
@@ -510,7 +512,7 @@ class Switch:
 
     def plot_energy_data(self, buffer_req: bool = False):
         """
-        Plots all switch energy i-e characteristic curves which are extracted from the manufacturer datasheet
+        Plot all switch energy i-e characteristic curves which are extracted from the manufacturer datasheet.
 
         :param buffer_req: internally required for generating virtual datasheets
         :param buffer_req: bool
@@ -556,7 +558,7 @@ class Switch:
 
     def plot_energy_data_r(self, buffer_req: bool = False):
         """
-            Plots all switch energy r-e characteristic curves
+        Plot all switch energy r-e characteristic curves.
 
         :param buffer_req: internally required for generating virtual datasheets
         :param buffer_req: bool
@@ -669,12 +671,12 @@ class Switch:
 
     def plot_soa(self, buffer_req: bool = False):
         """
-            A helper function to plot and convert safe operating region characteristic plots in raw data format.
+        A helper function to plot and convert safe operating region characteristic plots in raw data format.
 
-            :param buffer_req: internally required for generating virtual datasheets
+        :param buffer_req: internally required for generating virtual datasheets
 
-            :return: Respective plots are displayed
-            """
+        :return: Respective plots are displayed
+        """
         if not self.soa:
             return None
         fig = plt.figure()

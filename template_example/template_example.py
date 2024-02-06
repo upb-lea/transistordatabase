@@ -1,11 +1,4 @@
 # imports
-import numpy as np
-import datetime
-import sys
-import os
-from pymongo import MongoClient
-from matplotlib import pyplot as plt
-import json
 import transistordatabase as tdb
 
 

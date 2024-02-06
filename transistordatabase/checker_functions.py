@@ -168,7 +168,7 @@ def check_keys(keys_to_check: Dict, req_type: str, switch_type: str):
 
 def check_duplicates(current_items: List[Dict], item_to_append: Dict) -> bool:
     """
-    A helper method to check if the item being added already exists in the list
+    Helper method to check if the item being added already exists in the list.
 
     :param current_items: list of particular class object converted to dictionaries using which the checks are conducted
     :type current_items: list(dict)

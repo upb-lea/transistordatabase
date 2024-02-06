@@ -23,7 +23,7 @@ transistor_name_regex = "(\S*)( \((\d*)\))?"
 
 # ==== Validation functions ====
 def isvalid_transistor_name(transistor_name):
-    """Checks if the given transistor name is valid."""
+    """Check if the given transistor name is valid."""
     return False if re.match(transistor_name_regex, transistor_name) is None else True
 
 def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
@@ -45,7 +45,6 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
 
     .. todo:: Error if given key is not used?
     """
-
     supported_types = ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']
     instructions = {
         'Transistor': {
@@ -237,7 +236,7 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
 
 def matlab_compatibility_test(transistor, attribute):
     """
-    checks attribute for occurrences of None an replace it with np.nan
+    Check attribute for occurrences of None an replace it with np.nan.
 
     .. todo: This function might can be replaced by dict_clean()
 
@@ -264,7 +263,7 @@ def matlab_compatibility_test(transistor, attribute):
 # ==== Input/Output ====
 def get_xml_data(file: str) -> Dict:
     """
-    A helper function to import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data.
+    Helper function to import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data.
 
     :param file: name of the xml file to be read
     :type file: str
@@ -600,7 +599,7 @@ def get_loss_curves(loss_data: List, plecs_holder: Dict, loss_type: str, v_g: in
 
 def get_channel_data(channel_data: List, plecs_holder: Dict, v_on: int, is_diode: bool, has_body_diode: bool) -> Dict:
     """
-    A helper method to extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
+    Helper method to extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
 
     :param channel_data: channel data taken from transistor class switch/diode object
     :type channel_data: list
@@ -661,7 +660,8 @@ def gen_exp_func(order: int):
 
 def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     """
-    Merges two equal curves, one of which contains an enlarged section of the first curve.
+    Merge two equal curves, one of which contains an enlarged section of the first curve.
+
     Use case is the merging of capacity curves, here often two curves (normal and zoom) are given in the data sheets.
 
     :param curve: full curve
@@ -680,7 +680,6 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     >>> c_oss_merged = tdb.merge_curve(c_oss_normal, c_oss_detail)
 
     """
-
     # find out max(x) from detailed curve
     curve_detail_max_x = max(curve_detail[0])
 
@@ -696,8 +695,7 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
 def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: float | List[float],
                                    v_driver_off: float) -> float:
     """
-    Calculates the maximum gate resistor to achieve no turn-off losses when working with MOSFETs
-    'rapid channel turn-off' (rcto)
+    Calculate the maximum gate resistor to achieve no turn-off losses when working with MOSFETs 'rapid channel turn-off' (rcto).
 
     :param v_gsth: gate threshold voltage
     :type v_gsth: float
@@ -724,16 +722,16 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     return (v_gsth - v_driver_off) / i_off * (1 + c_ds / c_gd)
 
 def compare_list(parameter: List):
-    """
-    check through the list of value for odd one out.
-    """
+    """Check through the list of value for odd one out."""
     for i, j in enumerate(parameter[:-1]):
         if j != parameter[i + 1]:
             return False
     return True
 
 def get_copy_transistor_name(current_name: str) -> str:
-    """Returns the current name but with an index at the end similar to windows copies.
+    """
+    Return the current name but with an index at the end similar to windows copies.
+
     '{current_name} (i)'
     """
     result = re.match(transistor_name_regex, current_name)
