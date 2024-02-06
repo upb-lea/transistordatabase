@@ -169,13 +169,13 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
                     name = key.capitalize().replace("_", " ")
                     if name == 'Housing type':
                         housing_file_path = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
-                        raise ValueError('{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported housing types.'.format(name, dataset_value, name, alphanum_values,
-                                                                                                                                                         housing_file_path))
+                        raise ValueError('{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported housing types.'.format(
+                            name, dataset_value, name, alphanum_values, housing_file_path))
                     elif name == 'Manufacturer':
                         module_file_path = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
                         raise ValueError(
-                            '{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported module manufacturers.'.format(name, dataset_value, name, alphanum_values,
-                                                                                                                                                   module_file_path))
+                            '{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported module manufacturers.'.format(
+                                name, dataset_value, name, alphanum_values, module_file_path))
 
     if dict_type == 'SwitchEnergyData':
         if dataset_dict.get('dataset_type') not in ['single', 'graph_r_e', 'graph_i_e']:
@@ -289,7 +289,8 @@ def get_xml_data(file: str) -> Dict:
         channel_list = []
         foster_args = {}
         for character_node in semiconductor_data:
-            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOnLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOnLoss' and \
+                    character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
                 axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
                 current_axis = [float(x) for x in axis_string.split()]
                 axis_string = character_node.find('plecs:VoltageAxis', namespaces).text
@@ -312,7 +313,8 @@ def get_xml_data(file: str) -> Dict:
                         energy_dict["graph_i_e"] = np.transpose(np.column_stack((current_axis, energy_data)))
                         energy_on_list.append(energy_dict)
 
-            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOffLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOffLoss' and \
+                    character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
                 axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
                 current_axis = [float(x) for x in axis_string.split()]
                 axis_string = character_node.find('plecs:VoltageAxis', namespaces).text
@@ -335,7 +337,8 @@ def get_xml_data(file: str) -> Dict:
                         energy_dict["graph_i_e"] = np.transpose(np.column_stack((current_axis, energy_data)))
                         energy_off_list.append(energy_dict)
 
-            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'ConductionLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'ConductionLoss' and \
+                    character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
                 axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
                 current_axis = [float(x) for x in axis_string.split()]
                 axis_string = character_node.find('plecs:TemperatureAxis', namespaces).text
@@ -356,7 +359,8 @@ def get_xml_data(file: str) -> Dict:
                 r_par.append(float(attr.attrib['R']))
                 tau_par.append(float(attr.attrib['Tau']) if attr.attrib['Tau'] else None)
             foster_args['r_th_vector'], foster_args['tau_vector'] = (r_par, tau_par) if len(r_par) > 1 else (None, None)
-            foster_args['r_th_total'], foster_args['tau_total'] = (r_par[0], tau_par[0]) if len(r_par) == 1 else (sum(foster_args['r_th_vector']), sum(foster_args['tau_vector']))
+            foster_args['r_th_total'], foster_args['tau_total'] = (r_par[0], tau_par[0]) if len(r_par) == 1 else (sum(foster_args['r_th_vector']),
+                                                                                                                  sum(foster_args['tau_vector']))
         return info, energy_on_list, energy_off_list, channel_list, foster_args
     else:
         raise ImportError('Import of ' + file + ' Not possible: Only table type xml data are accepted')
@@ -590,7 +594,8 @@ def get_loss_curves(loss_data: List, plecs_holder: Dict, loss_type: str, v_g: in
                 plecs_holder[loss_type]['Energy'][rev_voltage] = []
             plecs_holder[loss_type]['Energy'][rev_voltage].append(loss_energy.tolist())
             # Loss curves are defined at one v_g in many v_supply voltages, therefore to avoid redundancy in Tj and v_supply appends
-            plecs_holder[loss_type]['TemperatureAxis'].append(energy_dict['t_j']) if energy_dict['t_j'] not in plecs_holder[loss_type]['TemperatureAxis'] else None
+            plecs_holder[loss_type]['TemperatureAxis'].append(energy_dict['t_j']) \
+                if energy_dict['t_j'] not in plecs_holder[loss_type]['TemperatureAxis'] else None
     return plecs_holder
 
 def get_channel_data(channel_data: List, plecs_holder: Dict, v_on: int, is_diode: bool, has_body_diode: bool) -> Dict:
@@ -626,7 +631,8 @@ def get_channel_data(channel_data: List, plecs_holder: Dict, v_on: int, is_diode
                 plecs_holder['ConductionLoss']['CurrentAxis'] = interp_current.tolist()
                 plecs_holder['ConductionLoss']['Channel'] = list()
                 plecs_holder['ConductionLoss']['TemperatureAxis'] = list()
-            plecs_holder['ConductionLoss']['TemperatureAxis'].append(channel['t_j'])  # forward characteristics are defined only at one gate voltage and does not depend on v_supply
+            # forward characteristics are defined only at one gate voltage and does not depend on v_supply
+            plecs_holder['ConductionLoss']['TemperatureAxis'].append(channel['t_j'])
             plecs_holder['ConductionLoss']['Channel'].append(channel_data.tolist())
     return plecs_holder
 
@@ -646,9 +652,12 @@ def gen_exp_func(order: int):
     elif order == 3:
         return lambda t, rn, tau, rn2, tau2, rn3, tau3: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3))
     elif order == 4:
-        return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4))
+        return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, \
+            tau4: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4))
     elif order == 5:
-        return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4, rn5, tau5: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4)) + rn5 * (1 - np.exp(-t / tau5))
+        return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4, rn5, \
+            tau5: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * \
+            (1 - np.exp(-t / tau4)) + rn5 * (1 - np.exp(-t / tau5))
 
 def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     """

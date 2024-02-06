@@ -33,7 +33,9 @@ from transistordatabase.exporter import dict2matlab
 
 class Transistor:
     """
-    Transistor object which is the core class of transistordatabase module. Contains subclasses like Switch, Diode, FosterThermalModel etc, and other child classes
+    Transistor object which is the core class of transistordatabase module.
+
+    Contains subclasses like Switch, Diode, FosterThermalModel etc, and other child classes
     using which all the features and functionalities of this module are based and developed.
 
     .. todo::
@@ -54,7 +56,8 @@ class Transistor:
     creation_date: datetime  #: Specifies the date and time of the new transistor module that is created using template. (Mandatory/Automatic)
     # Manufacturer- and part-specific data
     manufacturer: str  #: Provides information of the module manufacturer. (Mandatory key)
-    datasheet_hyperlink: str | None  #: As the name specifies, provides the hyperlink of the datasheet that is being referred to. Should be a valid link if specified(Optional)
+    datasheet_hyperlink: str | None  #: As the name specifies, provides the hyperlink of the datasheet that is being referred to.
+    # Should be a valid link if specified(Optional)
     datasheet_date: datetime | None  #: pymongo cannot encode date => always save as datetime. (Optional key)
     datasheet_version: str | None  #: Specifies the version of the module manufacturer datasheet. (Optional key)
     housing_area: float  #: Housing area extracted from datasheet. Units in m^2. (Mandatory key)
@@ -86,14 +89,16 @@ class Transistor:
     c_iss: List[VoltageDependentCapacitance] | None  #: List of VoltageDependentCapacitance. (Optional key)
     c_rss: List[VoltageDependentCapacitance] | None  #: List of VoltageDependentCapacitance. (Optional key)
     # Energy stored in c_oss
-    graph_v_ecoss: npt.NDArray[np.float64] | None  #: Member instance for storing the voltage dependant capacitance graph in the form of 2D numpy array. Units of Row 1 = V; Row 2 = J  (Optional key)
+    graph_v_ecoss: npt.NDArray[np.float64] | None  #: Member instance for storing voltage dependant capacitance graph in the form of 2D numpy array.
+    # Units of Row 1 = V; Row 2 = J  (Optional key)
     # Rated operation region
     i_cont: float | None  #: Module specific continuous current. Units in  A e.g. Fuji = I_c, Semikron = I_c,nom (Mandatory key)
     t_c_max: float  #: Module specific maximum junction temperature. Units in °C (Optional key)
     r_g_int: float  #: Internal gate resistance. Units in Ohm (Mandatory key)
     # raw_measurement_plots = []
 
-    def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict, possible_housing_types: List[str], possible_module_manufacturers: List[str]) -> None:
+    def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict, possible_housing_types: List[str],
+                 possible_module_manufacturers: List[str]) -> None:
         """
         Takes in the following dictionary arguments for creating and initializing the transistor object.
         isvalid_dict() method is applied on transistor_args object to validate the argument.
@@ -232,10 +237,10 @@ class Transistor:
                         error.args = ('',)  # This syntax is necessary because error.args is a tuple
                     if name is None:
                         error.args = (f"KeyError occurred for index [{index}] in list {input} "
-                                        f"dictionaries: ",) + error.args
+                                      f"dictionaries: ",) + error.args
                     else:
                         error.args = (f"KeyError occurred for index [{index}] in list of {name} "
-                                        f"dictionaries: ",) + error.args
+                                      f"dictionaries: ",) + error.args
                     raise
         elif isvalid_dict(input, 'RawMeasurementData'):
             # Only create RawMeasurementData objects from valid dicts
@@ -586,7 +591,7 @@ class Transistor:
         dataset = None
         if e_on_off_rr == 'e_on':
             candidate_datasets = [e_on for e_on in self.switch.e_on if (
-                    e_on.t_j == t_j and e_on.v_g == v_g and e_on.v_supply == v_supply and e_on.r_g == r_g)]
+                e_on.t_j == t_j and e_on.v_g == v_g and e_on.v_supply == v_supply and e_on.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_on.t_j, e_on.v_g, e_on.v_supply, e_on.r_g) for e_on in self.switch.e_on]
                 print("Available operating points: (t_j, v_g, v_supply, r_g)")
@@ -601,7 +606,7 @@ class Transistor:
 
         if e_on_off_rr == 'e_off':
             candidate_datasets = [e_off for e_off in self.switch.e_off if (
-                    e_off.t_j == t_j and e_off.v_g == v_g and e_off.v_supply == v_supply and e_off.r_g == r_g)]
+                e_off.t_j == t_j and e_off.v_g == v_g and e_off.v_supply == v_supply and e_off.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_off.t_j, e_off.v_g, e_off.v_supply, e_off.r_g) for e_off in self.switch.e_off]
                 print("Available operating points: (t_j, v_g, v_supply, r_g)")
@@ -616,7 +621,7 @@ class Transistor:
 
         if e_on_off_rr == 'e_rr':
             candidate_datasets = [e_rr for e_rr in self.diode.e_rr if (
-                    e_rr.t_j == t_j and e_rr.v_g == v_g and e_rr.v_supply == v_supply and e_rr.r_g == r_g)]
+                e_rr.t_j == t_j and e_rr.v_g == v_g and e_rr.v_supply == v_supply and e_rr.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_rr.t_j, e_rr.v_g, e_rr.v_supply, e_rr.r_g) for e_rr in self.diode.e_rr]
                 print("Available operating points: (t_j, v_g, v_supply, r_g)")
@@ -654,7 +659,9 @@ class Transistor:
         # compile is necessary due to using eval combined with if-statement
         # https://realpython.com/python-eval-function/
         code = compile(
-            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and {e_on_off_rr}.dataset_type == 'graph_i_e')],[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if {e_on_off_rr}.dataset_type == 'graph_r_e']",
+            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and "
+            f"{e_on_off_rr}.dataset_type == 'graph_i_e')],[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if "
+            f"{e_on_off_rr}.dataset_type == 'graph_r_e']",
             "<string>", "eval")
         ie_datasets, re_datasets = eval(code)
         i_e_dataset, r_e_dataset = None, None
@@ -712,7 +719,8 @@ class Transistor:
         # compile is necessary due to using eval combined with if-statement
         # https://realpython.com/python-eval-function/
         code = compile(
-            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if {e_on_off_rr}.dataset_type == 'graph_r_e' and {e_on_off_rr}.v_supply == {v_supply}]",
+            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if {e_on_off_rr}.dataset_type == 'graph_r_e' and "
+            f"{e_on_off_rr}.v_supply == {v_supply}]",
             "<string>", "eval")
         candidate_datasets = eval(code)
         # Find closest loss curve
@@ -786,7 +794,8 @@ class Transistor:
             object_i_e_calc = self.SwitchEnergyData(args)
             return object_i_e_calc
         except Exception as e:
-            print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(e_on_off_rr, r_g, t_j, v_supply, e.args[0]))
+            print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(
+                e_on_off_rr, r_g, t_j, v_supply, e.args[0]))
             raise e
 
     def calc_i_e_curve_using_r_e_curve(self, i_e_object: SwitchEnergyData, r_e_object: SwitchEnergyData,
@@ -1042,7 +1051,8 @@ class Transistor:
         s_v_channel, s_r_channel = self.calc_lin_channel(switch_channel.t_j, switch_channel.v_g, i_channel, 'switch')
         d_v_channel, d_r_channel = self.calc_lin_channel(diode_channel.t_j, diode_channel.v_g, i_channel, 'diode')
 
-        print('Linearized values. Switch at {0} °C and {1} V, diode at {2} °C and {3} V'.format(switch_channel.t_j, switch_channel.v_g, diode_channel.t_j, diode_channel.v_g))
+        print('Linearized values. Switch at {0} °C and {1} V, diode at {2} °C and {3} V'.format(switch_channel.t_j,
+                                                                                                switch_channel.v_g, diode_channel.t_j, diode_channel.v_g))
         print(" s_v_channel = {0} V".format(s_v_channel))
         print(" s_r_channel = {0} Ohm".format(s_r_channel))
         print(" d_v_channel = {0} V".format(d_v_channel))
@@ -1191,7 +1201,7 @@ class Transistor:
                 elif (attr == 'c_oss_er' or attr == 'c_oss_tr') and getattr(self, attr) is not None:  # to be modified for boundary case
                     pdf_data[attr.capitalize()] = getattr(self, attr).c_o
         trans, diode, switch = attach_units(pdf_data, devices)
-        #print(trans)
+        # print(trans)
         img_path = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
         image_file_obj = open(img_path, "rb")
         image_binary_bytes = image_file_obj.read()
@@ -1214,7 +1224,8 @@ class Transistor:
     def export_simulink_loss_model(self, r_g_on: float = None, r_g_off: float = None, v_supply: float = None,
                                    normalize_t_to_v: float = 10) -> None:
         """
-        Exports a simulation model for simulink inverter loss models, see https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
+        Exports a simulation model for simulink inverter loss models,
+        see https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
 
         :param r_g_on: gate turn on resistance, optional
         :type r_g_on: float
@@ -1239,7 +1250,8 @@ class Transistor:
 
         .. note::
          - temperature next to 25 and 150 degree at 15V gate voltage will be used for channel and switching loss
-         - in case of just one temperature curve, the upper temperature will increased (+1K) to bring a small temperature change in the curves. Otherwise the model will not work
+         - in case of just one temperature curve, the upper temperature will increased (+1K) to bring a small
+         temperature change in the curves. Otherwise the model will not work
          - only necessary data from tdb will be exported to simulink
          - Simulink model need switching energy loss in 'mJ'
          - in case of no complete curve (e.g. not starting from zero), this tool will interpolate the curve
@@ -1258,8 +1270,10 @@ class Transistor:
             v_g = 15
 
             print("---------------------IGBT properties----------------------")
-            switch_channel_object_lower, eon_object_lower, eoff_object_lower = self.switch.find_approx_wp(t_j_lower, v_g, normalize_t_to_v, switch_energy_dataset_type="graph_i_e")
-            switch_channel_object_upper, eon_object_upper, eoff_object_upper = self.switch.find_approx_wp(t_j_upper, v_g, normalize_t_to_v, switch_energy_dataset_type="graph_i_e")
+            switch_channel_object_lower, eon_object_lower, eoff_object_lower = self.switch.find_approx_wp(t_j_lower, v_g, normalize_t_to_v,
+                                                                                                          switch_energy_dataset_type="graph_i_e")
+            switch_channel_object_upper, eon_object_upper, eoff_object_upper = self.switch.find_approx_wp(t_j_upper, v_g, normalize_t_to_v,
+                                                                                                          switch_energy_dataset_type="graph_i_e")
             if r_g_on:
                 try:
                     eon_object_lower_calc = self.calc_object_i_e('e_on', r_g_on, eon_object_lower.t_j, v_supply, normalize_t_to_v)
@@ -1273,7 +1287,8 @@ class Transistor:
                     print('Choosing the default curve properties for e_on')
                 else:
                     print('Generated curve properties for e_on')
-                    print("Lower : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(eon_object_lower.r_g, eon_object_lower.v_g, eon_object_lower.t_j, eon_object_lower.v_supply))
+                    print("Lower : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(eon_object_lower.r_g, eon_object_lower.v_g,
+                                                                                                  eon_object_lower.t_j, eon_object_lower.v_supply))
                     print("Upper : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(
                         eon_object_upper.r_g, eon_object_upper.v_g, eon_object_upper.t_j, eon_object_upper.v_supply))
             if r_g_off:
@@ -1312,14 +1327,16 @@ class Transistor:
             e_off_array = np.array([e_off_lower_interp, e_off_upper_interp])
 
             # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
-            temp_t_j_switch_channel_upper = switch_channel_object_upper.t_j + 1 if switch_channel_object_lower.t_j == switch_channel_object_upper.t_j else switch_channel_object_upper.t_j
+            temp_t_j_switch_channel_upper = switch_channel_object_upper.t_j + 1 \
+                if switch_channel_object_lower.t_j == switch_channel_object_upper.t_j else switch_channel_object_upper.t_j
             temp_t_j_eon_upper = eon_object_upper.t_j + 1 if eon_object_lower.t_j == eon_object_upper.t_j else eon_object_upper.t_j
             temp_t_j_eoff_upper = eoff_object_upper.t_j + 1 if eoff_object_lower.t_j == eoff_object_upper.t_j else eoff_object_upper.t_j
 
             switch_dict = {'T_j_channel': np.double([switch_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
                            'T_j_ref_on': np.double([eon_object_lower.t_j, temp_t_j_eon_upper]),
                            'T_j_ref_off': np.double([eoff_object_lower.t_j, temp_t_j_eoff_upper]),
-                           'R_th_total': matlab_compatibility_test(self, 'Transistor.switch.thermal_foster.r_th_total') if self.switch.thermal_foster.r_th_total != 0 else 1e-6,
+                           'R_th_total': matlab_compatibility_test(self, 'Transistor.switch.thermal_foster.r_th_total')
+                           if self.switch.thermal_foster.r_th_total != 0 else 1e-6,
                            'C_th_total': np.double(1),
                            'V_ref_on': np.double(eon_object_upper.v_supply),
                            'V_ref_off': np.double(eon_object_upper.v_supply),
@@ -1360,13 +1377,15 @@ class Transistor:
             err_array = np.array([e_rr_lower_interp, e_rr_upper_interp])
 
             # Simulink-power-electronic loss model can not handle curves in case of the temperatures are the same
-            temp_t_j_switch_channel_upper = diode_channel_object_upper.t_j + 1 if diode_channel_object_lower.t_j == diode_channel_object_upper.t_j else diode_channel_object_upper.t_j
+            temp_t_j_switch_channel_upper = diode_channel_object_upper.t_j + 1 \
+                if diode_channel_object_lower.t_j == diode_channel_object_upper.t_j else diode_channel_object_upper.t_j
             temp_t_j_err_upper = err_object_upper.t_j + 1 if err_object_lower.t_j == err_object_upper.t_j else err_object_upper.t_j
 
             diode_dict = {
                 'T_j_channel': np.double([diode_channel_object_lower.t_j, temp_t_j_switch_channel_upper]),
                 'T_j_ref_rr': np.double([err_object_lower.t_j, temp_t_j_err_upper]),
-                'R_th_total': matlab_compatibility_test(self, 'Transistor.diode.thermal_foster.r_th_total') if self.diode.thermal_foster.r_th_total != 0 else 1e-6,
+                'R_th_total': matlab_compatibility_test(self,
+                                                        'Transistor.diode.thermal_foster.r_th_total') if self.diode.thermal_foster.r_th_total != 0 else 1e-6,
                 'C_th_total': np.double(1),
                 'V_ref_rr': np.double(err_object_lower.v_supply),
                 'v_channel': np.double(diode_channel_array),
@@ -2004,7 +2023,7 @@ class Transistor:
                 'Comment': [
                     "This datasheet was created by {0} on {1} and was exported using transistordatabase.".format(
                         transistor_dict['author'], transistor_dict['datasheet_date']),
-                        "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
+                    "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
                     "File generated : {0}".format(datetime.today()),
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
             }
@@ -2240,7 +2259,8 @@ class Transistor:
         A transistor method to add the TemperatureDependResistance class objects to the loaded transistor.switch.r_channel_th attribute.
         .. note:: Transistor object must be loaded first before calling this method
 
-        :param r_channel_data: argument represents the TemperatureDependResistance dictionaries objects that needs to be added to transistor.switch.r_channel_th object
+        :param r_channel_data: argument represents the TemperatureDependResistance dictionaries objects that needs
+        to be added to transistor.switch.r_channel_th object
         :type r_channel_data: dict or list
         :param clear: set to true if to clear the existing r_channel_th curves on the transistor object
         :type clear: bool

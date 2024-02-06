@@ -79,8 +79,7 @@ def f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     n = 0
     while n < 2:
         duty_cycle_ccm = (-v_in+v_out+v_channel2) / (v_out-v_channel1+v_channel2)
-        duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (
-                    v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
+        duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
 
         m_i_max_ccm = (p_out / v_out) + ((v_in-v_channel1) * duty_cycle_ccm / (2 * zeta))
         m_i_max_ccm[p_out < (v_out * duty_cycle_ccm * ((v_in-v_channel1) / (2 * zeta)))] = np.nan
@@ -96,7 +95,7 @@ def f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
         v_channel1 = channel[0]
         v_channel2 = channel[1]
 
-        n=n+1
+        n = n + 1
 
     return m_i_peak
 
@@ -120,8 +119,7 @@ def f_m_i1_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     v_channel1 = channel[0]
     v_channel2 = channel[1]
 
-
-    duty_cycle_ccm = (-v_in+v_out+v_channel2) / (v_out-v_channel1+v_channel2)
+    duty_cycle_ccm = (-v_in + v_out + v_channel2) / (v_out - v_channel1 + v_channel2)
     duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
 
     i_min_ccm = (p_out / v_out) - (((v_in-v_channel1) * duty_cycle_ccm) / (2 * zeta))
@@ -137,7 +135,6 @@ def f_m_i1_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     m_i1_rms = np.full_like(m_i1_rms_ccm, np.nan)
     m_i1_rms[~np.isnan(m_i1_rms_ccm)] = m_i1_rms_ccm[~np.isnan(m_i1_rms_ccm)]
     m_i1_rms[~np.isnan(m_i1_rms_dcm)] = m_i1_rms_dcm[~np.isnan(m_i1_rms_dcm)]
-
 
     m_r_channel1_switch = channel[2]
     m_v_channel1_switch = channel[3]
@@ -184,8 +181,7 @@ def f_m_i1_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     v_channel2 = channel[1]
 
     duty_cycle_ccm = (-v_in+v_out+v_channel2) / (v_out-v_channel1+v_channel2)
-    duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (
-            v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
+    duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
 
     i_min_ccm = (p_out / v_out) - (((v_in-v_channel1) * duty_cycle_ccm) / (2 * zeta))
     i_max_ccm = (p_out / v_out) + ((v_in-v_channel1) * duty_cycle_ccm / (2 * zeta))
@@ -217,13 +213,12 @@ def f_m_i2_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     :param transistor2: transistor object for transistor1
     :return: m_i2_rms: rms current transistor2
     """
-    channel = f_m_calc_channel(f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2),v_g_on1, transistor1, transistor2)
+    channel = f_m_calc_channel(f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2), v_g_on1, transistor1, transistor2)
     v_channel1 = channel[0]
     v_channel2 = channel[1]
 
     duty_cycle_ccm = (-v_in+v_out+v_channel2) / (v_out-v_channel1+v_channel2)
-    duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (
-            v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
+    duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
     duty_cycle_dcm2 = duty_cycle_dcm1 * ((v_in-v_channel1) / (-v_in+v_out+v_channel2))
 
     i_min_ccm = (p_out / v_out) - (((v_in-v_channel1) * duty_cycle_ccm) / (2 * zeta))
@@ -239,7 +234,6 @@ def f_m_i2_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     m_i2_rms = np.full_like(m_i2_rms_ccm, np.nan)
     m_i2_rms[~np.isnan(m_i2_rms_ccm)] = m_i2_rms_ccm[~np.isnan(m_i2_rms_ccm)]
     m_i2_rms[~np.isnan(m_i2_rms_dcm)] = m_i2_rms_dcm[~np.isnan(m_i2_rms_dcm)]
-
 
     return m_i2_rms
 
@@ -262,8 +256,7 @@ def f_m_i2_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     v_channel2 = channel[1]
 
     duty_cycle_ccm = (-v_in+v_out+v_channel2) / (v_out-v_channel1+v_channel2)
-    duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (
-            v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
+    duty_cycle_dcm1 = np.sqrt((2 * zeta * p_out) / (v_out * (v_in-v_channel1) * (1 + ((v_in-v_channel1) / (-v_in+v_out+v_channel2)))))
     duty_cycle_dcm2 = duty_cycle_dcm1 * ((v_in-v_channel1) / (-v_in+v_out+v_channel2))
 
     i_min_ccm = (p_out / v_out) - (((v_in-v_channel1) * duty_cycle_ccm) / (2 * zeta))
@@ -296,7 +289,7 @@ def f_m_i_l_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     :param transistor2: transistor object for transistor1
     :return: m_i_l_rms: rms current inductor
     """
-    channel = f_m_calc_channel(f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2),v_g_on1, transistor1, transistor2)
+    channel = f_m_calc_channel(f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2), v_g_on1, transistor1, transistor2)
     v_channel1 = channel[0]
     v_channel2 = channel[1]
 
@@ -308,8 +301,8 @@ def f_m_i_l_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     i_max_ccm = (p_out / v_out) + ((v_in-v_channel1) * duty_cycle_ccm / (2 * zeta))
     i_peak_dcm = ((v_in-v_channel1) * duty_cycle_dcm1) / zeta
 
-    m_i_l_rms_ccm = np.sqrt((duty_cycle_ccm * (i_min_ccm ** 2 + i_max_ccm * i_min_ccm + i_max_ccm ** 2)) / 3 + -(
-            (duty_cycle_ccm - 1) * (i_min_ccm ** 2 + i_max_ccm * i_min_ccm + i_max_ccm ** 2)) / 3)
+    m_i_l_rms_ccm = np.sqrt((duty_cycle_ccm * (i_min_ccm ** 2 + i_max_ccm * i_min_ccm + i_max_ccm ** 2)) / 3 + -( \
+        (duty_cycle_ccm - 1) * (i_min_ccm ** 2 + i_max_ccm * i_min_ccm + i_max_ccm ** 2)) / 3)
     m_i_l_rms_ccm[p_out < (v_out * duty_cycle_ccm * ((v_in-v_channel1) / (2 * zeta)))] = np.nan
 
     m_i_l_rms_dcm = np.sqrt((duty_cycle_dcm1 * i_peak_dcm ** 2) / 3 + (duty_cycle_dcm2 * i_peak_dcm ** 2) / 3)
@@ -382,15 +375,12 @@ def f_m_conduction_losses2(zeta, v_in, v_out, p_out, v_g_on1, transistor1, trans
     m_i2_rms = f_m_i2_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2)
     m_i_peak = f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2)
 
-
     channel2 = f_m_calc_channel(m_i_peak, v_g_on1, transistor1, transistor2)
     v_channel2_diode = channel2[4]
 
     m_conduction_losses2 = m_i2_rms * v_channel2_diode
 
     return m_conduction_losses2
-
-
 
 def f_m_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transistor1, transistor2):
     """
@@ -422,19 +412,15 @@ def f_m_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transistor1
     # turn-on current for transistor1 is 0 for DCM
     m_i_on1 = m_i_on_ccm1
 
-
     v_supply_chosen1 = max([i for i in [e_on.v_supply for e_on in transistor1.switch.e_on] if i != None])
 
     try:
-        transistor1.wp.e_on = transistor1.calc_object_i_e(e_on_off_rr="e_on",
-                                                          t_j=max(
-                                                              [i for i in [e_on.t_j for e_on in transistor1.switch.e_on]
-                                                               if i != None]),
-                                                          v_supply=v_supply_chosen1,
-                                                          r_g=r_g_on1,
-                                                          normalize_t_to_v=10)
+        transistor1.wp.e_on = transistor1.calc_object_i_e(
+            e_on_off_rr="e_on", t_j=max([i for i in [e_on.t_j for e_on in transistor1.switch.e_on] if i != None]),
+            v_supply=v_supply_chosen1, r_g=r_g_on1, normalize_t_to_v=10)
     except:
-        transistor1.wp.e_on = transistor1.get_object_i_e(e_on_off_rr="e_on",
+        transistor1.wp.e_on = transistor1.get_object_i_e(
+            e_on_off_rr="e_on",
             t_j=max([i for i in [e_on.t_j for e_on in transistor1.switch.e_on] if i != None]),
             v_supply=v_supply_chosen1,
             r_g=max([i for i in [e_on.r_g for e_on in transistor1.switch.e_on] if i != None]),
@@ -467,25 +453,15 @@ def f_m_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transisto
 
     v_supply_chosen1 = max([i for i in [e_off.v_supply for e_off in transistor1.switch.e_off] if i != None])
     try:
-        transistor1.wp.e_off = transistor1.calc_object_i_e(e_on_off_rr="e_off",
-                                                          t_j=max(
-                                                              [i for i in [e_off.t_j for e_off in transistor1.switch.e_off]
-                                                               if i != None]),
-                                                          v_supply=v_supply_chosen1,
-                                                          r_g=r_g_off1,
-                                                          normalize_t_to_v=10)
+        transistor1.wp.e_off = transistor1.calc_object_i_e(
+            e_on_off_rr="e_off",
+            t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i != None]),
+            v_supply=v_supply_chosen1, r_g=r_g_off1, normalize_t_to_v=10)
     except:
-        transistor1.wp.e_off = transistor1.get_object_i_e(e_on_off_rr="e_off",
-                                                         t_j=max(
-                                                             [i for i in [e_off.t_j for e_off in transistor1.switch.e_off]
-                                                              if i != None]),
-                                                         v_supply=v_supply_chosen1,
-                                                          r_g=max(
-                                                              [i for i in [e_off.r_g for e_off in transistor1.switch.e_off]
-                                                               if i != None]),
-                                                          v_g=min(
-                                                              [i for i in [e_off.v_g for e_off in transistor1.switch.e_off]
-                                                               if i != None]))
+        transistor1.wp.e_off = transistor1.get_object_i_e(
+            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i != None]),
+            v_supply=v_supply_chosen1, r_g=max([i for i in [e_off.r_g for e_off in transistor1.switch.e_off] if i != None]),
+            v_g=min([i for i in [e_off.v_g for e_off in transistor1.switch.e_off] if i != None]))
 
     m_e_off1 = np.full_like(m_i_off1, np.nan)
     m_e_off1[~np.isnan(m_i_off1)] = np.interp((m_i_off1[~np.isnan(m_i_off1)]), transistor1.wp.e_off.graph_i_e[0],
@@ -617,7 +593,7 @@ def f_m_p_on_off_rr_1_2(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, fr
     :return: m_p_on_off_rr_1_2: total switching losses transistor1 + transistor2
     """
     m_p_on_off1 = f_m_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2)
-    m_p_rr2 = f_m_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1,transistor2)
+    m_p_rr2 = f_m_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transistor2)
 
     m_p_on_off_rr_1_2 = m_p_on_off1 + m_p_rr2
 
@@ -641,7 +617,7 @@ def f_m_p1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, tran
     :return: m_p1: total power losses transistor1
     """
     m_conduction_losses1 = f_m_conduction_losses1(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2)
-    m_p_on_off1 = f_m_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1,transistor2)
+    m_p_on_off1 = f_m_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2)
 
     m_p1 = m_conduction_losses1 + m_p_on_off1
 
@@ -812,12 +788,10 @@ def f_vec_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
         while i < np.size(zeta):
             duty_cycle_ccm[i] = (-v_in[i]+v_out[i]+v_channel2[i]) / (v_out[i]-v_channel1[i]+v_channel2[i])
             duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / (
-                    v_out[i] * (v_in[i]-v_channel1[i]) * (
-                    1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
+                v_out[i] * (v_in[i]-v_channel1[i]) * (1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
 
             if p_out[i] > (v_out[i] * duty_cycle_ccm[i] * ((v_in[i]-v_channel1[i]) / (2 * zeta[i]))):
-                vec_i_peak[i] = (p_out[i] / v_out[i]) + (
-                        (v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
+                vec_i_peak[i] = (p_out[i] / v_out[i]) + ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
             else:
                 vec_i_peak[i] = ((v_in[i]-v_channel1[i]) * duty_cycle_dcm1[i]) / zeta[i]
             i = i + 1
@@ -855,19 +829,15 @@ def f_vec_i1_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     v_channel1 = channel[0]
     v_channel2 = channel[1]
 
-    i=0
+    i = 0
     while i < np.size(zeta):
         duty_cycle_ccm[i] = (-v_in[i]+v_out[i]+v_channel2[i]) / (v_out[i]-v_channel1[i]+v_channel2[i])
-        duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / (
-                v_out[i] * (v_in[i]-v_channel1[i]) * (
-                1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
-        duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * (
-                (v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
+        duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / (v_out[i] * (v_in[i]-v_channel1[i]) * \
+                                                                 (1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
+        duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
 
-        i_min_ccm[i] = (p_out[i] / v_out[i]) - (
-                ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
-        i_max_ccm[i] = (p_out[i] / v_out[i]) + (
-                (v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
+        i_min_ccm[i] = (p_out[i] / v_out[i]) - (((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
+        i_max_ccm[i] = (p_out[i] / v_out[i]) + ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
         i_peak_dcm[i] = ((v_in[i]-v_channel1[i]) * duty_cycle_dcm1[i]) / zeta[i]
 
         if p_out[i] > (v_out[i] * duty_cycle_ccm[i] * ((v_in[i]-v_channel1[i]) / (2 * zeta[i]))):
@@ -907,16 +877,12 @@ def f_vec_i1_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     i = 0
     while i < np.size(zeta):
         duty_cycle_ccm[i] = (-v_in[i]+v_out[i]+v_channel2[i]) / (v_out[i]-v_channel1[i]+v_channel2[i])
-        duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / (
-                v_out[i] * (v_in[i]-v_channel1[i]) * (
-                1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
-        duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * (
-                (v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
+        duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / ( \
+            v_out[i] * (v_in[i]-v_channel1[i]) * (1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
+        duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
 
-        i_min_ccm[i] = (p_out[i] / v_out[i]) - (
-                ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
-        i_max_ccm[i] = (p_out[i] / v_out[i]) + (
-                (v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
+        i_min_ccm[i] = (p_out[i] / v_out[i]) - (((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
+        i_max_ccm[i] = (p_out[i] / v_out[i]) + ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
         i_peak_dcm[i] = ((v_in[i]-v_channel1[i]) * duty_cycle_dcm1[i]) / zeta[i]
 
         if p_out[i] > (v_out[i] * duty_cycle_ccm[i] * ((v_in[i]-v_channel1[i]) / (2 * zeta[i]))):
@@ -956,16 +922,12 @@ def f_vec_i2_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     i = 0
     while i < np.size(zeta):
         duty_cycle_ccm[i] = (-v_in[i]+v_out[i]+v_channel2[i]) / (v_out[i]-v_channel1[i]+v_channel2[i])
-        duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / (
-                v_out[i] * (v_in[i]-v_channel1[i]) * (
-                1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
-        duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * (
-                (v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
+        duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / ( \
+            v_out[i] * (v_in[i]-v_channel1[i]) * (1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
+        duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
 
-        i_min_ccm[i] = (p_out[i] / v_out[i]) - (
-                ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
-        i_max_ccm[i] = (p_out[i] / v_out[i]) + (
-                (v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
+        i_min_ccm[i] = (p_out[i] / v_out[i]) - (((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
+        i_max_ccm[i] = (p_out[i] / v_out[i]) + ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
         i_peak_dcm[i] = ((v_in[i]-v_channel1[i]) * duty_cycle_dcm1[i]) / zeta[i]
 
         if p_out[i] > (v_out[i] * duty_cycle_ccm[i] * ((v_in[i]-v_channel1[i]) / (2 * zeta[i]))):
@@ -1005,8 +967,8 @@ def f_vec_i2_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     i = 0
     while i < np.size(zeta):
         duty_cycle_ccm[i] = (-v_in[i]+v_out[i]+v_channel2[i]) / (v_out[i]-v_channel1[i]+v_channel2[i])
-        duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / (
-                v_out[i] * (v_in[i]-v_channel1[i]) * (1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
+        duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / ( \
+            v_out[i] * (v_in[i]-v_channel1[i]) * (1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
         duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
 
         i_min_ccm[i] = (p_out[i] / v_out[i]) - (((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
@@ -1050,20 +1012,16 @@ def f_vec_i_l_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     while i < np.size(zeta):
         duty_cycle_ccm[i] = (-v_in[i]+v_out[i]+v_channel2[i]) / (v_out[i]-v_channel1[i]+v_channel2[i])
         duty_cycle_dcm1[i] = np.sqrt((2 * zeta[i] * p_out[i]) / (
-                v_out[i] * (v_in[i]-v_channel1[i]) * (
-                1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
-        duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * (
-                (v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
+            v_out[i] * (v_in[i]-v_channel1[i]) * (1 + ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i])))))
+        duty_cycle_dcm2[i] = duty_cycle_dcm1[i] * ((v_in[i]-v_channel1[i]) / (-v_in[i]+v_out[i]+v_channel2[i]))
 
-        i_min_ccm[i] = (p_out[i] / v_out[i]) - (
-                ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
-        i_max_ccm[i] = (p_out[i] / v_out[i]) + (
-                (v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
+        i_min_ccm[i] = (p_out[i] / v_out[i]) - (((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
+        i_max_ccm[i] = (p_out[i] / v_out[i]) + ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i] / (2 * zeta[i]))
         i_peak_dcm[i] = ((v_in[i]-v_channel1[i]) * duty_cycle_dcm1[i]) / zeta[i]
 
         if p_out[i] > (v_out[i] * duty_cycle_ccm[i] * ((v_in[i]-v_channel1[i]) / (2 * zeta[i]))):
-            vec_i_l_rms[i] = np.sqrt((duty_cycle_ccm[i] * (i_min_ccm[i] ** 2 + i_max_ccm[i] * i_min_ccm[i] + i_max_ccm[i] ** 2)) / 3 + -(
-            (duty_cycle_ccm[i] - 1) * (i_min_ccm[i] ** 2 + i_max_ccm[i] * i_min_ccm[i] + i_max_ccm[i] ** 2)) / 3)
+            vec_i_l_rms[i] = np.sqrt((duty_cycle_ccm[i] * (i_min_ccm[i] ** 2 + i_max_ccm[i] * i_min_ccm[i] + i_max_ccm[i] ** 2)) / 3 + -( \
+                (duty_cycle_ccm[i] - 1) * (i_min_ccm[i] ** 2 + i_max_ccm[i] * i_min_ccm[i] + i_max_ccm[i] ** 2)) / 3)
         else:
             vec_i_l_rms[i] = np.sqrt((duty_cycle_dcm1[i] * i_peak_dcm[i] ** 2) / 3 + (duty_cycle_dcm2[i] * i_peak_dcm[i] ** 2) / 3)
         i = i + 1
@@ -1115,11 +1073,11 @@ def f_vec_conduction_losses1(zeta, v_in, v_out, p_out, v_g_on1, transistor1, tra
     r_channel1_switch = channel1[2]
     v_channel1_switch = channel1[3]
 
-    i=0
-    while i<np.size(zeta):
+    i = 0
+    while i < np.size(zeta):
         vec_conduction_losses1[i] = (vec_i1_rms[i] ** 2) * r_channel1_switch[i] + vec_i1_mean[i] * v_channel1_switch[i]
 
-        i=i+1
+        i = i + 1
 
     return vec_conduction_losses1
 
@@ -1144,11 +1102,10 @@ def f_vec_conduction_losses2(zeta, v_in, v_out, p_out, v_g_on1, transistor1, tra
     channel2 = f_vec_calc_channel(vec_i_peak, v_g_on1, transistor1, transistor2)
     v_channel2_diode = channel2[4]
 
-    i=0
-    while i<np.size(zeta):
+    i = 0
+    while i < np.size(zeta):
         vec_conduction_losses2[i] = vec_i2_rms[i] * v_channel2_diode[i]
-        i=i+1
-
+        i = i + 1
 
     return vec_conduction_losses2
 
@@ -1189,19 +1146,19 @@ def f_vec_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transisto
                                                           r_g=r_g_on1,
                                                           normalize_t_to_v=10)
     except:
-        transistor1.wp.e_on = transistor1.get_object_i_e(e_on_off_rr="e_on",
+        transistor1.wp.e_on = transistor1.get_object_i_e(
+            e_on_off_rr="e_on",
             t_j=max([i for i in [e_on.t_j for e_on in transistor1.switch.e_on] if i != None]),
-             v_supply=v_supply_chosen1,
-             r_g=max([i for i in [e_on.r_g for e_on in transistor1.switch.e_on] if i != None]),
-             v_g=max([i for i in [e_on.v_g for e_on in transistor1.switch.e_on] if i != None]))
+            v_supply=v_supply_chosen1,
+            r_g=max([i for i in [e_on.r_g for e_on in transistor1.switch.e_on] if i != None]),
+            v_g=max([i for i in [e_on.v_g for e_on in transistor1.switch.e_on] if i != None]))
 
     i = 0
     while i < np.size(zeta):
         duty_cycle_ccm[i] = (-v_in[i]+v_out[i]+v_channel2[i]) / (v_out[i]-v_channel1[i]+v_channel2[i])
 
         if p_out[i] > (v_out[i] * duty_cycle_ccm[i] * ((v_in[i]-v_channel1[i]) / (2 * zeta[i]))):
-            vec_i_min_ccm[i] = (p_out[i] / v_out[i]) - (
-                    ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
+            vec_i_min_ccm[i] = (p_out[i] / v_out[i]) - (((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
 
         # turn-on current for transistor1 is i_min_ccm for CCM and 0 for DCM
 
@@ -1211,7 +1168,7 @@ def f_vec_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transisto
                                  transistor1.wp.e_on.graph_i_e[1])
         vec_p_on1[i] = vec_e_on1[i] * frequency[i] * 1000 * v_out[i] / v_supply_chosen1
 
-        i=i+1
+        i = i + 1
 
     return vec_p_on1
 
@@ -1239,33 +1196,19 @@ def f_vec_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transis
 
     v_supply_chosen1 = max([i for i in [e_off.v_supply for e_off in transistor1.switch.e_off] if i != None])
     try:
-        transistor1.wp.e_off = transistor1.calc_object_i_e(e_on_off_rr="e_off",
-                                                           t_j=max(
-                                                               [i for i in
-                                                                [e_off.t_j for e_off in transistor1.switch.e_off]
-                                                                if i != None]),
-                                                           v_supply=v_supply_chosen1,
-                                                           r_g=r_g_off1,
-                                                           normalize_t_to_v=10)
+        transistor1.wp.e_off = transistor1.calc_object_i_e(
+            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i != None]),
+            v_supply=v_supply_chosen1, r_g=r_g_off1, normalize_t_to_v=10)
     except:
-        transistor1.wp.e_off = transistor1.get_object_i_e(e_on_off_rr="e_off",
-                                                         t_j=max(
-                                                             [i for i in
-                                                              [e_off.t_j for e_off in transistor1.switch.e_off]
-                                                              if i != None]),
-                                                         v_supply=v_supply_chosen1,
-                                                         r_g=max([i for i in
-                                                                  [e_off.r_g for e_off in transistor1.switch.e_off] if
-                                                                  i != None]),
-                                                         v_g=max([i for i in
-                                                                  [e_off.v_g for e_off in transistor1.switch.e_off] if
-                                                                  i != None]))
+        transistor1.wp.e_off = transistor1.get_object_i_e(
+            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i != None]),
+            v_supply=v_supply_chosen1, r_g=max([i for i in [e_off.r_g for e_off in transistor1.switch.e_off] if i != None]),
+            v_g=max([i for i in [e_off.v_g for e_off in transistor1.switch.e_off] if i != None]))
 
     i = 0
     while i < np.size(zeta):
 
-        vec_e_off1[i] = np.interp((vec_i_off1[i]), transistor1.wp.e_off.graph_i_e[0],
-                                 transistor1.wp.e_off.graph_i_e[1])
+        vec_e_off1[i] = np.interp((vec_i_off1[i]), transistor1.wp.e_off.graph_i_e[0], transistor1.wp.e_off.graph_i_e[1])
         vec_p_off1[i] = vec_e_off1[i] * frequency[i] * 1000 * v_out[i] / v_supply_chosen1
 
         i = i + 1
@@ -1327,8 +1270,7 @@ def f_vec_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, trans
         duty_cycle_ccm[i] = (-v_in[i]+v_out[i]+v_channel2[i]) / (v_out[i]-v_channel1[i]+v_channel2[i])
 
         if p_out[i] > (v_out[i] * duty_cycle_ccm[i] * ((v_in[i]-v_channel1[i]) / (2 * zeta[i]))):
-            vec_i_min_ccm[i] = (p_out[i] / v_out[i]) - (
-                    ((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
+            vec_i_min_ccm[i] = (p_out[i] / v_out[i]) - (((v_in[i]-v_channel1[i]) * duty_cycle_ccm[i]) / (2 * zeta[i]))
 
         # turn-on current for transistor1 is i_min_ccm for CCM and 0 for DCM
 
@@ -1337,7 +1279,7 @@ def f_vec_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, trans
         vec_e_rr2[i] = np.interp((vec_i_rr2[i]), transistor2.wp.e_rr.graph_i_e[0], transistor2.wp.e_rr.graph_i_e[1])
         vec_p_rr2[i] = vec_e_rr2[i] * frequency[i] * 1000 * v_out[i] / v_supply_chosen2
 
-        i=i+1
+        i = i + 1
 
     return vec_p_rr2
 
@@ -1427,7 +1369,7 @@ def f_vec_p1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, tr
     :return: vec_p1: total power losses transistor1
     """
     vec_conduction_losses1 = f_vec_conduction_losses1(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2)
-    vec_p_on_off1 = f_vec_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1,transistor2)
+    vec_p_on_off1 = f_vec_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2)
 
     vec_p1 = vec_conduction_losses1 + vec_p_on_off1
 
@@ -1456,7 +1398,7 @@ def f_vec_p2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transist
 
 
 def f_vec_t_switch1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, t_heatsink, r_th_heatsink, frequency,
-                  transistor1, transistor2):
+                    transistor1, transistor2):
     """
     Calculates switch temperature for transistor1
 
@@ -1485,7 +1427,7 @@ def f_vec_t_switch1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, t_heat
 
 
 def f_vec_t_diode2(zeta, v_in, v_out, p_out, v_g_on1, t_heatsink, r_th_heatsink, frequency,
-                 transistor1, transistor2):
+                   transistor1, transistor2):
     """
     Calculates diode temperature for transistor2
 
@@ -1509,7 +1451,4 @@ def f_vec_t_diode2(zeta, v_in, v_out, p_out, v_g_on1, t_heatsink, r_th_heatsink,
 
     vec_t_diode2 = t_heatsink + vec_p2 * (r_th_diode_jc + r_th_diode_cs + r_th_cs + r_th_heatsink)
 
-
     return vec_t_diode2
-
-

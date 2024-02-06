@@ -165,8 +165,8 @@ def Template():
         'manufacturer': manufacturer,
         'technology': technology,
         't_j_max': 175,
-        'channel': [channel_m40_7, channel_m40_9, channel_m4_11, channel_m40_13, channel_m40_15, channel_25_15, channel_25_13, channel_25_11, channel_25_9, channel_25_7, channel_175_15,
-                    channel_175_13, channel_175_11, channel_175_9, channel_175_7],
+        'channel': [channel_m40_7, channel_m40_9, channel_m4_11, channel_m40_13, channel_m40_15, channel_25_15, channel_25_13, channel_25_11,
+                    channel_25_9, channel_25_7, channel_175_15, channel_175_13, channel_175_11, channel_175_9, channel_175_7],
         'e_on': [e_on_25_600, e_on_25_800],
         'e_off': [e_off_25_600, e_off_25_800],
         'charge_curve': [switch_gate_charge_curve_800],
@@ -232,7 +232,8 @@ if __name__ == '__main__':
     ####################################
 
     # transistor methods #
-    # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')
+    # linearisation at 175 degree, 15V gatevoltage, 40A channel current
     # print(f"{transistor.wp.switch_v_channel = } V")
     # print(f"{transistor.wp.switch_r_channel = } Ohm")
     # print(transistor.calc_v_eoss())

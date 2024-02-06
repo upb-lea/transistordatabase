@@ -12,4 +12,3 @@ class MissingDataError(Exception):
           1211: "Diode conduction channel information is missing at provided v_g, cannot export to",
           1202: "Diode reverse recovery loss information is missing",
           1203: "Diode reverse recovery loss curves do not exists at every junction temperature, cannot export to"}
-

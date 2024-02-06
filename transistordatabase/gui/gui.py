@@ -248,7 +248,7 @@ class MainWindow(QMainWindow):
         self.lineEdit_topology_frequency_max.setValidator(QDoubleValidator())
         self.lineEdit_topology_zeta_max.setValidator(QDoubleValidator())
 
-        ###COMPARISON TOOLS###
+        # COMPARISON TOOLS #
 
         self.comboBox_compare_transistor1.setStyleSheet("color: blue")
         self.comboBox_compare_transistor2.setStyleSheet("color: green")
@@ -746,9 +746,13 @@ class MainWindow(QMainWindow):
         transistor.export_json()
 
         self.show_popup_message(
-            f'Workflow to start request for upload <b>{transistor.name}</b> to the transistordatabase file exchange: <br> <br> 1. The browser opens and wants to access the mail program. Allow this.  <br> 2. The email program opens with the addressee pre-filled. <br> 3. Add the transistor file {transistor.name}.json as attachment from this filder: <a href={pathlib.Path.cwd().as_uri()}>{pathlib.Path.cwd().as_uri()}</a> <br> 4. Send Email.')
+            f'Workflow to start request for upload <b>{transistor.name}</b> to the transistordatabase file exchange: '
+            f'<br> <br> 1. The browser opens and wants to access the mail program. Allow this.  <br> 2. '
+            f'The email program opens with the addressee pre-filled. <br> 3. Add the transistor file {transistor.name}.json '
+            f'as attachment from this filder: <a href={pathlib.Path.cwd().as_uri()}>{pathlib.Path.cwd().as_uri()}</a> <br> 4. Send Email.')
 
-        email_body = f"Do not forget to attach the transistor file <b>{transistor.name}</b> to this email!! Link to File: <a href={pathlib.Path.cwd().as_uri()}>{pathlib.Path.cwd().as_uri()}</a>"
+        email_body = f"Do not forget to attach the transistor file <b>{transistor.name}</b> to this email!! " \
+                     f"Link to File: <a href={pathlib.Path.cwd().as_uri()}>{pathlib.Path.cwd().as_uri()}</a>"
         email_subject = 'Request to add transistor {transistor.name} to the transistordatabase file exchange (TDB-FE)'
         webbrowser.open(f'mailto:?to=tdb@lea.upb.de&subject=' + email_subject + '&body=' + email_body, new=2)
 
@@ -1519,12 +1523,16 @@ class MainWindow(QMainWindow):
         :return: None
         """
         t_j = float(
-            self.lineEdit_create_transistor_switch_add_channel_data_t_j.text()) if self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() != "" else None
-        t_j_entry_name = self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_channel_data_t_j.text()) \
+            if self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() + \
+            " °C" if self.lineEdit_create_transistor_switch_add_channel_data_t_j.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_switch_add_channel_data_v_g.text()) if self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() != "" else None
-        v_g_entry_name = self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_channel_data_v_g.text()) \
+            if self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() + \
+            " V" if self.lineEdit_create_transistor_switch_add_channel_data_v_g.text() != "" else None
 
         file_path = self.browse_file_csv()
 
@@ -1552,26 +1560,33 @@ class MainWindow(QMainWindow):
 
     def add_dpt_measurement_data_directory(self):
         """
-        Adds double pulse test measurement data to a comboBox so that the data can be saved to transistor once "Load Transistor into Local Database" button is pressed
+        Adds double pulse test measurement data to a comboBox so that the data can be saved to transistor
+        once "Load Transistor into Local Database" button is pressed
 
         :return: None
         """
         dataset_type = self.comboBox_create_transistor_add_data_dpt_dataset_type.currentText()
         comment = self.lineEdit_create_transistor_add_data_dpt_comment.text()
         load_inductance = float(
-            self.lineEdit_create_transistor_add_data_dpt_load_inductance.text()) if self.lineEdit_create_transistor_add_data_dpt_load_inductance.text() != "" else None
+            self.lineEdit_create_transistor_add_data_dpt_load_inductance.text()) \
+            if self.lineEdit_create_transistor_add_data_dpt_load_inductance.text() != "" else None
         commutation_inductance = float(
-            self.lineEdit_create_transistor_add_data_commutation_inductance.text()) if self.lineEdit_create_transistor_add_data_commutation_inductance.text() != "" else None
+            self.lineEdit_create_transistor_add_data_commutation_inductance.text()) \
+            if self.lineEdit_create_transistor_add_data_commutation_inductance.text() != "" else None
         measurement_date = self.lineEdit_create_transistor_add_data_dpt_measurement_date.text()
         measurement_testbench = self.comboBox_create_transistor_add_data_dpt_measurement_testbench.currentText()
         # v_g = float(
-        #     self.lineEdit_create_transistor_add_data_dpt_v_g.text()) if self.lineEdit_create_transistor_add_data_dpt_v_g.text() != "" else None
+        #     self.lineEdit_create_transistor_add_data_dpt_v_g.text())
+        #     if self.lineEdit_create_transistor_add_data_dpt_v_g.text() != "" else None
         # v_g_off = float(
-        #     self.lineEdit_create_transistor_add_data_dpt_v_g_off.text()) if self.lineEdit_create_transistor_add_data_dpt_v_g_off.text() != "" else None
+        #     self.lineEdit_create_transistor_add_data_dpt_v_g_off.text())
+        #     if self.lineEdit_create_transistor_add_data_dpt_v_g_off.text() != "" else None
         # r_g_on = float(
-        #     self.lineEdit_create_transistor_add_data_dpt_r_g_on.text()) if self.lineEdit_create_transistor_add_data_dpt_r_g_on.text() != "" else None
+        #     self.lineEdit_create_transistor_add_data_dpt_r_g_on.text())
+        #     if self.lineEdit_create_transistor_add_data_dpt_r_g_on.text() != "" else None
         # r_g_off = float(
-        #     self.lineEdit_create_transistor_add_data_dpt_r_g_off.text()) if self.lineEdit_create_transistor_add_data_dpt_r_g_off.text() != "" else None
+        #     self.lineEdit_create_transistor_add_data_dpt_r_g_off.text())
+        #     if self.lineEdit_create_transistor_add_data_dpt_r_g_off.text() != "" else None
         energies = self.comboBox_create_transistor_add_data_dpt_energies.currentText()
         commutation_device = self.lineEdit_create_transistor_add_data_dpt_commutation_device.text()
         integration_interval = self.comboBox_create_transistor_add_data_dpt_integration_interval.currentText()
@@ -1699,25 +1714,34 @@ class MainWindow(QMainWindow):
 
     def add_curve_switch_switching_losses(self):
         t_j = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() != "" else None
-        t_j_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text()) if \
+            self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() + " °C" if \
+            self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() != "" else None
-        v_g_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text()) if \
+            self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() + " V" if \
+            self.lineEdit_create_transistor_switch_add_switching_losses_v_g.text() != "" else None
 
         r_g_i_x = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" else None
-        if self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" and self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
+            self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text()) if \
+            self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" else None
+        if self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" and \
+                self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
             r_g_i_x_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() + " Ω"
-        elif self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" and self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
+        elif self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" and \
+                self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
             r_g_i_x_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() + " A"
         else:
             None
 
         v_supply = float(
-            self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text()) if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() != "" else None
-        v_supply_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() + " V" if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text()) \
+            if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() != "" else None
+        v_supply_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() + \
+            " V" if self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text() != "" else None
 
         e_on_off = self.comboBox_create_transistor_switch_add_switching_losses_on_off.currentText()
         curve_type = self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText()
@@ -1727,11 +1751,13 @@ class MainWindow(QMainWindow):
         if curve_type == "Switching Losses vs. Channel Current":
             data_dict = {"e_on_off": e_on_off.lower(), "dataset_type": "graph_i_e", "t_j": t_j, 'v_g': v_g,
                          'v_supply': v_supply, 'r_g': r_g_i_x, "graph_i_e": "", "path": file_path}
-            comboBox_entry_name = f"{e_on_off}: T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, R_g = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
+            comboBox_entry_name = f"{e_on_off}: T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, " \
+                                  f"R_g = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
         if curve_type == "Switching Losses vs. Gate Resistor":
             data_dict = {"e_on_off": e_on_off.lower(), "dataset_type": "graph_r_e", "t_j": t_j, 'v_g': v_g,
                          'v_supply': v_supply, 'i_x': r_g_i_x, "graph_r_e": "", "path": file_path}
-            comboBox_entry_name = f"{e_on_off}: T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, I_x = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
+            comboBox_entry_name = f"{e_on_off}: T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, " \
+                                  f"I_x = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
 
         if file_path != "":
             all_items_text = self.get_all_items_text_from_comboBox(
@@ -1784,23 +1810,32 @@ class MainWindow(QMainWindow):
 
     def add_curve_switch_gate_charge(self):
         i_channel = float(
-            self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() != "" else None
-        i_channel_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() + " A" if self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text()) if \
+            self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() != "" else None
+        i_channel_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() + \
+            " A" if self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() != "" else None
 
         i_g = float(
-            self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() != "" else None
-        i_g_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() + " A" if self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text()) \
+            if self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() != "" else None
+        i_g_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() + \
+            " A" if self.lineEdit_create_transistor_switch_add_gate_charge_i_g.text() != "" else None
 
         t_j = float(
-            self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() != "" else None
-        t_j_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() + " °C" if self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text()) \
+            if self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() + \
+            " °C" if self.lineEdit_create_transistor_switch_add_gate_charge_t_j.text() != "" else None
 
         v_supply = float(
-            self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text()) if self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() != "" else None
-        v_supply_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() + " V" if self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text()) \
+            if self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() != "" else None
+        v_supply_entry_name = self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() + \
+            " V" if self.lineEdit_create_transistor_switch_add_gate_charge_v_supply.text() != "" else None
 
         file_path = self.browse_file_csv()
-        comboBox_entry_name = f"I_channel ={i_channel_entry_name}, T_j = {t_j_entry_name}, V_supply = {v_supply_entry_name}, I_g = {i_g_entry_name}\nPath: {file_path}"
+        comboBox_entry_name = f"I_channel ={i_channel_entry_name}, T_j = {t_j_entry_name}, " \
+                              f"V_supply = {v_supply_entry_name}, I_g = {i_g_entry_name}\nPath: {file_path}"
         data_dict = {'i_channel': i_channel, 't_j': t_j, 'v_supply': v_supply, 'i_g': i_g, 'graph_q_v': "",
                      "path": file_path}
 
@@ -1810,8 +1845,7 @@ class MainWindow(QMainWindow):
             if comboBox_entry_name in all_items_text:
                 self.show_popup_message("Curve already added!")
             else:
-                self.comboBox_create_transistor_switch_added_curves_gate_charge.addItem(comboBox_entry_name,
-                                                                                        data_dict)
+                self.comboBox_create_transistor_switch_added_curves_gate_charge.addItem(comboBox_entry_name, data_dict)
 
                 self.comboBox_create_transistor_switch_added_curves_gate_charge.setCurrentText(comboBox_entry_name)
                 self.comboBox_create_transistor_switch_added_curves_gate_charge.setDisabled(True)
@@ -1843,19 +1877,25 @@ class MainWindow(QMainWindow):
 
     def add_curve_switch_r_on(self):
         i_channel = float(
-            self.lineEdit_create_transistor_switch_add_r_on_i_channel.text()) if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() != "" else None
-        i_channel_entry_name = self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() + " A" if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_r_on_i_channel.text()) \
+            if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() != "" else None
+        i_channel_entry_name = self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() + \
+            " A" if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() != "" else None
 
         v_g = float(
             self.lineEdit_create_transistor_switch_add_r_on_v_g.text()) if self.lineEdit_create_transistor_switch_add_r_on_v_g.text() != "" else None
-        v_g_entry_name = self.lineEdit_create_transistor_switch_add_r_on_v_g.text() + " V" if self.lineEdit_create_transistor_switch_add_r_on_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_switch_add_r_on_v_g.text() + \
+            " V" if self.lineEdit_create_transistor_switch_add_r_on_v_g.text() != "" else None
 
         r_channel_nominal = float(
-            self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text()) if self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() != "" else None
-        r_channel_nominal_entry_name = self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() + " Ω" if self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() != "" else None
+            self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text()) \
+            if self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() != "" else None
+        r_channel_nominal_entry_name = self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() + \
+            " Ω" if self.lineEdit_create_transistor_switch_add_r_on_r_channel_nominal.text() != "" else None
 
         file_path = self.browse_file_csv()
-        comboBox_entry_name = f"I_channel ={i_channel_entry_name}, V_g = {v_g_entry_name}, R_channel_nominal = {r_channel_nominal_entry_name}\nPath: {file_path}"
+        comboBox_entry_name = f"I_channel ={i_channel_entry_name}, V_g = {v_g_entry_name}, " \
+                              f"R_channel_nominal = {r_channel_nominal_entry_name}\nPath: {file_path}"
         data_dict = {'i_channel': i_channel, 'v_g': v_g, 'dataset_type': 't_r', 'r_channel_nominal': r_channel_nominal,
                      'graph_t_r': "", "path": file_path}
 
@@ -1898,12 +1938,16 @@ class MainWindow(QMainWindow):
 
     def add_curve_diode_channel(self):
         t_j = float(
-            self.lineEdit_create_transistor_diode_add_channel_data_t_j.text()) if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() != "" else None
-        t_j_entry_name = self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() + " °C" if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() != "" else None
+            self.lineEdit_create_transistor_diode_add_channel_data_t_j.text()) \
+            if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() + \
+            " °C" if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_diode_add_channel_data_v_g.text()) if self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() != "" else None
-        v_g_entry_name = self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() + " V" if self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() != "" else None
+            self.lineEdit_create_transistor_diode_add_channel_data_v_g.text()) \
+            if self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() + \
+            " V" if self.lineEdit_create_transistor_diode_add_channel_data_v_g.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}\nPath: {file_path}"
@@ -1948,37 +1992,48 @@ class MainWindow(QMainWindow):
 
     def add_curve_diode_switching_losses(self):
         t_j = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() != "" else None
-        t_j_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() + " °C" if self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() != "" else None
+            self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text()) if \
+            self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() != "" else None
+        t_j_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() + \
+            " °C" if self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() != "" else None
 
         v_g = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() != "" else None
-        v_g_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() + " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() != "" else None
+            self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text()) if \
+            self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() != "" else None
+        v_g_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() + \
+            " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_g.text() != "" else None
 
         r_g_i_x = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" else None
+            self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text()) \
+            if self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" else None
 
-        if self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" and self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
+        if self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" and \
+                self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
             r_g_i_x_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() + " Ω"
-        elif self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" and self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
+        elif self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" and \
+                self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
             r_g_i_x_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() + " A"
         else:
             None
 
         v_supply = float(
-            self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text()) if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() != "" else None
-        v_supply_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() + " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() != "" else None
+            self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text()) \
+            if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() != "" else None
+        v_supply_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() + \
+            " V" if self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text() != "" else None
 
         file_path = self.browse_file_csv()
 
         if self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
             data_dict = {"dataset_type": "graph_i_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'r_g': r_g_i_x,
                          "graph_i_e": "", "path": file_path}
-            comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, r_g = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
+            comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, r_g = {r_g_i_x_entry_name}, " \
+                                  f"V_supply = {v_supply_entry_name}\nPath: {file_path}"
         elif self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
             data_dict = {"dataset_type": "graph_r_e", "t_j": t_j, 'v_g': v_g, 'v_supply': v_supply, 'i_x': r_g_i_x,
                          "graph_r_e": "", "path": file_path}
-            comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, i_x = {r_g_i_x_entry_name}, V_supply = {v_supply_entry_name}\nPath: {file_path}"
+            comboBox_entry_name = f"T_j = {t_j_entry_name}, V_g = {v_g_entry_name}, i_x = {r_g_i_x_entry_name}, " \
+                                  f"V_supply = {v_supply_entry_name}\nPath: {file_path}"
 
         if file_path != "":
             all_items_text = self.get_all_items_text_from_comboBox(
@@ -1986,8 +2041,7 @@ class MainWindow(QMainWindow):
             if comboBox_entry_name in all_items_text:
                 self.show_popup_message("Curve already added!")
             else:
-                self.comboBox_create_transistor_diode_added_curves_switching_losses.addItem(comboBox_entry_name,
-                                                                                            data_dict)
+                self.comboBox_create_transistor_diode_added_curves_switching_losses.addItem(comboBox_entry_name, data_dict)
 
                 self.comboBox_create_transistor_diode_added_curves_switching_losses.setCurrentText(
                     comboBox_entry_name)
@@ -2032,12 +2086,16 @@ class MainWindow(QMainWindow):
 
     def add_curve_switch_soa_t_pulse(self):
         t_c = float(
-            self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text()) if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() != "" else None
-        t_c_entry_name = self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() + " °C" if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() != "" else None
+            self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text()) \
+            if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() != "" else None
+        t_c_entry_name = self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() + " °C" \
+            if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() != "" else None
 
         time_pulse = float(
-            self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text()) if self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() != "" else None
-        time_pulse_entry_name = self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() + " s" if self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() != "" else None
+            self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text()) \
+            if self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() != "" else None
+        time_pulse_entry_name = self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() + " s" \
+            if self.lineEdit_create_transistor_switch_soa_t_pulse_time_pulse.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"T_j = {t_c_entry_name}, Time_pulse = {time_pulse_entry_name}\nPath: {file_path}"
@@ -2077,12 +2135,16 @@ class MainWindow(QMainWindow):
 
     def add_curve_diode_soa_t_pulse(self):
         t_c = float(
-            self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text()) if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() != "" else None
-        t_c_entry_name = self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() + " °C" if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() != "" else None
+            self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text()) \
+            if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() != "" else None
+        t_c_entry_name = self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() + \
+            " °C" if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() != "" else None
 
         time_pulse = float(
-            self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text()) if self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() != "" else None
-        time_pulse_entry_name = self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() + " s" if self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() != "" else None
+            self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text()) \
+            if self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() != "" else None
+        time_pulse_entry_name = self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() + \
+            " s" if self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.text() != "" else None
 
         file_path = self.browse_file_csv()
         comboBox_entry_name = f"T_j = {t_c_entry_name}, Time_pulse = {time_pulse_entry_name}\nPath: {file_path}"
@@ -2223,15 +2285,15 @@ class MainWindow(QMainWindow):
         if self.comboBox_create_transistor_added_c_iss_normal.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() + " °C" \
+                if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
             data_dict = {"t_j": t_j, "graph_v_c": "", "path": file_path}
 
             if file_path != "":
-                self.comboBox_create_transistor_added_c_iss_normal.addItem(comboBox_entry_name,
-                                                                           data_dict)
+                self.comboBox_create_transistor_added_c_iss_normal.addItem(comboBox_entry_name, data_dict)
 
                 self.comboBox_create_transistor_added_c_iss_normal.setDisabled(True)
 
@@ -2259,8 +2321,10 @@ class MainWindow(QMainWindow):
     def add_curve_c_iss_detail(self):
         if self.comboBox_create_transistor_added_c_iss_detail.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
+                self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) \
+                if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() + \
+                " °C" if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
@@ -2297,7 +2361,8 @@ class MainWindow(QMainWindow):
         if self.comboBox_create_transistor_added_c_oss_normal.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() + " °C" \
+                if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
@@ -2333,8 +2398,10 @@ class MainWindow(QMainWindow):
     def add_curve_c_oss_detail(self):
         if self.comboBox_create_transistor_added_c_oss_detail.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
+                self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if \
+                self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() + " °C" \
+                if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
@@ -2371,7 +2438,8 @@ class MainWindow(QMainWindow):
         if self.comboBox_create_transistor_added_c_rss_normal.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() + " °C" \
+                if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}, Path\n{file_path}"
@@ -2407,8 +2475,10 @@ class MainWindow(QMainWindow):
     def add_curve_c_rss_detail(self):
         if self.comboBox_create_transistor_added_c_rss_detail.count() == 0:
             t_j = float(
-                self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
-            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() + " °C" if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
+                self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if \
+                self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
+            t_j_entry_name = self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() + " °C" \
+                if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
 
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"T_j = {t_j_entry_name}\nPath: {file_path}"
@@ -3146,13 +3216,12 @@ class MainWindow(QMainWindow):
             for i in range(len(list)):
                 i_channel = str(list[i]["i_channel"]) + " A" if list[i]["i_channel"] is not None else "None"
                 v_g = str(list[i]["v_g"]) + " V" if list[i]["v_g"] is not None else "None"
-                r_channel_nominal = str(list[i]["r_channel_nominal"]) + " Ω" if list[i][
-                                                                                    "r_channel_nominal"] is not None else "None"
+                r_channel_nominal = str(list[i]["r_channel_nominal"]) + " Ω" if list[i]["r_channel_nominal"] is not None else "None"
                 if list[i] is not None and list[i] != []:
                     self.comboBox_create_transistor_switch_added_curves_r_on.addItem(
                         f"I_channel = {i_channel}, V_g = {v_g}, R_channel_nominal = {r_channel_nominal}", list[i])
 
-            # DIODE CURVES#
+            # DIODE CURVES #
 
             thermal_foster_diode = transistor_diode_dict["thermal_foster"]
             if thermal_foster_diode["graph_t_rthjc"] is not None and thermal_foster_diode["graph_t_rthjc"] is not []:
@@ -3187,16 +3256,11 @@ class MainWindow(QMainWindow):
                 v_g_off = str(list[i]["v_g_off"]) + " V" if list[i]["v_g_off"] is not None else "None"
                 r_g = str(list[i]["r_g"]) + " Ω" if list[i]["r_g"] is not None else "None"
                 v_supply = str(list[i]["v_supply"]) + " V" if list[i]["v_supply"] is not None else "None "
-                load_inductance = str(list[i]["load_inductance"]) + " F" if list[i][
-                                                                                "load_inductance"] is not None else "None "
-                commutation_inductance = str(list[i]["commutation_inductance"]) + " F" if list[i][
-                                                                                              "commutation_inductance"] is not None else "None "
-                measurement_date = str(list[i]["measurement_date"]) if list[i][
-                                                                           "measurement_date"] is not None else "None"
-                measurement_testbench = str(list[i]["measurement_testbench"]) if list[i][
-                                                                                     "measurement_testbench"] is not None else "None"
-                commutation_device = str(list[i]["commutation_device"]) if list[i][
-                                                                               "commutation_device"] is not None else "None"
+                load_inductance = str(list[i]["load_inductance"]) + " F" if list[i]["load_inductance"] is not None else "None "
+                commutation_inductance = str(list[i]["commutation_inductance"]) + " F" if list[i]["commutation_inductance"] is not None else "None "
+                measurement_date = str(list[i]["measurement_date"]) if list[i]["measurement_date"] is not None else "None"
+                measurement_testbench = str(list[i]["measurement_testbench"]) if list[i]["measurement_testbench"] is not None else "None"
+                commutation_device = str(list[i]["commutation_device"]) if list[i]["commutation_device"] is not None else "None"
                 comment = str(list[i]["comment"]) if list[i]["comment"] is not None else "None"
 
                 if list[i] is not None and list[i] != []:
@@ -3214,10 +3278,8 @@ class MainWindow(QMainWindow):
                 v_g_off = str(list[i]["v_g_off"]) + " V" if list[i]["v_g_off"] is not None else "None"
                 r_g = str(list[i]["r_g"]) + " Ω" if list[i]["r_g"] is not None else "None"
                 v_supply = str(list[i]["v_supply"]) + " V" if list[i]["v_supply"] is not None else "None "
-                load_inductance = str(list[i]["load_inductance"]) + " F" if list[i][
-                                                                                "load_inductance"] is not None else "None "
-                commutation_inductance = str(list[i]["commutation_inductance"]) + " F" if list[i][
-                                                                                              "commutation_inductance"] is not None else "None "
+                load_inductance = str(list[i]["load_inductance"]) + " F" if list[i]["load_inductance"] is not None else "None "
+                commutation_inductance = str(list[i]["commutation_inductance"]) + " F" if list[i]["commutation_inductance"] is not None else "None "
                 measurement_date = str(list[i]["measurement_date"]) if list[i]["measurement_date"] is not None else "None"
                 measurement_testbench = str(list[i]["measurement_testbench"]) if list[i]["measurement_testbench"] is not None else "None"
                 commutation_device = str(list[i]["commutation_device"]) if list[i]["commutation_device"] is not None else "None"
@@ -3754,7 +3816,8 @@ class MainWindow(QMainWindow):
                 unit = " [°C]"
             if key == "housing_area" or key == "cooling_area":
                 unit = " [m²]"
-            if key == "r_g_int" or key == "r_g_on_recommended" or key == "r_g_off_recommended" or key == "r_th_cs" or key == "r_th_switch_cs" or key == "r_th_diode_cs":
+            if key == "r_g_int" or key == "r_g_on_recommended" or key == "r_g_off_recommended" or \
+                    key == "r_th_cs" or key == "r_th_switch_cs" or key == "r_th_diode_cs":
                 unit = " [Ω]"
             if key == "c_oss_fix" or key == "c_iss_fix" or key == "c_rss_fix":
                 unit = " [F]"
@@ -4271,16 +4334,11 @@ class MainWindow(QMainWindow):
                 r_g_on_max_list = np.zeros_like(t_j_available)
 
                 for i in range(len(t_j_available)):
-                    r_e_object_on = transistor.get_object_r_e_simplified(e_on_off_rr="e_on",
-                                                                        t_j=t_j_available[i],
-                                                                        v_g=max([i for i in [e_on.v_g for e_on in
-                                                                                            transistor.switch.e_on] if
-                                                                                i is not None]),
-                                                                        v_supply=max(
-                                                                            [i for i in [e_on.v_supply for e_on in
-                                                                                        transistor.switch.e_on] if
-                                                                            i is not None]),
-                                                                        normalize_t_to_v=10)
+                    r_e_object_on = transistor.get_object_r_e_simplified(
+                        e_on_off_rr="e_on",
+                        t_j=t_j_available[i], v_g=max([i for i in [e_on.v_g for e_on in transistor.switch.e_on] if i is not None]),
+                        v_supply=max([i for i in [e_on.v_supply for e_on in transistor.switch.e_on] if i is not None]),
+                        normalize_t_to_v=10)
 
                     r_g_on_max_list[i] = np.amax(r_e_object_on.graph_r_e[0]) * 10000
 
@@ -4312,16 +4370,11 @@ class MainWindow(QMainWindow):
                 r_g_off_max_list = np.zeros_like(t_j_available)
 
                 for i in range(len(t_j_available)):
-                    r_e_object_off = transistor.get_object_r_e_simplified(e_on_off_rr="e_off",
-                                                                        t_j=t_j_available[i],
-                                                                        v_g=max([i for i in [e_off.v_g for e_off in
-                                                                                            transistor.switch.e_off] if
-                                                                                i is not None]),
-                                                                        v_supply=max(
-                                                                            [i for i in [e_off.v_supply for e_off in
-                                                                                        transistor.switch.e_off] if
-                                                                            i is not None]),
-                                                                        normalize_t_to_v=10)
+                    r_e_object_off = transistor.get_object_r_e_simplified(
+                        e_on_off_rr="e_off", t_j=t_j_available[i],
+                        v_g=max([i for i in [e_off.v_g for e_off in transistor.switch.e_off] if i is not None]),
+                        v_supply=max([i for i in [e_off.v_supply for e_off in transistor.switch.e_off] if i is not None]),
+                        normalize_t_to_v=10)
                     r_g_off_max_list[i] = np.amax(r_e_object_off.graph_r_e[0]) * 10000
 
                 r_g_off_max = floor(10 * min(r_g_off_max_list) / 10000) / 10
@@ -4337,7 +4390,8 @@ class MainWindow(QMainWindow):
                     r_g_rr_max_list = np.zeros_like(t_j_available)
 
                     for i in range(len(t_j_available)):
-                        r_e_object_rr = transistor.get_object_r_e_simplified(e_on_off_rr="e_rr",
+                        r_e_object_rr = transistor.get_object_r_e_simplified(
+                            e_on_off_rr="e_rr",
                             t_j=t_j_available[i], v_g=min([i for i in [e_rr.v_g for e_rr in transistor.diode.e_rr] if i is not None]),
                             v_supply=max([i for i in [e_rr.v_supply for e_rr in transistor.diode.e_rr] if i is not None]),
                             normalize_t_to_v=10)
@@ -4581,26 +4635,19 @@ class MainWindow(QMainWindow):
         transistor = self.tdb.load_transistor(comboBox_topology_transistor.currentText())
         comboBox_topology_v_g_on_transistor.clear()
         available_v_g_on_transistor = [str(channel.v_g) for channel in transistor.switch.channel]
-        available_v_g_on_transistor_cleared = [available_v_g_on_transistor[i] for i in
-                                            range(len(available_v_g_on_transistor)) if
-                                            i == available_v_g_on_transistor.index(
-                                                available_v_g_on_transistor[i])]
+        available_v_g_on_transistor_cleared = [available_v_g_on_transistor[i] for i in range(len(available_v_g_on_transistor))
+                                               if i == available_v_g_on_transistor.index(available_v_g_on_transistor[i])]
         comboBox_topology_v_g_on_transistor.addItems(available_v_g_on_transistor_cleared)
         comboBox_topology_v_g_on_transistor.setCurrentText(
             str(max(channel.v_g for channel in transistor.switch.channel)))
 
         try:
-            r_e_object_on = transistor.get_object_r_e_simplified(e_on_off_rr="e_on",
-                                                                t_j=max([i for i in [e_on.t_j for e_on in
-                                                                                    transistor.switch.e_on] if
-                                                                        i is not None]),
-                                                                v_g=max([i for i in [e_on.v_g for e_on in
-                                                                                    transistor.switch.e_on] if
-                                                                        i is not None]),
-                                                                v_supply=max([i for i in [e_on.v_supply for e_on in
-                                                                                        transistor.switch.e_on] if
-                                                                            i is not None]),
-                                                                normalize_t_to_v=10)
+            r_e_object_on = transistor.get_object_r_e_simplified(
+                e_on_off_rr="e_on",
+                t_j=max([i for i in [e_on.t_j for e_on in transistor.switch.e_on] if i is not None]),
+                v_g=max([i for i in [e_on.v_g for e_on in transistor.switch.e_on] if i is not None]),
+                v_supply=max([i for i in [e_on.v_supply for e_on in transistor.switch.e_on] if i is not None]),
+                normalize_t_to_v=10)
             r_g_on_max = floor(10 * (np.amax(r_e_object_on.graph_r_e[0]))) / 10
             slider_topology_r_g_on_transistor.setMinimum(0)
             slider_topology_r_g_on_transistor.setMaximum(int(r_g_on_max * 100))
@@ -4622,34 +4669,22 @@ class MainWindow(QMainWindow):
                 slider_topology_r_g_on_transistor.setMaximum(0)
 
         try:
-            r_e_object_off = transistor.get_object_r_e_simplified(e_on_off_rr="e_off",
-                                                                t_j=max([i for i in [e_off.t_j for e_off in
-                                                                                    transistor.switch.e_off] if
-                                                                        i is not None]),
-                                                                v_g=min([i for i in [e_off.v_g for e_off in
-                                                                                    transistor.switch.e_off] if
-                                                                        i is not None]),
-                                                                v_supply=max([i for i in
-                                                                                [e_off.v_supply for e_off in
-                                                                                transistor.switch.e_off] if
-                                                                                i is not None]),
-                                                                normalize_t_to_v=10)
+            r_e_object_off = transistor.get_object_r_e_simplified(
+                e_on_off_rr="e_off",
+                t_j=max([i for i in [e_off.t_j for e_off in transistor.switch.e_off] if i is not None]),
+                v_g=min([i for i in [e_off.v_g for e_off in transistor.switch.e_off] if i is not None]),
+                v_supply=max([i for i in [e_off.v_supply for e_off in transistor.switch.e_off] if i is not None]),
+                normalize_t_to_v=10)
             r_g_off_max = floor(10 * np.amax(r_e_object_off.graph_r_e[0])) / 10
             slider_topology_r_g_off_transistor.setMinimum(0)
 
             if transistor.type == "IGBT":
-                r_e_object_rr = transistor.get_object_r_e_simplified(e_on_off_rr="e_rr",
-                                                                    t_j=max([i for i in [e_rr.t_j for e_rr in
-                                                                                        transistor.diode.e_rr] if
-                                                                            i is not None]),
-                                                                    v_g=min([i for i in [e_rr.v_g for e_rr in
-                                                                                        transistor.diode.e_rr] if
-                                                                            i is not None]),
-                                                                    v_supply=max([i for i in
-                                                                                [e_rr.v_supply for e_rr in
-                                                                                    transistor.diode.e_rr] if
-                                                                                i is not None]),
-                                                                    normalize_t_to_v=10)
+                r_e_object_rr = transistor.get_object_r_e_simplified(
+                    e_on_off_rr="e_rr",
+                    t_j=max([i for i in [e_rr.t_j for e_rr in transistor.diode.e_rr] if i is not None]),
+                    v_g=min([i for i in [e_rr.v_g for e_rr in transistor.diode.e_rr] if i is not None]),
+                    v_supply=max([i for i in [e_rr.v_supply for e_rr in transistor.diode.e_rr] if i is not None]),
+                    normalize_t_to_v=10)
                 r_g_rr_max = floor(10 * (np.amax(r_e_object_rr.graph_r_e[0]))) / 10
                 r_g_max_off_rr1 = min(r_g_off_max, r_g_rr_max)
                 slider_topology_r_g_off_transistor.setMaximum(int(r_g_max_off_rr1 * 100))
@@ -5552,10 +5587,10 @@ class CurveCheckerWindow(QMainWindow):
         for key in data_dict.keys():
             if "graph" in key:
                 data_dict[key] = csv2array(data_dict["path"],
-                                               first_xy_to_00=self.checkBox_first_xy_to_00.isChecked(),
-                                               second_y_to_0=self.checkBox_second_y_to_0.isChecked(),
-                                               first_x_to_0=self.checkBox_first_x_to_0.isChecked(),
-                                               mirror_xy_data=self.checkBox_mirror_xy_data.isChecked())
+                                           first_xy_to_00=self.checkBox_first_xy_to_00.isChecked(),
+                                           second_y_to_0=self.checkBox_second_y_to_0.isChecked(),
+                                           first_x_to_0=self.checkBox_first_x_to_0.isChecked(),
+                                           mirror_xy_data=self.checkBox_mirror_xy_data.isChecked())
 
         data_dict.pop("path")
 
@@ -5572,10 +5607,10 @@ class CurveCheckerWindow(QMainWindow):
         """
         data_dict = self.comboBox_data.itemData(self.comboBox_data.currentIndex())
         graph = csv2array(data_dict["path"],
-                              first_xy_to_00=self.checkBox_first_xy_to_00.isChecked(),
-                              second_y_to_0=self.checkBox_second_y_to_0.isChecked(),
-                              first_x_to_0=self.checkBox_first_x_to_0.isChecked(),
-                              mirror_xy_data=self.checkBox_mirror_xy_data.isChecked())
+                          first_xy_to_00=self.checkBox_first_xy_to_00.isChecked(),
+                          second_y_to_0=self.checkBox_second_y_to_0.isChecked(),
+                          first_x_to_0=self.checkBox_first_x_to_0.isChecked(),
+                          mirror_xy_data=self.checkBox_mirror_xy_data.isChecked())
 
         xlabel = self.matplotlibwidget.axis.get_xlabel()
         ylabel = self.matplotlibwidget.axis.get_ylabel()

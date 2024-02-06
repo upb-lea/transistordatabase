@@ -67,7 +67,7 @@ class Diode:
                 if not error.args:
                     error.args = ('',)  # This syntax is necessary because error.args is a tuple
                 error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                f"Diode_ChannelData dictionaries: ",) + error.args
+                              f"Diode_ChannelData dictionaries: ",) + error.args
                 raise
             except ValueError as error:
                 dict_list = diode_args.get('channel')
@@ -87,7 +87,7 @@ class Diode:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Diode-SwitchEnergyData dictionaries for e_rr: ",) + error.args
+                                      f"Diode-SwitchEnergyData dictionaries for e_rr: ",) + error.args
                         raise
             elif isvalid_dict(diode_args.get('e_rr'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
@@ -107,7 +107,7 @@ class Diode:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Diode-LinearizedModel dictionaries: ",) + error.args
+                                      f"Diode-LinearizedModel dictionaries: ",) + error.args
                         raise
             elif isvalid_dict(diode_args.get('linearized_diode'), 'Diode_LinearizedModel'):
                 # Only create LinearizedModel objects from valid dicts
@@ -182,7 +182,8 @@ class Diode:
         channel_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
         req_gate_vltgs['v_channel_gs'] = min(channel_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_channel_gs']))
         # gather data for err curves of required dataset_type and check if empty
-        e_rrs = [e for i, e in enumerate(self.e_rr) if e.dataset_type == diode_loss_dataset_type and (not any(check_specific_curves) or i in check_specific_curves)]
+        e_rrs = [e for i, e in enumerate(self.e_rr) if e.dataset_type == diode_loss_dataset_type and \
+                 (not any(check_specific_curves) or i in check_specific_curves)]
         if not e_rrs:
             raise MissingDataError(1202)
         if export_type == 'plecs':
@@ -209,7 +210,7 @@ class Diode:
         return req_gate_vltgs.values()
 
     def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
-                        switch_energy_dataset_type: str = "graph_i_e") \
+                       switch_energy_dataset_type: str = "graph_i_e") \
             -> tuple[ChannelData, SwitchEnergyData]:
         """
         This function looks for the smallest distance to stored object value and returns this working point
@@ -348,8 +349,7 @@ class Diode:
                     if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
                         labelplot = labelplot + ", $v_{{g}}$ = {0} V".format(self.e_rr[i_energy_data].v_g)
                     # plot
-                    plt.plot(self.e_rr[i_energy_data].graph_i_e[0], self.e_rr[i_energy_data].graph_i_e[1],
-                                label=labelplot)
+                    plt.plot(self.e_rr[i_energy_data].graph_i_e[0], self.e_rr[i_energy_data].graph_i_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
             plt.legend(fontsize=5)
             plt.xlabel('Current in A')

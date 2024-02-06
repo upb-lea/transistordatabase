@@ -67,4 +67,3 @@ if __name__ == "__main__":
     # example_mongodb_database()
     # insert_mongodb_from_json()
     example_update_from_online_database()
-

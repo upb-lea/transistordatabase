@@ -36,7 +36,8 @@ setup(
         'Environment :: MacOS X'
     ],
     description="Transistor Database",
-    install_requires=['numpy>=1.19.5',
+    install_requires=[
+        'numpy>=1.19.5',
         'persistent>=4.6.4',
         'scipy>=1.6.0',
         'setuptools>=49.2.1',
