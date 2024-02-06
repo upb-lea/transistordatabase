@@ -91,11 +91,13 @@ class Transistor:
     i_cont: float | None  #: Module specific continuous current. Units in  A e.g. Fuji = I_c, Semikron = I_c,nom (Mandatory key)
     t_c_max: float  #: Module specific maximum junction temperature. Units in °C (Optional key)
     r_g_int: float  #: Internal gate resistance. Units in Ohm (Mandatory key)
-    #raw_measurement_plots = []
+    # raw_measurement_plots = []
+
     def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict, possible_housing_types: List[str], possible_module_manufacturers: List[str]) -> None:
         """
-        Takes in the following dictionary arguments for creating and initializing the transistor object. isvalid_dict() method is applied on transistor_args object
-        to validate the argument. Else TypeError exception is raised. Module manufacturer type and housing type data validations are performed for matching the given
+        Takes in the following dictionary arguments for creating and initializing the transistor object.
+        isvalid_dict() method is applied on transistor_args object to validate the argument.
+        Else TypeError exception is raised. Module manufacturer type and housing type data validations are performed for matching the given
         values to the pre-existed types stored in the form of 'housing.txt' and 'module_manufacturer.txt' files.
 
         :param transistor_args: transistor argument object
@@ -265,10 +267,10 @@ class Transistor:
                         error.args = ('',)  # This syntax is necessary because error.args is a tuple
                     if name is None:
                         error.args = (f"KeyError occurred for index [{index}] in list {input} "
-                                        f"dictionaries: ",) + error.args
+                                      f"dictionaries: ",) + error.args
                     else:
                         error.args = (f"KeyError occurred for index [{index}] in list of {name} "
-                                        f"dictionaries: ",) + error.args
+                                      f"dictionaries: ",) + error.args
                     raise
         elif isvalid_dict(input, 'VoltageDependentCapacitance'):
             # Only create VoltageDependentCapacitance objects from valid dicts
@@ -299,7 +301,6 @@ class Transistor:
             del other_dict["_id"]
 
         return my_dict == other_dict
-
 
     def __repr__(self) -> str:
         return f"{self.name}, {self.type}, {self.manufacturer}"
@@ -416,11 +417,6 @@ class Transistor:
         for channel_object in self.switch.channel:
             v_channel_interpolated = np.interp(i_channel_linspace, channel_object.graph_v_i[1],
                                                channel_object.graph_v_i[0])
-
-
-
-
-
 
             print(f"{channel_object.t_j = }")
         print(f"{t_j_max = }")
@@ -684,7 +680,8 @@ class Transistor:
                 if match else "The first of these sets is automatically chosen because selection of a different dataset is not yet implemented."
             print(text_to_print)
         elif len(ie_datasets) == 1:
-            i_e_dataset = ie_datasets[0]   # function get_object_r_e_simplified can be called here instead of calling in a separate line of calc_object_i_e method
+            # function get_object_r_e_simplified can be called here instead of calling in a separate line of calc_object_i_e method
+            i_e_dataset = ie_datasets[0]
         return i_e_dataset, r_e_dataset
 
     def get_object_r_e_simplified(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, normalize_t_to_v: float) -> List:
@@ -1085,8 +1082,7 @@ class Transistor:
         plt.show()
      
     def raw_measurement_data_plots(self) -> list:
-        #print("Here in raw measurement data plots")
-        '''
+        """
         Takes the raw measurement data attribute and traverses through 
         the list for each present method and loads the ids and vds data for
         in 3 separate lists. The three lists are used as input for plot_curves function which
@@ -1096,7 +1092,7 @@ class Transistor:
         
         return  plots in img form along test conditions in a list   
         rtype list of img plots along test conditions
-        '''
+        """
         graph_count = 0
         plots_vds_id_t = []
         plots_with_conditions = []     
@@ -1106,29 +1102,28 @@ class Transistor:
             plots_vds_id_t = []
             raw_data_vds = raw_measurements.dpt_on_vds
             raw_data_ids = raw_measurements.dpt_on_id
-            for measurement_count,measurement in enumerate(raw_data_ids):
+            for measurement_count, measurement in enumerate(raw_data_ids):
                 time_val = []
                 vds_val = []
                 id_val = []
-                for measurement_point,point_data in enumerate(measurement):
+                for measurement_point, point_data in enumerate(measurement):
                     time_val.append(point_data[0])
                     vds_val.append(raw_data_vds[measurement_count][measurement_point][1])
                     id_val.append(point_data[1])
-                plots_vds_id_t.append(self.plot_curves(time_val,vds_val,id_val))
-                graph_count+=1
-            conditions['T_j'] = [raw_measurements.t_j,'°C']
-            conditions['V_supply'] = [raw_measurements.v_supply,'V']
-            conditions['V_gate'] = [raw_measurements.v_g,'V']
-            conditions['V_gate_off'] =  [raw_measurements.v_g_off,'V']
-            conditions['R_g'] = [raw_measurements.r_g,'Ohms']
-            conditions['R_goff'] = [raw_measurements.r_g_off,'Ohms']
-            conditions['L_load'] = [raw_measurements.load_inductance,'uH']
-            conditions['L_commutation'] = [raw_measurements.commutation_inductance,'uH']
+                plots_vds_id_t.append(self.plot_curves(time_val, vds_val, id_val))
+                graph_count += 1
+            conditions['T_j'] = [raw_measurements.t_j, '°C']
+            conditions['V_supply'] = [raw_measurements.v_supply, 'V']
+            conditions['V_gate'] = [raw_measurements.v_g, 'V']
+            conditions['V_gate_off'] = [raw_measurements.v_g_off, 'V']
+            conditions['R_g'] = [raw_measurements.r_g, 'Ohms']
+            conditions['R_goff'] = [raw_measurements.r_g_off, 'Ohms']
+            conditions['L_load'] = [raw_measurements.load_inductance, 'uH']
+            conditions['L_commutation'] = [raw_measurements.commutation_inductance, 'uH']
             conditions["total graphs"] = graph_count
-            plots_with_conditions.append([conditions,plots_vds_id_t,])
+            plots_with_conditions.append([conditions, plots_vds_id_t, ])
         return plots_with_conditions
-                
-   
+
     def plot_curves(self, time_array, vds_values, ids_values, buffer_req: bool = False):
         
         ''' 
@@ -1144,19 +1139,16 @@ class Transistor:
         color = 'tab:blue'
         plt.xlabel('time (s)')
         plt.ylabel('Voltage (V)', color=color)
-        plt.plot(time_array,vds_values, color=color)
+        plt.plot(time_array, vds_values, color=color)
         plt.tick_params(axis='y', labelcolor=color)
         plot_ids = plt.twinx()
         color = 'tab:red'
         plot_ids.set_ylabel('Current (A)', color=color)
-        plot_ids.plot(time_array,ids_values, color=color)
+        plot_ids.plot(time_array, ids_values, color=color)
         plot_ids.tick_params(axis='y', labelcolor=color)
         plt.tight_layout()
-        plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+        plt.grid(color='green', linestyle='--', linewidth=0.5)
         return get_img_raw_data_2(plt)
-        
-        
-        
 
     def export_datasheet(self, build_collection=False) -> str | None:
         """
@@ -1174,15 +1166,15 @@ class Transistor:
         .. todo:: Instead of html file, generating a pdf file without third party requirements is a better option
         """
         pdf_data = {}
-        raw_measurement_plots={}
+        raw_measurement_plots = {}
         devices = {}
         skip_ids = ['_id', 'wp', 'c_oss', 'c_iss', 'c_rss', 'graph_v_ecoss', 'c_oss_er', 'c_oss_tr']
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
         if (len(self.raw_measurement_data) > 0):
             raw_measurement_plots = self.raw_measurement_data_plots()
-            #print(raw_measurement_plots)
-            #conditions = raw_measurement_plots[-1]
-            #plots = raw_measurement_plots[:-1]   
+            # print(raw_measurement_plots)
+            # conditions = raw_measurement_plots[-1]
+            # plots = raw_measurement_plots[:-1]
             print(raw_measurement_plots[0])
             pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
             pdf_data.update({'raw_measurement_data': raw_measurement_plots})    
@@ -1444,8 +1436,8 @@ class Transistor:
         curves_set = eval(code)
         for index, loss_curve in enumerate(curves_set):
             for next_index in range(index + 1, len(curves_set)):
-                if not curves_set[index].dataset_type == curves_set[next_index].dataset_type and curves_set[index].t_j == curves_set[next_index].t_j and curves_set[index].v_g == curves_set[
-                    next_index].v_g \
+                if not curves_set[index].dataset_type == curves_set[next_index].dataset_type and \
+                        curves_set[index].t_j == curves_set[next_index].t_j and curves_set[index].v_g == curves_set[next_index].v_g \
                         and curves_set[index].v_supply == curves_set[next_index].v_supply:
                     if curves_set[index].dataset_type == 'graph_i_e':
                         i_e_indexes.append(index)
@@ -1523,8 +1515,10 @@ class Transistor:
             diode_selected_params = {'v_channel_gs': v_g_off, 'v_supply': diode_v_supply, 'v_d_off': v_g_on}
             try:
                 switch_channel_vg, switch_v_supply, v_g_on, v_g_off = self.switch.find_next_gate_voltage(sw_selected_params, export_type='gecko',
-                                                                                                         check_specific_curves=[eon_i_e_indexes, eoff_i_e_indexes])
-                diode_channel_vg, diode_v_supply, v_d_err = self.diode.find_next_gate_voltage(diode_selected_params, export_type='gecko', check_specific_curves=err_i_e_indexes)
+                                                                                                         check_specific_curves=[eon_i_e_indexes,
+                                                                                                                                eoff_i_e_indexes])
+                diode_channel_vg, diode_v_supply, v_d_err = self.diode.find_next_gate_voltage(diode_selected_params, export_type='gecko',
+                                                                                              check_specific_curves=err_i_e_indexes)
             except MissingDataError as e:
                 print(e.args[0], e.em[e.args[0]] + ' .scl')
 
@@ -1545,7 +1539,8 @@ class Transistor:
         mapped_set = dict(zip(eon_i_e_indexes, eon_r_e_indexes))  # empty dict if no r_e and i_e combinations exists
         for index, curve in enumerate(self.switch.e_on):
             if index in eon_i_e_indexes and curve.v_supply == switch_v_supply and curve.v_g == v_g_on:
-                r_g_on = curve.r_g if r_g_on is None and len(mapped_set) else r_g_on  # if no r_g is provided and also recommended is None final resort to get a r_g
+                # if no r_g is provided and also recommended is None final resort to get a r_g
+                r_g_on = curve.r_g if r_g_on is None and len(mapped_set) else r_g_on
                 if not curve.r_g == r_g_on and len(mapped_set):
                     mapped_r_e_object = self.switch.e_on[mapped_set[index]]
                     new_curve = curve.copy()
@@ -1893,9 +1888,13 @@ class Transistor:
 
     def get_curve_data(self, channel_recheck: bool, gate_voltages: List) -> Dict:
         """
-         Collects the available information of switch and diode from transistor object and passes it to plecs_exporter(..) for generating the diode and switch .xml files
+        Prepare data for the PLECS exporter.
 
-        :param channel_recheck: if set to True, collects the channel and energy curve characteristics at nearest gate voltage if the given gate voltages are not found
+        Collect the available information of switch and diode from transistor object and passes it to plecs_exporter(..)
+        for generating the diode and switch .xml files
+
+        :param channel_recheck: if set to True, collects the channel and energy curve characteristics at nearest
+        gate voltage if the given gate voltages are not found
         :type channel_recheck: bool
         :param gate_voltages: turn on and off gate voltages for selecting the curves of switch and diode
         :type gate_voltages: list
@@ -1926,8 +1925,8 @@ class Transistor:
                 'TurnOffLoss': {},
                 'Comment': [
                     "This datasheet was created by {0} on {1} and was exported using transistordatabase.".format(
-                        transistor_dict['author'], transistor_dict['datasheet_date'])
-                    , "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
+                        transistor_dict['author'], transistor_dict['datasheet_date']),
+                    "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
                     "File generated : {0}".format(datetime.today()),
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
             }
@@ -1985,7 +1984,7 @@ class Transistor:
                 plecs_transistor['TauElement'] = transistor_dict['switch']['thermal_foster']['tau_vector']
             else:
                 plecs_transistor['RElement'] = transistor_dict['switch']['thermal_foster']['r_th_total'] if \
-                                                   transistor_dict['switch']['thermal_foster']['r_th_total'] else 1e-6,
+                    transistor_dict['switch']['thermal_foster']['r_th_total'] else 1e-6,
                 plecs_transistor['TauElement'] = transistor_dict['switch']['thermal_foster']['tau_total'] if \
                     transistor_dict['switch']['thermal_foster']['tau_total'] else plecs_transistor['RElement']
         except MissingDataError as e:
@@ -2004,8 +2003,8 @@ class Transistor:
                 'TurnOffLoss': {},
                 'Comment': [
                     "This datasheet was created by {0} on {1} and was exported using transistordatabase.".format(
-                        transistor_dict['author'], transistor_dict['datasheet_date'])
-                    , "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
+                        transistor_dict['author'], transistor_dict['datasheet_date']),
+                        "Datasheet Link : {0}".format(re.sub(r'&', '&amp;', transistor_dict['datasheet_hyperlink'])),
                     "File generated : {0}".format(datetime.today()),
                     "File generated by : https://github.com/upb-lea/transistordatabase"]
             }
@@ -2043,14 +2042,14 @@ class Transistor:
                 plecs_diode['TauElement'] = transistor_dict['diode']['thermal_foster']['tau_vector']
             else:
                 plecs_diode['RElement'] = transistor_dict['diode']['thermal_foster']['r_th_total'] if \
-                                              transistor_dict['diode']['thermal_foster']['r_th_total'] else 1e-6,
+                    transistor_dict['diode']['thermal_foster']['r_th_total'] else 1e-6,
                 plecs_diode['TauElement'] = transistor_dict['diode']['thermal_foster']['tau_total'] if \
                     transistor_dict['diode']['thermal_foster']['tau_total'] else plecs_diode['RElement']
         except MissingDataError as e:
             print(e.args[0], e.em[e.args[0]] + '.scl')
         return plecs_transistor if plecs_transistor is not None and 'Channel' in plecs_transistor['ConductionLoss'] \
-                   else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
-                   else None
+            else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
+            else None
 
     def add_dpt_measurement(self, measurement_data):
         """
@@ -2301,13 +2300,15 @@ class Transistor:
                 r_g_list.append(meas_object.r_g)
                 t_j_list.append(meas_object.t_j)
 
-                plt.plot(meas_object.graph_i_e[0], meas_object.graph_i_e[1], label=f"Measurement: v_g = {meas_object.v_g}, r_g = {meas_object.r_g}, v_supply = {meas_object.v_supply}")
+                plt.plot(meas_object.graph_i_e[0], meas_object.graph_i_e[1],
+                         label=f"Measurement: v_g = {meas_object.v_g}, r_g = {meas_object.r_g}, v_supply = {meas_object.v_supply}")
 
         # check for closest datasheet-data
         if self.switch.e_on != []:
             for count, v_g in enumerate(v_g_list):
                 self.update_wp(t_j_list[count], v_g, self.i_cont)
-                plt.plot(self.wp.e_on.graph_i_e[0], self.wp.e_on.graph_i_e[1], label=f"Datasheet: v_g = {self.wp.e_on.v_g}, r_g = {self.wp.e_on.r_g}, v_supply = {self.wp.e_on.v_supply}")
+                plt.plot(self.wp.e_on.graph_i_e[0], self.wp.e_on.graph_i_e[1],
+                         label=f"Datasheet: v_g = {self.wp.e_on.v_g}, r_g = {self.wp.e_on.r_g}, v_supply = {self.wp.e_on.v_supply}")
 
         plt.xlabel('Current in A')
         plt.ylabel('Eon / J')
@@ -2326,13 +2327,15 @@ class Transistor:
                 r_g_list.append(meas_object.r_g)
                 t_j_list.append(meas_object.t_j)
 
-                plt.plot(meas_object.graph_i_e[0], meas_object.graph_i_e[1], label=f"Measurement: v_g = {meas_object.v_g}, r_g = {meas_object.r_g}, v_supply = {meas_object.v_supply}")
+                plt.plot(meas_object.graph_i_e[0], meas_object.graph_i_e[1],
+                         label=f"Measurement: v_g = {meas_object.v_g}, r_g = {meas_object.r_g}, v_supply = {meas_object.v_supply}")
 
         # check for closest datasheet-data
         if self.switch.e_off != []:
             for count, v_g in enumerate(v_g_list):
                 self.update_wp(t_j_list[count], v_g, self.i_cont)
-                plt.plot(self.wp.e_off.graph_i_e[0], self.wp.e_off.graph_i_e[1], label=f"Datasheet: v_g = {self.wp.e_off.v_g_off}, r_g = {self.wp.e_off.r_g}, v_supply = {self.wp.e_off.v_supply}")
+                plt.plot(self.wp.e_off.graph_i_e[0], self.wp.e_off.graph_i_e[1],
+                         label=f"Datasheet: v_g = {self.wp.e_off.v_g_off}, r_g = {self.wp.e_off.r_g}, v_supply = {self.wp.e_off.v_supply}")
 
         plt.xlabel('Current in A')
         plt.ylabel('Eoff / J')
@@ -2353,33 +2356,38 @@ def attach_units(trans: Dict, devices: Dict):
     :return: sorted data along with units to be displayed in transistor, diode, switch  section on virtual datasheet
     :rtype: dict, dict, dict
     """
-    standard_list = [('Author', 'Author', None), ('Name', 'Name', None), ('Manufacturer', 'Manufacturer', None), ('Type', 'Type', None), ('Datasheet_date', 'Datasheet date', None),
-                     ('Datasheet_hyperlink', 'Datasheet hyperlink', None), ('Datasheet_version', 'Datasheet version', None)]
-    mechthermal_list = [('Housing_area', 'Housing area', 'sq.m'), ('Housing_type', 'Housing type', 'None'), ('Cooling_area', 'Cooling area', 'sq.m'), ('R_th_cs', 'R_th,cs', 'K/W'),
-                        ('R_th_total', 'R_th,total', 'K/W'), ('R_g_int', 'R_g,int', 'Ohms'), ('C_th_total', 'C_th,total', 'F'), ('Tau_total', 'Tau_total', 'sec'),
-                        ('R_th_diode_cs', 'R_th,diode-cs', 'K/W'), ('R_th_switch_cs', 'R_th,switch-cs', 'K/W'), ('R_g_on_recommended', 'R_g,on-recommended', 'Ohms'),
-                        ('R_g_off_recommended', 'R_g,off-recommended', 'Ohms')]
-    maxratings_list = [('V_abs_max', 'V_abs,max', 'V'), ('I_abs_max', 'I_abs,max', 'A'), ('I_cont', 'I_cont', 'A'), ('T_j_max', 'T_j,max', '°C'), ('T_c_max', 'T_c,max', '°C')]
-    cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F'), ('C_oss_er', 'C_oss,er', 'F'), ('C_oss_tr', 'C_oss,tr', 'F')]
+    standard_list = [('Author', 'Author', None), ('Name', 'Name', None), ('Manufacturer', 'Manufacturer', None), ('Type', 'Type', None),
+                     ('Datasheet_date', 'Datasheet date', None), ('Datasheet_hyperlink', 'Datasheet hyperlink', None),
+                     ('Datasheet_version', 'Datasheet version', None)]
+    mechthermal_list = [('Housing_area', 'Housing area', 'sq.m'), ('Housing_type', 'Housing type', 'None'), ('Cooling_area', 'Cooling area', 'sq.m'),
+                        ('R_th_cs', 'R_th,cs', 'K/W'), ('R_th_total', 'R_th,total', 'K/W'), ('R_g_int', 'R_g,int', 'Ohms'), ('C_th_total', 'C_th,total', 'F'),
+                        ('Tau_total', 'Tau_total', 'sec'), ('R_th_diode_cs', 'R_th,diode-cs', 'K/W'), ('R_th_switch_cs', 'R_th,switch-cs', 'K/W'),
+                        ('R_g_on_recommended', 'R_g,on-recommended', 'Ohms'), ('R_g_off_recommended', 'R_g,off-recommended', 'Ohms')]
+    maxratings_list = [('V_abs_max', 'V_abs,max', 'V'), ('I_abs_max', 'I_abs,max', 'A'), ('I_cont', 'I_cont', 'A'),
+                       ('T_j_max', 'T_j,max', '°C'), ('T_c_max', 'T_c,max', '°C')]
+    cap_list = [('C_iss_fix', 'C_iss,fix', 'F'), ('C_oss_fix', 'C_oss,fix', 'F'), ('C_rss_fix', 'C_rss,fix', 'F'),
+                ('C_oss_er', 'C_oss,er', 'F'), ('C_oss_tr', 'C_oss,tr', 'F')]
     
     trans_sorted = {}
     diode_sorted = {}
     switch_sorted = {}
     if ('raw_measurement_data') in trans.keys():
-        raw_measurements_test_conditions = [('T_j_°C','T,j','°C'),('V_supply_V','V,supply','V'),('V_gate_V','V,gate','V'),('V_gate_off_V','V,gate,off','V'),('R_g_Ohms','R,g','Ohms'),('R_g_off_Ohms','R,g,off','Ohms'),('L_load_uH','L,load','uH'),('L_commutation_uH','L,commutation','uH')]
+        raw_measurements_test_conditions = [('T_j_°C', 'T,j', '°C'), ('V_supply_V', 'V,supply', 'V'), ('V_gate_V', 'V,gate', 'V'),
+                                            ('V_gate_off_V', 'V,gate,off', 'V'), ('R_g_Ohms', 'R,g', 'Ohms'), ('R_g_off_Ohms', 'R,g,off', 'Ohms'),
+                                            ('L_load_uH', 'L,load', 'uH'), ('L_commutation_uH', 'L,commutation', 'uH')]
         for list_unit in [maxratings_list, standard_list, mechthermal_list, cap_list, raw_measurements_test_conditions]:
-                for tuple_unit in list_unit:
-                    try:
-                        trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
-                    except KeyError:
-                        pass
+            for tuple_unit in list_unit:
+                try:
+                    trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
+                except KeyError:
+                    pass
     else:
         for list_unit in [maxratings_list, standard_list, mechthermal_list, cap_list]:
-                for tuple_unit in list_unit:
-                    try:
-                        trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
-                    except KeyError:
-                        pass
+            for tuple_unit in list_unit:
+                try:
+                    trans_sorted.update({tuple_unit[1]: [trans.pop(tuple_unit[0]), tuple_unit[2]]})
+                except KeyError:
+                    pass
 
     if len(trans.keys()) > 0:
         trans_sorted.update(trans)

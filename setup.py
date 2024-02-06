@@ -10,7 +10,7 @@ with open('README.rst') as readme_file:
 with open('CHANGELOG.md') as history_file:
     history = history_file.read()
 
-#with open('requirements.txt', 'r') as f:
+# with open('requirements.txt', 'r') as f:
 #    requirements = f.read().splitlines()
 
 setup_requirements = ['setuptools_scm']
@@ -37,20 +37,20 @@ setup(
     ],
     description="Transistor Database",
     install_requires=['numpy>=1.19.5',
-					  'persistent>=4.6.4',
-                      'scipy>=1.6.0',
-					  'setuptools>=49.2.1',
-					  'pymongo>=3.11.3',
-					  'matplotlib>=3.3.4',
-                      'Jinja2 >= 3.0.1',
-                      'packaging>=20.9', 
-                      'Pillow>=8.3.1',
-                      'pytest>=6.2.4',
-                      'PyQt5',
-                      'PyQtWebEngine',
-                      'mongomock',
-                      'requests',
-                      'deepdiff'],
+        'persistent>=4.6.4',
+        'scipy>=1.6.0',
+        'setuptools>=49.2.1',
+        'pymongo>=3.11.3',
+        'matplotlib>=3.3.4',
+        'Jinja2 >= 3.0.1',
+        'packaging>=20.9',
+        'Pillow>=8.3.1',
+        'pytest>=6.2.4',
+        'PyQt5',
+        'PyQtWebEngine',
+        'mongomock',
+        'requests',
+        'deepdiff'],
     license="GNU General Public License v3",
     long_description=readme + '\n\n' + history,
     long_description_content_type="text/markdown",

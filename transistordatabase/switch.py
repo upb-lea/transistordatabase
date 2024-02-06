@@ -126,7 +126,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
+                                      f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('e_on_meas'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
@@ -425,7 +425,7 @@ class Switch:
             if self.channel[i_channel].t_j == temperature:
                 labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                 plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1],
-                            label=labelplot)
+                         label=labelplot)
 
         plt.legend()
         plt.xlabel('Voltage in V')
@@ -468,7 +468,7 @@ class Switch:
                     plt.legend(fontsize=8)
                     plt.xlabel('Voltage in V')
                     plt.ylabel('Current in A')
-                    #plt.title('Channel at $T_{{J}}$ = {0} °C'.format(key))
+                    # plt.title('Channel at $T_{{J}}$ = {0} °C'.format(key))
                     plt.grid()
                     if buffer_req:
                         categorized_plots |= {key: get_img_raw_data(plt)}
@@ -483,7 +483,7 @@ class Switch:
                     plt.legend(fontsize=8)
                     plt.xlabel('Voltage in V')
                     plt.ylabel('Current in A')
-                    #plt.title('Channel at $V_{{g}}$ = {0} V'.format(key))
+                    # plt.title('Channel at $V_{{g}}$ = {0} V'.format(key))
                     plt.grid()
                     if buffer_req:
                         categorized_plots |= {key: get_img_raw_data(plt)}
@@ -528,8 +528,7 @@ class Switch:
                     labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_on[i_energy_data].v_supply,
                                                                                                                                         self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j,
                                                                                                                                         self.e_on[i_energy_data].r_g)
-                    plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1],
-                                label=labelplot)
+                    plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
                     plt.yticks(rotation=90)
             # look for e_off losses
@@ -662,7 +661,7 @@ class Switch:
         else:
             plt.legend(fontsize=8)
             charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel), "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
-                                            "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g) + ' [A]'))])
+                                          "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g) + ' [A]'))])
             ax.text(0.65, 0.1, charge_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='bottom')
         plt.grid()
         if buffer_req:

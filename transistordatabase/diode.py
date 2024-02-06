@@ -127,7 +127,7 @@ class Diode:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of soa "
-                                        f"dictionaries: ",) + error.args
+                                      f"dictionaries: ",) + error.args
                         raise
             elif isvalid_dict(diode_args.get('soa'), 'SOA'):
                 # Only create SOA objects from valid dicts
@@ -158,7 +158,7 @@ class Diode:
         return d
 
     def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list = None,
-                                diode_loss_dataset_type: str = "graph_i_e"):
+                               diode_loss_dataset_type: str = "graph_i_e"):
         """
         Finds the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
         The diode has only turn-off gate voltage which is the switch turn-on gate voltage
@@ -340,8 +340,9 @@ class Diode:
                 # check if data is available as 'graph_i_e'
                 if self.e_rr[i_energy_data].dataset_type == 'graph_i_e':
                     # add label plot
-                    labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $R_{{g}}$ = {2} Ohm".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j,
-                                                                                                                        self.e_rr[i_energy_data].r_g)
+                    labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $R_{{g}}$ = {2} Ohm".format(self.e_rr[i_energy_data].v_supply,
+                                                                                                                     self.e_rr[i_energy_data].t_j,
+                                                                                                                     self.e_rr[i_energy_data].r_g)
                     # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
                     # if ture, add gate-voltage to label
                     if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
@@ -382,7 +383,8 @@ class Diode:
                 # check if data is available as 'graph_i_e'
                 if self.e_rr[i_energy_data].dataset_type == 'graph_r_e':
                     # add label plot
-                    labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $I_{{ch}}$ = {2} A".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j,
+                    labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $I_{{ch}}$ = {2} A".format(self.e_rr[i_energy_data].v_supply,
+                                                                                                                    self.e_rr[i_energy_data].t_j,
                                                                                                                     self.e_rr[i_energy_data].i_x)
                     # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
                     # if ture, add gate-voltage to label
@@ -390,8 +392,7 @@ class Diode:
                         labelplot = labelplot + ", $v_{{g}}$ = {0} V".format(self.e_rr[i_energy_data].v_g)
 
                     # plot
-                    plt.plot(self.e_rr[i_energy_data].graph_r_e[0], self.e_rr[i_energy_data].graph_r_e[1],
-                                label=labelplot)
+                    plt.plot(self.e_rr[i_energy_data].graph_r_e[0], self.e_rr[i_energy_data].graph_r_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
             plt.legend(fontsize=5)
             plt.xlabel('External Gate Resistor in Ohm')
@@ -441,7 +442,8 @@ class Diode:
         :rtype: dict
         """
         diode_data = {}
-        diode_data['plots'] = {'channel_plots': self.plot_all_channel_data(True), 'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'soa': self.plot_soa(True)}
+        diode_data['plots'] = {'channel_plots': self.plot_all_channel_data(True), 'energy_plots': self.plot_energy_data(True),
+                               'energy_plots_r': self.plot_energy_data_r(True), 'soa': self.plot_soa(True)}
         for attr in dir(self):
             if attr == 'thermal_foster':
                 diode_data.update(getattr(self, attr).collect_data())

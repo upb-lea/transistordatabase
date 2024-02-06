@@ -82,7 +82,8 @@ def csv2array(csv_filename: str, first_xy_to_00: bool = False, second_y_to_0: bo
     :param first_x_to_0: Set 'True' to set the first x-value to zero. This is interesting in
         case of nonlinear input/output capacities, e.g. c_oss, c_iss, c_rss
     :type first_x_to_0: bool
-    :param mirror_xy_data: Takes the absolute() of both axis. Used for given mirrored data, e.g. some datasheet show diode data in the 3rd quadrant instead of the 1st quadrant
+    :param mirror_xy_data: Takes the absolute() of both axis. Used for given mirrored data,
+    e.g. some datasheet show diode data in the 3rd quadrant instead of the 1st quadrant
     :type mirror_xy_data: bool
 
     :return: 1d array, ready to use in the transistor database
@@ -136,7 +137,8 @@ def check_float(float_to_check: int | float) -> bool:
 
 def check_keys(keys_to_check: Dict, req_type: str, switch_type: str):
     """
-    A helper function for find_next_gate_voltage method of class type - switch and diode. Verifies if the required keys are available and their value types are valid for carrying out the export
+    A helper function for find_next_gate_voltage method of class type - switch and diode.
+    Verifies if the required keys are available and their value types are valid for carrying out the export
     Used for export_gecko() and export_plecs()
 
     :param keys_to_check: the dictionary which contains the essential keys for the corresponding exporter function

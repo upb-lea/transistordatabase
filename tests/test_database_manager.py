@@ -59,7 +59,8 @@ def test_save_transistor_json(database_json: DatabaseManager):
     database_json.save_transistor(t1)
 
     # Check new database status
-    assert ["CREE_C3M0060065J", "CREE_C3M0016120K"].sort() == database_json.get_transistor_names_list().sort(), "Transistor is missing after adding it to database."
+    assert ["CREE_C3M0060065J", "CREE_C3M0016120K"].sort() == database_json.get_transistor_names_list().sort(), \
+        "Transistor is missing after adding it to database."
 
     # Check if transistor file is created in the database
     assert os.path.isfile(os.path.join(database_dir, "CREE_C3M0060065J.json")), "File does not exists"

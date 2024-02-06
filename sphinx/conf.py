@@ -100,4 +100,4 @@ html_static_path = ['_static']
 ############################
 # SETUP THE RTD LOWER-LEFT #
 ############################
-#html_context['display_lower_left'] = True
+# html_context['display_lower_left'] = True

@@ -57,13 +57,14 @@ def example_update_from_online_database():
     db.update_from_fileexchange(True)
 
     # Compare local database to exchange database:
-    #diff_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "diff.json")
-    #db.compare_with_fileexchange(index_url, diff_file)
+    # diff_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "diff.json")
+    # db.compare_with_fileexchange(index_url, diff_file)
+
 
 if __name__ == "__main__":
-    #extract_from_mongodb_to_json()
-    #example_json_database()
-    #example_mongodb_database()
-    #insert_mongodb_from_json()
+    # extract_from_mongodb_to_json()
+    # example_json_database()
+    # example_mongodb_database()
+    # insert_mongodb_from_json()
     example_update_from_online_database()
 

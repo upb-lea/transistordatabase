@@ -89,19 +89,19 @@ class MainWindow(QMainWindow):
         self.action_clear_create_transistor.triggered.connect(self.clear_create_transistor)
         self.action_exit.triggered.connect(app.exit)
 
-        ### Actions for 'Transistor' ###
+        # Actions for 'Transistor' #
         self.action_delete_transistor.triggered.connect(self.delete_marked_transistor_search_database_from_local_tdb)
         self.action_show_original_datasheet.triggered.connect(self.webbrowser_original_datasheet)
         self.action_show_virtual_datasheet.triggered.connect(self.webbrowser_virtual_datasheet)
         self.action_add_transistor_to_transistordatabase_file_exchange.triggered.connect(
             self.email_add_transistor_to_transistordatabase_file_exchange)
 
-        ### Actions for 'help' ###
+        # Actions for 'help' #
         self.action_contribute.triggered.connect(self.webbrowser_contribute)
         self.action_documentation.triggered.connect(self.webbrowser_documentation)
         self.action_report_bug.triggered.connect(self.webbrowser_bugreport)
 
-        ###TOPOLOGY CALCULATOR###
+        # TOPOLOGY CALCULATOR #
 
         # create the six Matplotlib figures needed
         self.matplotlibwidget_topology1 = MatplotlibWidget()
@@ -350,7 +350,7 @@ class MainWindow(QMainWindow):
         self.lineEdit_compare_number_parallel_transistor2.setValidator(QDoubleValidator())
         self.lineEdit_compare_number_parallel_transistor3.setValidator(QDoubleValidator())
 
-        ###Exporting Tools###
+        # Exporting Tools #
 
         # add Items to the comboBox and set standard values for parallel transistor and normalize-t-to-v value
         self.comboBox_export_transistor.addItems(transistor_list)
@@ -379,7 +379,7 @@ class MainWindow(QMainWindow):
         self.lineEdit_export_plecs_v_d_on.setValidator(QDoubleValidator())
         self.lineEdit_export_plecs_v_d_off.setValidator(QDoubleValidator())
 
-        ###CREATE TRANSISTOR###
+        # CREATE TRANSISTOR #
 
         self.fill_comboBoxes_create_transistor()
 
@@ -571,7 +571,7 @@ class MainWindow(QMainWindow):
         self.lineEdit_create_transistor_diode_soa_t_pulse_time_pulse.setValidator(QDoubleValidator(0.0, 1000.0, 8))
         self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.setValidator(QDoubleValidator(-300, 300, 2))
 
-        ###SEARCH DATABASE###
+        # SEARCH DATABASE #
 
         # fill the comboBoxes
         self.comboBox_search_database_load_comparison_tools.addItems(["Transistor1", "Transistor2", "Transistor3"])
@@ -723,7 +723,7 @@ class MainWindow(QMainWindow):
         self.lineEdit_search_database_diode_t_j_max_min.setValidator(QDoubleValidator())
         self.lineEdit_search_database_diode_t_j_max_max.setValidator(QDoubleValidator())
 
-    ### Transistor actions ###
+    # Transistor actions #
     def webbrowser_original_datasheet(self):
         transistor = self.get_marked_transistor()
         webbrowser.open(transistor.datasheet_hyperlink)
@@ -752,7 +752,7 @@ class MainWindow(QMainWindow):
         email_subject = 'Request to add transistor {transistor.name} to the transistordatabase file exchange (TDB-FE)'
         webbrowser.open(f'mailto:?to=tdb@lea.upb.de&subject=' + email_subject + '&body=' + email_body, new=2)
 
-    ### Help actions ###
+    # Help actions #
     def webbrowser_contribute(self):
         webbrowser.open('https://github.com/upb-lea/transistordatabase/blob/main/Contributing.rst')
 
@@ -1433,7 +1433,7 @@ class MainWindow(QMainWindow):
         self.slider_topology_r_g_on_transistor1.setValue(0)
         self.slider_topology_r_g_off_transistor1.setValue(0)
 
-    ###CREATE TRANSISTOR###
+    # CREATE TRANSISTOR #
 
     def comboBox_create_transistor_switch_add_switching_losses_curve_type_changed(self):
         if self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
@@ -2457,7 +2457,7 @@ class MainWindow(QMainWindow):
         :return: transistor object
         """
 
-        ###TRANSISTOR PARAMETERS###
+        # TRANSISTOR PARAMETERS #
 
         try:
             c_iss_normal_dict = self.comboBox_create_transistor_added_c_iss_normal.itemData(
@@ -2652,7 +2652,7 @@ class MainWindow(QMainWindow):
                            "t_c_max": t_c_max,
                            "raw_measurement_data": raw_measurement_data}
 
-        ###SWITCH PARAMETERS#
+        # SWITCH PARAMETERS #
         try:
             t_rthjc_dict = self.comboBox_create_transistor_switch_added_curve_t_rthjc.itemData(
                 self.comboBox_create_transistor_switch_added_curve_t_rthjc.currentIndex())
@@ -2724,7 +2724,7 @@ class MainWindow(QMainWindow):
             "e_on_meas": e_on_meas,
             "e_off_meas": e_off_meas}
 
-        ###DIODE PARAMATERS###
+        # DIODE PARAMATERS #
         try:
             t_rthjc_dict = self.comboBox_create_transistor_diode_added_curve_t_rthjc.itemData(
                 self.comboBox_create_transistor_diode_added_curve_t_rthjc.currentIndex())
@@ -2867,7 +2867,7 @@ class MainWindow(QMainWindow):
         except:
             self.show_popup_message("Error: Transistor could not previewed! Check if all inputs are correct!")
 
-    ###SEARCH DATABASE###
+    # SEARCH DATABASE #
 
     def reset_filter_search_database(self):
         """
@@ -3218,12 +3218,9 @@ class MainWindow(QMainWindow):
                                                                                 "load_inductance"] is not None else "None "
                 commutation_inductance = str(list[i]["commutation_inductance"]) + " F" if list[i][
                                                                                               "commutation_inductance"] is not None else "None "
-                measurement_date = str(list[i]["measurement_date"]) if list[i][
-                                                                           "measurement_date"] is not None else "None"
-                measurement_testbench = str(list[i]["measurement_testbench"]) if list[i][
-                                                                                     "measurement_testbench"] is not None else "None"
-                commutation_device = str(list[i]["commutation_device"]) if list[i][
-                                                                               "commutation_device"] is not None else "None"
+                measurement_date = str(list[i]["measurement_date"]) if list[i]["measurement_date"] is not None else "None"
+                measurement_testbench = str(list[i]["measurement_testbench"]) if list[i]["measurement_testbench"] is not None else "None"
+                commutation_device = str(list[i]["commutation_device"]) if list[i]["commutation_device"] is not None else "None"
                 comment = str(list[i]["comment"]) if list[i]["comment"] is not None else "None"
 
                 if list[i] is not None and list[i] != []:
@@ -3784,7 +3781,7 @@ class MainWindow(QMainWindow):
                 self.tableWidget_search_database.setItem(row, column, item)
                 column = column + 1
 
-    ###Exporting Tools###
+    # Exporting Tools #
 
     def export_datasheet(self):
         """
@@ -3899,7 +3896,7 @@ class MainWindow(QMainWindow):
         except:
             self.show_popup_message("Error: One or more invalid inputs!")
 
-    ###COMPARISON TOOLS###
+    # COMPARISON TOOLS #
 
     def compare_create_plot(self, widget_plot: QWidget, matplotlibwidget, comboBox_plot):
         """
@@ -4242,8 +4239,7 @@ class MainWindow(QMainWindow):
         if transistor is not None:
             available_v_g_on_transistor = [str(channel.v_g) for channel in transistor.switch.channel]
             available_v_g_on_transistor_cleared = []
-        
-                
+
             for v_g in available_v_g_on_transistor:
                 if v_g not in available_v_g_on_transistor_cleared and v_g != "None":
                     available_v_g_on_transistor_cleared.append(v_g)
@@ -4342,16 +4338,9 @@ class MainWindow(QMainWindow):
 
                     for i in range(len(t_j_available)):
                         r_e_object_rr = transistor.get_object_r_e_simplified(e_on_off_rr="e_rr",
-                                                                            t_j=t_j_available[i],
-                                                                            v_g=min([i for i in [e_rr.v_g for e_rr in
-                                                                                                transistor.diode.e_rr]
-                                                                                    if
-                                                                                    i is not None]),
-                                                                            v_supply=max([i for i in
-                                                                                        [e_rr.v_supply for e_rr in
-                                                                                            transistor.diode.e_rr] if
-                                                                                        i is not None]),
-                                                                            normalize_t_to_v=10)
+                            t_j=t_j_available[i], v_g=min([i for i in [e_rr.v_g for e_rr in transistor.diode.e_rr] if i is not None]),
+                            v_supply=max([i for i in [e_rr.v_supply for e_rr in transistor.diode.e_rr] if i is not None]),
+                            normalize_t_to_v=10)
                         r_g_rr_max_list[i] = np.amax(r_e_object_rr.graph_r_e[0]) * 10000
 
                     r_g_rr_max = floor(10 * min(r_g_rr_max_list) / 10000) / 10
@@ -4437,7 +4426,7 @@ class MainWindow(QMainWindow):
         self.label_compare_r_g_off_value_transistor3.setText(
             str(round(self.slider_compare_r_g_off_transistor3.value() / 100, 1)))
 
-    ###TOPOLOGY CALCULATOR###
+    # TOPOLOGY CALCULATOR #
 
     def comboBox_topology_topology_changed(self):
         """

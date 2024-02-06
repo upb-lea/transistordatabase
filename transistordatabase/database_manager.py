@@ -995,24 +995,24 @@ class DatabaseManager:
             e_off_1 = [item[1] for item in e_off]
 
             e_off_meas = {'dataset_type': measurement_dict.get('dataset_type'),
-                        't_j': t_j_off,
-                        'load_inductance': measurement_dict.get('load_inductance'),
-                        'commutation_inductance': measurement_dict.get('commutation_inductance'),
-                        'commutation_device': measurement_dict.get('commutation_device'),
-                        'comment': measurement_dict.get('comment'),
-                        'measurement_date': measurement_dict.get('measurement_date'),
-                        'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                        'v_supply': v_supply_off,
-                        # 'v_g': v_g,
-                        'v_g_off': v_g_off,
-                        # 'r_g': r_g,
-                        'r_g_off': r_g_off,
-                        'graph_i_e': np.array([e_off_0, e_off_1]),
-                        'graph_r_e': np.array([e_off_0, e_off_1]),
-                        'e_x': float(e_off_1[0]),
-                        'i_x': id_avg_max,
-                        'dv_dt': dv_dt_off,
-                        'di_dt': di_dt_off}
+                         't_j': t_j_off,
+                         'load_inductance': measurement_dict.get('load_inductance'),
+                         'commutation_inductance': measurement_dict.get('commutation_inductance'),
+                         'commutation_device': measurement_dict.get('commutation_device'),
+                         'comment': measurement_dict.get('comment'),
+                         'measurement_date': measurement_dict.get('measurement_date'),
+                         'measurement_testbench': measurement_dict.get('measurement_testbench'),
+                         'v_supply': v_supply_off,
+                         # 'v_g': v_g,
+                         'v_g_off': v_g_off,
+                         # 'r_g': r_g,
+                         'r_g_off': r_g_off,
+                         'graph_i_e': np.array([e_off_0, e_off_1]),
+                         'graph_r_e': np.array([e_off_0, e_off_1]),
+                         'e_x': float(e_off_1[0]),
+                         'i_x': id_avg_max,
+                         'dv_dt': dv_dt_off,
+                         'di_dt': di_dt_off}
 
             dpt_raw_data |= {'dpt_off_vds': vds_raw_off, 'dpt_off_id': id_raw_off}
 
@@ -1232,24 +1232,24 @@ class DatabaseManager:
             e_on_1 = [item[1] for item in e_on]
 
             e_on_meas = {'dataset_type': measurement_dict.get('dataset_type'),
-                        't_j': t_j,
-                        'load_inductance': measurement_dict.get('load_inductance'),
-                        'commutation_inductance': measurement_dict.get('commutation_inductance'),
-                        'commutation_device': measurement_dict.get('commutation_device'),
-                        'comment': measurement_dict.get('comment'),
-                        'measurement_date': measurement_dict.get('measurement_date'),
-                        'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                        'v_supply': v_supply_on,
-                        'v_g': v_g,
-                        # 'v_g_off': v_g_off,
-                        'r_g': r_g,
-                        # 'r_g_off': r_g_off,
-                        'graph_i_e': np.array([e_on_0, e_on_1]),
-                        'graph_r_e': np.array([e_on_0, e_on_1]),
-                        'e_x': float(e_on_1[0]),
-                        'i_x': id_avg_max,
-                        'dv_dt': dv_dt_on,
-                        'di_dt': di_dt_on}
+                         't_j': t_j,
+                         'load_inductance': measurement_dict.get('load_inductance'),
+                         'commutation_inductance': measurement_dict.get('commutation_inductance'),
+                         'commutation_device': measurement_dict.get('commutation_device'),
+                         'comment': measurement_dict.get('comment'),
+                         'measurement_date': measurement_dict.get('measurement_date'),
+                         'measurement_testbench': measurement_dict.get('measurement_testbench'),
+                         'v_supply': v_supply_on,
+                         'v_g': v_g,
+                         # 'v_g_off': v_g_off,
+                         'r_g': r_g,
+                         # 'r_g_off': r_g_off,
+                         'graph_i_e': np.array([e_on_0, e_on_1]),
+                         'graph_r_e': np.array([e_on_0, e_on_1]),
+                         'e_x': float(e_on_1[0]),
+                         'i_x': id_avg_max,
+                         'dv_dt': dv_dt_on,
+                         'di_dt': di_dt_on}
 
             dpt_raw_data |= {'dpt_on_vds': vds_raw_on, 'dpt_on_id': id_raw_on}
 
@@ -1267,12 +1267,12 @@ class DatabaseManager:
             plt.show(block=True)
 
         dpt_raw_data |= {'t_j': t_j,
-                        'load_inductance': measurement_dict.get('load_inductance'),
-                        'measurement_date': measurement_dict.get('measurement_date'),
-                        'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                        'v_supply': v_supply_on,
-                        'v_g':v_g,
-                        'v_g_off': v_g_off}
+                         'load_inductance': measurement_dict.get('load_inductance'),
+                         'measurement_date': measurement_dict.get('measurement_date'),
+                         'measurement_testbench': measurement_dict.get('measurement_testbench'),
+                         'v_supply': v_supply_on,
+                         'v_g': v_g,
+                         'v_g_off': v_g_off}
 
         if measurement_dict.get('dataset_type') == 'graph_r_e':
             dpt_raw_data |= {'dataset_type': 'dpt_u_i_r',
