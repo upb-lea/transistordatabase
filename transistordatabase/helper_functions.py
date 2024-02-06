@@ -56,7 +56,7 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
                          'datasheet_version'},
             'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
                              'r_g_int', 'c_oss_fix', 'c_iss_fix', 'c_rss_fix', 'r_th_cs', 'r_th_switch_cs',
-                             'r_th_diode_cs', 't_c_max', 'r_g_on_recommended', 'r_g_off_recommended'},
+                             'r_th_diode_cs', 'r_g_on_recommended', 'r_g_off_recommended'},
             'array_keys': {'graph_v_ecoss'}},
         'Switch': {
             'mandatory_keys': {'t_j_max'},

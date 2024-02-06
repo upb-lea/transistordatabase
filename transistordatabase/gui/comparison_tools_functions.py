@@ -290,7 +290,7 @@ def plot_all_channel_data(transistor, matplotlibwidget, switch_diode):
                     categorize_with_vgs_plots[channel.v_g].append(channel)
                 except KeyError:
                     categorize_with_vgs_plots[channel.v_g] = [channel]
-            for key, curve_list in categorize_with_temp_plots.items():
+            for _, curve_list in categorize_with_temp_plots.items():
                 if len(curve_list) > 1:
                     count += 1
                     for curve in curve_list:
@@ -306,7 +306,7 @@ def plot_all_channel_data(transistor, matplotlibwidget, switch_diode):
 
                     matplotlibwidget.figure.canvas.mpl_connect("button_press_event", clicked)
 
-            for key, curve_list in categorize_with_vgs_plots.items():
+            for _, curve_list in categorize_with_vgs_plots.items():
                 if len(curve_list) > count:
                     for curve in curve_list:
                         plot_label = "$T_{{j}}$ = {0} °C".format(curve.t_j)
@@ -349,7 +349,7 @@ def plot_all_channel_data(transistor, matplotlibwidget, switch_diode):
                     categorize_with_vgs_plots[channel.v_g].append(channel)
                 except KeyError:
                     categorize_with_vgs_plots[channel.v_g] = [channel]
-            for key, curve_list in categorize_with_temp_plots.items():
+            for _, curve_list in categorize_with_temp_plots.items():
                 if len(curve_list) > 1:
                     count += 1
                     for curve in curve_list:
@@ -365,7 +365,7 @@ def plot_all_channel_data(transistor, matplotlibwidget, switch_diode):
 
                     matplotlibwidget.figure.canvas.mpl_connect("button_press_event", clicked)
 
-            for key, curve_list in categorize_with_vgs_plots.items():
+            for _, curve_list in categorize_with_vgs_plots.items():
                 if len(curve_list) > count:
                     for curve in curve_list:
                         plot_label = "$T_{{j}}$ = {0} °C".format(curve.t_j)
@@ -470,8 +470,8 @@ def plot_e_on(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j
                 for i in range(len(t_j_available)):
                     r_e_object_on = transistor_list[m].get_object_r_e_simplified(
                         e_on_off_rr="e_on",
-                        t_j=t_j_available[i], v_g=max([i for i in [e_on.v_g for e_on in transistor_list[m].switch.e_on] if i != None]),
-                        v_supply=max([i for i in [e_on.v_supply for e_on in transistor_list[m].switch.e_on] if i != None]),
+                        t_j=t_j_available[i], v_g=max([i for i in [e_on.v_g for e_on in transistor_list[m].switch.e_on] if i is not None]),
+                        v_supply=max([i for i in [e_on.v_supply for e_on in transistor_list[m].switch.e_on] if i is not None]),
                         normalize_t_to_v=10)
                     r_g_on_max_list[i] = np.amax(r_e_object_on.graph_r_e[0]) * 10000
 
@@ -614,13 +614,13 @@ def plot_e_off(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_
                                                                                             transistor_list[
                                                                                                 m].switch.e_off]
                                                                                            if
-                                                                                           i != None]),
+                                                                                           i is not None]),
                                                                                   v_supply=max(
                                                                                       [i for i in
                                                                                        [e_off.v_supply for e_off in
                                                                                         transistor_list[
                                                                                             m].switch.e_off] if
-                                                                                       i != None]),
+                                                                                       i is not None]),
                                                                                   normalize_t_to_v=10)
                     r_g_off_max_list[i] = np.amax(r_e_object_off.graph_r_e[0]) * 10000
 
@@ -750,8 +750,8 @@ def plot_e_rr(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j
 
                 for i in range(len(t_j_available)):
                     r_e_object_rr = transistor_list[m].get_object_r_e_simplified(
-                        e_on_off_rr="e_rr", t_j=t_j_available[i], v_g=max([i for i in [e_rr.v_g for e_rr in transistor_list[m].diode.e_rr] if i != None]),
-                        v_supply=max([i for i in [e_rr.v_supply for e_rr in transistor_list[m].diode.e_rr] if i != None]),
+                        e_on_off_rr="e_rr", t_j=t_j_available[i], v_g=max([i for i in [e_rr.v_g for e_rr in transistor_list[m].diode.e_rr] if i is not None]),
+                        v_supply=max([i for i in [e_rr.v_supply for e_rr in transistor_list[m].diode.e_rr] if i is not None]),
                         normalize_t_to_v=10)
                     r_g_rr_max_list[i] = np.amax(r_e_object_rr.graph_r_e[0]) * 10000
 

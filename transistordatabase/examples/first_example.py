@@ -5,7 +5,6 @@ This shall be an example file to test the new refactored class structure
 import os
 
 # Local libraries
-from transistordatabase.transistor import Transistor
 from transistordatabase.database_manager import DatabaseManager
 
 def extract_from_mongodb_to_json():

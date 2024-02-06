@@ -114,7 +114,7 @@ class DatabaseManager:
         :param overwrite: Indicates whether to overwrite the existing transistor object in the local database if a match is found
         :type overwrite: bool or None
         """
-        if self.operation_mode == None:
+        if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
 
         transistor_dict = transistor.convert_to_dict()
@@ -163,7 +163,7 @@ class DatabaseManager:
         :param transistor_name: Name of the transistor
         :type transistor_name: str
         """
-        if self.operation_mode == None:
+        if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
 
         if self.operation_mode == OperationMode.JSON:
@@ -188,7 +188,7 @@ class DatabaseManager:
         :return: Desired Transistor object
         :rtype: Transistor
         """
-        if self.operation_mode == None:
+        if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
 
         if self.operation_mode == OperationMode.JSON:
@@ -210,7 +210,7 @@ class DatabaseManager:
         :return: List containing the names.
         :rtype:  List[str]
         """
-        if self.operation_mode == None:
+        if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
 
         if self.operation_mode == OperationMode.JSON:
@@ -789,7 +789,7 @@ class DatabaseManager:
                     position_v_supply_off_start = csv_files[csv_count].rfind("_", 0, position_v_supply_off)
                     v_supply_off.append(csv_files[csv_count][position_v_supply_off_start + 1:position_v_supply_off])
                 csv_count += 1
-            print(f'v_supply_off=', v_supply_off)
+            print('v_supply_off=', v_supply_off)
             if not compare_list(v_supply_off):
                 raise ValueError
             i = 0
@@ -800,7 +800,7 @@ class DatabaseManager:
                     position_v_g_off_start = csv_files[i].rfind("_", 0, position_v_g_off)
                     v_g_off.append(csv_files[i][position_v_g_off_start + 1:position_v_g_off])
                 i += 1
-            print(f'vg_off=', v_g_off)
+            print('vg_off=', v_g_off)
             if not compare_list(v_g_off):
                 raise ValueError
             j = 0
@@ -811,7 +811,7 @@ class DatabaseManager:
                     position_r_g_off_start = csv_files[j].rfind("_", 0, position_r_g_off)
                     r_g_off.append(csv_files[j][position_r_g_off_start + 1:position_r_g_off])
                 j += 1
-            print(f'Rg_off=', r_g_off)
+            print('Rg_off=', r_g_off)
             if not compare_list(r_g_off):
                 raise ValueError
             k = 0
@@ -822,7 +822,7 @@ class DatabaseManager:
                     position_t_j_off_start = csv_files[k].rfind("_", 0, position_t_j_off)
                     t_j_off.append(csv_files[k][position_t_j_off_start + 1:position_t_j_off])
                 k += 1
-            print(f't_j_off=', t_j_off)
+            print('t_j_off=', t_j_off)
             if not compare_list(t_j_off):
                 raise ValueError
 
@@ -1027,7 +1027,7 @@ class DatabaseManager:
                     position_v_g_start = csv_files[i].rfind("_", 0, position_v_g)
                     v_g.append(csv_files[i][position_v_g_start + 1:position_v_g])
                 i += 1
-            print(f'vg=', v_g)
+            print('vg=', v_g)
             if not compare_list(v_g):
                 raise ValueError
             j = 0
@@ -1038,7 +1038,7 @@ class DatabaseManager:
                     position_r_g_start = csv_files[j].rfind("_", 0, position_r_g)
                     r_g.append(csv_files[j][position_r_g_start + 1:position_r_g])
                 j += 1
-            print(f'Rg=', r_g)
+            print('Rg=', r_g)
             if not compare_list(r_g):
                 raise ValueError
             k = 0
@@ -1049,7 +1049,7 @@ class DatabaseManager:
                     position_t_j_start = csv_files[k].rfind("_", 0, position_t_j)
                     t_j.append(csv_files[k][position_t_j_start + 1:position_t_j])
                 k += 1
-            print(f't_j=', t_j)
+            print('t_j=', t_j)
             if not compare_list(t_j):
                 raise ValueError
             csv_count = 0
@@ -1060,7 +1060,7 @@ class DatabaseManager:
                     position_v_supply_on_start = csv_files[csv_count].rfind("_", 0, position_v_supply_on)
                     v_supply_on.append(csv_files[csv_count][position_v_supply_on_start + 1:position_v_supply_on])
                 csv_count += 1
-            print(f'v_supply=', v_supply_on)
+            print('v_supply=', v_supply_on)
             if not compare_list(v_supply_on):
                 raise ValueError
             ##############################

@@ -448,6 +448,6 @@ class Diode:
             if attr == 'thermal_foster':
                 diode_data.update(getattr(self, attr).collect_data())
             elif not callable(getattr(self, attr)) and not attr.startswith("__") and not \
-                    isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (not getattr(self, attr) is None) and not getattr(self, attr) == "":
+                    isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (getattr(self, attr) is not None) and not getattr(self, attr) == "":
                 diode_data[attr.capitalize()] = getattr(self, attr)
         return diode_data

@@ -965,7 +965,7 @@ class Transistor:
         try:
             code = compile(f"self.{input_type}.thermal_foster", "<string>", "eval")
             foster_args = eval(code)
-            if not foster_args.r_th_vector is None and not foster_args.tau_vector is None and len(foster_args.tau_vector) == len(foster_args.r_th_vector):
+            if foster_args.r_th_vector is not None and foster_args.tau_vector is not None and len(foster_args.tau_vector) == len(foster_args.r_th_vector):
                 foster_args.c_th_vector = [x / y for x, y in zip(foster_args.r_th_vector, foster_args.tau_vector)]
                 if foster_args.tau_total is None:
                     foster_args.tau_total = round(sum(foster_args.tau_vector), 4)
@@ -1453,7 +1453,7 @@ class Transistor:
         i_e_indexes = list()
         code = compile(f"self.{switch_type}.{loss_type}", "<string>", "eval")
         curves_set = eval(code)
-        for index, loss_curve in enumerate(curves_set):
+        for index, _ in enumerate(curves_set):
             for next_index in range(index + 1, len(curves_set)):
                 if not curves_set[index].dataset_type == curves_set[next_index].dataset_type and \
                         curves_set[index].t_j == curves_set[next_index].t_j and curves_set[index].v_g == curves_set[next_index].v_g \
@@ -1466,7 +1466,7 @@ class Transistor:
                         r_e_indexes.append(index)
         # If no combos available then providing indexes of only dataset_type == graph_i_e
         if not any(i_e_indexes):
-            for index, loss_curve in enumerate(curves_set):
+            for index, _ in enumerate(curves_set):
                 if curves_set[index].dataset_type == 'graph_i_e':
                     i_e_indexes.append(index)
         return i_e_indexes, r_e_indexes
@@ -1544,12 +1544,12 @@ class Transistor:
         # Gather data
         # Channel curves
         sw_channel_curves = list()
-        for index, channel in enumerate(self.switch.channel):
+        for _, channel in enumerate(self.switch.channel):
             if channel.v_g == switch_channel_vg:
                 sw_channel_curves.append(channel)
 
         diode_channel_curves = list()
-        for index, channel in enumerate(self.diode.channel):
+        for _, channel in enumerate(self.diode.channel):
             if (channel.v_g is None and diode_channel_vg == 0) or channel.v_g == diode_channel_vg:
                 diode_channel_curves.append(channel)
 
@@ -1666,9 +1666,9 @@ class Transistor:
             if not any(eon_curves) or not any(eoff_curves):
                 print('Switch: No loss curves found!')
                 file_switch.write("<SchaltverlusteMesskurve>\n")
-                file_switch.write(f"data[][] 3 2 0 10 0 0 0 0")
-                file_switch.write(f"\ntj 25\n")
-                file_switch.write(f"uBlock 400\n")
+                file_switch.write("data[][] 3 2 0 10 0 0 0 0")
+                file_switch.write("\ntj 25\n")
+                file_switch.write("uBlock 400\n")
                 file_switch.write("<\SchaltverlusteMesskurve>\n")
             else:
                 for e_on in eon_curves:
@@ -1747,11 +1747,11 @@ class Transistor:
             # if switching losses will not set to zero, geckoCIRCUITS will use initial values
             if len(err_curves) == 0:
                 print('Diode: No loss curves found!')
-                file_diode.write(f"anzMesskurvenPvSWITCH 1\n")
+                file_diode.write("anzMesskurvenPvSWITCH 1\n")
                 file_diode.write("<SchaltverlusteMesskurve>\n")
-                file_diode.write(f"data[][] 3 2 0 10 0 0 0 0")
-                file_diode.write(f"\ntj 25\n")
-                file_diode.write(f"uBlock 400\n")
+                file_diode.write("data[][] 3 2 0 10 0 0 0 0")
+                file_diode.write("\ntj 25\n")
+                file_diode.write("uBlock 400\n")
                 file_diode.write("<\SchaltverlusteMesskurve>\n")
             else:
                 file_diode.write(f"anzMesskurvenPvSWITCH {len(err_curves)}\n")
@@ -1970,7 +1970,7 @@ class Transistor:
                         plecs_transistor['ConductionLoss']['CurrentAxis'])]}
                     plecs_transistor['TurnOnLoss']['TemperatureAxis'] = [25]
                 else:
-                    for key, value in plecs_transistor['TurnOnLoss']['Energy'].items():
+                    for key, _ in plecs_transistor['TurnOnLoss']['Energy'].items():
                         if not len(plecs_transistor['TurnOnLoss']['Energy'][key]) == len(
                                 plecs_transistor['TurnOnLoss']['TemperatureAxis']):
                             raise MissingDataError(1102)
@@ -1988,7 +1988,7 @@ class Transistor:
                     plecs_transistor['TurnOffLoss']['Energy'] = {transistor_dict['v_abs_max']: [[0] * len(
                         plecs_transistor['ConductionLoss']['CurrentAxis'])]}
                 else:
-                    for key, value in plecs_transistor['TurnOffLoss']['Energy'].items():
+                    for key, _ in plecs_transistor['TurnOffLoss']['Energy'].items():
                         if not len(plecs_transistor['TurnOffLoss']['Energy'][key]) == len(
                                 plecs_transistor['TurnOffLoss']['TemperatureAxis']):
                             raise MissingDataError(1103)
@@ -2042,7 +2042,7 @@ class Transistor:
                     plecs_diode['TurnOffLoss']['Energy'] = {0: [[0]]}
                     plecs_diode['TurnOffLoss']['TemperatureAxis'] = [25]
                 else:
-                    for key, value in plecs_diode['TurnOffLoss']['Energy'].items():
+                    for key, _ in plecs_diode['TurnOffLoss']['Energy'].items():
                         if not len(plecs_diode['TurnOffLoss']['Energy'][key]) == len(
                                 plecs_diode['TurnOffLoss']['TemperatureAxis']):
                             raise MissingDataError(
@@ -2167,8 +2167,8 @@ class Transistor:
         init_length = len(soa_list)
         # Convert 2D list ot 2D numpy array for comparison
         # TODO Does this work??
-        for index, dataset in enumerate(soa_list):
-            for key, item in dataset.items():
+        for _, dataset in enumerate(soa_list):
+            for key, _ in dataset.items():
                 if isinstance(dataset[key], list):
                     dataset[key] = np.array(dataset[key])
 
@@ -2224,8 +2224,8 @@ class Transistor:
 
         init_length = len(charge_list)
         # Convert 2D list ot 2D numpy array for comparison
-        for index, dataset in enumerate(charge_list):
-            for key, item in dataset.items():
+        for _, dataset in enumerate(charge_list):
+            for key, _ in dataset.items():
                 if isinstance(dataset[key], list):
                     dataset[key] = np.array(dataset[key])
 
@@ -2277,8 +2277,8 @@ class Transistor:
 
         init_length = len(r_channel_list)
         # Convert 2D list ot 2D numpy array for comparison
-        for index, dataset in enumerate(r_channel_list):
-            for key, item in dataset.items():
+        for _, dataset in enumerate(r_channel_list):
+            for key, _ in dataset.items():
                 if isinstance(dataset[key], list):
                     dataset[key] = np.array(dataset[key])
 

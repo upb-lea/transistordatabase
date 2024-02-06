@@ -183,7 +183,7 @@ def check_duplicates(current_items: List[Dict], item_to_append: Dict) -> bool:
     else:
         for index, c_item in enumerate(current_items):
             count = 0
-            for key, value in c_item.items():
+            for key, _ in c_item.items():
                 if isinstance(item_to_append[key], np.ndarray):
                     count = count + 1 if c_item[key].tolist() == item_to_append[key].tolist() else count
                 elif c_item[key] == item_to_append[key]:

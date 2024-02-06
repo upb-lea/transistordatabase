@@ -18,7 +18,7 @@ import datetime
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QMessageBox, QFileDialog, QLineEdit, \
     QComboBox, QSystemTrayIcon
 from PyQt5 import uic, QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon, QDoubleValidator, QIntValidator
+from PyQt5.QtGui import QIcon, QDoubleValidator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # Local libraries
@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
         self.tray_icon.show()
         self.tray_icon.activated.connect(self.show)
 
-        self.setWindowTitle(f"Transistordatabase")
+        self.setWindowTitle("Transistordatabase")
 
         self.tdb = DatabaseManager()
         self.tdb.set_operation_mode_json(os.path.join(os.path.dirname(__file__), "..", "database"))
@@ -754,7 +754,7 @@ class MainWindow(QMainWindow):
         email_body = f"Do not forget to attach the transistor file <b>{transistor.name}</b> to this email!! " \
                      f"Link to File: <a href={pathlib.Path.cwd().as_uri()}>{pathlib.Path.cwd().as_uri()}</a>"
         email_subject = 'Request to add transistor {transistor.name} to the transistordatabase file exchange (TDB-FE)'
-        webbrowser.open(f'mailto:?to=tdb@lea.upb.de&subject=' + email_subject + '&body=' + email_body, new=2)
+        webbrowser.open('mailto:?to=tdb@lea.upb.de&subject=' + email_subject + '&body=' + email_body, new=2)
 
     # Help actions #
     def webbrowser_contribute(self):
@@ -787,7 +787,7 @@ class MainWindow(QMainWindow):
         :rtype: None
         """
         self.tdb.update_from_fileexchange()
-        self.label_updated_database.setText(f"Successfully Updated")
+        self.label_updated_database.setText("Successfully Updated")
 
     def __del__(self):
         """
@@ -810,7 +810,7 @@ class MainWindow(QMainWindow):
 
         :return: None
         """
-        if self.action_stdout.isChecked() == True:
+        if self.action_stdout.isChecked() is True:
             self.textEdit_stdout.setMaximumSize(16777215, 100)
         else:
             self.textEdit_stdout.setMaximumSize(16777215, 0)
@@ -1637,15 +1637,15 @@ class MainWindow(QMainWindow):
                                                                        "data_dict": data_dict})
                     self.comboBox_create_transistor_added_dpt.setCurrentText(comboBox_entry_name)
                 except:
-                    self.show_popup_message(f"Selected Directory is invalid! Possible Reasons <br>"
-                                            f"1. Values of file are not matching(Voltage, Resistance or Temperature) <br>"
-                                            f"2. Following keys in csv-file name must match <br>"
-                                            f"    - Temperature <b>_</b>xx<b>C_</b><br>"
-                                            f"    - Voltage <b>_</b>xxx<b>V_</b> <br>"
-                                            f"    - Resistance <b>_</b>x.xx<b>R_</b> <br>"
-                                            f"    - Gate Voltage <b>_</b>xx<b>vg_</b> <br>"
-                                            f"    - Current on/off <b> _ON_I</b> or <b> _OFF_I </b><br>"
-                                            f"    - Voltage on/off <b>ON_U</b> or <b>OFF_U</b>")
+                    self.show_popup_message("Selected Directory is invalid! Possible Reasons <br>"
+                                            "1. Values of file are not matching(Voltage, Resistance or Temperature) <br>"
+                                            "2. Following keys in csv-file name must match <br>"
+                                            "    - Temperature <b>_</b>xx<b>C_</b><br>"
+                                            "    - Voltage <b>_</b>xxx<b>V_</b> <br>"
+                                            "    - Resistance <b>_</b>x.xx<b>R_</b> <br>"
+                                            "    - Gate Voltage <b>_</b>xx<b>vg_</b> <br>"
+                                            "    - Current on/off <b> _ON_I</b> or <b> _OFF_I </b><br>"
+                                            "    - Voltage on/off <b>ON_U</b> or <b>OFF_U</b>")
 
     def view_dpt_measurement_data(self):
         """
@@ -1734,8 +1734,6 @@ class MainWindow(QMainWindow):
         elif self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() != "" and \
                 self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
             r_g_i_x_entry_name = self.lineEdit_create_transistor_switch_add_switching_losses_r_g_i_x.text() + " A"
-        else:
-            None
 
         v_supply = float(
             self.lineEdit_create_transistor_switch_add_switching_losses_v_supply.text()) \
@@ -2013,8 +2011,6 @@ class MainWindow(QMainWindow):
         elif self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() != "" and \
                 self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
             r_g_i_x_entry_name = self.lineEdit_create_transistor_diode_add_switching_losses_r_g_i_x.text() + " A"
-        else:
-            None
 
         v_supply = float(
             self.lineEdit_create_transistor_diode_add_switching_losses_v_supply.text()) \
@@ -2880,7 +2876,7 @@ class MainWindow(QMainWindow):
                     check = True
                     self.InformationWindow = InformationWindow()
                     self.InformationWindow.run_information_window()
-            if check == False:
+            if check is False:
                 transistor.save()
 
                 self.comboBox_export_transistor.addItem(transistor.name)
@@ -3127,7 +3123,7 @@ class MainWindow(QMainWindow):
             # TRANSISTOR CURVES#
             graph_v_ecoss = transistor_dict["graph_v_ecoss"]
             if graph_v_ecoss is not None and graph_v_ecoss is not []:
-                self.comboBox_create_transistor_added_curve_v_ecoss.addItem(f"V_Ecoss Curve",
+                self.comboBox_create_transistor_added_curve_v_ecoss.addItem("V_Ecoss Curve",
                                                                             {"graph_v_ecoss": np.array(graph_v_ecoss)})
 
             list = transistor_dict["c_iss"]
@@ -3453,79 +3449,79 @@ class MainWindow(QMainWindow):
                           "switch_thermal_foster",
                           "diode_channel", "diode_e_rr", "diode_linearized_diode", "diode_soa"]
 
-        if self.checkBox_search_database_name.isChecked() == False:
+        if self.checkBox_search_database_name.isChecked() is False:
             keys_to_remove.append("name")
-        if self.checkBox_search_database_type.isChecked() == False:
+        if self.checkBox_search_database_type.isChecked() is False:
             keys_to_remove.append("type")
-        if self.checkBox_search_database_author.isChecked() == False:
+        if self.checkBox_search_database_author.isChecked() is False:
             keys_to_remove.append("author")
-        if self.checkBox_search_database_technology.isChecked() == False:
+        if self.checkBox_search_database_technology.isChecked() is False:
             keys_to_remove.append("technology")
-        if self.checkBox_search_database_template_version.isChecked() == False:
+        if self.checkBox_search_database_template_version.isChecked() is False:
             keys_to_remove.append("template_version")
-        if self.checkBox_search_database_template_date.isChecked() == False:
+        if self.checkBox_search_database_template_date.isChecked() is False:
             keys_to_remove.append("template_date")
-        if self.checkBox_search_database_creation_date.isChecked() == False:
+        if self.checkBox_search_database_creation_date.isChecked() is False:
             keys_to_remove.append("creation_date")
-        if self.checkBox_search_database_last_modified.isChecked() == False:
+        if self.checkBox_search_database_last_modified.isChecked() is False:
             keys_to_remove.append("last_modified")
-        if self.checkBox_search_database_comment.isChecked() == False:
+        if self.checkBox_search_database_comment.isChecked() is False:
             keys_to_remove.append("comment")
-        if self.checkBox_search_database_datasheet_hyperlink.isChecked() == False:
+        if self.checkBox_search_database_datasheet_hyperlink.isChecked() is False:
             keys_to_remove.append("datasheet_hyperlink")
-        if self.checkBox_search_database_datasheet_date.isChecked() == False:
+        if self.checkBox_search_database_datasheet_date.isChecked() is False:
             keys_to_remove.append("datasheet_date")
-        if self.checkBox_search_database_datasheet_version.isChecked() == False:
+        if self.checkBox_search_database_datasheet_version.isChecked() is False:
             keys_to_remove.append("datasheet_version")
-        if self.checkBox_search_database_housing_area.isChecked() == False:
+        if self.checkBox_search_database_housing_area.isChecked() is False:
             keys_to_remove.append("housing_area")
-        if self.checkBox_search_database_cooling_area.isChecked() == False:
+        if self.checkBox_search_database_cooling_area.isChecked() is False:
             keys_to_remove.append("cooling_area")
-        if self.checkBox_search_database_t_c_max.isChecked() == False:
+        if self.checkBox_search_database_t_c_max.isChecked() is False:
             keys_to_remove.append("t_c_max")
-        if self.checkBox_search_database_r_g_int.isChecked() == False:
+        if self.checkBox_search_database_r_g_int.isChecked() is False:
             keys_to_remove.append("r_g_int")
-        if self.checkBox_search_database_r_g_on_recommended.isChecked() == False:
+        if self.checkBox_search_database_r_g_on_recommended.isChecked() is False:
             keys_to_remove.append("r_g_on_recommended")
-        if self.checkBox_search_database_r_g_off_recommended.isChecked() == False:
+        if self.checkBox_search_database_r_g_off_recommended.isChecked() is False:
             keys_to_remove.append("r_g_off_recommended")
-        if self.checkBox_search_database_c_oss_fix.isChecked() == False:
+        if self.checkBox_search_database_c_oss_fix.isChecked() is False:
             keys_to_remove.append("c_oss_fix")
-        if self.checkBox_search_database_c_iss_fix.isChecked() == False:
+        if self.checkBox_search_database_c_iss_fix.isChecked() is False:
             keys_to_remove.append("c_iss_fix")
-        if self.checkBox_search_database_c_rss_fix.isChecked() == False:
+        if self.checkBox_search_database_c_rss_fix.isChecked() is False:
             keys_to_remove.append("c_rss_fix")
-        if self.checkBox_search_database_housing_type.isChecked() == False:
+        if self.checkBox_search_database_housing_type.isChecked() is False:
             keys_to_remove.append("housing_type")
-        if self.checkBox_search_database_manufacturer.isChecked() == False:
+        if self.checkBox_search_database_manufacturer.isChecked() is False:
             keys_to_remove.append("manufacturer")
-        if self.checkBox_search_database_r_th_cs.isChecked() == False:
+        if self.checkBox_search_database_r_th_cs.isChecked() is False:
             keys_to_remove.append("r_th_cs")
-        if self.checkBox_search_database_r_th_switch_cs.isChecked() == False:
+        if self.checkBox_search_database_r_th_switch_cs.isChecked() is False:
             keys_to_remove.append("r_th_switch_cs")
-        if self.checkBox_search_database_r_th_diode_cs.isChecked() == False:
+        if self.checkBox_search_database_r_th_diode_cs.isChecked() is False:
             keys_to_remove.append("r_th_diode_cs")
-        if self.checkBox_search_database_v_abs_max.isChecked() == False:
+        if self.checkBox_search_database_v_abs_max.isChecked() is False:
             keys_to_remove.append("v_abs_max")
-        if self.checkBox_search_database_i_abs_max.isChecked() == False:
+        if self.checkBox_search_database_i_abs_max.isChecked() is False:
             keys_to_remove.append("i_abs_max")
-        if self.checkBox_search_database_i_cont.isChecked() == False:
+        if self.checkBox_search_database_i_cont.isChecked() is False:
             keys_to_remove.append("i_cont")
-        if self.checkBox_search_database_switch_t_j_max.isChecked() == False:
+        if self.checkBox_search_database_switch_t_j_max.isChecked() is False:
             keys_to_remove.append("switch_t_j_max")
-        if self.checkBox_search_database_switch_comment.isChecked() == False:
+        if self.checkBox_search_database_switch_comment.isChecked() is False:
             keys_to_remove.append("switch_comment")
-        if self.checkBox_search_database_switch_manufacturer.isChecked() == False:
+        if self.checkBox_search_database_switch_manufacturer.isChecked() is False:
             keys_to_remove.append("switch_manufacturer")
-        if self.checkBox_search_database_switch_technology.isChecked() == False:
+        if self.checkBox_search_database_switch_technology.isChecked() is False:
             keys_to_remove.append("switch_technology")
-        if self.checkBox_search_database_diode_comment.isChecked() == False:
+        if self.checkBox_search_database_diode_comment.isChecked() is False:
             keys_to_remove.append("diode_comment")
-        if self.checkBox_search_database_diode_manufacturer.isChecked() == False:
+        if self.checkBox_search_database_diode_manufacturer.isChecked() is False:
             keys_to_remove.append("diode_manufacturer")
-        if self.checkBox_search_database_diode_technology.isChecked() == False:
+        if self.checkBox_search_database_diode_technology.isChecked() is False:
             keys_to_remove.append("diode_technology")
-        if self.checkBox_search_database_diode_t_j_max.isChecked() == False:
+        if self.checkBox_search_database_diode_t_j_max.isChecked() is False:
             keys_to_remove.append("diode_t_j_max")
 
         for key in keys_to_remove:
@@ -3534,7 +3530,7 @@ class MainWindow(QMainWindow):
 
         for transistor in transistordatabase:
             for key in transistordatabase_keys:
-                if transistor[key] == None:
+                if transistor[key] is None:
                     transistor[key] = 0
 
         if self.lineEdit_search_database_name.text() != "":
@@ -5618,13 +5614,13 @@ class CurveCheckerWindow(QMainWindow):
         curve_label = self.comboBox_data.currentText()
         self.matplotlibwidget.axis.clear()
 
-        if self.radioButton_scale_log_xy.isChecked() == True:
+        if self.radioButton_scale_log_xy.isChecked() is True:
             self.matplotlibwidget.axis.loglog(graph[0], graph[1], label=curve_label)
-        elif self.radioButton_scale_linear.isChecked() == True:
+        elif self.radioButton_scale_linear.isChecked() is True:
             self.matplotlibwidget.axis.plot(graph[0], graph[1], label=curve_label)
-        elif self.radioButton_scale_log_x.isChecked() == True:
+        elif self.radioButton_scale_log_x.isChecked() is True:
             self.matplotlibwidget.axis.semilogx(graph[0], graph[1], label=curve_label)
-        elif self.radioButton_scale_log_y.isChecked() == True:
+        elif self.radioButton_scale_log_y.isChecked() is True:
             self.matplotlibwidget.axis.semilogy(graph[0], graph[1], label=curve_label)
 
         self.matplotlibwidget.axis.grid()
@@ -5764,13 +5760,13 @@ class ViewCurveWindow(QMainWindow):
         curve_label = self.comboBox_data.currentText()
         self.matplotlibwidget.axis.clear()
 
-        if self.radioButton_scale_log_xy.isChecked() == True:
+        if self.radioButton_scale_log_xy.isChecked() is True:
             self.matplotlibwidget.axis.loglog(graph[0], graph[1], label=curve_label)
-        elif self.radioButton_scale_linear.isChecked() == True:
+        elif self.radioButton_scale_linear.isChecked() is True:
             self.matplotlibwidget.axis.plot(graph[0], graph[1], label=curve_label)
-        elif self.radioButton_scale_log_x.isChecked() == True:
+        elif self.radioButton_scale_log_x.isChecked() is True:
             self.matplotlibwidget.axis.semilogx(graph[0], graph[1], label=curve_label)
-        elif self.radioButton_scale_log_y.isChecked() == True:
+        elif self.radioButton_scale_log_y.isChecked() is True:
             self.matplotlibwidget.axis.semilogy(graph[0], graph[1], label=curve_label)
 
         self.matplotlibwidget.axis.set(xlabel=xlabel,

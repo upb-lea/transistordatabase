@@ -416,19 +416,19 @@ def f_m_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transistor1
     # turn-on current for transistor1 is 0 for DCM
     m_i_on1 = m_i_on_ccm1
 
-    v_supply_chosen1 = max([i for i in [e_on.v_supply for e_on in transistor1.switch.e_on] if i != None])
+    v_supply_chosen1 = max([i for i in [e_on.v_supply for e_on in transistor1.switch.e_on] if i is not None])
 
     try:
         transistor1.wp.e_on = transistor1.calc_object_i_e(
-            e_on_off_rr="e_on", t_j=max([i for i in [e_on.t_j for e_on in transistor1.switch.e_on] if i != None]),
+            e_on_off_rr="e_on", t_j=max([i for i in [e_on.t_j for e_on in transistor1.switch.e_on] if i is not None]),
             v_supply=v_supply_chosen1, r_g=r_g_on1, normalize_t_to_v=10)
     except:
         transistor1.wp.e_on = transistor1.get_object_i_e(
             e_on_off_rr="e_on",
-            t_j=max([i for i in [e_on.t_j for e_on in transistor1.switch.e_on] if i != None]),
+            t_j=max([i for i in [e_on.t_j for e_on in transistor1.switch.e_on] if i is not None]),
             v_supply=v_supply_chosen1,
-            r_g=max([i for i in [e_on.r_g for e_on in transistor1.switch.e_on] if i != None]),
-            v_g=max([i for i in [e_on.v_g for e_on in transistor1.switch.e_on] if i != None]))
+            r_g=max([i for i in [e_on.r_g for e_on in transistor1.switch.e_on] if i is not None]),
+            v_g=max([i for i in [e_on.v_g for e_on in transistor1.switch.e_on] if i is not None]))
 
     m_e_on1 = np.full_like(m_i_on1, np.nan)
     m_e_on1[~np.isnan(m_i_on1)] = np.interp((m_i_on1[~np.isnan(m_i_on1)]), transistor1.wp.e_on.graph_i_e[0],
@@ -456,16 +456,16 @@ def f_m_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transisto
     # turn-off current for transistor1 is i_peak for CCM and DCM
     m_i_off1 = f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2)
 
-    v_supply_chosen1 = max([i for i in [e_off.v_supply for e_off in transistor1.switch.e_off] if i != None])
+    v_supply_chosen1 = max([i for i in [e_off.v_supply for e_off in transistor1.switch.e_off] if i is not None])
     try:
         transistor1.wp.e_off = transistor1.calc_object_i_e(
-            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i != None]),
+            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i is not None]),
             v_supply=v_supply_chosen1, r_g=r_g_off1, normalize_t_to_v=10)
     except:
         transistor1.wp.e_off = transistor1.get_object_i_e(
-            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i != None]),
-            v_supply=v_supply_chosen1, r_g=max([i for i in [e_off.r_g for e_off in transistor1.switch.e_off] if i != None]),
-            v_g=min([i for i in [e_off.v_g for e_off in transistor1.switch.e_off] if i != None]))
+            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i is not None]),
+            v_supply=v_supply_chosen1, r_g=max([i for i in [e_off.r_g for e_off in transistor1.switch.e_off] if i is not None]),
+            v_g=min([i for i in [e_off.v_g for e_off in transistor1.switch.e_off] if i is not None]))
 
     m_e_off1 = np.full_like(m_i_off1, np.nan)
     m_e_off1[~np.isnan(m_i_off1)] = np.interp((m_i_off1[~np.isnan(m_i_off1)]), transistor1.wp.e_off.graph_i_e[0],
@@ -504,13 +504,13 @@ def f_m_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transis
     # turn-off current for transistor2 is 0 for DCM
     m_i_off2 = m_i_off_ccm2
 
-    v_supply_chosen2 = max([i for i in [e_rr.v_supply for e_rr in transistor2.diode.e_rr] if i != None])
+    v_supply_chosen2 = max([i for i in [e_rr.v_supply for e_rr in transistor2.diode.e_rr] if i is not None])
     try:
         transistor2.wp.e_rr = transistor2.calc_object_i_e(e_on_off_rr="e_rr",
                                                           t_j=max(
                                                               [i for i in
                                                                [e_rr.t_j for e_rr in transistor2.diode.e_rr]
-                                                               if i != None]),
+                                                               if i is not None]),
                                                           v_supply=v_supply_chosen2,
                                                           r_g=0,
                                                           normalize_t_to_v=10)
@@ -519,14 +519,14 @@ def f_m_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transis
                                                          t_j=max(
                                                              [i for i in
                                                               [e_rr.t_j for e_rr in transistor2.diode.e_rr]
-                                                              if i != None]),
+                                                              if i is not None]),
                                                          v_supply=v_supply_chosen2,
                                                          r_g=max([i for i in
                                                                   [e_rr.r_g for e_rr in transistor2.diode.e_rr] if
-                                                                  i != None]),
+                                                                  i is not None]),
                                                          v_g=min([i for i in
                                                                   [e_rr.v_g for e_rr in transistor2.diode.e_rr] if
-                                                                  i != None]))
+                                                                  i is not None]))
 
     m_e_rr2 = np.full_like(m_i_off2, np.nan)
     m_e_rr2[~np.isnan(m_i_off2)] = np.interp((m_i_off2[~np.isnan(m_i_off2)]), transistor2.wp.e_rr.graph_i_e[0],
@@ -1141,13 +1141,13 @@ def f_vec_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transisto
     v_channel1 = channel[0]
     v_channel2 = channel[1]
 
-    v_supply_chosen1 = max([i for i in [e_on.v_supply for e_on in transistor1.switch.e_on] if i != None])
+    v_supply_chosen1 = max([i for i in [e_on.v_supply for e_on in transistor1.switch.e_on] if i is not None])
     try:
         transistor1.wp.e_on = transistor1.calc_object_i_e(e_on_off_rr="e_on",
                                                           t_j=max(
                                                               [i for i in
                                                                [e_on.t_j for e_on in transistor1.switch.e_on]
-                                                               if i != None]),
+                                                               if i is not None]),
                                                           v_supply=v_supply_chosen1,
                                                           r_g=r_g_on1,
                                                           normalize_t_to_v=10)
@@ -1156,14 +1156,14 @@ def f_vec_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transisto
                                                          t_j=max(
                                                              [i for i in
                                                               [e_on.t_j for e_on in transistor1.switch.e_on]
-                                                              if i != None]),
+                                                              if i is not None]),
                                                          v_supply=v_supply_chosen1,
                                                          r_g=max([i for i in
                                                                   [e_on.r_g for e_on in transistor1.switch.e_on] if
-                                                                  i != None]),
+                                                                  i is not None]),
                                                          v_g=max([i for i in
                                                                   [e_on.v_g for e_on in transistor1.switch.e_on] if
-                                                                  i != None]))
+                                                                  i is not None]))
 
     i = 0
     while i < np.size(zeta):
@@ -1214,9 +1214,9 @@ def f_vec_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transis
             v_supply=v_supply_chosen1, r_g=r_g_off1, normalize_t_to_v=10)
     except:
         transistor1.wp.e_off = transistor1.get_object_i_e(
-            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i != None]),
-            v_supply=v_supply_chosen1, r_g=max([i for i in [e_off.r_g for e_off in transistor1.switch.e_off] if i != None]),
-            v_g=max([i for i in [e_off.v_g for e_off in transistor1.switch.e_off] if i != None]))
+            e_on_off_rr="e_off", t_j=max([i for i in [e_off.t_j for e_off in transistor1.switch.e_off] if i is not None]),
+            v_supply=v_supply_chosen1, r_g=max([i for i in [e_off.r_g for e_off in transistor1.switch.e_off] if i is not None]),
+            v_g=max([i for i in [e_off.v_g for e_off in transistor1.switch.e_off] if i is not None]))
 
     i = 0
     while i < np.size(zeta):
@@ -1252,13 +1252,13 @@ def f_vec_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, trans
     v_channel1 = channel[0]
     v_channel2 = channel[1]
 
-    v_supply_chosen2 = max([i for i in [e_rr.v_supply for e_rr in transistor2.diode.e_rr] if i != None])
+    v_supply_chosen2 = max([i for i in [e_rr.v_supply for e_rr in transistor2.diode.e_rr] if i is not None])
     try:
         transistor2.wp.e_rr = transistor2.calc_object_i_e(e_on_off_rr="e_rr",
                                                           t_j=max(
                                                               [i for i in
                                                                [e_rr.t_j for e_rr in transistor2.diode.e_rr]
-                                                               if i != None]),
+                                                               if i is not None]),
                                                           v_supply=v_supply_chosen2,
                                                           r_g=0,
                                                           normalize_t_to_v=10)
@@ -1267,16 +1267,16 @@ def f_vec_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, trans
                                                          t_j=max(
                                                              [i for i in
                                                               [e_rr.t_j for e_rr in transistor2.diode.e_rr]
-                                                              if i != None]),
+                                                              if i is not None]),
                                                          v_supply=v_supply_chosen2,
                                                          r_g=max([i for i in
                                                                   [e_rr.r_g for e_rr in transistor2.diode.e_rr]
                                                                   if
-                                                                  i != None]),
+                                                                  i is not None]),
                                                          v_g=min([i for i in
                                                                   [e_rr.v_g for e_rr in transistor2.diode.e_rr]
                                                                   if
-                                                                  i != None]))
+                                                                  i is not None]))
 
     i = 0
     while i < np.size(zeta):
