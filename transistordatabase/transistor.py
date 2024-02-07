@@ -1,7 +1,7 @@
 # Python standard libraries
 from __future__ import annotations
 import matplotlib.pyplot as plt
-from typing import Dict, List, Union, Tuple
+from typing import Dict, List, Union, Tuple, Optional
 from scipy import integrate
 from scipy.spatial import distance
 from scipy.optimize import curve_fit
@@ -30,6 +30,7 @@ from transistordatabase.switch import Switch
 from transistordatabase.diode import Diode
 from transistordatabase.exceptions import MissingDataError
 from transistordatabase.exporter import dict2matlab
+import transistordatabase.colors as tdb_colors
 
 class Transistor:
     """
@@ -505,6 +506,71 @@ class Transistor:
         plt.xlabel('Voltage in V')
         plt.ylabel('Charge in C')
         plt.grid()
+        plt.show()
+        if buffer_req:
+            return get_img_raw_data(plt)
+        else:
+            plt.show()
+
+    def plot_v_coss(self, buffer_req: bool = False):
+        """
+        Plot the output capacitance C_oss.
+
+        :param buffer_req: Internally required for generating virtual datasheets
+        :type buffer_req: bool
+
+        :return: Respective plots are displayed
+        """
+        plt.figure()
+        plt.semilogy(self.c_oss[0].graph_v_c[0], self.c_oss[0].graph_v_c[1])
+        plt.xlabel('Voltage in V')
+        plt.ylabel('Capacitance in F')
+        plt.grid()
+        plt.show()
+        if buffer_req:
+            return get_img_raw_data(plt)
+        else:
+            plt.show()
+
+
+
+    def plot_half_bridge_equivalent_coss(self, v_dc: float, figure_size_mm: Optional[Tuple] = None, buffer_req: bool = False):
+        """
+        Plot the half-bridge equivalent output capacitance C_oss.
+
+        :param v_dc: DC voltage for the half-bridge
+        :type v_dc: float
+        :param buffer_req: Internally required for generating virtual datasheets
+        :type buffer_req: bool
+
+        :return: Respective plots are displayed
+        """
+        v_original = self.c_oss[0].graph_v_c[0]
+        c_original = self.c_oss[0].graph_v_c[1]
+
+        # clip datasheet voltage at the given max. v_dc for a virtual low-side transistor
+        v_dc_low_side = v_original[v_original < v_dc]
+        c_dc_low_side = c_original[v_original < v_dc]
+
+        # interpolate datasets, generate high-side coss
+        v_dc_low_side_interp = np.linspace(0, v_dc)
+        c_dc_low_side_interp = np.interp(v_dc_low_side_interp, v_dc_low_side, c_dc_low_side)
+        c_dc_high_side_interp = c_dc_low_side_interp[::-1]
+
+        # add both capacitances
+        c_dc_common_interp = c_dc_low_side_interp + c_dc_high_side_interp
+
+        plt.figure(figsize=[x/25.4 for x in figure_size_mm] if figure_size_mm is not None else None)
+        plt.semilogy(v_dc_low_side_interp, c_dc_low_side_interp, label=r'$C_\mathrm{oss,LS}$', color=tdb_colors.gnome_colors["red"])
+        plt.semilogy(v_dc_low_side_interp, c_dc_high_side_interp, label=r'$C_\mathrm{oss,HS}$', color=tdb_colors.gnome_colors["green"])
+        plt.semilogy(v_dc_low_side_interp, c_dc_common_interp, label=r'$C_\mathrm{oss,HS+LS}$', color=tdb_colors.gnome_colors["blue"])
+
+        plt.xlabel('Voltage in V')
+        plt.ylabel('Capacitance in F')
+        plt.title(f"{self.name}")
+        plt.legend()
+        plt.grid()
+        plt.tight_layout()
         plt.show()
         if buffer_req:
             return get_img_raw_data(plt)
@@ -1207,7 +1273,7 @@ class Transistor:
                     pdf_data[attr.capitalize()] = getattr(self, attr).c_o
         trans, diode, switch = attach_units(pdf_data, devices)
         # print(trans)
-        img_path = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
+        img_path = os.path.join(os.path.dirname(__file__), 'images', 'lea-upb.png')
         image_file_obj = open(img_path, "rb")
         image_binary_bytes = image_file_obj.read()
         buf = io.BytesIO(image_binary_bytes)

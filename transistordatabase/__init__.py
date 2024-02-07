@@ -9,3 +9,5 @@ from transistordatabase.diode import *
 from transistordatabase.switch import *
 from transistordatabase.exceptions import *
 from transistordatabase.database_manager import *
+from transistordatabase.colors import *
+from transistordatabase.generalplotsettings import *
