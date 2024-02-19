@@ -13,6 +13,7 @@ import os
 import json
 import scipy.io as sio
 import collections
+import copy
 import base64
 import io
 
@@ -532,8 +533,6 @@ class Transistor:
         else:
             plt.show()
 
-
-
     def plot_half_bridge_equivalent_coss(self, v_dc: float, figure_size_mm: Optional[Tuple] = None, buffer_req: bool = False):
         """
         Plot the half-bridge equivalent output capacitance C_oss.
@@ -576,6 +575,155 @@ class Transistor:
             return get_img_raw_data(plt)
         else:
             plt.show()
+
+    def plot_half_bridge_equivalent_eoss(self, v_dc: float, figure_size_mm: Optional[Tuple] = None, buffer_req: bool = False, yunits: str = 'J'):
+        """
+        Plot the half-bridge equivalent output capacitance C_oss.
+
+        :param v_dc: DC voltage for the half-bridge
+        :type v_dc: float
+        :param buffer_req: Internally required for generating virtual datasheets
+        :type buffer_req: bool
+
+        :return: Respective plots are displayed
+        """
+        v_original = self.c_oss[0].graph_v_c[0]
+        c_original = self.c_oss[0].graph_v_c[1]
+
+        # clip datasheet voltage at the given max. v_dc for a virtual low-side transistor
+        v_dc_low_side = v_original[v_original < v_dc]
+        c_dc_low_side = c_original[v_original < v_dc]
+
+        # interpolate datasets, generate high-side coss
+        v_dc_low_side_interp = np.linspace(0, v_dc)
+        c_dc_low_side_interp = np.interp(v_dc_low_side_interp, v_dc_low_side, c_dc_low_side)
+        c_dc_high_side_interp = c_dc_low_side_interp[::-1]
+
+        # add both capacitances
+        c_dc_common_interp = c_dc_low_side_interp + c_dc_high_side_interp
+
+        energy_cumtrapz_low_side = integrate.cumulative_trapezoid(v_dc_low_side_interp * c_dc_low_side_interp, v_dc_low_side_interp, initial=0)
+        energy_cumtrapz_high_side = energy_cumtrapz_low_side[::-1]
+        energy_cumtrapz_common = energy_cumtrapz_low_side + energy_cumtrapz_high_side
+
+        if yunits.lower() == 'mj':
+            energy_cumtrapz_low_side = energy_cumtrapz_low_side * 1e3
+            energy_cumtrapz_high_side = energy_cumtrapz_high_side * 1e3
+            energy_cumtrapz_common = energy_cumtrapz_common * 1e3
+        if yunits.lower() == 'uj':
+            energy_cumtrapz_low_side = energy_cumtrapz_low_side * 1e6
+            energy_cumtrapz_high_side = energy_cumtrapz_high_side * 1e6
+            energy_cumtrapz_common = energy_cumtrapz_common * 1e6
+            yunits = 'µJ'
+        if yunits.lower() == 'nj':
+            energy_cumtrapz_low_side = energy_cumtrapz_low_side * 1e9
+            energy_cumtrapz_high_side = energy_cumtrapz_high_side * 1e9
+            energy_cumtrapz_common = energy_cumtrapz_common * 1e9
+
+        plt.figure(figsize=[x/25.4 for x in figure_size_mm] if figure_size_mm is not None else None)
+        plt.plot(v_dc_low_side_interp, energy_cumtrapz_low_side, label=r'$E_\mathrm{oss,LS}$', color=tdb_colors.gnome_colors["red"])
+        plt.plot(v_dc_low_side_interp, energy_cumtrapz_high_side, label=r'$E_\mathrm{oss,HS}$', color=tdb_colors.gnome_colors["green"])
+        plt.plot(v_dc_low_side_interp, energy_cumtrapz_common, label=r'$E_\mathrm{oss,HS+LS}$', color=tdb_colors.gnome_colors["blue"])
+
+        plt.xlabel('Voltage in V')
+        plt.ylabel(f'Energy in {yunits}')
+        plt.title(f"{self.name}")
+        plt.legend()
+        plt.grid()
+        plt.tight_layout()
+        plt.show()
+        if buffer_req:
+            return get_img_raw_data(plt)
+        else:
+            plt.show()
+
+    @staticmethod
+    def calc_energy_object_voltage_correction(energy_object: SwitchEnergyData, v_op: float):
+        """
+        Calculte the switch loss energy for a different output voltage.
+
+        :param energy_object: Energy object (e.g. turn-on)
+        :type energy_object: SwitchEnergyData
+        :param v_op: Operating voltage in V
+        :type v_op: float
+        """
+
+        e_voltage = copy.deepcopy(energy_object)
+        e_voltage.graph_i_e[1] = e_voltage.graph_i_e[1] * v_op / energy_object.v_supply
+        e_voltage.v_supply = v_op
+
+        return e_voltage
+
+    def calc_real_on_off_loss(self, e_on: SwitchEnergyData, e_off: SwitchEnergyData, v_op: float):
+        """
+        Correct the turn-on and turn-off energy by the energy stored in C_oss.
+
+        :param e_on: e_on object
+        :type e_on: SwitchEnergyData
+        :param e_off: e_off object
+        :type e_off: SwitchEnergyData
+        :param v_op: voltage of interest
+        :type v_op: float
+        """
+
+        # read e_on and e_off, perform voltage corrections
+        e_on_corrected = copy.deepcopy(e_on)
+        e_on_corrected.graph_i_e[1] = e_on_corrected.graph_i_e[1] * v_op / e_on.v_supply
+        e_on_corrected.v_supply = v_op
+        e_off_corrected = copy.deepcopy(e_off)
+        e_off_corrected.graph_i_e[1] = e_off_corrected.graph_i_e[1] * v_op / e_off.v_supply
+        e_off_corrected.v_supply = v_op
+
+        eoss_v, eoss_e = self.calc_v_eoss()
+        e_oss_v_op = np.interp(v_op, eoss_v, eoss_e)
+        print(f"{e_oss_v_op = }")
+
+        e_on_corrected.graph_i_e[1] = e_on_corrected.graph_i_e[1] + e_oss_v_op
+        e_off_corrected.graph_i_e[1] = e_off_corrected.graph_i_e[1] - e_oss_v_op
+
+        return e_on_corrected, e_off_corrected
+
+    @staticmethod
+    def plot_energy_objects(*energy_objects: SwitchEnergyData, energy_scale: str = "µJ",
+                            figure_size: Optional[Tuple] = None, figure_directory: Optional[str] = None,
+                            additional_label: Optional[List] = None, line_style: List = None, color: List = None):
+        """
+        Plot multiple energy objects into one plot.
+
+        :param energy_objects: SwitchEnergyData
+        :type energy_objects: SwitchEnergyData
+        :param energy_scale: Choose y-label, e.g. 'µJ' or 'mJ' or 'nJ'
+        :type energy_scale: str
+        :param figure_size: figures size in mm (width, height)
+        :type figure_size: Tuple
+        :param figure_directory: Directory to store the figure
+        :type figure_directory: str
+        """
+        plt.figure(figsize=[x / 25.4 for x in figure_size] if figure_size is not None else None, dpi=80)
+        for count, eo in enumerate(energy_objects):
+            if energy_scale == "mJ":
+                energy = eo.graph_i_e[1] * 1e3
+            elif energy_scale == "µJ":
+                energy = eo.graph_i_e[1] * 1e6
+            elif energy_scale == "nJ":
+                energy = eo.graph_i_e[1] * 1e9
+
+            plt.plot(eo.graph_i_e[0], energy,
+                     label=f"V_g = {eo.v_g} V, V_supply = {eo.v_supply} V, T_j = {eo.t_j} °C"
+                           f"{additional_label[count] if additional_label[count] is not None else ''}",
+                     linestyle=line_style[count],
+                     color=color[count],
+                     )
+
+        plt.grid()
+        plt.legend()
+        plt.xlabel("Current in A")
+        plt.ylabel(f"Energy in {energy_scale}")
+        plt.tight_layout()
+        if figure_directory is not None:
+            plt.savefig(figure_directory, bbox_inches="tight")
+        plt.show()
+
 
     def get_object_v_i(self, switch_or_diode: str, t_j: float, v_g: float) -> List:
         """
