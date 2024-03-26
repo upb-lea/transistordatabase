@@ -37,6 +37,7 @@ class DatabaseManager:
 
     module_manufacturers_file_path: str
     housing_types_file_path: str
+    
     def __init__(self, housing_types_file_path: str = None, module_manufacturers_file_path: str = None):
         self.operation_mode = None
         self.tdb_directory = os.path.dirname(os.path.abspath(__file__))

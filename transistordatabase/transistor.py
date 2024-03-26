@@ -1384,7 +1384,7 @@ class Transistor:
         plot_ids.plot(time_array, ids_values, color=color)
         plot_ids.tick_params(axis='y', labelcolor=color)
         plt.tight_layout()
-        plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+        plt.grid(color='green', linestyle='--', linewidth=0.5)
         return get_img_raw_data(plt)
 
     def export_datasheet(self, build_collection=False) -> str | None:
