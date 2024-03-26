@@ -1153,7 +1153,7 @@ class Transistor:
         plot_ids.tick_params(axis='y', labelcolor=color)
         plt.tight_layout()
         plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
-        return get_img_raw_data_2(plt)
+        return get_img_raw_data(plt)
         
         
         
@@ -1199,7 +1199,6 @@ class Transistor:
                 elif (attr == 'c_oss_er' or attr == 'c_oss_tr') and getattr(self, attr) is not None:  # to be modified for boundary case
                     pdf_data[attr.capitalize()] = getattr(self, attr).c_o
         trans, diode, switch = attach_units(pdf_data, devices)
-        #print(trans)
         img_path = os.path.join(os.path.dirname(__file__), 'lea-upb.png')
         image_file_obj = open(img_path, "rb")
         image_binary_bytes = image_file_obj.read()
