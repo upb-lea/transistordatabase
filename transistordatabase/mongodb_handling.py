@@ -63,5 +63,7 @@ def drop_local_tdb():
         my_client.drop_database('transistor_database')
 
 class MissingServerConnection(ServerSelectionTimeoutError):
+    """Reserved for future use."""
+
     # TODO 
     pass

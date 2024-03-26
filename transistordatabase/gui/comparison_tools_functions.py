@@ -8,7 +8,7 @@ from transistordatabase.gui.gui import MainWindow
 
 def new_annotation(axis):
     """
-    Creates an annotation and adds it to a matplotlibwidget axis
+    Create an annotation and adds it to a matplotlibwidget axis.
 
     :param axis: matplotlibwidget axis to put the annotation on
     :return: annotation object
@@ -21,8 +21,7 @@ def new_annotation(axis):
 
 def click_event(button, xdata, ydata, matplotlibwidget, annotations_list):
     """
-    Creates an annotation for an embedded matplotlibwidget graph on left click and removes last created annotation on
-    right click
+    Create an annotation for an embedded matplotlibwidget graph on left click and removes last created annotation on right click.
 
     :param button: clicked button
     :param xdata: x-data of matplotlib graph
@@ -47,8 +46,9 @@ def click_event(button, xdata, ydata, matplotlibwidget, annotations_list):
 
 def plot_all_energy_data(transistor, matplotlibwidget, switch_diode):
     """
-    Plots all switch energy i-e characteristic curves and diode reverse recovery energy i-e characteristic curves which
-    are extracted from the manufacturer datasheet into a MatplotlibWidget
+    Plot all switch energy i-e characteristic curves and diode reverse recovery energy i-e characteristic curves.
+
+    Data is extracted from the manufacturer datasheet into a MatplotlibWidget.
 
     :param transistor: transistor object
     :param matplotlibwidget: MatplotlibWidget object
@@ -153,8 +153,9 @@ def plot_all_energy_data(transistor, matplotlibwidget, switch_diode):
 
 def plot_all_energy_data_r_g(transistor, matplotlibwidget, switch_diode):
     """
-    Plots all switch energy r-e characteristic curves and diode reverse recovery energy r-e characteristic curves which
-    are extracted from the manufacturer datasheet into a MatplotlibWidget
+    Plot all switch energy r-e characteristic curves and diode reverse recovery energy r-e characteristic curves.
+
+    The plotted data is extracted from the manufacturer datasheet into a MatplotlibWidget.
 
     :param transistor: transistor object
     :param matplotlibwidget: MatplotlibWidget object
@@ -259,8 +260,7 @@ def plot_all_energy_data_r_g(transistor, matplotlibwidget, switch_diode):
 
 def plot_all_channel_data(transistor, matplotlibwidget, switch_diode):
     """
-
-    Plots all channel characteristic curves which are extracted from the manufacturer datasheet into a MatplotlibWidget
+    Plot all channel characteristic curves which are extracted from the manufacturer datasheet into a MatplotlibWidget.
 
     :param transistor: transistor object
     :param matplotlibwidget: MatplotlibWidget object
@@ -394,8 +394,9 @@ def plot_all_channel_data(transistor, matplotlibwidget, switch_diode):
 
 def plot_e_on(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j2, t_j3, r_g_on1, r_g_on2, r_g_on3, v_supply1, v_supply2, v_supply3):
     """
-    Calculates and plots switch turn-on energy i-e characteristic curves for all three transistors for a chosen
-    junction temperature, gate resistor and supply voltage into a MatplotlibWidget
+    Calculate and plot switch turn-on energy i-e characteristic curves for all three transistors.
+
+    Valid for a chosen junction temperature, gate resistor and supply voltage into a MatplotlibWidget
 
     :param transistor1: transistor object for transistor1
     :param transistor2: transistor object for transistor2
@@ -533,8 +534,9 @@ def plot_e_on(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j
 
 def plot_e_off(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j2, t_j3, r_g_off1, r_g_off2, r_g_off3, v_supply1, v_supply2, v_supply3):
     """
-    Calculates and plots switch turn-off energy i-e characteristic curves for all three transistors for a chosen
-    junction temperature, gate resistor and supply voltage into a MatplotlibWidget
+    Calculate and plot switch turn-off energy i-e characteristic curves for all three transistors.
+
+    Valid for a chosen junction temperature, gate resistor and supply voltage into a MatplotlibWidget
 
     :param transistor1: transistor object for transistor1
     :param transistor2: transistor object for transistor2
@@ -675,8 +677,9 @@ def plot_e_off(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_
 
 def plot_e_rr(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j2, t_j3, r_g_off1, r_g_off2, r_g_off3, v_supply1, v_supply2, v_supply3):
     """
-    Calculates and plots diode reverse recovery energy i-e characteristic curves for all three transistors for a chosen
-    junction temperature, gate resistor and supply voltage into a MatplotlibWidget
+    Calculate and plot diode reverse recovery energy i-e characteristic curves for all three transistors.
+
+    Valid for a chosen junction temperature, gate resistor and supply voltage into a MatplotlibWidget
 
     :param transistor1: transistor object for transistor1
     :param transistor2: transistor object for transistor2
@@ -808,8 +811,9 @@ def plot_e_rr(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j
 def plot_channel(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, t_j2, t_j3, v_g_on1, v_g_on2, v_g_on3,
                  v_g_off1, v_g_off2, v_g_off3, switch_diode):
     """
-    Calculates and plots switch or diode channel v_i characteristic curves for all three transistors for a chosen
-    junction temperature and gate voltage into a MatplotlibWidget
+    Calculate and plot switch or diode channel v_i characteristic curves for all three transistors.
+
+    Valid for a chosen junction temperature and gate voltage into a MatplotlibWidget.
 
     :param transistor1: transistor object for transistor1
     :param transistor2: transistor object for transistor2
@@ -985,7 +989,7 @@ def plot_channel(transistor1, transistor2, transistor3, matplotlibwidget, t_j1, 
 
 def plot_v_eoss(transistor1, transistor2, transistor3, matplotlibwidget):
     """
-    Plots e_oss vs channel voltage for all three selected transistors in the comparison tools tab
+    Plot e_oss vs channel voltage for all three selected transistors in the comparison tools tab.
 
     :param transistor1:
     :param transistor2:
@@ -1029,7 +1033,7 @@ def plot_v_eoss(transistor1, transistor2, transistor3, matplotlibwidget):
 
 def plot_v_qoss(transistor1, transistor2, transistor3, matplotlibwidget):
     """
-    Plots q_oss vs channel voltage for all three selected transistors in the comparison tools tab
+    Plot q_oss vs channel voltage for all three selected transistors in the comparison tools tab.
 
     :param transistor1:
     :param transistor2:

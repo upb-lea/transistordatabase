@@ -14,8 +14,10 @@ from transistordatabase.data_classes import FosterThermalModel, ChannelData, Swi
 from transistordatabase.exceptions import MissingDataError
 
 class Switch:
-    """Contains data associated with the switching-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
-    channel-, e_on- and e_off-datasets.
+    """
+    Data associated with the switching-characteristics of a MOSFET/SiC-MOSFET or IGBT.
+
+    Can contain multiple channel-, e_on- and e_off-datasets.
     """
 
     # Metadata
@@ -37,7 +39,7 @@ class Switch:
 
     def __init__(self, switch_args):
         """
-        Initializes the Switch object.
+        Initialize the Switch object.
 
         :param switch_args: argument to be passed for initialization
 
@@ -269,7 +271,7 @@ class Switch:
     def find_next_gate_voltage(self, req_gate_vltgs: Dict, export_type: str, check_specific_curves: List = None,
                                switch_loss_dataset_type: str = "graph_i_e") -> Dict:
         """
-        Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+        Find the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets.
 
         Applicable to either plecs exporter or gecko exporter
 
@@ -602,7 +604,7 @@ class Switch:
 
     def plot_all_on_resistance_curves(self, buffer_req: bool = False):
         """
-        A helper function to plot and convert Temperature dependant on resistance plots in raw data format.
+        Plot and convert Temperature dependent on-resistance plots in raw data format. Helper function.
 
         :param buffer_req: internally required for generating virtual datasheets
 
@@ -635,7 +637,7 @@ class Switch:
 
     def plot_all_charge_curves(self, buffer_req: bool = False):
         """
-        A helper function to plot and convert gate emitter/source voltage dependant gate charge plots in raw data format.
+        Plot and convert gate emitter/source voltage dependant gate charge plots in raw data format. Helper function.
 
         :param buffer_req: internally required for generating virtual datasheets
 
@@ -671,7 +673,7 @@ class Switch:
 
     def plot_soa(self, buffer_req: bool = False):
         """
-        A helper function to plot and convert safe operating region characteristic plots in raw data format.
+        Plot and convert safe operating region characteristic plots in raw data format. Helper function.
 
         :param buffer_req: internally required for generating virtual datasheets
 
@@ -699,7 +701,7 @@ class Switch:
 
     def collect_data(self) -> Dict:
         """
-        Collects switch data in form of dictionary for generating virtual datasheet
+        Collect switch data in form of dictionary for generating virtual datasheet.
 
         :return: Switch data in form of dictionary
         :rtype: dict

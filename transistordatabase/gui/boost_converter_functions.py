@@ -1377,7 +1377,7 @@ def f_vec_p1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, tr
 
 def f_vec_p2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transistor2):
     """
-    Calculates total power losses for transistor2
+    Calculate total power losses for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1400,7 +1400,7 @@ def f_vec_p2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transist
 def f_vec_t_switch1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, t_heatsink, r_th_heatsink, frequency,
                     transistor1, transistor2):
     """
-    Calculates switch temperature for transistor1
+    Calculate switch temperature for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1429,7 +1429,7 @@ def f_vec_t_switch1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, t_heat
 def f_vec_t_diode2(zeta, v_in, v_out, p_out, v_g_on1, t_heatsink, r_th_heatsink, frequency,
                    transistor1, transistor2):
     """
-    Calculates diode temperature for transistor2
+    Calculate diode temperature for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage

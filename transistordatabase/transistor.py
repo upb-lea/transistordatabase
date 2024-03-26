@@ -1,3 +1,4 @@
+"""Provide the transistor class."""
 # Python standard libraries
 from __future__ import annotations
 import matplotlib.pyplot as plt
@@ -103,6 +104,8 @@ class Transistor:
     def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict, possible_housing_types: List[str],
                  possible_module_manufacturers: List[str]) -> None:
         """
+        Create a transistor element.
+
         Takes in the following dictionary arguments for creating and initializing the transistor object.
         isvalid_dict() method is applied on transistor_args object to validate the argument.
         Else TypeError exception is raised. Module manufacturer type and housing type data validations are performed for matching the given
@@ -290,8 +293,9 @@ class Transistor:
 
     def __eq__(self, other) -> bool:
         """
-        This method checks if the passed transistor object and the transistor object in scope are both same by converting them
-        to dict and checking the dict for equality (without the id).
+        Check if the passed transistor object and the transistor object in scope are both same.
+
+        This works by converting them to dict and checking the dict for equality (without the id).
 
         :param other: Expects transistor object
         :return: True or False
@@ -316,13 +320,13 @@ class Transistor:
         return f"{self.name}, {self.type}, {self.manufacturer}"
 
     def convert_to_dict(self) -> Dict:
-        # TODO Maybe move this to the DatabaseManager class as a static function? Since the load from dict function is there too.
         """
-        Converts the transistor object in scope to a dictionary datatype
+        Convert the transistor object in scope to a dictionary datatype.
 
         :return: Transistor object in dict type
         :rtype: dict
         """
+        # TODO Maybe move this function to the DatabaseManager class as a static function? Since the load from dict function is there too.
         if isinstance(self._id, ObjectId):
             # Set to none so there is no problem with serializing it.
             # Since the name is the new identifier, _id is not needed, but is created within the mongodb database
@@ -387,9 +391,11 @@ class Transistor:
                 self.calc_lin_channel(self.wp.switch_channel.t_j, self.wp.switch_channel.v_g, i_channel, switch_or_diode="switch")
 
     def init_loss_matrices(self):
+        """Experimental."""
         self.init_switch_channel_matrix()
 
     def init_switch_channel_matrix(self):
+        """Experimental function."""
         # -----------------------------------------------------------
         # find out max values for v_g, v_channel, i_channel and t_j
         # -----------------------------------------------------------
@@ -450,7 +456,7 @@ class Transistor:
 
     def calc_v_eoss(self) -> np.array:
         """
-        Calculates e_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss
+        Calculate e_oss stored in c_oss depend on the voltage. Uses transistor.c_oss[0].graph_v_coss.
 
         :return: e_oss numpy array
         :rtype: np.array
@@ -474,7 +480,7 @@ class Transistor:
 
     def plot_v_eoss(self, buffer_req: bool = False):
         """
-        Plots v_eoss with method calc_v_eoss
+        Plot v_eoss with method calc_v_eoss.
 
         :param buffer_req: Internally required for generating virtual datasheets
         :type buffer_req: bool
@@ -640,14 +646,13 @@ class Transistor:
     @staticmethod
     def calc_energy_object_voltage_correction(energy_object: SwitchEnergyData, v_op: float):
         """
-        Calculte the switch loss energy for a different output voltage.
+        Calculate the switch loss energy for a different output voltage.
 
         :param energy_object: Energy object (e.g. turn-on)
         :type energy_object: SwitchEnergyData
         :param v_op: Operating voltage in V
         :type v_op: float
         """
-
         e_voltage = copy.deepcopy(energy_object)
         e_voltage.graph_i_e[1] = e_voltage.graph_i_e[1] * v_op / energy_object.v_supply
         e_voltage.v_supply = v_op
@@ -665,7 +670,6 @@ class Transistor:
         :param v_op: voltage of interest
         :type v_op: float
         """
-
         # read e_on and e_off, perform voltage corrections
         e_on_corrected = copy.deepcopy(e_on)
         e_on_corrected.graph_i_e[1] = e_on_corrected.graph_i_e[1] * v_op / e_on.v_supply
@@ -723,7 +727,6 @@ class Transistor:
         if figure_directory is not None:
             plt.savefig(figure_directory, bbox_inches="tight")
         plt.show()
-
 
     def get_object_v_i(self, switch_or_diode: str, t_j: float, v_g: float) -> List:
         """
@@ -1053,7 +1056,9 @@ class Transistor:
 
     def calc_lin_channel(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str) -> Tuple[float, float]:
         """
-        Get interpolated channel parameters. This function searches for ui_graphs with the chosen t_j and v_g. At
+        Get interpolated channel parameters.
+
+        This function searches for ui_graphs with the chosen t_j and v_g. At
         the desired current, the equivalent parameters for u_channel and r_channel are returned
 
         :param t_j: junction temperature
@@ -1155,8 +1160,9 @@ class Transistor:
 
     def calc_thermal_params(self, input_type: str = None, order: int = 4, plotbit: bool = False) -> None:
         """
-        A method to generate thermal parameters like Rth_total, tau_total, Cth_total and vectors like Rth_vector, tau_vector, Cth_vector based
-        on data availability passed by the user while creating a new transistor object.
+        Generate thermal parameters like Rth_total, tau_total, Cth_total and vectors like Rth_vector, tau_vector, Cth_vector.
+
+        Based on data availability passed by the user while creating a new transistor object.
 
         +-------------------------------------------+-------------------+-----------------+-----------------------------+
         | Cases                                     | Vectors           | Total           | To be computed              |
@@ -1312,6 +1318,8 @@ class Transistor:
      
     def raw_measurement_data_plots(self) -> list:
         """
+        Plot raw measurement data.
+
         Take the raw measurement data attribute and traverses through
         the list for each present method and loads the ids and vds data for
         in 3 separate lists. The three lists are used as input for plot_curves function which
@@ -2533,7 +2541,7 @@ class Transistor:
             print('No new item to add!')
 
     def compare_measurement_datasheet(self):
-
+        """Compare measurements to datasheet."""
         v_g_list = []
         r_g_list = []
         t_j_list = []

@@ -3,7 +3,7 @@ import numpy as np
 
 def f_m_calc_channel(m_i, v_g_on1, transistor1, transistor2):
     """
-    Calculates all channel data for transistor1 and transistor2 in mesh for a given current in mesh
+    Calculate all channel data for transistor1 and transistor2 in mesh for a given current in mesh.
 
     :param m_i: current in mesh to calculate the channel data
     :param v_g_on1: turn-on gate voltage for transistor1
@@ -64,7 +64,7 @@ def f_m_calc_channel(m_i, v_g_on1, transistor1, transistor2):
 
 def f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates peak current in mesh
+    Calculate peak current in mesh.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -104,7 +104,7 @@ def f_m_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_m_i1_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates RMS current for transistor1 in mesh
+    Calculate RMS current for transistor1 in mesh.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -169,7 +169,7 @@ def f_m_i1_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_m_i1_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates mean current for transistor1 in mesh
+    Calculate mean current for transistor1 in mesh.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -208,7 +208,7 @@ def f_m_i1_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_m_i2_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates RMS current for transistor2 in mesh
+    Calculate RMS current for transistor2 in mesh.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -247,7 +247,7 @@ def f_m_i2_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_m_i2_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates mean current for transistor2 in mesh
+    Calculate mean current for transistor2 in mesh.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -287,7 +287,7 @@ def f_m_i2_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_m_i_l_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates inductor RMS current in mesh
+    Calculate inductor RMS current in mesh.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -327,7 +327,7 @@ def f_m_i_l_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_m_i_l_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates mean inductor current in mesh
+    Calculate mean inductor current in mesh.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -345,7 +345,7 @@ def f_m_i_l_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_m_conduction_losses1(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates conduction losses for transistor1
+    Calculate conduction losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -372,7 +372,7 @@ def f_m_conduction_losses1(zeta, v_in, v_out, p_out, v_g_on1, transistor1, trans
 
 def f_m_conduction_losses2(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates conduction losses for transistor2
+    Calculate conduction losses for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -395,7 +395,7 @@ def f_m_conduction_losses2(zeta, v_in, v_out, p_out, v_g_on1, transistor1, trans
 
 def f_m_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transistor1, transistor2):
     """
-    Calculates turn-on switching losses for transistor1
+    Calculate turn-on switching losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -445,7 +445,7 @@ def f_m_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transistor1
 
 def f_m_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transistor1, transistor2):
     """
-    Calculates turn-off switching losses for transistor1
+    Calculate turn-off switching losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -482,7 +482,7 @@ def f_m_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transisto
 
 def f_m_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transistor2):
     """
-    Calculates reverse-recovery losses for transistor2
+    Calculate reverse-recovery losses for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -543,7 +543,7 @@ def f_m_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transis
 
 def f_m_conduction_losses(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates total conduction losses for transistor1 + transistor2
+    Calculate total conduction losses for transistor1 + transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -564,7 +564,7 @@ def f_m_conduction_losses(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transi
 
 def f_m_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2):
     """
-    Calculates total switching losses for transistor1
+    Calculate total switching losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -588,7 +588,7 @@ def f_m_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequenc
 
 def f_m_p_on_off_rr_1_2(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2):
     """
-    Calculates total switching losses for transistor1 + transistor2
+    Calculate total switching losses for transistor1 + transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -612,7 +612,7 @@ def f_m_p_on_off_rr_1_2(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, fr
 
 def f_m_p1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2):
     """
-    Calculates total power losses for transistor1
+    Calculate total power losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -636,7 +636,7 @@ def f_m_p1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, tran
 
 def f_m_p2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transistor2):
     """
-    Calculates total power losses for transistor2
+    Calculate total power losses for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -657,7 +657,7 @@ def f_m_p2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transistor
 
 def f_m_t_switch1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, t_heatsink, r_th_heatsink, frequency, transistor1, transistor2):
     """
-    Calculates switch temperature for transistor1
+    Calculate switch temperature for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -685,7 +685,7 @@ def f_m_t_switch1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, t_heatsi
 
 def f_m_t_diode2(zeta, v_in, v_out, p_out, v_g_on1, t_heatsink, r_th_heatsink, frequency, transistor1, transistor2):
     """
-    Calculates diode temperature for transistor2
+    Calculate diode temperature for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -712,7 +712,7 @@ def f_m_t_diode2(zeta, v_in, v_out, p_out, v_g_on1, t_heatsink, r_th_heatsink, f
 
 def f_vec_calc_channel(vec_i, v_g_on1, transistor1, transistor2):
     """
-    Calculates all channel data for transistor1 and transistor2 in list for a given current in list
+    Calculate all channel data for transistor1 and transistor2 in list for a given current in list.
 
     :param vec_i: current in list to calculate the channel data
     :param v_g_on1: turn-on gate voltage for transistor1
@@ -775,7 +775,7 @@ def f_vec_calc_channel(vec_i, v_g_on1, transistor1, transistor2):
 
 def f_vec_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates peak current in list
+    Calculate peak current in list.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -817,7 +817,7 @@ def f_vec_i_peak(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_vec_i1_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates RMS current for transistor1 in list
+    Calculate RMS current for transistor1 in list.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -866,7 +866,7 @@ def f_vec_i1_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_vec_i1_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates mean current for transistor1 in list
+    Calculate mean current for transistor1 in list.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -914,7 +914,7 @@ def f_vec_i1_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_vec_i2_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates RMS current for transistor2 in list
+    Calculate RMS current for transistor2 in list.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -960,7 +960,7 @@ def f_vec_i2_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_vec_i2_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates mean current for transistor2 in list
+    Calculate mean current for transistor2 in list.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1004,7 +1004,7 @@ def f_vec_i2_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_vec_i_l_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates inductor RMS current in list
+    Calculate inductor RMS current in list.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1049,7 +1049,7 @@ def f_vec_i_l_rms(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_vec_i_l_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates mean inductor current in list
+    Calculate mean inductor current in list.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1072,7 +1072,7 @@ def f_vec_i_l_mean(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
 
 def f_vec_conduction_losses1(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates conduction losses for transistor1
+    Calculate conduction losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1103,7 +1103,7 @@ def f_vec_conduction_losses1(zeta, v_in, v_out, p_out, v_g_on1, transistor1, tra
 
 def f_vec_conduction_losses2(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates conduction losses for transistor2
+    Calculate conduction losses for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1131,7 +1131,7 @@ def f_vec_conduction_losses2(zeta, v_in, v_out, p_out, v_g_on1, transistor1, tra
 
 def f_vec_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transistor1, transistor2):
     """
-    Calculates turn-on switching losses for transistor1
+    Calculate turn-on switching losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1187,7 +1187,7 @@ def f_vec_p_on1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, frequency, transisto
 
 def f_vec_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transistor1, transistor2):
     """
-    Calculates turn-off switching losses for transistor1
+    Calculate turn-off switching losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1231,7 +1231,7 @@ def f_vec_p_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_off1, frequency, transis
 
 def f_vec_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transistor2):
     """
-    Calculates reverse-recovery losses for transistor2
+    Calculate reverse-recovery losses for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1300,7 +1300,7 @@ def f_vec_p_rr2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, trans
 
 def f_vec_conduction_losses(zeta, v_in, v_out, p_out, v_g_on1, transistor1, transistor2):
     """
-    Calculates total conduction losses for transistor1 + transistor2
+    Calculate total conduction losses for transistor1 + transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1321,7 +1321,7 @@ def f_vec_conduction_losses(zeta, v_in, v_out, p_out, v_g_on1, transistor1, tran
 
 def f_vec_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2):
     """
-    Calculates total switching losses for transistor1
+    Calculate total switching losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1345,7 +1345,7 @@ def f_vec_p_on_off1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, freque
 
 def f_vec_p_on_off_rr_1_2(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2):
     """
-    Calculates total switching losses for transistor1 + transistor2
+    Calculate total switching losses for transistor1 + transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1369,7 +1369,7 @@ def f_vec_p_on_off_rr_1_2(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, 
 
 def f_vec_p1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, transistor1, transistor2):
     """
-    Calculates total power losses for transistor1
+    Calculate total power losses for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1392,7 +1392,7 @@ def f_vec_p1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, frequency, tr
 
 def f_vec_p2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transistor2):
     """
-    Calculates total power losses for transistor2
+    Calculate total power losses for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1415,7 +1415,7 @@ def f_vec_p2(zeta, v_in, v_out, p_out, v_g_on1, frequency, transistor1, transist
 def f_vec_t_switch1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, t_heatsink, r_th_heatsink, frequency,
                     transistor1, transistor2):
     """
-    Calculates switch temperature for transistor1
+    Calculate switch temperature for transistor1.
 
     :param zeta: zeta
     :param v_in: input voltage
@@ -1443,7 +1443,7 @@ def f_vec_t_switch1(zeta, v_in, v_out, p_out, v_g_on1, r_g_on1, r_g_off1, t_heat
 def f_vec_t_diode2(zeta, v_in, v_out, p_out, v_g_on1, t_heatsink, r_th_heatsink, frequency,
                    transistor1, transistor2):
     """
-    Calculates diode temperature for transistor2
+    Calculate diode temperature for transistor2.
 
     :param zeta: zeta
     :param v_in: input voltage

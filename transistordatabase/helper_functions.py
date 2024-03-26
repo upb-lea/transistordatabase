@@ -1,3 +1,4 @@
+"""Helper functions."""
 # Python standard libraries
 from __future__ import annotations
 from typing import List, Dict, Tuple
@@ -28,7 +29,9 @@ def isvalid_transistor_name(transistor_name):
 
 def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
     """
-    This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
+    Check input argument dictionaries for their validity.
+
+    It is checked whether all mandatory keys
     are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'type').
     Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
     Raises appropriate errors if dictionary invalid in other ways.
@@ -263,7 +266,7 @@ def matlab_compatibility_test(transistor, attribute):
 # ==== Input/Output ====
 def get_xml_data(file: str) -> Dict:
     """
-    Helper function to import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data.
+    Import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data. Helper function.
 
     :param file: name of the xml file to be read
     :type file: str
@@ -364,8 +367,12 @@ def get_xml_data(file: str) -> Dict:
     else:
         raise ImportError('Import of ' + file + ' Not possible: Only table type xml data are accepted')
 
-def read_data_file(file_path):
-    """Reads data from a given file (Used for housing_types.txt and module_manufacturers.txt)
+def read_data_file(file_path: str):
+    """
+    Read data from a given file (Used for housing_types.txt and module_manufacturers.txt).
+
+    :param file_path: Path to housing_types.txt and/or module_manufacturers.txt
+    :type file_path: str
     """
     if not os.path.isfile(file_path):
         raise Exception(f"File {file_path} does not exist.")
@@ -383,7 +390,7 @@ def read_data_file(file_path):
 
 def html_to_pdf(html: List | str, name: List | str, path: List | str):
     """
-    A helper method to convert the generated html document to pdf file using qt WebEngineWidgets tool
+    Convert the generated html document to pdf file using qt WebEngineWidgets tool. Helper method.
 
     :param html: html string that needs to be converted to pdf file
     :type html: str or list
@@ -437,7 +444,7 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
 # ==== Plot ====
 def get_vc_plots(cap_data: Dict):
     """
-    A helper function to plot and convert voltage dependant capacitance plots in raw data format. Invoked internally by export_datasheet() method.
+    Plot and convert voltage dependant capacitance plots in raw data format. Invoked internally by export_datasheet() method. Helper function.
 
     :param cap_data: dictionary holding capacitance information of type list (self.c_oss, self.c_iss, self.c_rss)
     :type cap_data: dict
@@ -459,6 +466,13 @@ def get_vc_plots(cap_data: Dict):
     return get_img_raw_data(plt)
 
 def compare_plot(transistor_list: List, temperature: float, gatevoltage: float):
+    """Compare transistors.
+
+    - forward characteristics
+    - turn-on energies
+    - turn-off energies
+    - c_oss
+    """
     fig1, axs = plt.subplots(3, 2, sharex='row', sharey='row')
 
     for transistor in transistor_list:
@@ -514,7 +528,7 @@ def compare_plot(transistor_list: List, temperature: float, gatevoltage: float):
 # === Data ===
 def get_gatedefaults(transistor_type: str) -> List:
     """
-    Defines gate voltage defaults depending on the transistor type
+    Define gate voltage defaults depending on the transistor type.
 
     :param transistor_type: transistor type, e.g. IGBT, MOSFET, SiC-MOSFET or GaN-Transistor
     :type transistor_type: str
@@ -531,7 +545,8 @@ def get_gatedefaults(transistor_type: str) -> List:
 
 def negate_and_append(voltage: List, current: List) -> Tuple[List, np.array]:
     """
-    A helper function to negate the channel current x-axis data for the transistors of type mosfet.
+    Negate the channel current x-axis data for the transistors of type mosfet. Helper function.
+
     Generates third quadrant curve characteristics for mosfet.
 
     :param voltage: channel voltage y-axis information
@@ -557,7 +572,7 @@ def negate_and_append(voltage: List, current: List) -> Tuple[List, np.array]:
 
 def get_loss_curves(loss_data: List, plecs_holder: Dict, loss_type: str, v_g: int, is_recovery_loss: bool) -> Dict:
     """
-    A helper method to extract loss information of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
+    Extract loss information of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature. Helper function.
 
     :param loss_data: turn on/off energy data taken from transistor class switch or diode object
     :type loss_data: list
@@ -599,7 +614,7 @@ def get_loss_curves(loss_data: List, plecs_holder: Dict, loss_type: str, v_g: in
 
 def get_channel_data(channel_data: List, plecs_holder: Dict, v_on: int, is_diode: bool, has_body_diode: bool) -> Dict:
     """
-    Helper method to extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
+    Extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature. Helper function.
 
     :param channel_data: channel data taken from transistor class switch/diode object
     :type channel_data: list
@@ -637,7 +652,7 @@ def get_channel_data(channel_data: List, plecs_holder: Dict, v_on: int, is_diode
 
 def gen_exp_func(order: int):
     """
-    A helper function to calc_thermal_params method. Generates the required ordered function for curve fitting
+    Generate the required ordered function for curve fitting. A helper function to calc_thermal_params method.
 
     :param order: order of the function for approximation  with n ranging from 1 to 5
     :type order: int
@@ -747,7 +762,7 @@ def get_copy_transistor_name(current_name: str) -> str:
 
 def get_img_raw_data(plot):
     """
-    A helper method to convert the plot images to raw data which is further used to display plots in virtual datasheet
+    Convert the plot images to raw data which is further used to display plots in virtual datasheet. Helper method.
 
     :param plot: pyplot object
 
