@@ -1,3 +1,4 @@
+"""Diode class."""
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
@@ -12,10 +13,8 @@ from transistordatabase.data_classes import FosterThermalModel, ChannelData, Swi
 from transistordatabase.exceptions import MissingDataError
 
 class Diode:
-    """
-    Contains data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain
-    multiple channel- and e_rr- datasets.
-        """
+    """Data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple channel- and e_rr- datasets."""
+
     # Metadata
     comment: str | None  #: Comment if any specified by the user. (Optional key)
     manufacturer: str | None  #: Name of the manufacturer. (Optional key)
@@ -28,16 +27,15 @@ class Diode:
     t_j_max: float  #: Diode maximum junction temperature. Units in °C (Mandatory key)
     soa: List[SOA] | None  #: Safe operating area of Diode
 
-    def __init__(self, diode_args):
+    def __init__(self, diode_args: dict):
         """
-        Initialization method of Diode object
+        Initialize a Diode object.
 
         :param diode_args: argument to be passed for initialization
+        :type diode_args: dict
 
         :raises KeyError: Expected during the channel/e_rr instance initialization
         :raises ValueError: Expected during the channel/e_rr instance initialization
-
-
         """
         # Current behavior on empty 'foster' dictionary: thermal_foster object is still created but with empty
         # attributes.
@@ -67,7 +65,7 @@ class Diode:
                 if not error.args:
                     error.args = ('',)  # This syntax is necessary because error.args is a tuple
                 error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                f"Diode_ChannelData dictionaries: ",) + error.args
+                              f"Diode_ChannelData dictionaries: ",) + error.args
                 raise
             except ValueError as error:
                 dict_list = diode_args.get('channel')
@@ -87,7 +85,7 @@ class Diode:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Diode-SwitchEnergyData dictionaries for e_rr: ",) + error.args
+                                      f"Diode-SwitchEnergyData dictionaries for e_rr: ",) + error.args
                         raise
             elif isvalid_dict(diode_args.get('e_rr'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
@@ -107,7 +105,7 @@ class Diode:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Diode-LinearizedModel dictionaries: ",) + error.args
+                                      f"Diode-LinearizedModel dictionaries: ",) + error.args
                         raise
             elif isvalid_dict(diode_args.get('linearized_diode'), 'Diode_LinearizedModel'):
                 # Only create LinearizedModel objects from valid dicts
@@ -127,7 +125,7 @@ class Diode:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of soa "
-                                        f"dictionaries: ",) + error.args
+                                      f"dictionaries: ",) + error.args
                         raise
             elif isvalid_dict(diode_args.get('soa'), 'SOA'):
                 # Only create SOA objects from valid dicts
@@ -143,12 +141,11 @@ class Diode:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts Diode object into dict datatype
+        Convert a Diode object into dict datatype.
 
         :return: Diode object of dict type
         :rtype: dict
         """
-
         d = dict(vars(self))
         d['thermal_foster'] = self.thermal_foster.convert_to_dict()
         d['channel'] = [c.convert_to_dict() for c in self.channel]
@@ -158,9 +155,10 @@ class Diode:
         return d
 
     def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list = None,
-                                diode_loss_dataset_type: str = "graph_i_e"):
+                               diode_loss_dataset_type: str = "graph_i_e"):
         """
-        Finds the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+        Find the diode gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+
         The diode has only turn-off gate voltage which is the switch turn-on gate voltage
 
         :param req_gate_vltgs: the provided gate voltages to find the nearest neighbour to the corresponding key-value pairs
@@ -182,7 +180,8 @@ class Diode:
         channel_v_gs = np.array([0 if chan.v_g is None else chan.v_g for chan in self.channel])
         req_gate_vltgs['v_channel_gs'] = min(channel_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_channel_gs']))
         # gather data for err curves of required dataset_type and check if empty
-        e_rrs = [e for i, e in enumerate(self.e_rr) if e.dataset_type == diode_loss_dataset_type and (not any(check_specific_curves) or i in check_specific_curves)]
+        e_rrs = [e for i, e in enumerate(self.e_rr) if e.dataset_type == diode_loss_dataset_type and \
+                 (not any(check_specific_curves) or i in check_specific_curves)]
         if not e_rrs:
             raise MissingDataError(1202)
         if export_type == 'plecs':
@@ -209,10 +208,10 @@ class Diode:
         return req_gate_vltgs.values()
 
     def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
-                        switch_energy_dataset_type: str = "graph_i_e") \
+                       switch_energy_dataset_type: str = "graph_i_e") \
             -> tuple[ChannelData, SwitchEnergyData]:
         """
-        This function looks for the smallest distance to stored object value and returns this working point
+        Search for the smallest distance to stored object value and returns this working point.
 
         :param t_j: junction temperature
         :type t_j: float
@@ -340,15 +339,15 @@ class Diode:
                 # check if data is available as 'graph_i_e'
                 if self.e_rr[i_energy_data].dataset_type == 'graph_i_e':
                     # add label plot
-                    labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $R_{{g}}$ = {2} Ohm".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j,
-                                                                                                                        self.e_rr[i_energy_data].r_g)
+                    labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $R_{{g}}$ = {2} Ohm".format(self.e_rr[i_energy_data].v_supply,
+                                                                                                                     self.e_rr[i_energy_data].t_j,
+                                                                                                                     self.e_rr[i_energy_data].r_g)
                     # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
                     # if ture, add gate-voltage to label
                     if isinstance(self.e_rr[i_energy_data].v_g, (int, float)):
                         labelplot = labelplot + ", $v_{{g}}$ = {0} V".format(self.e_rr[i_energy_data].v_g)
                     # plot
-                    plt.plot(self.e_rr[i_energy_data].graph_i_e[0], self.e_rr[i_energy_data].graph_i_e[1],
-                                label=labelplot)
+                    plt.plot(self.e_rr[i_energy_data].graph_i_e[0], self.e_rr[i_energy_data].graph_i_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
             plt.legend(fontsize=5)
             plt.xlabel('Current in A')
@@ -364,7 +363,7 @@ class Diode:
 
     def plot_energy_data_r(self, buffer_req: bool = False):
         """
-            Plots all diode energy r-e characteristic curves
+        Plot all diode energy r-e characteristic curves.
 
         :param buffer_req: internally required for generating virtual datasheets
         :type buffer_req: bool
@@ -382,7 +381,8 @@ class Diode:
                 # check if data is available as 'graph_i_e'
                 if self.e_rr[i_energy_data].dataset_type == 'graph_r_e':
                     # add label plot
-                    labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $I_{{ch}}$ = {2} A".format(self.e_rr[i_energy_data].v_supply, self.e_rr[i_energy_data].t_j,
+                    labelplot = "$e_{{rr}}$: $v_{{supply}}$ = {0} V, $T_{{J}}$ = {1} °C, $I_{{ch}}$ = {2} A".format(self.e_rr[i_energy_data].v_supply,
+                                                                                                                    self.e_rr[i_energy_data].t_j,
                                                                                                                     self.e_rr[i_energy_data].i_x)
                     # check if gate voltage is given (GaN Transistor, SiC-MOSFET)
                     # if ture, add gate-voltage to label
@@ -390,8 +390,7 @@ class Diode:
                         labelplot = labelplot + ", $v_{{g}}$ = {0} V".format(self.e_rr[i_energy_data].v_g)
 
                     # plot
-                    plt.plot(self.e_rr[i_energy_data].graph_r_e[0], self.e_rr[i_energy_data].graph_r_e[1],
-                                label=labelplot)
+                    plt.plot(self.e_rr[i_energy_data].graph_r_e[0], self.e_rr[i_energy_data].graph_r_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
             plt.legend(fontsize=5)
             plt.xlabel('External Gate Resistor in Ohm')
@@ -407,12 +406,12 @@ class Diode:
 
     def plot_soa(self, buffer_req: bool = False):
         """
-            A helper function to plot and convert safe operating region characteristic plots in raw data format.
+        Helper function to plot and convert safe operating region characteristic plots in raw data format.
 
-            :param buffer_req: internally required for generating virtual datasheets
+        :param buffer_req: internally required for generating virtual datasheets
 
-            :return: Respective plots are displayed
-            """
+        :return: Respective plots are displayed
+        """
         if not self.soa:
             return None
         fig = plt.figure()
@@ -435,17 +434,18 @@ class Diode:
 
     def collect_data(self) -> dict:
         """
-        Collects diode data in form of dictionary for generating virtual datasheet
+        Collect diode data in form of dictionary for generating virtual datasheet.
 
         :return: Diode data in form of dictionary
         :rtype: dict
         """
         diode_data = {}
-        diode_data['plots'] = {'channel_plots': self.plot_all_channel_data(True), 'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'soa': self.plot_soa(True)}
+        diode_data['plots'] = {'channel_plots': self.plot_all_channel_data(True), 'energy_plots': self.plot_energy_data(True),
+                               'energy_plots_r': self.plot_energy_data_r(True), 'soa': self.plot_soa(True)}
         for attr in dir(self):
             if attr == 'thermal_foster':
                 diode_data.update(getattr(self, attr).collect_data())
             elif not callable(getattr(self, attr)) and not attr.startswith("__") and not \
-                    isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (not getattr(self, attr) is None) and not getattr(self, attr) == "":
+                    isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (getattr(self, attr) is not None) and not getattr(self, attr) == "":
                 diode_data[attr.capitalize()] = getattr(self, attr)
         return diode_data

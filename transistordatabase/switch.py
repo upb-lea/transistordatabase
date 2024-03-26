@@ -1,3 +1,4 @@
+"""Switch class."""
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
@@ -8,12 +9,17 @@ import numpy as np
 # Local libraries
 from transistordatabase.helper_functions import get_img_raw_data, isvalid_dict
 from transistordatabase.checker_functions import check_keys
-from transistordatabase.data_classes import FosterThermalModel, ChannelData, SwitchEnergyData, LinearizedModel, TemperatureDependResistance, GateChargeCurve, SOA
+from transistordatabase.data_classes import FosterThermalModel, ChannelData, SwitchEnergyData, LinearizedModel, TemperatureDependResistance, \
+    GateChargeCurve, SOA
 from transistordatabase.exceptions import MissingDataError
 
 class Switch:
-    """Contains data associated with the switching-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple
-    channel-, e_on- and e_off-datasets. """
+    """
+    Data associated with the switching-characteristics of a MOSFET/SiC-MOSFET or IGBT.
+
+    Can contain multiple channel-, e_on- and e_off-datasets.
+    """
+
     # Metadata
     comment: str | None  #: Comment if any to be specified (Optional key)
     manufacturer: str | None  #: Name of the manufacturer (Optional key)
@@ -33,7 +39,7 @@ class Switch:
 
     def __init__(self, switch_args):
         """
-        Initialization method of Switch object
+        Initialize the Switch object.
 
         :param switch_args: argument to be passed for initialization
 
@@ -69,7 +75,7 @@ class Switch:
                 if not error.args:
                     error.args = ('',)  # This syntax is necessary because error.args is a tuple
                 error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                f"Switch_ChannelData dictionaries: ",) + error.args
+                              f"Switch_ChannelData dictionaries: ",) + error.args
                 raise
             except ValueError as error:
                 dict_list = switch_args.get('channel')
@@ -89,7 +95,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Switch-SwitchEnergyData dictionaries for e_on: ",) + error.args
+                                      f"Switch-SwitchEnergyData dictionaries for e_on: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('e_on'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
@@ -107,7 +113,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Switch-SwitchEnergyData dictionaries for e_off: ",) + error.args
+                                      f"Switch-SwitchEnergyData dictionaries for e_off: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('e_off'), 'SwitchEnergyData'):
                 self.e_off.append(SwitchEnergyData(switch_args.get('e_off')))
@@ -126,7 +132,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
+                                      f"Switch-SwitchEnergyData dictionaries for e_on_meas: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('e_on_meas'), 'SwitchEnergyData'):
                 # Only create SwitchEnergyData objects from valid dicts
@@ -144,7 +150,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Switch-SwitchEnergyData dictionaries for e_off_meas: ",) + error.args
+                                      f"Switch-SwitchEnergyData dictionaries for e_off_meas: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('e_off_meas'), 'SwitchEnergyData'):
                 self.e_off_meas.append(SwitchEnergyData(switch_args.get('e_off_meas')))
@@ -163,7 +169,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Switch-LinearizedModel dictionaries for e_on: ",) + error.args
+                                      f"Switch-LinearizedModel dictionaries for e_on: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('linearized_switch'), 'Switch_LinearizedModel'):
                 # Only create LinearizedModel objects from valid dicts
@@ -183,7 +189,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Switch-TemperatureDependResistance dictionaries for r_channel_th: ",) + error.args
+                                      f"Switch-TemperatureDependResistance dictionaries for r_channel_th: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('r_channel_th'), 'TemperatureDependResistance'):
                 # Only create TemperatureDependResistance objects form valid dicts
@@ -203,7 +209,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of "
-                                        f"Switch-GateChargeCurve dictionaries for charge_curve: ",) + error.args
+                                      f"Switch-GateChargeCurve dictionaries for charge_curve: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('charge_curve'), 'GateChargeCurve'):
                 # Only create GateChargeCurve objects form valid dicts
@@ -223,7 +229,7 @@ class Switch:
                         if not error.args:
                             error.args = ('',)  # This syntax is necessary because error.args is a tuple
                         error.args = (f"KeyError occurred for index [{str(dict_list.index(dataset))}] in list of soa "
-                                        f"dictionaries: ",) + error.args
+                                      f"dictionaries: ",) + error.args
                         raise
             elif isvalid_dict(switch_args.get('soa'), 'SOA'):
                 # Only create SOA objects from valid dicts
@@ -244,7 +250,7 @@ class Switch:
 
     def convert_to_dict(self) -> Dict:
         """
-        The method converts Switch object into dict datatype
+        Convert Switch object into dict datatype.
 
         :return: Switch object of dict type
         :rtype: dict
@@ -263,9 +269,11 @@ class Switch:
         return d
 
     def find_next_gate_voltage(self, req_gate_vltgs: Dict, export_type: str, check_specific_curves: List = None,
-                                switch_loss_dataset_type: str = "graph_i_e") -> Dict:
+                               switch_loss_dataset_type: str = "graph_i_e") -> Dict:
         """
-        Finds the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets. Applicable to either plecs exporter or gecko exporter
+        Find the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets.
+
+        Applicable to either plecs exporter or gecko exporter
 
         :param req_gate_vltgs: the provided gate voltages for find the nearest neighbour to the corresponding key-value pairs
         :type req_gate_vltgs: dict
@@ -286,11 +294,13 @@ class Switch:
         v_gs = min(channel_v_gs, key=lambda x: abs(x - req_gate_vltgs['v_channel_gs']))
         req_gate_vltgs['v_channel_gs'] = v_gs
         # gather e_on loss curves at required dataset_type and check for none
-        e_ons = [e for i, e in enumerate(self.e_on) if e.dataset_type == switch_loss_dataset_type and (not any(check_specific_curves[0]) or i in check_specific_curves[0])]
+        e_ons = [e for i, e in enumerate(self.e_on) if e.dataset_type == switch_loss_dataset_type and \
+                 (not any(check_specific_curves[0]) or i in check_specific_curves[0])]
         if not e_ons:
             raise MissingDataError(1102)
         # gather e_off loss curves at required dataset_type and check for none
-        e_offs = [e for i, e in enumerate(self.e_off) if e.dataset_type == switch_loss_dataset_type and (not any(check_specific_curves[1]) or i in check_specific_curves[1])]
+        e_offs = [e for i, e in enumerate(self.e_off) if e.dataset_type == switch_loss_dataset_type and \
+                  (not any(check_specific_curves[1]) or i in check_specific_curves[1])]
         if not e_offs:
             raise MissingDataError(1103)
 
@@ -336,10 +346,10 @@ class Switch:
         return req_gate_vltgs.values()
 
     def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
-                        switch_energy_dataset_type: str = "graph_i_e") \
+                       switch_energy_dataset_type: str = "graph_i_e") \
             -> Tuple[ChannelData, SwitchEnergyData, SwitchEnergyData]:
         """
-        This function looks for the smallest distance to stored object value and returns this working point
+        Search for the smallest distance to stored object value and returns this working point.
 
         :param t_j: junction temperature
         :type t_j: float
@@ -388,7 +398,7 @@ class Switch:
 
     def plot_channel_data_vge(self, gatevoltage: float) -> None:
         """
-        Plot channel data with a chosen gate-voltage
+        Plot channel data with a chosen gate-voltage.
 
         :param gatevoltage: gatevoltage at which the channel curves are selected and plotted
         :type gatevoltage: float
@@ -401,7 +411,7 @@ class Switch:
             if self.channel[i_channel].v_g == gatevoltage:
                 labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                 plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1],
-                            label=labelplot)
+                         label=labelplot)
 
         plt.legend()
         plt.xlabel('Voltage in V')
@@ -411,7 +421,7 @@ class Switch:
 
     def plot_channel_data_temp(self, temperature: float) -> None:
         """
-        Plot channel data with chosen temperature
+        Plot channel data with chosen temperature.
 
         :param temperature: junction temperature at which the channel curves are selected and plotted
         :param temperature: float
@@ -419,13 +429,12 @@ class Switch:
         :return: Respective plots are displayed
         :rtype: None
         """
-
         plt.figure()
         for i_channel in np.array(range(0, len(self.channel))):
             if self.channel[i_channel].t_j == temperature:
                 labelplot = f"vg = {self.channel[i_channel].v_g} V, T_J = {self.channel[i_channel].t_j} °C"
                 plt.plot(self.channel[i_channel].graph_v_i[0], self.channel[i_channel].graph_v_i[1],
-                            label=labelplot)
+                         label=labelplot)
 
         plt.legend()
         plt.xlabel('Voltage in V')
@@ -435,14 +444,13 @@ class Switch:
 
     def plot_all_channel_data(self, buffer_req: bool = False):
         """
-        Plot all switch channel characteristic curves
+        Plot all switch channel characteristic curves.
 
         :param buffer_req: internally required for generating virtual datasheets
         :param buffer_req: bool
 
         :return: Respective plots are displayed
         """
-
         # ToDo: only 12(?) colors available. Change linestyle for more curves.
         categorize_with_temp_plots = {}
         categorize_with_vgs_plots = {}
@@ -468,7 +476,7 @@ class Switch:
                     plt.legend(fontsize=8)
                     plt.xlabel('Voltage in V')
                     plt.ylabel('Current in A')
-                    #plt.title('Channel at $T_{{J}}$ = {0} °C'.format(key))
+                    # plt.title('Channel at $T_{{J}}$ = {0} °C'.format(key))
                     plt.grid()
                     if buffer_req:
                         categorized_plots |= {key: get_img_raw_data(plt)}
@@ -483,7 +491,7 @@ class Switch:
                     plt.legend(fontsize=8)
                     plt.xlabel('Voltage in V')
                     plt.ylabel('Current in A')
-                    #plt.title('Channel at $V_{{g}}$ = {0} V'.format(key))
+                    # plt.title('Channel at $V_{{g}}$ = {0} V'.format(key))
                     plt.grid()
                     if buffer_req:
                         categorized_plots |= {key: get_img_raw_data(plt)}
@@ -506,7 +514,7 @@ class Switch:
 
     def plot_energy_data(self, buffer_req: bool = False):
         """
-        Plots all switch energy i-e characteristic curves which are extracted from the manufacturer datasheet
+        Plot all switch energy i-e characteristic curves which are extracted from the manufacturer datasheet.
 
         :param buffer_req: internally required for generating virtual datasheets
         :param buffer_req: bool
@@ -525,22 +533,17 @@ class Switch:
             # look for e_on losses
             for i_energy_data in np.array(range(0, len(self.e_on))):
                 if self.e_on[i_energy_data].dataset_type == 'graph_i_e':
-                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_on[i_energy_data].v_supply,
-                                                                                                                                        self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j,
-                                                                                                                                        self.e_on[i_energy_data].r_g)
-                    plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1],
-                                label=labelplot)
+                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(
+                        self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].r_g)
+                    plt.plot(self.e_on[i_energy_data].graph_i_e[0], self.e_on[i_energy_data].graph_i_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
                     plt.yticks(rotation=90)
             # look for e_off losses
             for i_energy_data in np.array(range(0, len(self.e_off))):
                 if self.e_off[i_energy_data].dataset_type == 'graph_i_e':
-                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(self.e_off[i_energy_data].v_supply,
-                                                                                                                                            self.e_off[i_energy_data].v_g,
-                                                                                                                                            self.e_off[i_energy_data].t_j,
-                                                                                                                                            self.e_off[i_energy_data].r_g)
-                    plt.plot(self.e_off[i_energy_data].graph_i_e[0], self.e_off[i_energy_data].graph_i_e[1],
-                                label=labelplot)
+                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $R_{{g}}$ = {3} Ohm".format(
+                        self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].r_g)
+                    plt.plot(self.e_off[i_energy_data].graph_i_e[0], self.e_off[i_energy_data].graph_i_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
                     plt.yticks(rotation=90)
             plt.legend(fontsize=5)
@@ -557,7 +560,7 @@ class Switch:
 
     def plot_energy_data_r(self, buffer_req: bool = False):
         """
-            Plots all switch energy r-e characteristic curves
+        Plot all switch energy r-e characteristic curves.
 
         :param buffer_req: internally required for generating virtual datasheets
         :param buffer_req: bool
@@ -576,21 +579,16 @@ class Switch:
             # look for e_on losses
             for i_energy_data in np.array(range(0, len(self.e_on))):
                 if self.e_on[i_energy_data].dataset_type == 'graph_r_e':
-                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_on[i_energy_data].v_supply,
-                                                                                                                                        self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j,
-                                                                                                                                        self.e_on[i_energy_data].i_x)
-                    plt.plot(self.e_on[i_energy_data].graph_r_e[0], self.e_on[i_energy_data].graph_r_e[1],
-                                label=labelplot)
+                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(
+                        self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].t_j, self.e_on[i_energy_data].i_x)
+                    plt.plot(self.e_on[i_energy_data].graph_r_e[0], self.e_on[i_energy_data].graph_r_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
             # look for e_off losses
             for i_energy_data in np.array(range(0, len(self.e_off))):
                 if self.e_off[i_energy_data].dataset_type == 'graph_r_e':
-                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(self.e_off[i_energy_data].v_supply,
-                                                                                                                                        self.e_off[i_energy_data].v_g,
-                                                                                                                                        self.e_off[i_energy_data].t_j,
-                                                                                                                                        self.e_off[i_energy_data].i_x)
-                    plt.plot(self.e_off[i_energy_data].graph_r_e[0], self.e_off[i_energy_data].graph_r_e[1],
-                                label=labelplot)
+                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $T_{{J}}$ = {2} °C, $i_{{ch}}$ = {3} A".format(
+                        self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].t_j, self.e_off[i_energy_data].i_x)
+                    plt.plot(self.e_off[i_energy_data].graph_r_e[0], self.e_off[i_energy_data].graph_r_e[1], label=labelplot)
                     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
             plt.legend(fontsize=5)
             plt.xlabel('External Gate Resistor in Ohm')
@@ -606,7 +604,7 @@ class Switch:
 
     def plot_all_on_resistance_curves(self, buffer_req: bool = False):
         """
-        A helper function to plot and convert Temperature dependant on resistance plots in raw data format.
+        Plot and convert Temperature dependent on-resistance plots in raw data format. Helper function.
 
         :param buffer_req: internally required for generating virtual datasheets
 
@@ -624,7 +622,8 @@ class Switch:
         plt.ylabel(y_label)
         props = dict(fill=False, edgecolor='black', linewidth=1)
         if len(self.r_channel_th) == 1:
-            r_on_condition = '\n'.join(["conditions: ", "$V_{g}$ = " + str(self.r_channel_th[0].v_g) + " V", "$I_{channel}$= " + str(self.r_channel_th[0].i_channel) + " A"])
+            r_on_condition = '\n'.join(["conditions: ", "$V_{g}$ = " + str(self.r_channel_th[0].v_g) + " V", "$I_{channel}$= " + \
+                                        str(self.r_channel_th[0].i_channel) + " A"])
             ax.text(0.1, 0.9, r_on_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='top')
         else:
             plt.legend(fontsize=8)
@@ -638,7 +637,7 @@ class Switch:
 
     def plot_all_charge_curves(self, buffer_req: bool = False):
         """
-        A helper function to plot and convert gate emitter/source voltage dependant gate charge plots in raw data format.
+        Plot and convert gate emitter/source voltage dependant gate charge plots in raw data format. Helper function.
 
         :param buffer_req: internally required for generating virtual datasheets
 
@@ -655,14 +654,16 @@ class Switch:
         plt.ylabel('Gate source Voltage, $V_{gs} [V]$')
         props = dict(fill=False, edgecolor='black', linewidth=1)
         if len(self.charge_curve) == 1:
-            charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel), "$V_{{supply}}$= {0} [V]".format(self.charge_curve[0].v_supply),
-                                            "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
-                                            "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g) + ' [A]'))])
+            charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel),
+                                          "$V_{{supply}}$= {0} [V]".format(self.charge_curve[0].v_supply),
+                                          "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
+                                          "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g) + ' [A]'))])
             ax.text(0.05, 0.95, charge_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='top')
         else:
             plt.legend(fontsize=8)
-            charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel), "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
-                                            "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g) + ' [A]'))])
+            charge_condition = '\n'.join(["conditions: ", "$I_{{channel}}$ = {0} [A]".format(self.charge_curve[0].i_channel),
+                                          "$T_{{j}}$ = {0} [°C]".format(self.charge_curve[0].t_j),
+                                          "$I_{{g}}$ = {0} ".format('NA' if self.charge_curve[0].i_g is None else (str(self.charge_curve[0].i_g) + ' [A]'))])
             ax.text(0.65, 0.1, charge_condition, transform=ax.transAxes, fontsize='small', bbox=props, ha='left', va='bottom')
         plt.grid()
         if buffer_req:
@@ -672,12 +673,12 @@ class Switch:
 
     def plot_soa(self, buffer_req: bool = False):
         """
-            A helper function to plot and convert safe operating region characteristic plots in raw data format.
+        Plot and convert safe operating region characteristic plots in raw data format. Helper function.
 
-            :param buffer_req: internally required for generating virtual datasheets
+        :param buffer_req: internally required for generating virtual datasheets
 
-            :return: Respective plots are displayed
-            """
+        :return: Respective plots are displayed
+        """
         if not self.soa:
             return None
         fig = plt.figure()
@@ -700,17 +701,20 @@ class Switch:
 
     def collect_data(self) -> Dict:
         """
-        Collects switch data in form of dictionary for generating virtual datasheet
+        Collect switch data in form of dictionary for generating virtual datasheet.
 
         :return: Switch data in form of dictionary
         :rtype: dict
         """
         switch_data = {}
-        switch_data['plots'] = {'channel_plots': self.plot_all_channel_data(True), 'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'r_channel_th_plot': self.plot_all_on_resistance_curves(True), 'charge_curve': self.plot_all_charge_curves(True), 'soa': self.plot_soa(True)}
+        switch_data['plots'] = {'channel_plots': self.plot_all_channel_data(True),
+                                'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True),
+                                'r_channel_th_plot': self.plot_all_on_resistance_curves(True), 'charge_curve': self.plot_all_charge_curves(True),
+                                'soa': self.plot_soa(True)}
         for attr in dir(self):
             if attr == 'thermal_foster':
                 switch_data.update(getattr(self, attr).collect_data())
             elif not callable(getattr(self, attr)) and not attr.startswith("__") and not \
-                    isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (not getattr(self, attr) is None) and not getattr(self, attr) == "":
+                    isinstance(getattr(self, attr), (list, np.ndarray, dict)) and (getattr(self, attr) is not None) and not getattr(self, attr) == "":
                 switch_data[attr.capitalize()] = getattr(self, attr)
         return switch_data

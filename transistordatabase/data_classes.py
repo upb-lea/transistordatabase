@@ -11,7 +11,7 @@ from transistordatabase.checker_functions import check_float
 from transistordatabase.helper_functions import isvalid_dict, get_img_raw_data
 
 class GateChargeCurve:
-    """ A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class"""
+    """A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class"""
 
     v_supply: float  #: same as drain-to-source (v_ds)/ collector-emitter (v_ce) voltages
     t_j: float  #: junction temperature
@@ -21,7 +21,7 @@ class GateChargeCurve:
 
     def __init__(self, args):
         """
-        Initialization method for GateChargeCurve object
+        Initialize a GateChargeCurve object.
 
         :param args: arguments to be passed for initialization
         """
@@ -35,7 +35,7 @@ class GateChargeCurve:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts GateChargeCurve object into dict datatype
+        Convert a GateChargeCurve object into dict datatype.
 
         :return: GateChargeCurve object of dict type
         :rtype: dict
@@ -48,7 +48,7 @@ class GateChargeCurve:
 
     def get_plots(self, ax=None):
         """
-        Plots gate charge vs gate source/ gate emitter voltage of switch type mosfet and igbt respectively
+        Plot the gate charge vs. gate source/ gate emitter voltage of switch type mosfet and igbt respectively.
 
         :param ax: figure axes to append the curves
 
@@ -68,7 +68,7 @@ class GateChargeCurve:
             plt.show()
 
 class SOA:
-    """ A class to hold safe operating area characteristics of transistor type which is added as a optional attribute inside transistor class"""
+    """A class to hold safe operating area characteristics of transistor type which is added as a optional attribute inside transistor class"""
 
     t_c: float | None  #: case temperature
     time_pulse: float | None  #: applied pulse duration
@@ -101,7 +101,7 @@ class SOA:
 
     def get_plots(self, ax=None):
         """
-        Plots drain current/reverse diode current vs drain-to-source voltage/diode applied reverse voltage of switch type mosfet/igbt
+        Plot drain current/reverse diode current vs drain-to-source voltage/diode applied reverse voltage of switch type mosfet/igbt.
 
         :param ax: figure axes to append the curves
 
@@ -122,8 +122,9 @@ class SOA:
 
 class TemperatureDependResistance:
     """
-    class to store temperature dependant resistance curve
+    Store temperature dependant resistance curve.
     """
+
     i_channel: float  #: channel current at which the graph is recorded
     v_g: float  #: gate voltage
     dataset_type: str  #: curve datatype, can be either 't_r' or 't_factor'. 't_factor' is used to denote normalized gate curves
@@ -146,7 +147,7 @@ class TemperatureDependResistance:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts TemperatureDependResistance object into dict datatype
+        Convert a TemperatureDependResistance object into dict datatype.
 
         :return: TemperatureDependResistance object of dict type
         :rtype: dict
@@ -159,7 +160,7 @@ class TemperatureDependResistance:
 
     def get_plots(self, ax=None):
         """
-        Plots On resistance vs Junction temperature
+        Plot the on-resistance vs. Junction temperature.
 
         :param ax: figure axes to append the curves
 
@@ -181,8 +182,9 @@ class TemperatureDependResistance:
 
 class EffectiveOutputCapacitance:
     """
-    The class EffectiveOutputCapacitance is used to record energy related or time related output capacitance of the switch.
+    Record energy related or time related output capacitance of the switch.
     """
+
     c_o: float  #: Value of the fixed output capacitance. Units in F
     v_gs: float  #: Gate to source voltage of the switch. Units in V
     v_ds: float  #: Drain to source voltage of the switch ex: V_DS = (0-400V) i.e v_ds=400 (max value, min assumed a 0). Units in V
@@ -201,7 +203,7 @@ class EffectiveOutputCapacitance:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts EffectiveOutputCapacitance object into dict datatype
+        Convert a EffectiveOutputCapacitance object into dict datatype.
 
         :return: EffectiveOutputCapacitance object of dict type
         :rtype: dict
@@ -218,18 +220,20 @@ class EffectiveOutputCapacitance:
         skipIds = []
         for attr in dir(self):
             if attr not in skipIds and not callable(getattr(self, attr)) and not attr.startswith("__") and not isinstance(getattr(self, attr), (list, dict)) \
-                    and (not getattr(self, attr) is None):
+                    and (getattr(self, attr) is not None):
                 c_oss_related[attr.capitalize()] = getattr(self, attr)
         return c_oss_related
 
 class SwitchEnergyData:
     """
-    - Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is already implicitly specified by how the respective objects of this class are used in a Diode- or Switch-object.
+    - Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is already implicitly
+    specified by how the respective objects of this class are used in a Diode- or Switch-object.
     - For each set (e.g. every curve in the datasheet) of switching energy data a separate object should be created.
     - This also includes the reference values in a datasheet given without a graph. (Those are considered as data sets with just a single data point.)
     - Data sets with more than one point are given as graph_i_e with an r_g parameter or as graph_r_e with an i_x parameter.
     - Unused parameters or datasets should be left empty.
-    - Which of these cases (single point, E vs I dataset, E vs R dataset) is valid for the current object also needs to be specified by the dataset_type-property.
+    - Which of these cases (single point, E vs I dataset, E vs R dataset) is valid for the current object also needs to be specified by the
+    dataset_type-property.
     """
 
     # Type of the dataset:
@@ -307,11 +311,11 @@ class SwitchEnergyData:
 
     def convert_to_dict(self) -> dict:
         """
-            The method converts SwitchEnergyData object into dict datatype
+        Convert a SwitchEnergyData object into dict datatype.
 
-            :return: SwitchEnergyData object of dict type
-            :rtype: dict
-            """
+        :return: SwitchEnergyData object of dict type
+        :rtype: dict
+        """
         d = dict(vars(self))
         for att_key in d:
             if isinstance(d[att_key], np.ndarray):
@@ -320,7 +324,7 @@ class SwitchEnergyData:
 
     def plot_graph(self) -> None:
         """
-        Plots switch / diode energy curve characteristics (either from graph_i_e or graph_r_e dataset)
+        Plot switch / diode energy curve characteristics (either from graph_i_e or graph_r_e dataset).
 
         :return: Respective plots are displayed
         :rtype: None
@@ -342,7 +346,9 @@ class SwitchEnergyData:
 
     def copy(self):
         """
-        A method to copy the existing SwitchEnergyData object and create a new object of same type. Created to allow deep copy of object when using gecko exporter
+        A method to copy the existing SwitchEnergyData object and create a new object of same type.
+
+        Created to allow deep copy of object when using gecko exporter
 
         :return: SwitchEnergyData object
         :rtype: SwitchEnergyData
@@ -363,61 +369,65 @@ class SwitchEnergyData:
         return SwitchEnergyData(args)
 
 class ChannelData:
-        """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
-        For different temperatures: Create additional ChannelData-objects and store them as a list in the respective
-        Diode- or Switch-object.
-        This data can be used to linearize the transistor at a specific operating point """
+    """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
+    For different temperatures: Create additional ChannelData-objects and store them as a list in the respective
+    Diode- or Switch-object.
+    This data can be used to linearize the transistor at a specific operating point
+    """
 
-        # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
-        t_j: float  #: Junction temperature of switch\diode. (Mandatory key)
-        v_g: float  #: Switch: Mandatory key, Diode: optional (standard diode useless, for GaN 'diode' necessary
-        # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
-        graph_v_i: npt.NDArray[np.float64]  #: Represented as a numpy 2D array where row 1 is the voltage and row 2 the current. Units of Row 1 = V; Row 2 = A (Mandatory key)
+    # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
+    t_j: float  #: Junction temperature of switch\diode. (Mandatory key)
+    v_g: float  #: Switch: Mandatory key, Diode: optional (standard diode useless, for GaN 'diode' necessary
+    # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the current.
+    graph_v_i: npt.NDArray[np.float64]  #: Represented as a numpy 2D array where row 1 is the voltage and row 2 the current.
+    # Units of Row 1 = V; Row 2 = A (Mandatory key)
 
-        def __init__(self, args):
-            """
-            Initialization method for ChannelData object
+    def __init__(self, args):
+        """
+        Initialize a ChannelData object.
 
-            :param args: arguments to be passed for initialization
-            """
-            # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
-            # checked again here.
-            self.t_j = args.get('t_j')
-            self.graph_v_i = args.get('graph_v_i')
-            self.v_g = args.get('v_g')
+        :param args: arguments to be passed for initialization
+        """
+        # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
+        # checked again here.
+        self.t_j = args.get('t_j')
+        self.graph_v_i = args.get('graph_v_i')
+        self.v_g = args.get('v_g')
 
-        def convert_to_dict(self) -> dict:
-            """
-            The method converts ChannelData object into dict datatype
+    def convert_to_dict(self) -> dict:
+        """
+        Convert a ChannelData object into dict datatype.
 
-            :return: ChannelData object of dict type
-            :rtype: dict
-            """
-            d = dict(vars(self))
-            for att_key in d:
-                if isinstance(d[att_key], np.ndarray):
-                    d[att_key] = d[att_key].tolist()
-            return d
+        :return: ChannelData object of dict type
+        :rtype: dict
+        """
+        d = dict(vars(self))
+        for att_key in d:
+            if isinstance(d[att_key], np.ndarray):
+                d[att_key] = d[att_key].tolist()
+        return d
 
-        def plot_graph(self) -> None:
-            """
-            Plots the channel curve v_i characteristics called by using any ChannelData object
+    def plot_graph(self) -> None:
+        """
+        Plots the channel curve v_i characteristics called by using any ChannelData object
 
-            :return: Respective plots are displayed
-            :rtype: None
-            """
-            plt.figure()
-            label = f"v_g = {self.v_g} V, t_j = {self.t_j} °C"
-            plt.plot(self.graph_v_i[0], self.graph_v_i[1], label=label)
-            plt.legend()
-            plt.grid()
-            plt.xlabel('Voltage in V')
-            plt.ylabel('Current in A')
-            plt.show()
+        :return: Respective plots are displayed
+        :rtype: None
+        """
+        plt.figure()
+        label = f"v_g = {self.v_g} V, t_j = {self.t_j} °C"
+        plt.plot(self.graph_v_i[0], self.graph_v_i[1], label=label)
+        plt.legend()
+        plt.grid()
+        plt.xlabel('Voltage in V')
+        plt.ylabel('Current in A')
+        plt.show()
 
 class LinearizedModel:
     """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
-    t_j, i_channel and (not for all diode types) v_g."""
+    t_j, i_channel and (not for all diode types) v_g.
+    """
+
     t_j: float  #: Junction temperature of diode\switch. Units in K  (Mandatory key)
     v_g: float | None  #: Gate voltage of switch or diode. Units in V (Mandatory for Switch, Optional for some Diode types)
     i_channel: float  #: Channel current of diode\switch. Units in A (Mandatory key)
@@ -426,7 +436,7 @@ class LinearizedModel:
 
     def __init__(self, args):
         """
-        Initialization method for linearizedmodel object
+        Initialize a linearizedmodel object.
 
         :param args: arguments to passed for initialization
         """
@@ -450,10 +460,12 @@ class VoltageDependentCapacitance:
     """Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
     For different temperatures: Create additional VoltageDependentCapacitance-objects and store them as a list in the transistor-object.
     """
+
     # # Test condition: Must be given as scalar. Create additional objects for different temperatures.
     t_j: float  #: Junction temperature (Mandatory key)
     # Dataset: Represented as a 2xm Matrix where row 1 is the voltage and row 2 the capacitance.
-    graph_v_c: npt.NDArray[np.float64]  #: Represented as a 2D numpy array where row 1 is the voltage and row 2 the capacitance. Units of Row 1 = V; Row 2 = A  (Mandatory key)
+    graph_v_c: npt.NDArray[np.float64]  #: Represented as a 2D numpy array where row 1 is the voltage and row 2 the capacitance.
+    # Units of Row 1 = V; Row 2 = A  (Mandatory key)
 
     def __init__(self, args):
         """
@@ -468,7 +480,7 @@ class VoltageDependentCapacitance:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts VoltageDependentCapacitance object into dict datatype
+        Convert a VoltageDependentCapacitance object into dict datatype.
 
         :return: VoltageDependentCapacitance object of dict type
         :rtype: dict
@@ -481,7 +493,9 @@ class VoltageDependentCapacitance:
 
     def get_plots(self, ax=None, label=None):
         """
-        Plots the voltage dependant capacitance graph_v_c of the VoltageDependentCapacitance object. Also attaches the plot to figure axes for the purpose virtual datasheet if ax argument is specified
+        Plot the voltage dependant capacitance graph_v_c of the VoltageDependentCapacitance object.
+
+        Also attaches the plot to figure axes for the purpose virtual datasheet if ax argument is specified
 
         :param ax: figure axes for making the graph_v_c plot in virtual datasheet
         :param label: label of the plot for virtual datasheet plot
@@ -528,11 +542,12 @@ class FosterThermalModel:
     tau_total: float | None  #: Sum of thermal_foster time constants of n-pole RC-network (scalar). Units in s (Optional key)
     # Transient data for extraction of the thermal_foster parameters specified above.
     # Represented as a 2xm Matrix where row 1 is the time and row 2 the temperature.
-    graph_t_rthjc: npt.NDArray[np.float64] | None  #: Transient data for extraction of the thermal_foster parameters specified above. Units of Row 1 in s; Row 2 in K/W  (Optional key)
+    graph_t_rthjc: npt.NDArray[np.float64] | None  #: Transient data for extraction of the thermal_foster parameters specified above.
+    # Units of Row 1 in s; Row 2 in K/W  (Optional key)
 
     def __init__(self, args):
         """
-        Initialization method of FosterThermalModel object
+        Initialize a FosterThermalModel object.
 
         :param args: argument to be passed for initialization
         :type args: dict
@@ -558,7 +573,7 @@ class FosterThermalModel:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts FosterThermalModel object into dict datatype
+        Convert a FosterThermalModel object into dict datatype.
 
         :return: FosterThermalModel of dict type
         :rtype: dict
@@ -612,7 +627,7 @@ class FosterThermalModel:
         skipIds = ['graph_t_rthjc']
         for attr in dir(self):
             if attr not in skipIds and not callable(getattr(self, attr)) and not attr.startswith("__") and not isinstance(getattr(self, attr), (list, dict)) \
-                    and (not getattr(self, attr) is None):
+                    and (getattr(self, attr) is not None):
                 foster_data[attr.capitalize()] = getattr(self, attr)
         return foster_data
 
@@ -642,16 +657,15 @@ class RawMeasurementData:
     load_inductance: float | None  #: Load inductance. Units in µH
     commutation_inductance: float | None  #: Commutation inductance. Units in µH
 
-    e_off_meas = Union[Dict, None] # Union[] is used here because | somehow didn't work
+    e_off_meas = Union[Dict, None]  # Union[] is used here because | somehow didn't work
     e_on_meas = Union[Dict, None]
 
     def __init__(self, args):
         """
-        Initialization method for RawMeasurementData object
+        Initialize a RawMeasurementData object.
 
         :param args: arguments to be passed for initialization
         """
-
         self.dataset_type = args.get('dataset_type')
         self.comment = args.get('dataset_type')
         if self.dataset_type == 'dpt_u_i' or self.dataset_type == 'dpt_u_i_r':
@@ -692,21 +706,20 @@ class RawMeasurementData:
 
     def dpt_calculate_energies(self, integration_interval: str, dataset_type: str, energies: str, mode: str):
         """
-            Imports double pulse measurements and calculates switching losses to each given working point.
+        Import double pulse measurements and calculates switching losses to each given working point.
 
-            [1] options for the integration interval are based on following paper:
-            Link: https://ieeexplore.ieee.org/document/8515553
+        [1] options for the integration interval are based on following paper:
+        Link: https://ieeexplore.ieee.org/document/8515553
 
-            :param integration_interval: calculation standards for switching losses
-            :type integration_interval: str
-            :param dataset_type: defines what measurement set should should be calculated
-            :type dataset_type: str
-            :param energies: defines which switching energies should be calculated
-            :type energies: str
+        :param integration_interval: calculation standards for switching losses
+        :type integration_interval: str
+        :param dataset_type: defines what measurement set should should be calculated
+        :type dataset_type: str
+        :param energies: defines which switching energies should be calculated
+        :type energies: str
 
 
-            """
-
+        """
         if integration_interval == 'IEC 60747-9':
             off_vds_limit = 0.1
             off_is_limit = 0.02
@@ -826,9 +839,9 @@ class RawMeasurementData:
                                 linewidth=2)
                     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
                     ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
-                                verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                             verticalalignment='bottom', horizontalalignment='left', bbox=props)
                     ax1.text(0.02, .5, text2, transform=ax1.transAxes, fontsize=12,
-                                verticalalignment='center', horizontalalignment='left', bbox=props)
+                             verticalalignment='center', horizontalalignment='left', bbox=props)
                     plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
                     ax2 = ax1.twinx()
                     ax2.set_ylabel('Uds / V', color='b')
@@ -848,34 +861,35 @@ class RawMeasurementData:
                     e_off.append([id_avg_max, e_off_temp])
 
                 di_dt_off.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
-                        abs(id_temp[di_dt_counter_high, 0] - id_temp[di_dt_counter_low, 0]) * 1000000000))
+                    abs(id_temp[di_dt_counter_high, 0] - id_temp[di_dt_counter_low, 0]) * 1000000000))
                 dv_dt_off.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[lower_integration_limit, 1]) / (
-                        abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[lower_integration_limit, 0]) * 1000000000))
+                    abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[lower_integration_limit, 0]) * 1000000000))
 
                 sample_point += 1
 
             e_off_0 = [item[0] for item in e_off]
             e_off_1 = [item[1] for item in e_off]
 
-            e_off_meas = {'dataset_type': dataset_type,
-                            't_j': self.t_j,
-                            'load_inductance': self.load_inductance,
-                            'commutation_inductance': self.commutation_inductance,
-                            'commutation_device': self.commutation_device,
-                            'comment': self.comment,
-                            'measurement_date': self.measurement_date,
-                            'measurement_testbench': self.measurement_testbench,
-                            'v_supply': self.v_supply,
-                            'v_g': self.v_g,
-                            'v_g_off': self.v_g_off,
-                            'r_g': self.r_g,
-                            'r_g_off': self.r_g_off,
-                            'graph_i_e': np.array([e_off_0, e_off_1]),
-                            'graph_r_e': np.array([e_off_0, e_off_1]),
-                            'e_x': float(e_off_1[0]),
-                            'i_x': id_avg_max,
-                            'di_dt': di_dt_off,
-                            'dv_dt': dv_dt_off}
+            e_off_meas = {
+                'dataset_type': dataset_type,
+                't_j': self.t_j,
+                'load_inductance': self.load_inductance,
+                'commutation_inductance': self.commutation_inductance,
+                'commutation_device': self.commutation_device,
+                'comment': self.comment,
+                'measurement_date': self.measurement_date,
+                'measurement_testbench': self.measurement_testbench,
+                'v_supply': self.v_supply,
+                'v_g': self.v_g,
+                'v_g_off': self.v_g_off,
+                'r_g': self.r_g,
+                'r_g_off': self.r_g_off,
+                'graph_i_e': np.array([e_off_0, e_off_1]),
+                'graph_r_e': np.array([e_off_0, e_off_1]),
+                'e_x': float(e_off_1[0]),
+                'i_x': id_avg_max,
+                'di_dt': di_dt_off,
+                'dv_dt': dv_dt_off}
 
             ##############################
             # Plot Eoff
@@ -960,9 +974,9 @@ class RawMeasurementData:
                                 linewidth=2)
                     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
                     ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
-                                verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                             verticalalignment='bottom', horizontalalignment='left', bbox=props)
                     ax1.text(0.02, .5, text2, transform=ax1.transAxes, fontsize=12,
-                                verticalalignment='center', horizontalalignment='left', bbox=props)
+                             verticalalignment='center', horizontalalignment='left', bbox=props)
                     plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
                     ax2 = ax1.twinx()
                     ax2.set_ylabel('Uds / V', color='b')
@@ -982,33 +996,34 @@ class RawMeasurementData:
                     e_on.append([id_avg_max, e_on_temp])
 
                 dv_dt_on.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[dv_dt_counter_low, 1]) / (
-                        abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[dv_dt_counter_low, 0]) * 1000000000))
+                    abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[dv_dt_counter_low, 0]) * 1000000000))
                 di_dt_on.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
-                        abs(vds_temp[di_dt_counter_high, 0] - vds_temp[di_dt_counter_low, 0]) * 1000000000))
+                    abs(vds_temp[di_dt_counter_high, 0] - vds_temp[di_dt_counter_low, 0]) * 1000000000))
                 sample_point += 1
 
             e_on_0 = [item[0] for item in e_on]
             e_on_1 = [item[1] for item in e_on]
 
-            e_on_meas = {'dataset_type': dataset_type,
-                            't_j': self.t_j,
-                            'load_inductance': self.load_inductance,
-                            'commutation_inductance': self.commutation_inductance,
-                            'commutation_device': self.commutation_device,
-                            'comment': self.comment,
-                            'measurement_date': self.measurement_date,
-                            'measurement_testbench': self.measurement_testbench,
-                            'v_supply': self.v_supply,
-                            'v_g': self.v_g,
-                            'v_g_off': self.v_g_off,
-                            'r_g': self.r_g,
-                            'r_g_off': self.r_g_off,
-                            'graph_i_e': np.array([e_on_0, e_on_1]),
-                            'graph_r_e': np.array([e_on_0, e_on_1]),
-                            'e_x': float(e_on_1[0]),
-                            'i_x': id_avg_max,
-                            'dv_dt': dv_dt_on,
-                            'di_dt': di_dt_on}
+            e_on_meas = {
+                'dataset_type': dataset_type,
+                't_j': self.t_j,
+                'load_inductance': self.load_inductance,
+                'commutation_inductance': self.commutation_inductance,
+                'commutation_device': self.commutation_device,
+                'comment': self.comment,
+                'measurement_date': self.measurement_date,
+                'measurement_testbench': self.measurement_testbench,
+                'v_supply': self.v_supply,
+                'v_g': self.v_g,
+                'v_g_off': self.v_g_off,
+                'r_g': self.r_g,
+                'r_g_off': self.r_g_off,
+                'graph_i_e': np.array([e_on_0, e_on_1]),
+                'graph_r_e': np.array([e_on_0, e_on_1]),
+                'e_x': float(e_on_1[0]),
+                'i_x': id_avg_max,
+                'dv_dt': dv_dt_on,
+                'di_dt': di_dt_on}
 
             ##############################
             # Plot Eon

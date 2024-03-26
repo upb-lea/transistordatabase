@@ -8,7 +8,7 @@ import os
 import json
 import requests
 import deepdiff
-import glob # Can this be removed?
+import glob  # Can this be removed?
 
 # Local libraries
 from transistordatabase.transistor import Transistor
@@ -17,13 +17,18 @@ from transistordatabase.helper_functions import get_copy_transistor_name, isvali
 from transistordatabase.checker_functions import check_float
 
 class OperationMode(Enum):
+    """Operation mode definitions."""
     JSON = "json"
     MONGODB = "mongodb"
 
 class DatabaseManager:
-    """The DatabaseManager is the base class of the transistordatabase. After creation a operation mode must be set (either JSON or MongoDB) and
-    then from the DatabaseManager the Transistor data can be acessed.
     """
+    Base class of the transistordatabase.
+
+    After creation, a operation mode must be set (either JSON or MongoDB) and
+    then from the DatabaseManager the Transistor data can be accessed.
+    """
+
     operation_mode: OperationMode
     tdb_directory: str
 
@@ -48,7 +53,6 @@ class DatabaseManager:
         else:
             self.module_manufacturers_file_path = module_manufacturers_file_path
         self.module_manufacturers = read_data_file(self.module_manufacturers_file_path)
-
 
     def set_operation_mode_json(self, json_folder_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database")) -> None:
         """
@@ -100,19 +104,19 @@ class DatabaseManager:
             self.mongodb_collection = connect_local_tdb()
         else:
             raise Exception("Currently only collection == local is supported.")
-            
 
     def save_transistor(self, transistor: Transistor, overwrite: bool = None) -> None:
         """
-        The method save the transistor object to the desired database depending on the set operation mode.
-        Currently receives the execution instructions from update_from_fileexchange(..)
+        Save the transistor object to the desired database depending on the set operation mode.
+
+        Receives the execution instructions from update_from_fileexchange(..).
 
         :param transistor: The transistor object which shall be stored in the database.
         :type collection: Transistor
         :param overwrite: Indicates whether to overwrite the existing transistor object in the local database if a match is found
         :type overwrite: bool or None
         """
-        if self.operation_mode == None:
+        if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
 
         transistor_dict = transistor.convert_to_dict()
@@ -154,7 +158,6 @@ class DatabaseManager:
             else:
                 self.mongodb_collection.insert_one(transistor_dict)
 
-
     def delete_transistor(self, transistor_name: str) -> None:
         """
         Deletes the transistor with the given id from the database.
@@ -162,7 +165,7 @@ class DatabaseManager:
         :param transistor_name: Name of the transistor
         :type transistor_name: str
         """
-        if self.operation_mode == None:
+        if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
 
         if self.operation_mode == OperationMode.JSON:
@@ -178,7 +181,6 @@ class DatabaseManager:
             else:
                 print(f"Can not find transistor with name {transistor_name} in the database. Therefore it cannot be deleted.")
 
-
     def load_transistor(self, transistor_name: str) -> Transistor:
         """
         Loads a transistor from the database. The database is determined by the operation mode.
@@ -188,7 +190,7 @@ class DatabaseManager:
         :return: Desired Transistor object
         :rtype: Transistor
         """
-        if self.operation_mode == None:
+        if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
 
         if self.operation_mode == OperationMode.JSON:
@@ -203,15 +205,14 @@ class DatabaseManager:
 
         return None
 
-
     def get_transistor_names_list(self) -> List[str]:
         """
-        Returns a list containing every transistor name.
+        Return a list containing every transistor name.
 
         :return: List containing the names.
         :rtype:  List[str]
         """
-        if self.operation_mode == None:
+        if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
 
         if self.operation_mode == OperationMode.JSON:
@@ -232,10 +233,9 @@ class DatabaseManager:
 
         return None
 
-
     def print_tdb(self, filters: List[str] = None) -> List[str]:
         """
-        Print all transistorelements stored in the local database
+        Print all transistor elements stored in the local database.
 
         :param filters: filters for searching the database, e.g. 'name' or 'type'
         :type filters: List[str]
@@ -276,11 +276,14 @@ class DatabaseManager:
             print(transistor_list)
             return transistor_list
 
-    
-    def update_from_fileexchange(self, overwrite: bool = True, index_url: str = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/index.txt",
-                                    module_manufacturers_url: str = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/module_manufacturers.txt",
-                                    housing_types_url: str = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/housing_types.txt") -> None:
-        """Update your local transistor database from transistordatabase-fileexchange from given index-file url. Also updates module manufacturers and housing types.
+    def update_from_fileexchange(self, overwrite: bool = True,
+                                 index_url: str = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/index.txt",
+                                 module_manufacturers_url: str = \
+                                 "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/module_manufacturers.txt",
+                                 housing_types_url: str = \
+                                 "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/housing_types.txt") -> None:
+        """Update your local transistor database from transistordatabase-fileexchange from given index-file url.
+        Also updates module manufacturers and housing types.
         If no index_url or module_manufacturers_url or housing_types_url is given the default Transistordatabase Fileexchange URLs are taken.
         
         :param index_url: URL to the index file which contains the links to all the transistor files (json formatted).
@@ -296,8 +299,8 @@ class DatabaseManager:
         :rtype: None
         """
         print("Note: Please make sure that you have installed the latest version of the transistor database, "
-            "especially if the update_from_fileexchange()-method ends in an error. "
-            "Find the latest version here: https://pypi.org/project/transistordatabase/")
+              "especially if the update_from_fileexchange()-method ends in an error. "
+              "Find the latest version here: https://pypi.org/project/transistordatabase/")
         # Read links from index_url
         index_response = requests.get(index_url)
         if not index_response.ok:
@@ -336,9 +339,10 @@ class DatabaseManager:
             self.housing_types = read_data_file(self.housing_types_file_path)
             print("Updated housing types.")
 
-
     def compare_with_fileexchange(self, index_url: str, output_file: str):
-        """Compares the current database with the given database from the fileexchange.
+        """
+        Compare the current database with the given database from the fileexchange.
+
         Writes the difference in the given output_file.
 
         :param index_url: URL to the index file containing links to the Transistors of the Database.
@@ -349,7 +353,7 @@ class DatabaseManager:
         current_transistor_list = self.get_transistor_names_list()
 
         # Read links from index_url
-        diff_dict = {} # Dictionary containing the key as the name of the transistor and the value is the diff text.
+        diff_dict = {}  # Dictionary containing the key as the name of the transistor and the value is the diff text.
         index_response = requests.get(index_url)
         if not index_response.ok:
             raise Exception(f"Index file was not found. URL: {index_url}")
@@ -386,9 +390,9 @@ class DatabaseManager:
             with open(output_file, "w") as fd:
                 json.dump(diff_dict, fd, indent=2)
 
-
     def export_all_datasheets(self, filter_list: list = None):
-        """A method to export all the available transistor data present in the local mongoDB database
+        """
+        Export all the available transistor data present in the local mongoDB database.
 
         :param filter_list: a list of transistor names that needs to be exported in specific
         :type filter_list: list
@@ -418,12 +422,11 @@ class DatabaseManager:
         else:
             print("Nothing to export, please recheck inputs")
 
-
-    def convert_dict_to_transistor_object(self, transformer_dict: dict) -> Transistor:
+    def convert_dict_to_transistor_object(self, transistor_dict: dict) -> Transistor:
         """
-        Converts a dictionary to a transistor object.
-        This is a helper function of the following functions:
+        Convert a dictionary to a transistor object.
 
+        This is a helper function of the following functions:
         - parallel_transistors()
         - load()
         - import_json()
@@ -435,30 +438,30 @@ class DatabaseManager:
         :rtype: Transistor object
         """
         # Convert transistor_args
-        if 'c_oss' in transformer_dict and transformer_dict['c_oss'] is not None:
-            for i in range(len(transformer_dict['c_oss'])):
-                transformer_dict['c_oss'][i]['graph_v_c'] = np.array(transformer_dict['c_oss'][i]['graph_v_c'])
-        if 'c_iss' in transformer_dict and transformer_dict['c_iss'] is not None:
-            for i in range(len(transformer_dict['c_iss'])):
-                transformer_dict['c_iss'][i]['graph_v_c'] = np.array(transformer_dict['c_iss'][i]['graph_v_c'])
-        if 'c_rss' in transformer_dict and transformer_dict['c_rss'] is not None:
-            for i in range(len(transformer_dict['c_rss'])):
-                transformer_dict['c_rss'][i]['graph_v_c'] = np.array(transformer_dict['c_rss'][i]['graph_v_c'])
-        if 'graph_v_ecoss' in transformer_dict and transformer_dict['graph_v_ecoss'] is not None:
-            transformer_dict['graph_v_ecoss'] = np.array(transformer_dict['graph_v_ecoss'])
-        if 'raw_measurement_data' in transformer_dict:
-            for i in range(len(transformer_dict['raw_measurement_data'])):
-                for u in range(len(transformer_dict['raw_measurement_data'][i]['dpt_on_vds'])):
-                    transformer_dict['raw_measurement_data'][i]['dpt_on_vds'][u] = np.array(transformer_dict['raw_measurement_data'][i]['dpt_on_vds'][u])
-                for u in range(len(transformer_dict['raw_measurement_data'][i]['dpt_on_id'])):
-                    transformer_dict['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transformer_dict['raw_measurement_data'][i]['dpt_on_id'][u])
-                for u in range(len(transformer_dict['raw_measurement_data'][i]['dpt_off_vds'])):
-                    transformer_dict['raw_measurement_data'][i]['dpt_off_vds'][u] = np.array(transformer_dict['raw_measurement_data'][i]['dpt_off_vds'][u])
-                for u in range(len(transformer_dict['raw_measurement_data'][i]['dpt_off_id'])):
-                    transformer_dict['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transformer_dict['raw_measurement_data'][i]['dpt_off_id'][u])
+        if 'c_oss' in transistor_dict and transistor_dict['c_oss'] is not None:
+            for i in range(len(transistor_dict['c_oss'])):
+                transistor_dict['c_oss'][i]['graph_v_c'] = np.array(transistor_dict['c_oss'][i]['graph_v_c'])
+        if 'c_iss' in transistor_dict and transistor_dict['c_iss'] is not None:
+            for i in range(len(transistor_dict['c_iss'])):
+                transistor_dict['c_iss'][i]['graph_v_c'] = np.array(transistor_dict['c_iss'][i]['graph_v_c'])
+        if 'c_rss' in transistor_dict and transistor_dict['c_rss'] is not None:
+            for i in range(len(transistor_dict['c_rss'])):
+                transistor_dict['c_rss'][i]['graph_v_c'] = np.array(transistor_dict['c_rss'][i]['graph_v_c'])
+        if 'graph_v_ecoss' in transistor_dict and transistor_dict['graph_v_ecoss'] is not None:
+            transistor_dict['graph_v_ecoss'] = np.array(transistor_dict['graph_v_ecoss'])
+        if 'raw_measurement_data' in transistor_dict:
+            for i in range(len(transistor_dict['raw_measurement_data'])):
+                for u in range(len(transistor_dict['raw_measurement_data'][i]['dpt_on_vds'])):
+                    transistor_dict['raw_measurement_data'][i]['dpt_on_vds'][u] = np.array(transistor_dict['raw_measurement_data'][i]['dpt_on_vds'][u])
+                for u in range(len(transistor_dict['raw_measurement_data'][i]['dpt_on_id'])):
+                    transistor_dict['raw_measurement_data'][i]['dpt_on_id'][u] = np.array(transistor_dict['raw_measurement_data'][i]['dpt_on_id'][u])
+                for u in range(len(transistor_dict['raw_measurement_data'][i]['dpt_off_vds'])):
+                    transistor_dict['raw_measurement_data'][i]['dpt_off_vds'][u] = np.array(transistor_dict['raw_measurement_data'][i]['dpt_off_vds'][u])
+                for u in range(len(transistor_dict['raw_measurement_data'][i]['dpt_off_id'])):
+                    transistor_dict['raw_measurement_data'][i]['dpt_off_id'][u] = np.array(transistor_dict['raw_measurement_data'][i]['dpt_off_id'][u])
 
         # Convert switch_args
-        switch_args = transformer_dict['switch']
+        switch_args = transistor_dict['switch']
         if switch_args['thermal_foster']['graph_t_rthjc'] is not None:
             switch_args['thermal_foster']['graph_t_rthjc'] = np.array(switch_args['thermal_foster']['graph_t_rthjc'])
         for i in range(len(switch_args['channel'])):
@@ -496,7 +499,7 @@ class DatabaseManager:
                 switch_args['soa'][i]['graph_i_v'] = np.array(switch_args['soa'][i]['graph_i_v'])
 
         # Convert diode_args
-        diode_args = transformer_dict['diode']
+        diode_args = transistor_dict['diode']
         if diode_args['thermal_foster']['graph_t_rthjc'] is not None:
             diode_args['thermal_foster']['graph_t_rthjc'] = np.array(diode_args['thermal_foster']['graph_t_rthjc'])
         for i in range(len(diode_args['channel'])):
@@ -510,8 +513,7 @@ class DatabaseManager:
             for i in range(len(diode_args['soa'])):
                 diode_args['soa'][i]['graph_i_v'] = np.array(diode_args['soa'][i]['graph_i_v'])
 
-        return Transistor(transformer_dict, switch_args, diode_args, self.housing_types, self.module_manufacturers)
-
+        return Transistor(transistor_dict, switch_args, diode_args, self.housing_types, self.module_manufacturers)
 
     def parallel_transistors(self, transistor: Transistor, count_parallels: int = 2) -> Transistor:
         """Connect [count_parallels] transistors in parallel
@@ -580,8 +582,7 @@ class DatabaseManager:
             transistor_dict['switch']['thermal_foster']['r_th_vector'] is None else [x / count_parallels for x in
                                                                                      transistor_dict['switch'][
                                                                                          'thermal_foster']['r_th_vector']]
-        transistor_dict['switch']['thermal_foster']['c_th_total'] = None if transistor_dict['switch']['thermal_foster'][
-                                                                                'c_th_total'] is None else \
+        transistor_dict['switch']['thermal_foster']['c_th_total'] = None if transistor_dict['switch']['thermal_foster']['c_th_total'] is None else \
             transistor_dict['switch']['thermal_foster']['c_th_total'] / count_parallels
         transistor_dict['switch']['thermal_foster']['c_th_vector'] = None if \
             transistor_dict['switch']['thermal_foster']['c_th_vector'] is None else [x / count_parallels for x in
@@ -595,14 +596,11 @@ class DatabaseManager:
                                                                                    'graph_t_rthjc'][1]]
         # modify diode thermal dict
         transistor_dict['diode']['thermal_foster']['r_th_total'] /= count_parallels
-        transistor_dict['diode']['thermal_foster']['r_th_vector'] = None if transistor_dict['diode']['thermal_foster'][
-                                                                                'r_th_vector'] is None else [
+        transistor_dict['diode']['thermal_foster']['r_th_vector'] = None if transistor_dict['diode']['thermal_foster']['r_th_vector'] is None else [
             x / count_parallels for x in transistor_dict['diode']['thermal_foster']['r_th_vector']]
-        transistor_dict['diode']['thermal_foster']['c_th_total'] = None if transistor_dict['diode']['thermal_foster'][
-                                                                               'c_th_total'] is None else \
+        transistor_dict['diode']['thermal_foster']['c_th_total'] = None if transistor_dict['diode']['thermal_foster']['c_th_total'] is None else \
             transistor_dict['diode']['thermal_foster']['c_th_total'] / count_parallels
-        transistor_dict['diode']['thermal_foster']['c_th_vector'] = None if transistor_dict['diode']['thermal_foster'][
-                                                                                'c_th_vector'] is None else [
+        transistor_dict['diode']['thermal_foster']['c_th_vector'] = None if transistor_dict['diode']['thermal_foster']['c_th_vector'] is None else [
             x / count_parallels for x in transistor_dict['diode']['thermal_foster']['c_th_vector']]
 
         if transistor_dict['diode']['thermal_foster']['graph_t_rthjc'] is not None:
@@ -612,7 +610,6 @@ class DatabaseManager:
                                                                                   'graph_t_rthjc'][1]]
 
         return self.convert_dict_to_transistor_object(transistor_dict)
-
 
     @staticmethod
     def import_xml_data(files: Dict) -> Transistor:
@@ -644,50 +641,50 @@ class DatabaseManager:
                     raise ImportError('Vendor or part number differs')
             else:
                 raise ImportError('Invalid files: One of type ' + s_info['class'] + ' and other ' + d_info['class'])
-            diode_args = {'comment': 'Turn On and Off voltages are set to 12V/0V',
-                        'manufacturer': d_info['vendor'],
-                        'technology': None,
-                        't_j_max': 175,
-                        'channel': d_channel_list,
-                        'e_rr': d_energy_off_list,
-                        'thermal_foster': d_foster_args}
-            transistor_args = {'name': s_info['partnumber'],
-                            'type': s_info['class'],
-                            'author': 'XML importer',
-                            'comment': 'Generated using xml importer (inaccurate)',
-                            'manufacturer': s_info['vendor'],
-                            'datasheet_hyperlink': 'http://www.plexim.com/xml/semiconductors/' + s_info['partnumber'],
-                            'datasheet_date': datetime.date.today(),
-                            'datasheet_version': "unknown",
-                            'housing_area': 0,
-                            'cooling_area': 0,
-                            'housing_type': 'PLECS Import',
-                            'v_abs_max': 999999999,
-                            'i_abs_max': max(s_channel_list[0]["graph_v_i"][1]),
-                            'i_cont': max(s_channel_list[0]["graph_v_i"][1]) / 2,
-                            'c_iss': None,  # insert csv here
-                            'c_oss': None,  # insert csv here
-                            'c_rss': None,  # insert csv here
-                            'graph_v_ecoss': None,
-                            'r_g_int': 0,
-                            'r_th_cs': 0,
-                            'r_th_diode_cs': 0,
-                            'r_th_switch_cs': 0,
-                            }
+            diode_args = {
+                'comment': 'Turn On and Off voltages are set to 12V/0V',
+                'manufacturer': d_info['vendor'],
+                'technology': None,
+                't_j_max': 175,
+                'channel': d_channel_list,
+                'e_rr': d_energy_off_list,
+                'thermal_foster': d_foster_args}
+            transistor_args = {
+                'name': s_info['partnumber'],
+                'type': s_info['class'],
+                'author': 'XML importer',
+                'comment': 'Generated using xml importer (inaccurate)',
+                'manufacturer': s_info['vendor'],
+                'datasheet_hyperlink': 'http://www.plexim.com/xml/semiconductors/' + s_info['partnumber'],
+                'datasheet_date': datetime.date.today(),
+                'datasheet_version': "unknown",
+                'housing_area': 0,
+                'cooling_area': 0,
+                'housing_type': 'PLECS Import',
+                'v_abs_max': 999999999,
+                'i_abs_max': max(s_channel_list[0]["graph_v_i"][1]),
+                'i_cont': max(s_channel_list[0]["graph_v_i"][1]) / 2,
+                'c_iss': None,  # insert csv here
+                'c_oss': None,  # insert csv here
+                'c_rss': None,  # insert csv here
+                'graph_v_ecoss': None,
+                'r_g_int': 0,
+                'r_th_cs': 0,
+                'r_th_diode_cs': 0,
+                'r_th_switch_cs': 0}
             return Transistor(transistor_args, switch_args, diode_args)
         except ImportError as e:
             print(e.args[0])
 
-
     @staticmethod
     def export_single_transistor_to_json(transistor: Transistor, file_path: str):
+        """Export a single transistor object to a json file."""
         with open(file_path, "w") as fd:
             json.dump(transistor.convert_to_dict(), fd, indent=2)
 
-
     @staticmethod
     def dpt_save_data(measurement_dict: Dict) -> Dict:
-        """Imports double pulse measurements and calculates switching losses to each given working point.
+        """Import double pulse measurements and calculates switching losses to each given working point.
 
         Note: This function brings the measurement data to a dictionary.
         It does not store the data to the transistor!
@@ -719,7 +716,6 @@ class DatabaseManager:
         >>> dpt_energies_dict = tdb.dpt_save_data(dpt_save_dict)
 
         """
-
         if measurement_dict.get('integration_interval') == 'IEC 60747-9':
             # FETs
             off_vds_limit = 0.1
@@ -790,15 +786,15 @@ class DatabaseManager:
             #################################################################################
             # Read all Turn-off supply voltage, gate voltage, gate resistance and temperature
             #################################################################################
-            l = 0
+            csv_count = 0
             v_supply_off = []
-            while csv_length > l:
-                if csv_files[l].rfind("_OFF_I") != -1:
-                    position_v_supply_off = csv_files[l].rfind("V_")
-                    position_v_supply_off_start = csv_files[l].rfind("_", 0, position_v_supply_off)
-                    v_supply_off.append(csv_files[l][position_v_supply_off_start + 1:position_v_supply_off])
-                l += 1
-            print(f'v_supply_off=', v_supply_off)
+            while csv_length > csv_count:
+                if csv_files[csv_count].rfind("_OFF_I") != -1:
+                    position_v_supply_off = csv_files[csv_count].rfind("V_")
+                    position_v_supply_off_start = csv_files[csv_count].rfind("_", 0, position_v_supply_off)
+                    v_supply_off.append(csv_files[csv_count][position_v_supply_off_start + 1:position_v_supply_off])
+                csv_count += 1
+            print('v_supply_off=', v_supply_off)
             if not compare_list(v_supply_off):
                 raise ValueError
             i = 0
@@ -809,7 +805,7 @@ class DatabaseManager:
                     position_v_g_off_start = csv_files[i].rfind("_", 0, position_v_g_off)
                     v_g_off.append(csv_files[i][position_v_g_off_start + 1:position_v_g_off])
                 i += 1
-            print(f'vg_off=', v_g_off)
+            print('vg_off=', v_g_off)
             if not compare_list(v_g_off):
                 raise ValueError
             j = 0
@@ -820,7 +816,7 @@ class DatabaseManager:
                     position_r_g_off_start = csv_files[j].rfind("_", 0, position_r_g_off)
                     r_g_off.append(csv_files[j][position_r_g_off_start + 1:position_r_g_off])
                 j += 1
-            print(f'Rg_off=', r_g_off)
+            print('Rg_off=', r_g_off)
             if not compare_list(r_g_off):
                 raise ValueError
             k = 0
@@ -831,7 +827,7 @@ class DatabaseManager:
                     position_t_j_off_start = csv_files[k].rfind("_", 0, position_t_j_off)
                     t_j_off.append(csv_files[k][position_t_j_off_start + 1:position_t_j_off])
                 k += 1
-            print(f't_j_off=', t_j_off)
+            print('t_j_off=', t_j_off)
             if not compare_list(t_j_off):
                 raise ValueError
 
@@ -938,7 +934,8 @@ class DatabaseManager:
                 upper_integration_limit = i
 
                 if measurement_dict['mode'] == 'analyze':
-                    text1 = f"E_off = {(e_off_temp * 1000000).round(2)} µJ, Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                    text1 = f"E_off = {(e_off_temp * 1000000).round(2)} µJ, Integration time = " \
+                            f"{((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
                     text2 = f"time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
                     fig, ax1 = plt.subplots()
                     ax1.set_xlabel("t / ns")
@@ -948,16 +945,16 @@ class DatabaseManager:
                     plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
                     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
                     ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
-                            verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                             verticalalignment='bottom', horizontalalignment='left', bbox=props)
                     ax1.text(0.5, .5, text2, transform=ax1.transAxes, fontsize=12,
-                            verticalalignment='center', horizontalalignment='left', bbox=props)
+                             verticalalignment='center', horizontalalignment='left', bbox=props)
                     plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
                     ax2 = ax1.twinx()
                     ax2.set_ylabel('Uds / V', color='b')
                     ax2.plot(vds_temp[:, 0] * 1000000000, vds_temp[:, 1], color='b')
                     plt.show()
                     if time_delay == 0:
-                        time_input =0
+                        time_input = 0
                     else:
                         time_input = input('Please give a value for time correction in ns')
                         if check_float(time_input):
@@ -974,34 +971,35 @@ class DatabaseManager:
                     e_off.append([id_avg_max, e_off_temp])
 
                 di_dt_off.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
-                        abs(id_temp[di_dt_counter_high, 0] - id_temp[di_dt_counter_low, 0]) * 1000000000))
+                    abs(id_temp[di_dt_counter_high, 0] - id_temp[di_dt_counter_low, 0]) * 1000000000))
                 dv_dt_off.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[lower_integration_limit, 1]) / (
-                            abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[lower_integration_limit, 0]) * 1000000000))
+                    abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[lower_integration_limit, 0]) * 1000000000))
 
                 sample_point += 1
 
             e_off_0 = [item[0] for item in e_off]
             e_off_1 = [item[1] for item in e_off]
 
-            e_off_meas = {'dataset_type': measurement_dict.get('dataset_type'),
-                        't_j': t_j_off,
-                        'load_inductance': measurement_dict.get('load_inductance'),
-                        'commutation_inductance': measurement_dict.get('commutation_inductance'),
-                        'commutation_device': measurement_dict.get('commutation_device'),
-                        'comment': measurement_dict.get('comment'),
-                        'measurement_date': measurement_dict.get('measurement_date'),
-                        'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                        'v_supply': v_supply_off,
-                        # 'v_g': v_g,
-                        'v_g_off': v_g_off,
-                        # 'r_g': r_g,
-                        'r_g_off': r_g_off,
-                        'graph_i_e': np.array([e_off_0, e_off_1]),
-                        'graph_r_e': np.array([e_off_0, e_off_1]),
-                        'e_x': float(e_off_1[0]),
-                        'i_x': id_avg_max,
-                        'dv_dt': dv_dt_off,
-                        'di_dt': di_dt_off}
+            e_off_meas = {
+                'dataset_type': measurement_dict.get('dataset_type'),
+                't_j': t_j_off,
+                'load_inductance': measurement_dict.get('load_inductance'),
+                'commutation_inductance': measurement_dict.get('commutation_inductance'),
+                'commutation_device': measurement_dict.get('commutation_device'),
+                'comment': measurement_dict.get('comment'),
+                'measurement_date': measurement_dict.get('measurement_date'),
+                'measurement_testbench': measurement_dict.get('measurement_testbench'),
+                'v_supply': v_supply_off,
+                # 'v_g': v_g,
+                'v_g_off': v_g_off,
+                # 'r_g': r_g,
+                'r_g_off': r_g_off,
+                'graph_i_e': np.array([e_off_0, e_off_1]),
+                'graph_r_e': np.array([e_off_0, e_off_1]),
+                'e_x': float(e_off_1[0]),
+                'i_x': id_avg_max,
+                'dv_dt': dv_dt_off,
+                'di_dt': di_dt_off}
 
             dpt_raw_data |= {'dpt_off_vds': vds_raw_off, 'dpt_off_id': id_raw_off}
 
@@ -1034,7 +1032,7 @@ class DatabaseManager:
                     position_v_g_start = csv_files[i].rfind("_", 0, position_v_g)
                     v_g.append(csv_files[i][position_v_g_start + 1:position_v_g])
                 i += 1
-            print(f'vg=', v_g)
+            print('vg=', v_g)
             if not compare_list(v_g):
                 raise ValueError
             j = 0
@@ -1045,7 +1043,7 @@ class DatabaseManager:
                     position_r_g_start = csv_files[j].rfind("_", 0, position_r_g)
                     r_g.append(csv_files[j][position_r_g_start + 1:position_r_g])
                 j += 1
-            print(f'Rg=', r_g)
+            print('Rg=', r_g)
             if not compare_list(r_g):
                 raise ValueError
             k = 0
@@ -1056,18 +1054,18 @@ class DatabaseManager:
                     position_t_j_start = csv_files[k].rfind("_", 0, position_t_j)
                     t_j.append(csv_files[k][position_t_j_start + 1:position_t_j])
                 k += 1
-            print(f't_j=', t_j)
+            print('t_j=', t_j)
             if not compare_list(t_j):
                 raise ValueError
-            l = 0
+            csv_count = 0
             v_supply_on = []
-            while csv_length > l:
-                if csv_files[l].rfind("_ON_I") != -1:
-                    position_v_supply_on = csv_files[l].rfind("V_")
-                    position_v_supply_on_start = csv_files[l].rfind("_", 0, position_v_supply_on)
-                    v_supply_on.append(csv_files[l][position_v_supply_on_start + 1:position_v_supply_on])
-                l += 1
-            print(f'v_supply=', v_supply_on)
+            while csv_length > csv_count:
+                if csv_files[csv_count].rfind("_ON_I") != -1:
+                    position_v_supply_on = csv_files[csv_count].rfind("V_")
+                    position_v_supply_on_start = csv_files[csv_count].rfind("_", 0, position_v_supply_on)
+                    v_supply_on.append(csv_files[csv_count][position_v_supply_on_start + 1:position_v_supply_on])
+                csv_count += 1
+            print('v_supply=', v_supply_on)
             if not compare_list(v_supply_on):
                 raise ValueError
             ##############################
@@ -1172,7 +1170,8 @@ class DatabaseManager:
                 upper_integration_limit = i
 
                 if measurement_dict['mode'] == 'analyze':
-                    text1 = f"E_on = {(e_on_temp * 1000000).round(2)} µJ, Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
+                    text1 = f"E_on = {(e_on_temp * 1000000).round(2)} µJ, Integration time = " \
+                            f"{((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
                     text2 = f"time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
                     fig, ax1 = plt.subplots()
                     ax1.set_xlabel("t / ns")
@@ -1183,9 +1182,9 @@ class DatabaseManager:
                     plt.axvline(id_temp[lower_integration_limit, 0] * 1000000000, color='green', linestyle='dotted', linewidth=2)
                     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
                     ax1.text(0.02, 1.05, text1, transform=ax1.transAxes, fontsize=12,
-                            verticalalignment='bottom', horizontalalignment='left', bbox=props)
+                             verticalalignment='bottom', horizontalalignment='left', bbox=props)
                     ax1.text(0.5, .5, text2, transform=ax1.transAxes, fontsize=12,
-                            verticalalignment='center', horizontalalignment='left', bbox=props)
+                             verticalalignment='center', horizontalalignment='left', bbox=props)
                     plt.grid(axis='both', color='grey', linestyle='--', linewidth=1)
                     ax2 = ax1.twinx()
                     ax2.set_ylabel('Uds / V', color='b')
@@ -1211,9 +1210,9 @@ class DatabaseManager:
                     r_g_on_list.append(on_i_locations[sample_point][1])
 
                 dv_dt_on.append((vds_temp[dv_dt_counter_high, 1] - vds_temp[dv_dt_counter_low, 1]) / (
-                            abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[dv_dt_counter_low, 0]) * 1000000000))
+                    abs(vds_temp[dv_dt_counter_high, 0] - vds_temp[dv_dt_counter_low, 0]) * 1000000000))
                 di_dt_on.append((id_temp[di_dt_counter_high, 1] - id_temp[di_dt_counter_low, 1]) / (
-                            abs(vds_temp[di_dt_counter_high, 0] - vds_temp[di_dt_counter_low, 0]) * 1000000000))
+                    abs(vds_temp[di_dt_counter_high, 0] - vds_temp[di_dt_counter_low, 0]) * 1000000000))
 
                 sample_point += 1
 
@@ -1221,24 +1220,24 @@ class DatabaseManager:
             e_on_1 = [item[1] for item in e_on]
 
             e_on_meas = {'dataset_type': measurement_dict.get('dataset_type'),
-                        't_j': t_j,
-                        'load_inductance': measurement_dict.get('load_inductance'),
-                        'commutation_inductance': measurement_dict.get('commutation_inductance'),
-                        'commutation_device': measurement_dict.get('commutation_device'),
-                        'comment': measurement_dict.get('comment'),
-                        'measurement_date': measurement_dict.get('measurement_date'),
-                        'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                        'v_supply': v_supply_on,
-                        'v_g': v_g,
-                        # 'v_g_off': v_g_off,
-                        'r_g': r_g,
-                        # 'r_g_off': r_g_off,
-                        'graph_i_e': np.array([e_on_0, e_on_1]),
-                        'graph_r_e': np.array([e_on_0, e_on_1]),
-                        'e_x': float(e_on_1[0]),
-                        'i_x': id_avg_max,
-                        'dv_dt': dv_dt_on,
-                        'di_dt': di_dt_on}
+                         't_j': t_j,
+                         'load_inductance': measurement_dict.get('load_inductance'),
+                         'commutation_inductance': measurement_dict.get('commutation_inductance'),
+                         'commutation_device': measurement_dict.get('commutation_device'),
+                         'comment': measurement_dict.get('comment'),
+                         'measurement_date': measurement_dict.get('measurement_date'),
+                         'measurement_testbench': measurement_dict.get('measurement_testbench'),
+                         'v_supply': v_supply_on,
+                         'v_g': v_g,
+                         # 'v_g_off': v_g_off,
+                         'r_g': r_g,
+                         # 'r_g_off': r_g_off,
+                         'graph_i_e': np.array([e_on_0, e_on_1]),
+                         'graph_r_e': np.array([e_on_0, e_on_1]),
+                         'e_x': float(e_on_1[0]),
+                         'i_x': id_avg_max,
+                         'dv_dt': dv_dt_on,
+                         'di_dt': di_dt_on}
 
             dpt_raw_data |= {'dpt_on_vds': vds_raw_on, 'dpt_on_id': id_raw_on}
 
@@ -1256,19 +1255,16 @@ class DatabaseManager:
             plt.show(block=True)
 
         dpt_raw_data |= {'t_j': t_j,
-                        'load_inductance': measurement_dict.get('load_inductance'),
-                        'measurement_date': measurement_dict.get('measurement_date'),
-                        'measurement_testbench': measurement_dict.get('measurement_testbench'),
-                        'v_supply': v_supply_on,
-                        'v_g':v_g,
-                        'v_g_off': v_g_off}
+                         'load_inductance': measurement_dict.get('load_inductance'),
+                         'measurement_date': measurement_dict.get('measurement_date'),
+                         'measurement_testbench': measurement_dict.get('measurement_testbench'),
+                         'v_supply': v_supply_on,
+                         'v_g': v_g,
+                         'v_g_off': v_g_off}
 
         if measurement_dict.get('dataset_type') == 'graph_r_e':
-            dpt_raw_data |= {'dataset_type': 'dpt_u_i_r',
-                            'r_g': r_g_on_list}
+            dpt_raw_data |= {'dataset_type': 'dpt_u_i_r', 'r_g': r_g_on_list}
         else:
-            dpt_raw_data |= {'dataset_type': 'dpt_u_i',
-                            'r_g': r_g}
+            dpt_raw_data |= {'dataset_type': 'dpt_u_i', 'r_g': r_g}
         dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas, 'raw_measurement_data': dpt_raw_data}
         return dpt_dict
-

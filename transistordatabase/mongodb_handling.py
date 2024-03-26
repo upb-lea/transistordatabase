@@ -1,10 +1,11 @@
+"""Hanle with the mongodb database."""
 # Third party libraries
 import pymongo
 from pymongo.errors import ServerSelectionTimeoutError
 
 def connect_tdb(host: str):
     """
-    A method for establishing connection with transistordatabase_exchange.
+    Establish a connection with transistordatabase_exchange.
 
     :param host: "local" is specified by default, other cases need to be investigated
     :type host: str
@@ -19,7 +20,8 @@ def connect_tdb(host: str):
 
 def connect_local_tdb():
     """
-    A method for establishing connection with transistordatabase_exchange.
+    Establish a connection with transistordatabase_exchange.
+
     Internally used by
 
       - update_from_fileexchange() method to sync the local with transistordatabase_File_Exchange
@@ -44,7 +46,7 @@ def connect_local_tdb():
 
 def drop_local_tdb():
     """
-    Drop the local database
+    Drop the local database.
 
     :raises pymongo.errors.ServerSelectionTimeoutError: if there is no mongoDB instance running
     """
@@ -61,5 +63,7 @@ def drop_local_tdb():
         my_client.drop_database('transistor_database')
 
 class MissingServerConnection(ServerSelectionTimeoutError):
+    """Reserved for future use."""
+
     # TODO 
     pass

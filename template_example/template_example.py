@@ -1,11 +1,4 @@
 # imports
-import numpy as np
-import datetime
-import sys
-import os
-from pymongo import MongoClient
-from matplotlib import pyplot as plt
-import json
 import transistordatabase as tdb
 
 
@@ -66,12 +59,12 @@ def Template():
     ####################################
     # switch parameters
     ####################################
-    #### Metadata
+    # Metadata
     comment = "SiC switch"  # Optional
     manufacturer = "CREE"  # Optional
     technology = "unknown"  # Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  # Optional
 
-    #### Channel parameters
+    # Channel parameters
     # channel data minus 40 degree
     channel_m40_15 = {"t_j": -40, 'v_g': 15, "graph_v_i": tdb.csv2array('switch_channel_m40_15V.csv', first_xy_to_00=True)}  # insert csv here
     channel_m40_13 = {"t_j": -40, 'v_g': 13, "graph_v_i": tdb.csv2array('switch_channel_m40_13V.csv', first_xy_to_00=True)}  # insert csv here
@@ -91,7 +84,7 @@ def Template():
     channel_175_9 = {"t_j": 175, 'v_g': 9, "graph_v_i": tdb.csv2array('switch_channel_175_9V.csv', first_xy_to_00=True)}  # insert csv here
     channel_175_7 = {"t_j": 175, 'v_g': 7, "graph_v_i": tdb.csv2array('switch_channel_175_7V.csv', first_xy_to_00=True)}  # insert csv here
 
-    #### switching parameters
+    # switching parameters
     e_on_25_600 = {"dataset_type": "graph_i_e",
                    "t_j": 25,
                    'v_g': 15,
@@ -147,7 +140,7 @@ def Template():
         'graph_t_r': tdb.csv2array('switch_on_res_vg_15V.csv')
     }  # insert csv here
 
-    ### switch foster parameters
+    # switch foster parameters
     switch_foster_args = {
         # 'r_th_vector': r_th_vector,
         'r_th_total': 0.27,
@@ -159,14 +152,14 @@ def Template():
     }
     # switch_foster_args = None
 
-    #### Bring the switch_args together
+    # Bring the switch_args together
     switch_args = {
         'comment': comment,
         'manufacturer': manufacturer,
         'technology': technology,
         't_j_max': 175,
-        'channel': [channel_m40_7, channel_m40_9, channel_m4_11, channel_m40_13, channel_m40_15, channel_25_15, channel_25_13, channel_25_11, channel_25_9, channel_25_7, channel_175_15,
-                    channel_175_13, channel_175_11, channel_175_9, channel_175_7],
+        'channel': [channel_m40_7, channel_m40_9, channel_m4_11, channel_m40_13, channel_m40_15, channel_25_15, channel_25_13, channel_25_11,
+                    channel_25_9, channel_25_7, channel_175_15, channel_175_13, channel_175_11, channel_175_9, channel_175_7],
         'e_on': [e_on_25_600, e_on_25_800],
         'e_off': [e_off_25_600, e_off_25_800],
         'charge_curve': [switch_gate_charge_curve_800],
@@ -182,16 +175,22 @@ def Template():
     manufacturer = 'manufacturer diode'
     technology = 'technology diode'
 
-    #### Channel parameters
-    channel_25_0 = {"t_j": 25, 'v_g': 0, "graph_v_i": tdb.csv2array('diode_channel_25_0vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
-    channel_25_neg2 = {"t_j": 25, 'v_g': -2, "graph_v_i": tdb.csv2array('diode_channel_25_-2vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
-    channel_25_neg4 = {"t_j": 25, 'v_g': -4, "graph_v_i": tdb.csv2array('diode_channel_25_-4vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    # Channel parameters
+    channel_25_0 = {"t_j": 25, 'v_g': 0, "graph_v_i": tdb.csv2array('diode_channel_25_0vgs.csv',
+                                                                    first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_25_neg2 = {"t_j": 25, 'v_g': -2, "graph_v_i": tdb.csv2array('diode_channel_25_-2vgs.csv',
+                                                                        first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_25_neg4 = {"t_j": 25, 'v_g': -4, "graph_v_i": tdb.csv2array('diode_channel_25_-4vgs.csv',
+                                                                        first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
 
-    channel_175_0 = {"t_j": 175, 'v_g': 0, "graph_v_i": tdb.csv2array('diode_channel_175_0vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
-    channel_175_neg2 = {"t_j": 175, 'v_g': -2, "graph_v_i": tdb.csv2array('diode_channel_175_-2vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
-    channel_175_neg4 = {"t_j": 175, 'v_g': -4, "graph_v_i": tdb.csv2array('diode_channel_175_-4vgs.csv', first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_175_0 = {"t_j": 175, 'v_g': 0, "graph_v_i": tdb.csv2array('diode_channel_175_0vgs.csv',
+                                                                      first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_175_neg2 = {"t_j": 175, 'v_g': -2, "graph_v_i": tdb.csv2array('diode_channel_175_-2vgs.csv',
+                                                                          first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
+    channel_175_neg4 = {"t_j": 175, 'v_g': -4, "graph_v_i": tdb.csv2array('diode_channel_175_-4vgs.csv',
+                                                                          first_xy_to_00=True, second_y_to_0=True, mirror_xy_data=True)}  # insert csv here
 
-    ### diode foster parameters
+    # diode foster parameters
     diode_foster_args = {
         # 'r_th_vector': r_th_vector,
         'r_th_total': 0,
@@ -225,8 +224,9 @@ if __name__ == '__main__':
     # Method examples
     ####################################
 
-    #### transistor methods ####
-    # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')  # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    # transistor methods #
+    # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')
+    # linearisation at 175 degree, 15V gatevoltage, 40A channel current
     # print(f"{transistor.wp.switch_v_channel = } V")
     # print(f"{transistor.wp.switch_r_channel = } Ohm")
     # print(transistor.calc_v_eoss())
@@ -236,13 +236,13 @@ if __name__ == '__main__':
     # connect transistors in parallel
     # parallel_transistors = transistor.parallel_transistors(3)
 
-    #### switch methods ####
+    # switch methods #
     # transistor.switch.plot_energy_data()
     # transistor.switch.plot_all_channel_data()
     # transistor.switch.plot_channel_data_vge(15)
     # transistor.switch.plot_channel_data_temp(175)
 
-    #### diode methods ####
+    # diode methods #
     # transistor.diode.plot_energy_data()
     # transistor.diode.plot_all_channel_data()
 
@@ -325,10 +325,3 @@ if __name__ == '__main__':
     #
     # # diode, linearize channel and search for losscurves
     # transistor.wp.diode_v_channel, transistor.wp.diode_r_channel = transistor.calc_lin_channel(25, -4, 150, 'diode')
-
-
-
-
-
-
-

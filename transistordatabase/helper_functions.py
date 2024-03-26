@@ -1,3 +1,4 @@
+"""Helper functions."""
 # Python standard libraries
 from __future__ import annotations
 from typing import List, Dict, Tuple
@@ -23,221 +24,222 @@ transistor_name_regex = "(\S*)( \((\d*)\))?"
 
 # ==== Validation functions ====
 def isvalid_transistor_name(transistor_name):
-    """Checks if the given transistor name is valid."""
+    """Check if the given transistor name is valid."""
     return False if re.match(transistor_name_regex, transistor_name) is None else True
 
 def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
-        """
-        This method checks input argument dictionaries for their validity. It is checked whether all mandatory keys
-        are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'type').
-        Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
-        Raises appropriate errors if dictionary invalid in other ways.
+    """
+    Check input argument dictionaries for their validity.
 
-        :param dataset_dict: Dataset of type dict
-        :param dict_type: Could be Transistor/SwitchEnergyData/FosterThermalModel/Diode_ChannelData etc. as specified in the internally provided list.
+    It is checked whether all mandatory keys
+    are present, have the right type and permitted values (e.g. 'MOSFET' or 'IGBT' or 'SiC-MOSFET' for 'type').
+    Returns 'False' if dictionary is 'None' or Empty. These cases should be handled outside this method.
+    Raises appropriate errors if dictionary invalid in other ways.
 
-        :raises TypeError: Raised when the instance or dictionary values are not of expected type
-        :raises ValueError: Raised when the certain dict values like housing type, module manufacturer values are not the expected values
-        :raises KeyError: Raised when mandatory keys are not available in dataset_dict
+    :param dataset_dict: Dataset of type dict
+    :param dict_type: Could be Transistor/SwitchEnergyData/FosterThermalModel/Diode_ChannelData etc. as specified in the internally provided list.
 
-        :return: True in case of valid dict, 'False' if dictionary is 'None' or Empty
-        :rtype: bool
+    :raises TypeError: Raised when the instance or dictionary values are not of expected type
+    :raises ValueError: Raised when the certain dict values like housing type, module manufacturer values are not the expected values
+    :raises KeyError: Raised when mandatory keys are not available in dataset_dict
 
-        .. todo:: Error if given key is not used?
-        """
+    :return: True in case of valid dict, 'False' if dictionary is 'None' or Empty
+    :rtype: bool
 
-        supported_types = ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']
-        instructions = {
-            'Transistor': {
-                'mandatory_keys': {'name', 'type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
-                                   'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int', 'r_th_cs',
-                                   'r_th_switch_cs', 'r_th_diode_cs'},
-                'str_keys': {'name', 'type', 'author', 'manufacturer', 'housing_type', 'comment', 'datasheet_hyperlink',
-                             'datasheet_version'},
-                'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
-                                 'r_g_int', 'c_oss_fix', 'c_iss_fix', 'c_rss_fix', 'r_th_cs', 'r_th_switch_cs',
-                                 'r_th_diode_cs', 't_c_max', 'r_g_on_recommended', 'r_g_off_recommended'},
-                'array_keys': {'graph_v_ecoss'}},
-            'Switch': {
-                'mandatory_keys': {'t_j_max'},
-                'str_keys': {'comment', 'manufacturer', 'technology'},
-                'numeric_keys': {'t_j_max'},
-                'array_keys': {}},
-            'Diode': {
-                'mandatory_keys': {'t_j_max'},
-                'str_keys': {'comment', 'manufacturer', 'technology'},
-                'numeric_keys': {'t_j_max'},
-                'array_keys': {}},
-            'Switch_LinearizedModel': {
-                'mandatory_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
-                'str_keys': {},
-                'numeric_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
-                'array_keys': {}},
-            'Diode_LinearizedModel': {
-                'mandatory_keys': {'t_j', 'v_g', 'i_channel', 'r_channel'},
-                'str_keys': {},
-                'numeric_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
-                'array_keys': {}},
-            'Diode_ChannelData': {
-                'mandatory_keys': {'t_j', 'graph_v_i'},
-                'numeric_keys': {'t_j', 'v_g'},
-                'str_keys': {},
-                'array_keys': {'graph_v_i'}},
-            'Switch_ChannelData': {
-                'mandatory_keys': {'t_j', 'graph_v_i', 'v_g'},
-                'numeric_keys': {'t_j', 'v_g'},
-                'str_keys': {},
-                'array_keys': {'graph_v_i'}},
-            'SwitchEnergyData_single': {
-                'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'},
-                'str_keys': {},
-                'numeric_keys': {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'},
-                'array_keys': {}},
-            'SwitchEnergyData_graph_r_e': {
-                'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'graph_r_e', 'i_x'},
-                'str_keys': {},
-                'numeric_keys': {'t_j', 'v_supply', 'v_g', 'i_x'},
-                'array_keys': {'graph_r_e'}},
-            'SwitchEnergyData_graph_i_e': {
-                'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'graph_i_e', 'r_g'},
-                'str_keys': {},
-                'numeric_keys': {'t_j', 'v_supply', 'v_g', 'r_g'},
-                'array_keys': {'graph_i_e'}},
-            'VoltageDependentCapacitance': {
-                'mandatory_keys': {'t_j', 'graph_v_c'},
-                'str_keys': {},
-                'numeric_keys': {'t_j'},
-                'array_keys': {'graph_v_c'}},
-            'FosterThermalModel': {
-                'mandatory_keys': {'r_th_total'},
-                'str_keys': {},
-                'numeric_keys': {'r_th_total', 'c_th_total', 'tau_total'},
-                'array_keys': {'graph_t_rthjc'}},
-            'RawMeasurementData': {
-                'mandatory_keys': {'dataset_type'},
-                'str_keys': {},
-                'numeric_keys': {},
-                'array_keys': {}},
-            'EffectiveOutputCapacitance': {
-                'mandatory_keys': {'c_o', 'v_gs', 'v_ds'},
-                'str_keys': {},
-                'numeric_keys': {'c_o', 'v_gs', 'v_ds'},
-                'array_keys': {}},
-            'TemperatureDependResistance': {
-                'mandatory_keys': {'i_channel', 'v_g', 'dataset_type', 'graph_t_r'},
-                'str_keys': {'dataset_type'},
-                'numeric_keys': {'i_channel', 'v_g', 'r_channel_nominal'},
-                'array_keys': {'graph_t_r'}},
-            'GateChargeCurve': {
-                'mandatory_keys': {'i_channel', 't_j', 'v_supply', 'graph_q_v'},
-                'str_keys': {},
-                'numeric_keys': {'i_channel', 't_j', 'v_supply', 'i_g'},
-                'array_keys': {'graph_q_v'}},
-            'SOA': {
-                'mandatory_keys': {'graph_i_v'},
-                'str_keys': {},
-                'numeric_keys': {'t_c', 'time_pulse'},
-                'array_keys': {'graph_i_v'}}
+    .. todo:: Error if given key is not used?
+    """
+    supported_types = ['MOSFET', 'IGBT', 'SiC-MOSFET', 'GaN-Transistor']
+    instructions = {
+        'Transistor': {
+            'mandatory_keys': {'name', 'type', 'author', 'manufacturer', 'housing_area', 'cooling_area',
+                               'housing_type', 'v_abs_max', 'i_abs_max', 'i_cont', 'r_g_int', 'r_th_cs',
+                               'r_th_switch_cs', 'r_th_diode_cs'},
+            'str_keys': {'name', 'type', 'author', 'manufacturer', 'housing_type', 'comment', 'datasheet_hyperlink',
+                         'datasheet_version'},
+            'numeric_keys': {'housing_area', 'cooling_area', 'v_abs_max', 'i_abs_max', 'i_cont', 't_c_max',
+                             'r_g_int', 'c_oss_fix', 'c_iss_fix', 'c_rss_fix', 'r_th_cs', 'r_th_switch_cs',
+                             'r_th_diode_cs', 'r_g_on_recommended', 'r_g_off_recommended'},
+            'array_keys': {'graph_v_ecoss'}},
+        'Switch': {
+            'mandatory_keys': {'t_j_max'},
+            'str_keys': {'comment', 'manufacturer', 'technology'},
+            'numeric_keys': {'t_j_max'},
+            'array_keys': {}},
+        'Diode': {
+            'mandatory_keys': {'t_j_max'},
+            'str_keys': {'comment', 'manufacturer', 'technology'},
+            'numeric_keys': {'t_j_max'},
+            'array_keys': {}},
+        'Switch_LinearizedModel': {
+            'mandatory_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
+            'str_keys': {},
+            'numeric_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
+            'array_keys': {}},
+        'Diode_LinearizedModel': {
+            'mandatory_keys': {'t_j', 'v_g', 'i_channel', 'r_channel'},
+            'str_keys': {},
+            'numeric_keys': {'t_j', 'v_g', 'i_channel', 'r_channel', 'v0_channel'},
+            'array_keys': {}},
+        'Diode_ChannelData': {
+            'mandatory_keys': {'t_j', 'graph_v_i'},
+            'numeric_keys': {'t_j', 'v_g'},
+            'str_keys': {},
+            'array_keys': {'graph_v_i'}},
+        'Switch_ChannelData': {
+            'mandatory_keys': {'t_j', 'graph_v_i', 'v_g'},
+            'numeric_keys': {'t_j', 'v_g'},
+            'str_keys': {},
+            'array_keys': {'graph_v_i'}},
+        'SwitchEnergyData_single': {
+            'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'},
+            'str_keys': {},
+            'numeric_keys': {'t_j', 'v_supply', 'v_g', 'e_x', 'r_g', 'i_x'},
+            'array_keys': {}},
+        'SwitchEnergyData_graph_r_e': {
+            'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'graph_r_e', 'i_x'},
+            'str_keys': {},
+            'numeric_keys': {'t_j', 'v_supply', 'v_g', 'i_x'},
+            'array_keys': {'graph_r_e'}},
+        'SwitchEnergyData_graph_i_e': {
+            'mandatory_keys': {'t_j', 'v_supply', 'v_g', 'graph_i_e', 'r_g'},
+            'str_keys': {},
+            'numeric_keys': {'t_j', 'v_supply', 'v_g', 'r_g'},
+            'array_keys': {'graph_i_e'}},
+        'VoltageDependentCapacitance': {
+            'mandatory_keys': {'t_j', 'graph_v_c'},
+            'str_keys': {},
+            'numeric_keys': {'t_j'},
+            'array_keys': {'graph_v_c'}},
+        'FosterThermalModel': {
+            'mandatory_keys': {'r_th_total'},
+            'str_keys': {},
+            'numeric_keys': {'r_th_total', 'c_th_total', 'tau_total'},
+            'array_keys': {'graph_t_rthjc'}},
+        'RawMeasurementData': {
+            'mandatory_keys': {'dataset_type'},
+            'str_keys': {},
+            'numeric_keys': {},
+            'array_keys': {}},
+        'EffectiveOutputCapacitance': {
+            'mandatory_keys': {'c_o', 'v_gs', 'v_ds'},
+            'str_keys': {},
+            'numeric_keys': {'c_o', 'v_gs', 'v_ds'},
+            'array_keys': {}},
+        'TemperatureDependResistance': {
+            'mandatory_keys': {'i_channel', 'v_g', 'dataset_type', 'graph_t_r'},
+            'str_keys': {'dataset_type'},
+            'numeric_keys': {'i_channel', 'v_g', 'r_channel_nominal'},
+            'array_keys': {'graph_t_r'}},
+        'GateChargeCurve': {
+            'mandatory_keys': {'i_channel', 't_j', 'v_supply', 'graph_q_v'},
+            'str_keys': {},
+            'numeric_keys': {'i_channel', 't_j', 'v_supply', 'i_g'},
+            'array_keys': {'graph_q_v'}},
+        'SOA': {
+            'mandatory_keys': {'graph_i_v'},
+            'str_keys': {},
+            'numeric_keys': {'t_c', 'time_pulse'},
+            'array_keys': {'graph_i_v'}}
 
-        }
-        if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
-            return False  # Empty dataset. Can be valid depending on circumstances, hence no error.
-        if not isinstance(dataset_dict, dict):
-            raise TypeError(f"Expected dictionary with {str(dict_type)} arguments but got {str(type(dataset_dict))} "
-                            f"instead.")
+    }
+    if dataset_dict is None or not bool(dataset_dict):  # "bool(dataset_dict) = False" represents empty dictionary
+        return False  # Empty dataset. Can be valid depending on circumstances, hence no error.
+    if not isinstance(dataset_dict, dict):
+        raise TypeError(f"Expected dictionary with {str(dict_type)} arguments but got {str(type(dataset_dict))} "
+                        f"instead.")
 
-        if dict_type == 'Transistor':
-            if dataset_dict.get("_id") is not None:
-                _id = dataset_dict["_id"]
-                if not isinstance(_id, ObjectId):
-                    raise TypeError(f"{_id} is not a valid ObjectId.")
+    if dict_type == 'Transistor':
+        if dataset_dict.get("_id") is not None:
+            _id = dataset_dict["_id"]
+            if not isinstance(_id, ObjectId):
+                raise TypeError(f"{_id} is not a valid ObjectId.")
 
-            if dataset_dict.get('type') not in supported_types:
-                raise ValueError(f"Transistor type currently not supported. 'type' must be in "
-                                 f"{supported_types}")
-            text_file_dict = {'manufacturer': r'data/module_manufacturers.txt', 'housing_type': r'data/housing_types.txt'}
-            for key, filename in text_file_dict.items():
-                file = os.path.join(os.path.dirname(__file__), filename)
-                with open(file, "r") as file_txt:
-                    read_list = [line.replace("\n", "") for line in file_txt.readlines() if not line.startswith("#")]
-                    # Remove all non alphanumeric characters from housing_type and manufacturer names and
-                    # convert to lowercase for comparison
-                    snub = "[^A-Za-z0-9]+" if key == 'housing_type' else "[^A-Za-z]+"
-                    alphanum_values = [re.sub(snub, "", line).lstrip().lower() for line in read_list]
-                    dataset_value = dataset_dict.get(key)
-                    if re.sub(snub, "", dataset_value).lstrip().lower() not in alphanum_values:
-                        name = key.capitalize().replace("_", " ")
-                        if name == 'Housing type':
-                            housing_file_path = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
-                            raise ValueError('{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported housing types.'.format(name, dataset_value, name, alphanum_values,
-                                                                                                                                                             housing_file_path))
-                        elif name == 'Manufacturer':
-                            module_file_path = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
-                            raise ValueError(
-                                '{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported module manufacturers.'.format(name, dataset_value, name, alphanum_values,
-                                                                                                                                                       module_file_path))
+        if dataset_dict.get('type') not in supported_types:
+            raise ValueError(f"Transistor type currently not supported. 'type' must be in "
+                             f"{supported_types}")
+        text_file_dict = {'manufacturer': r'data/module_manufacturers.txt', 'housing_type': r'data/housing_types.txt'}
+        for key, filename in text_file_dict.items():
+            file = os.path.join(os.path.dirname(__file__), filename)
+            with open(file, "r") as file_txt:
+                read_list = [line.replace("\n", "") for line in file_txt.readlines() if not line.startswith("#")]
+                # Remove all non alphanumeric characters from housing_type and manufacturer names and
+                # convert to lowercase for comparison
+                snub = "[^A-Za-z0-9]+" if key == 'housing_type' else "[^A-Za-z]+"
+                alphanum_values = [re.sub(snub, "", line).lstrip().lower() for line in read_list]
+                dataset_value = dataset_dict.get(key)
+                if re.sub(snub, "", dataset_value).lstrip().lower() not in alphanum_values:
+                    name = key.capitalize().replace("_", " ")
+                    if name == 'Housing type':
+                        housing_file_path = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
+                        raise ValueError('{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported housing types.'.format(
+                            name, dataset_value, name, alphanum_values, housing_file_path))
+                    elif name == 'Manufacturer':
+                        module_file_path = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
+                        raise ValueError(
+                            '{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported module manufacturers.'.format(
+                                name, dataset_value, name, alphanum_values, module_file_path))
 
-        if dict_type == 'SwitchEnergyData':
-            if dataset_dict.get('dataset_type') not in ['single', 'graph_r_e', 'graph_i_e']:
-                raise KeyError("Dictionary does not contain 'dataset_type' key necessary for SwitchEnergyData object "
-                               "creation. 'dataset_type' must be 'single', 'graph_r_e' or 'graph_i_e'. "
-                               "Check SwitchEnergyData class for further information.")
-            if dataset_dict['dataset_type'] == 'single':
-                dict_type = 'SwitchEnergyData_single'
-            if dataset_dict['dataset_type'] == 'graph_r_e':
-                dict_type = 'SwitchEnergyData_graph_r_e'
-            if dataset_dict['dataset_type'] == 'graph_i_e':
-                dict_type = 'SwitchEnergyData_graph_i_e'
+    if dict_type == 'SwitchEnergyData':
+        if dataset_dict.get('dataset_type') not in ['single', 'graph_r_e', 'graph_i_e']:
+            raise KeyError("Dictionary does not contain 'dataset_type' key necessary for SwitchEnergyData object "
+                           "creation. 'dataset_type' must be 'single', 'graph_r_e' or 'graph_i_e'. "
+                           "Check SwitchEnergyData class for further information.")
+        if dataset_dict['dataset_type'] == 'single':
+            dict_type = 'SwitchEnergyData_single'
+        if dataset_dict['dataset_type'] == 'graph_r_e':
+            dict_type = 'SwitchEnergyData_graph_r_e'
+        if dataset_dict['dataset_type'] == 'graph_i_e':
+            dict_type = 'SwitchEnergyData_graph_i_e'
 
-        if dict_type == 'FosterThermalModel':
-            given_parameters = [p for p in ['r_th_vector', 'c_th_vector', 'tau_vector']
-                                if dataset_dict.get(p) is not None]
-            if len(given_parameters) != 0:
-                for p in given_parameters:
-                    if not isinstance(dataset_dict[p], list):
-                        dataset_dict[p] = [dataset_dict[p]]
-                list_sizes = [len(dataset_dict[p]) for p in given_parameters]
-                if not list_sizes.count(list_sizes[0]) == len(list_sizes):
-                    raise TypeError("The lists 'r_th_vector', 'c_th_vector', 'tau_vector' (if given) must be the same "
-                                    "length.")
-                bool_list_numeric = all([all([check_realnum(single_value)
-                                              for single_value in dataset_dict.get(p)])
-                                         for p in given_parameters])
-            if len(given_parameters) == 1:
-                raise ValueError(f"Only 1 value out of {['r_th_vector', 'c_th_vector', 'tau_vector']} is given."
-                                 f"Either specify 2, 3 (fitting) or none of these.")
-            # ToDo: Add check, if all 3 are given whether they fit to each other?
+    if dict_type == 'FosterThermalModel':
+        given_parameters = [p for p in ['r_th_vector', 'c_th_vector', 'tau_vector']
+                            if dataset_dict.get(p) is not None]
+        if len(given_parameters) != 0:
+            for p in given_parameters:
+                if not isinstance(dataset_dict[p], list):
+                    dataset_dict[p] = [dataset_dict[p]]
+            list_sizes = [len(dataset_dict[p]) for p in given_parameters]
+            if not list_sizes.count(list_sizes[0]) == len(list_sizes):
+                raise TypeError("The lists 'r_th_vector', 'c_th_vector', 'tau_vector' (if given) must be the same "
+                                "length.")
+            bool_list_numeric = all([all([check_realnum(single_value)
+                                          for single_value in dataset_dict.get(p)])
+                                     for p in given_parameters])
+        if len(given_parameters) == 1:
+            raise ValueError(f"Only 1 value out of {['r_th_vector', 'c_th_vector', 'tau_vector']} is given."
+                             f"Either specify 2, 3 (fitting) or none of these.")
+        # ToDo: Add check, if all 3 are given whether they fit to each other?
 
-        if dict_type == 'Diode_ChannelData' or dict_type == 'Switch_ChannelData':
-            for axis in dataset_dict.get('graph_v_i'):
-                if any(x < 0 for x in axis):
-                    raise ValueError(" Negative values are not allowed, please include mirror_xy_data attribute")
+    if dict_type == 'Diode_ChannelData' or dict_type == 'Switch_ChannelData':
+        for axis in dataset_dict.get('graph_v_i'):
+            if any(x < 0 for x in axis):
+                raise ValueError(" Negative values are not allowed, please include mirror_xy_data attribute")
 
-        if dict_type == 'TemperatureDependResistance':
-            if dataset_dict.get('dataset_type') == 't_factor':
-                instructions[dict_type]['mandatory_keys'].add('r_channel_nominal')
+    if dict_type == 'TemperatureDependResistance':
+        if dataset_dict.get('dataset_type') == 't_factor':
+            instructions[dict_type]['mandatory_keys'].add('r_channel_nominal')
 
-        if dict_type not in instructions:
-            raise KeyError(f"No instructions available for validity check of argument dictionary with dict_type "
-                           f"{dict_type}.")
-        mandatory_keys = instructions[dict_type]['mandatory_keys']
-        str_keys = instructions[dict_type]['str_keys']
-        numeric_keys = instructions[dict_type]['numeric_keys']
-        array_keys = instructions[dict_type]['array_keys']
+    if dict_type not in instructions:
+        raise KeyError(f"No instructions available for validity check of argument dictionary with dict_type "
+                       f"{dict_type}.")
+    mandatory_keys = instructions[dict_type]['mandatory_keys']
+    str_keys = instructions[dict_type]['str_keys']
+    numeric_keys = instructions[dict_type]['numeric_keys']
+    array_keys = instructions[dict_type]['array_keys']
 
-        # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
-        if any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
-            raise KeyError(f"Argument dictionary does not contain all keys necessary for {dict_type} object creation. "
-                           f"Mandatory keys: {mandatory_keys}")
-        # Check if all values have appropriate types.
-        if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
-                all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]) and \
-                all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
-            return True
+    # Check if all mandatory keys are contained in the dict and none of the mandatory values is 'None'.
+    if any([dataset_dict.get(mandatory_key) is None for mandatory_key in mandatory_keys]):
+        raise KeyError(f"Argument dictionary does not contain all keys necessary for {dict_type} object creation. "
+                       f"Mandatory keys: {mandatory_keys}")
+    # Check if all values have appropriate types.
+    if all([check_realnum(dataset_dict.get(numeric_key)) for numeric_key in numeric_keys]) and \
+            all([check_str(dataset_dict.get(str_key)) for str_key in str_keys]) and \
+            all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
+        return True
 
 def matlab_compatibility_test(transistor, attribute):
     """
-    checks attribute for occurrences of None an replace it with np.nan
+    Check attribute for occurrences of None an replace it with np.nan.
 
     .. todo: This function might can be replaced by dict_clean()
 
@@ -264,7 +266,7 @@ def matlab_compatibility_test(transistor, attribute):
 # ==== Input/Output ====
 def get_xml_data(file: str) -> Dict:
     """
-    A helper function to import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data.
+    Import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data. Helper function.
 
     :param file: name of the xml file to be read
     :type file: str
@@ -289,7 +291,8 @@ def get_xml_data(file: str) -> Dict:
         channel_list = []
         foster_args = {}
         for character_node in semiconductor_data:
-            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOnLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOnLoss' and \
+                    character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
                 axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
                 current_axis = [float(x) for x in axis_string.split()]
                 axis_string = character_node.find('plecs:VoltageAxis', namespaces).text
@@ -312,7 +315,8 @@ def get_xml_data(file: str) -> Dict:
                         energy_dict["graph_i_e"] = np.transpose(np.column_stack((current_axis, energy_data)))
                         energy_on_list.append(energy_dict)
 
-            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOffLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'TurnOffLoss' and \
+                    character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
                 axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
                 current_axis = [float(x) for x in axis_string.split()]
                 axis_string = character_node.find('plecs:VoltageAxis', namespaces).text
@@ -335,7 +339,8 @@ def get_xml_data(file: str) -> Dict:
                         energy_dict["graph_i_e"] = np.transpose(np.column_stack((current_axis, energy_data)))
                         energy_off_list.append(energy_dict)
 
-            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'ConductionLoss' and character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
+            if character_node.tag == '{' + namespaces['plecs'] + '}' + 'ConductionLoss' and \
+                    character_node.find('plecs:ComputationMethod', namespaces).text.lower() == 'table only':
                 axis_string = character_node.find('plecs:CurrentAxis', namespaces).text
                 current_axis = [float(x) for x in axis_string.split()]
                 axis_string = character_node.find('plecs:TemperatureAxis', namespaces).text
@@ -356,13 +361,18 @@ def get_xml_data(file: str) -> Dict:
                 r_par.append(float(attr.attrib['R']))
                 tau_par.append(float(attr.attrib['Tau']) if attr.attrib['Tau'] else None)
             foster_args['r_th_vector'], foster_args['tau_vector'] = (r_par, tau_par) if len(r_par) > 1 else (None, None)
-            foster_args['r_th_total'], foster_args['tau_total'] = (r_par[0], tau_par[0]) if len(r_par) == 1 else (sum(foster_args['r_th_vector']), sum(foster_args['tau_vector']))
+            foster_args['r_th_total'], foster_args['tau_total'] = (r_par[0], tau_par[0]) if len(r_par) == 1 else (sum(foster_args['r_th_vector']),
+                                                                                                                  sum(foster_args['tau_vector']))
         return info, energy_on_list, energy_off_list, channel_list, foster_args
     else:
         raise ImportError('Import of ' + file + ' Not possible: Only table type xml data are accepted')
 
-def read_data_file(file_path):
-    """Reads data from a given file (Used for housing_types.txt and module_manufacturers.txt)
+def read_data_file(file_path: str):
+    """
+    Read data from a given file (Used for housing_types.txt and module_manufacturers.txt).
+
+    :param file_path: Path to housing_types.txt and/or module_manufacturers.txt
+    :type file_path: str
     """
     if not os.path.isfile(file_path):
         raise Exception(f"File {file_path} does not exist.")
@@ -380,7 +390,7 @@ def read_data_file(file_path):
 
 def html_to_pdf(html: List | str, name: List | str, path: List | str):
     """
-    A helper method to convert the generated html document to pdf file using qt WebEngineWidgets tool
+    Convert the generated html document to pdf file using qt WebEngineWidgets tool. Helper method.
 
     :param html: html string that needs to be converted to pdf file
     :type html: str or list
@@ -434,7 +444,7 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
 # ==== Plot ====
 def get_vc_plots(cap_data: Dict):
     """
-    A helper function to plot and convert voltage dependant capacitance plots in raw data format. Invoked internally by export_datasheet() method.
+    Plot and convert voltage dependant capacitance plots in raw data format. Invoked internally by export_datasheet() method. Helper function.
 
     :param cap_data: dictionary holding capacitance information of type list (self.c_oss, self.c_iss, self.c_rss)
     :type cap_data: dict
@@ -456,6 +466,13 @@ def get_vc_plots(cap_data: Dict):
     return get_img_raw_data(plt)
 
 def compare_plot(transistor_list: List, temperature: float, gatevoltage: float):
+    """Compare transistors.
+
+    - forward characteristics
+    - turn-on energies
+    - turn-off energies
+    - c_oss
+    """
     fig1, axs = plt.subplots(3, 2, sharex='row', sharey='row')
 
     for transistor in transistor_list:
@@ -511,7 +528,7 @@ def compare_plot(transistor_list: List, temperature: float, gatevoltage: float):
 # === Data ===
 def get_gatedefaults(transistor_type: str) -> List:
     """
-    Defines gate voltage defaults depending on the transistor type
+    Define gate voltage defaults depending on the transistor type.
 
     :param transistor_type: transistor type, e.g. IGBT, MOSFET, SiC-MOSFET or GaN-Transistor
     :type transistor_type: str
@@ -528,7 +545,8 @@ def get_gatedefaults(transistor_type: str) -> List:
 
 def negate_and_append(voltage: List, current: List) -> Tuple[List, np.array]:
     """
-    A helper function to negate the channel current x-axis data for the transistors of type mosfet.
+    Negate the channel current x-axis data for the transistors of type mosfet. Helper function.
+
     Generates third quadrant curve characteristics for mosfet.
 
     :param voltage: channel voltage y-axis information
@@ -554,7 +572,7 @@ def negate_and_append(voltage: List, current: List) -> Tuple[List, np.array]:
 
 def get_loss_curves(loss_data: List, plecs_holder: Dict, loss_type: str, v_g: int, is_recovery_loss: bool) -> Dict:
     """
-    A helper method to extract loss information of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
+    Extract loss information of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature. Helper function.
 
     :param loss_data: turn on/off energy data taken from transistor class switch or diode object
     :type loss_data: list
@@ -590,12 +608,13 @@ def get_loss_curves(loss_data: List, plecs_holder: Dict, loss_type: str, v_g: in
                 plecs_holder[loss_type]['Energy'][rev_voltage] = []
             plecs_holder[loss_type]['Energy'][rev_voltage].append(loss_energy.tolist())
             # Loss curves are defined at one v_g in many v_supply voltages, therefore to avoid redundancy in Tj and v_supply appends
-            plecs_holder[loss_type]['TemperatureAxis'].append(energy_dict['t_j']) if energy_dict['t_j'] not in plecs_holder[loss_type]['TemperatureAxis'] else None
+            plecs_holder[loss_type]['TemperatureAxis'].append(energy_dict['t_j']) \
+                if energy_dict['t_j'] not in plecs_holder[loss_type]['TemperatureAxis'] else None
     return plecs_holder
 
 def get_channel_data(channel_data: List, plecs_holder: Dict, v_on: int, is_diode: bool, has_body_diode: bool) -> Dict:
     """
-    A helper method to extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature.
+    Extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature. Helper function.
 
     :param channel_data: channel data taken from transistor class switch/diode object
     :type channel_data: list
@@ -626,13 +645,14 @@ def get_channel_data(channel_data: List, plecs_holder: Dict, v_on: int, is_diode
                 plecs_holder['ConductionLoss']['CurrentAxis'] = interp_current.tolist()
                 plecs_holder['ConductionLoss']['Channel'] = list()
                 plecs_holder['ConductionLoss']['TemperatureAxis'] = list()
-            plecs_holder['ConductionLoss']['TemperatureAxis'].append(channel['t_j'])  # forward characteristics are defined only at one gate voltage and does not depend on v_supply
+            # forward characteristics are defined only at one gate voltage and does not depend on v_supply
+            plecs_holder['ConductionLoss']['TemperatureAxis'].append(channel['t_j'])
             plecs_holder['ConductionLoss']['Channel'].append(channel_data.tolist())
     return plecs_holder
 
 def gen_exp_func(order: int):
     """
-    A helper function to calc_thermal_params method. Generates the required ordered function for curve fitting
+    Generate the required ordered function for curve fitting. A helper function to calc_thermal_params method.
 
     :param order: order of the function for approximation  with n ranging from 1 to 5
     :type order: int
@@ -646,13 +666,17 @@ def gen_exp_func(order: int):
     elif order == 3:
         return lambda t, rn, tau, rn2, tau2, rn3, tau3: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3))
     elif order == 4:
-        return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4))
+        return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, \
+            tau4: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4))
     elif order == 5:
-        return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4, rn5, tau5: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4)) + rn5 * (1 - np.exp(-t / tau5))
+        return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4, rn5, \
+            tau5: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * \
+            (1 - np.exp(-t / tau4)) + rn5 * (1 - np.exp(-t / tau5))
 
 def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     """
-    Merges two equal curves, one of which contains an enlarged section of the first curve.
+    Merge two equal curves, one of which contains an enlarged section of the first curve.
+
     Use case is the merging of capacity curves, here often two curves (normal and zoom) are given in the data sheets.
 
     :param curve: full curve
@@ -671,7 +695,6 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     >>> c_oss_merged = tdb.merge_curve(c_oss_normal, c_oss_detail)
 
     """
-
     # find out max(x) from detailed curve
     curve_detail_max_x = max(curve_detail[0])
 
@@ -687,8 +710,7 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
 def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: float | List[float],
                                    v_driver_off: float) -> float:
     """
-    Calculates the maximum gate resistor to achieve no turn-off losses when working with MOSFETs
-    'rapid channel turn-off' (rcto)
+    Calculate the maximum gate resistor to achieve no turn-off losses when working with MOSFETs 'rapid channel turn-off' (rcto).
 
     :param v_gsth: gate threshold voltage
     :type v_gsth: float
@@ -715,16 +737,16 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     return (v_gsth - v_driver_off) / i_off * (1 + c_ds / c_gd)
 
 def compare_list(parameter: List):
-    """
-    check through the list of value for odd one out.
-    """
+    """Check through the list of value for odd one out."""
     for i, j in enumerate(parameter[:-1]):
         if j != parameter[i + 1]:
             return False
     return True
 
 def get_copy_transistor_name(current_name: str) -> str:
-    """Returns the current name but with an index at the end similar to windows copies.
+    """
+    Return the current name but with an index at the end similar to windows copies.
+
     '{current_name} (i)'
     """
     result = re.match(transistor_name_regex, current_name)
@@ -740,7 +762,7 @@ def get_copy_transistor_name(current_name: str) -> str:
 
 def get_img_raw_data(plot):
     """
-    A helper method to convert the plot images to raw data which is further used to display plots in virtual datasheet
+    Convert the plot images to raw data which is further used to display plots in virtual datasheet. Helper method.
 
     :param plot: pyplot object
 
