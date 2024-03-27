@@ -1,9 +1,11 @@
+"""See how to create a transistor object."""
 # imports
 import transistordatabase as tdb
 
 
 # Template to generate a transistor
 def Template():
+    """Template to create a transistor object."""
     ####################################
     # transistor parameters
     ####################################

@@ -1,3 +1,4 @@
+"""GUI buck-boost converter functions."""
 import numpy as np
 
 

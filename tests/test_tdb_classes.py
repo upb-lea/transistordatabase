@@ -1,3 +1,4 @@
+"""Unit tests for the transistor database."""
 import copy
 import transistordatabase as tdb
 import numpy as np
@@ -14,6 +15,7 @@ import json
 
 @pytest.fixture()
 def my_transistor():
+    """Fixture transistor for further unit test."""
     # Values for basic example only
     name = 'Test-Transistor'
     type = 'IGBT'
@@ -150,6 +152,7 @@ def my_transistor():
 
 
 def test_transistor(my_transistor):
+    """Unit test for a test transistor."""
     transistor_args, switch_args, diode_args = my_transistor
     possible_housing_types = ['TO247']
     possible_module_manufacturers = ["Fuji Electric"]
@@ -214,6 +217,7 @@ def test_transistor(my_transistor):
 
 
 def test_get_gatedefaults():
+    """Unit test for get_gatedefaults."""
     igbt_expected_list = [15, -15, 0, 15]
     mos_expected_list = [10, 0, 0, 10]
     sic_expected_list = [15, -4, 0, 15]
@@ -227,8 +231,7 @@ def test_get_gatedefaults():
 
 def test_calc_thermal_params(my_transistor):
     """
-    Test case for the transistor method to check if respective thermal parameters are generated or ignored
-    as per the 4 possible handling situations
+    Test case for the transistor method to check if respective thermal parameters are generated or ignored as per the 4 possible handling situations.
 
     :param my_transistor: a fixture a load the arrange the required transistor object that goes into testing
 
@@ -309,9 +312,9 @@ gecko_exporter_test_cases = [{'case': 1, 'recheck': True, 'file': 'master_data/t
 @pytest.fixture(params=gecko_exporter_test_cases)
 def data_setup_for_gecko_exporter(request):
     """
-    A fixture to arrange the required transistor object and recording the results that obtained during act operation.
-    The recorded results are used for assertion
+    Fixture to arrange the required transistor object and recording the results that obtained during act operation.
 
+    The recorded results are used for assertion.
     :param request: a dict which is provided as parameter which enacts the 4 test scenarios of the gecko exporter
 
     :return: dict with read .scl files generated after the act process
@@ -355,7 +358,7 @@ def data_setup_for_gecko_exporter(request):
 
 def test_export_geckocircuits(data_setup_for_gecko_exporter):
     """
-    Test case for the transistor method to check if the gecko exporter handles the 4 possible cases while exporting a transistor to .scl files
+    Test case for the transistor method to check if the gecko exporter handles the 4 possible cases while exporting a transistor to .scl files.
 
     :param data_setup_for_gecko_exporter: a fixture to arrange the required transistor object and recording the results that obtained during act operation.
     The recorded results are used for assertion
@@ -396,10 +399,7 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
 
 
 def test_export_json(my_transistor):
-    """
-    pytest for export_json() function.
-    Test for incorrect inputs.
-    """
+    """Pytest for export_json() function. Test for incorrect inputs."""
     transistor_args, switch_args, diode_args = my_transistor
     possible_housing_types = ['TO247']
     possible_module_manufacturers = ["Fuji Electric"]
@@ -416,6 +416,7 @@ def test_export_json(my_transistor):
 
 
 def test_check_realnum():
+    """Unit test for check_realnum."""
     assert tdb.check_realnum(123)
     assert tdb.check_realnum(12.3)
     assert tdb.check_realnum(None)
@@ -424,6 +425,7 @@ def test_check_realnum():
 
 
 def test_check_2d_dataset():
+    """Unit test for check_2d_dataset."""
     assert tdb.check_2d_dataset(None)
     assert tdb.check_2d_dataset(np.array([[1, 2, 3], [4, 5, 6]]))
     with pytest.raises(TypeError):
@@ -432,6 +434,7 @@ def test_check_2d_dataset():
 
 
 def test_check_str():
+    """Unit test for check_str."""
     assert tdb.check_str('Hello')
     assert tdb.check_str(None)
     with pytest.raises(TypeError):
@@ -442,6 +445,7 @@ def test_check_str():
 
 @patch.object(tdb, "connect_local_tdb")
 def test_connect_local_tdb(connect_local_tdb):
+    """TDB local connection to mongodb."""
     mocked_mongo = mongomock.MongoClient()
     db = mocked_mongo['transistor_databasefake']
     connect_local_tdb.return_value = db.collection
@@ -451,6 +455,7 @@ def test_connect_local_tdb(connect_local_tdb):
 
 @pytest.fixture()
 def my_database(my_transistor):
+    """Fixture for unit tests."""
     transistor_args, switch_args, diode_args = my_transistor
     switch_args['soa'].clear()
     possible_housing_types = ['TO247']
@@ -469,6 +474,7 @@ def my_database(my_transistor):
 
 
 def test_add_soa_data(my_database, monkeypatch):
+    """Unit test for add_soa_data."""
     graph_i_v_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
     graph_i_v_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
     graph_i_v_three = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 3 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
@@ -501,6 +507,7 @@ def test_add_soa_data(my_database, monkeypatch):
 
 
 def test_add_gate_charge_data(my_database, monkeypatch):
+    """Unit test for add_gate_charge_data."""
     graph_q_v_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
     graph_q_v_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
 
@@ -536,6 +543,7 @@ def test_add_gate_charge_data(my_database, monkeypatch):
 
 
 def test_add_temp_depend_resis_data(my_database, monkeypatch):
+    """Unit test for add_temp_depend_resistor_data."""
     graph_t_r_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
     graph_t_r_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
     switch_ron_args = {
@@ -566,6 +574,7 @@ def test_add_temp_depend_resis_data(my_database, monkeypatch):
 
 
 def test_get_object_i_e_simplified(my_transistor):
+    """Unit test for get_object_i_e_simplified."""
     transistor_args, switch_args, diode_args = my_transistor
     switch_energy_new = {'dataset_type': 'graph_i_e', 't_j': 25, 'v_supply': 600, 'v_g': 12,
                          'r_g': 1, 'graph_i_e': np.array([[1, 2, 3], [4, 5, 6]])}
@@ -588,6 +597,7 @@ def test_get_object_i_e_simplified(my_transistor):
 
 
 def test_get_object_r_e_simplified(my_transistor):
+    """Unit test for get_object_r_e_simplified."""
     transistor_args, switch_args, diode_args = my_transistor
     possible_housing_types = ['TO247']
     possible_module_manufacturers = ["Fuji Electric"]

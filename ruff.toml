@@ -11,14 +11,14 @@ indent-width = 4
 target-version = "py39"
 
 [lint]
-select = ["E4", "E7", "E9", "F", "B", "D417"]
+select = ["E4", "E7", "E9", "F", "B", "D", "D417"]
 # extend-select = ["D417"] deactivated by default in case of pep257 codestyle.
 # see also: https://docs.astral.sh/ruff/rules/undocumented-param/
 ignore = ["B008", "D107", "D203", "D212", "D213", "D402", "D413", "D415", "D416", "E722", "E731", "F403", "F405", "F841", "B904", "F401"]
 fixable = ["ALL"]
 unfixable = []
 # ignore list in docstring according to numpy codestyles for Dxxx.
-# http://www.pydocstyle.org/en/5.0.1/error_codes.html#default-conventions
+# http://www.pydocstyle.org/en/5.0.1/error_codes.html#default
 # B904:  Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
 # F401: xxx imported but unused
 

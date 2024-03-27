@@ -251,7 +251,7 @@ class Diode:
 
     def plot_all_channel_data(self, buffer_req: bool = False):
         """
-        Plot all diode channel characteristic curves
+        Plot all diode channel characteristic curves.
 
         :param buffer_req: internally required for generating virtual datasheets
         :param buffer_req: bool
@@ -320,7 +320,7 @@ class Diode:
 
     def plot_energy_data(self, buffer_req: bool = False):
         """
-        Plots all diode reverse recovery energy i-e characteristic curves which are extracted from the manufacturer datasheet
+        Plot all diode reverse recovery energy i-e characteristic curves which are extracted from the manufacturer datasheet.
 
         :param buffer_req: internally required for generating virtual datasheets
         :type buffer_req: bool
@@ -406,7 +406,7 @@ class Diode:
 
     def plot_soa(self, buffer_req: bool = False):
         """
-        Helper function to plot and convert safe operating region characteristic plots in raw data format.
+        Plot and convert safe operating region characteristic plots in raw data format (Helper function).
 
         :param buffer_req: internally required for generating virtual datasheets
 

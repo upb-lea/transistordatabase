@@ -1,3 +1,4 @@
+"""GUI comparison tools."""
 import numpy as np
 from math import floor
 from scipy.interpolate import interpn

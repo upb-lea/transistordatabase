@@ -317,6 +317,7 @@ class Transistor:
         return my_dict == other_dict
 
     def __repr__(self) -> str:
+        """Transistor object string representation."""
         return f"{self.name}, {self.type}, {self.manufacturer}"
 
     def convert_to_dict(self) -> Dict:

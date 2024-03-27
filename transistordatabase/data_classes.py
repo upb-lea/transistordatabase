@@ -1,3 +1,4 @@
+"""Contains important data classes like SOA, SwitchEnergyData, GateChargeCurve, ..."""
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
@@ -11,7 +12,7 @@ from transistordatabase.checker_functions import check_float
 from transistordatabase.helper_functions import isvalid_dict, get_img_raw_data
 
 class GateChargeCurve:
-    """A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class"""
+    """A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class."""
 
     v_supply: float  #: same as drain-to-source (v_ds)/ collector-emitter (v_ce) voltages
     t_j: float  #: junction temperature
@@ -68,7 +69,7 @@ class GateChargeCurve:
             plt.show()
 
 class SOA:
-    """A class to hold safe operating area characteristics of transistor type which is added as a optional attribute inside transistor class"""
+    """Class to hold safe operating area characteristics of transistor type which is added as a optional attribute inside transistor class."""
 
     t_c: float | None  #: case temperature
     time_pulse: float | None  #: applied pulse duration
@@ -76,7 +77,7 @@ class SOA:
 
     def __init__(self, args: dict):
         """
-        Initialization method for SOA object
+        Initialize method for SOA object.
 
         :param args: arguments to be passed for initialization
         """
@@ -88,7 +89,7 @@ class SOA:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts SOA object into dict datatype
+        Convert SOA object into dict datatype.
 
         :return: SOA object of dict type
         :rtype: dict
@@ -121,9 +122,7 @@ class SOA:
             plt.show()
 
 class TemperatureDependResistance:
-    """
-    Store temperature dependant resistance curve.
-    """
+    """Store temperature dependant resistance curve."""
 
     i_channel: float  #: channel current at which the graph is recorded
     v_g: float  #: gate voltage
@@ -133,7 +132,7 @@ class TemperatureDependResistance:
 
     def __init__(self, args):
         """
-        Initialization method for TemperatureDependResistance object
+        Initialize method for TemperatureDependResistance object.
 
         :param args: arguments to be passed for initialization
         """
@@ -181,9 +180,7 @@ class TemperatureDependResistance:
             plt.show()
 
 class EffectiveOutputCapacitance:
-    """
-    Record energy related or time related output capacitance of the switch.
-    """
+    """Record energy related or time related output capacitance of the switch."""
 
     c_o: float  #: Value of the fixed output capacitance. Units in F
     v_gs: float  #: Gate to source voltage of the switch. Units in V
@@ -191,7 +188,7 @@ class EffectiveOutputCapacitance:
 
     def __init__(self, args):
         """
-        Initialization method for EffectiveOutputCapacitance object
+        Initialize the EffectiveOutputCapacitance object.
 
         :param args: arguments to be passed for initialization
         """
@@ -216,6 +213,7 @@ class EffectiveOutputCapacitance:
 
     # ToDO: To be implemented for future boundary conditions in virtual datasheet
     def collect_data(self):
+        """Get the effective output capacitance from the data."""
         c_oss_related = {}
         skipIds = []
         for attr in dir(self):
@@ -226,6 +224,8 @@ class EffectiveOutputCapacitance:
 
 class SwitchEnergyData:
     """
+    Data storage for switching losses (on/off/rr).
+
     - Contains switching energy data for either switch or diode. The type of Energy (E_on, E_off or E_rr) is already implicitly
     specified by how the respective objects of this class are used in a Diode- or Switch-object.
     - For each set (e.g. every curve in the datasheet) of switching energy data a separate object should be created.
@@ -272,7 +272,7 @@ class SwitchEnergyData:
         # Validity of args is checked in the constructor of Diode/Switch class and thus does not need to be
         # checked again here.
         """
-        Initialization method for VoltageDependentCapacitance object
+        Initialize the VoltageDependentCapacitance object.
 
         :param args: arguments to be passed for initialization
 
@@ -346,7 +346,7 @@ class SwitchEnergyData:
 
     def copy(self):
         """
-        A method to copy the existing SwitchEnergyData object and create a new object of same type.
+        Copy the existing SwitchEnergyData object and create a new object of same type.
 
         Created to allow deep copy of object when using gecko exporter
 
@@ -369,7 +369,9 @@ class SwitchEnergyData:
         return SwitchEnergyData(args)
 
 class ChannelData:
-    """Contains channel V-I data for either switch or diode. Data is given for only one junction temperature t_j.
+    """
+    V-I data for either switch or diode. Data is given for only one junction temperature t_j.
+
     For different temperatures: Create additional ChannelData-objects and store them as a list in the respective
     Diode- or Switch-object.
     This data can be used to linearize the transistor at a specific operating point
@@ -409,7 +411,7 @@ class ChannelData:
 
     def plot_graph(self) -> None:
         """
-        Plots the channel curve v_i characteristics called by using any ChannelData object
+        Plot the channel curve v_i characteristics called by using any ChannelData object.
 
         :return: Respective plots are displayed
         :rtype: None
@@ -424,8 +426,10 @@ class ChannelData:
         plt.show()
 
 class LinearizedModel:
-    """Contains data for a linearized Switch/Diode depending on given operating point. Operating point specified by
-    t_j, i_channel and (not for all diode types) v_g.
+    """
+    Data for a linearized Switch/Diode depending on given operating point.
+
+    Operating point specified by t_j, i_channel and (not for all diode types) v_g.
     """
 
     t_j: float  #: Junction temperature of diode\switch. Units in K  (Mandatory key)
@@ -448,7 +452,7 @@ class LinearizedModel:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts LinearizedModel object into dict datatype
+        Convert LinearizedModel object into dict datatype.
 
         :return: LinearizedModel object of dict type
         :rtype: dict
@@ -457,7 +461,9 @@ class LinearizedModel:
         return d
 
 class VoltageDependentCapacitance:
-    """Contains graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
+    """
+    Graph_v_c data for transistor class. Data is given for only one junction temperature t_j.
+
     For different temperatures: Create additional VoltageDependentCapacitance-objects and store them as a list in the transistor-object.
     """
 
@@ -469,7 +475,7 @@ class VoltageDependentCapacitance:
 
     def __init__(self, args):
         """
-        Initialization method for VoltageDependentCapacitance object
+        Initialize the VoltageDependentCapacitance object.
 
         :param args: arguments to be passed for initialization
         """
@@ -517,7 +523,9 @@ class VoltageDependentCapacitance:
 
 class FosterThermalModel:
     """
-    Contains data to specify parameters of the Foster thermal_foster model. This model describes the transient
+    Data to specify parameters of the Foster thermal_foster model.
+
+    This model describes the transient
     temperature behavior as a thermal_foster RC-network. The necessary parameters can be estimated by curve-fitting
     transient temperature data supplied in graph_t_rthjc or by manually specifying the individual 2 out of 3 of the
     parameters R, C, and tau.
@@ -586,7 +594,7 @@ class FosterThermalModel:
 
     def get_plots(self, buffer_req: bool = False):
         """
-        Plots tau vs rthjc
+        Plot tau vs rthjc.
 
         :param buffer_req: Internally required for generating virtual datasheets
         :type buffer_req: bool
@@ -617,7 +625,7 @@ class FosterThermalModel:
 
     def collect_data(self) -> dict:
         """
-        Collects foster data in form of dictionary for generating virtual datasheet
+        Collect foster data in form of dictionary for generating virtual datasheet.
 
         :return: foster data in form of dictionary
         :rtype: dict
@@ -632,9 +640,7 @@ class FosterThermalModel:
         return foster_data
 
 class RawMeasurementData:
-    """
-    - Contains RAW measurement data. e.g. for voltage and current graphs from a double pulse test.
-    """
+    """RAW measurement data. e.g. for voltage and current graphs from a double pulse test."""
 
     # Type of the dataset:
     # dpt_u_i: U/t I/t graph from double pulse measurements
@@ -692,7 +698,7 @@ class RawMeasurementData:
 
     def convert_to_dict(self) -> dict:
         """
-        The method converts RawMeasurementData object into dict datatype
+        Convert RawMeasurementData object into dict datatype.
 
         :return: Switch object of dict type
         :rtype: dict

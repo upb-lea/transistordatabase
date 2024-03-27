@@ -1,3 +1,4 @@
+"""Different type checkers, adapted to the needs of the transistor database."""
 # Python standard libraries
 from __future__ import annotations
 from typing import List, Dict
@@ -5,7 +6,9 @@ import numpy as np
 
 def check_realnum(float_to_check: float) -> bool:
     """
-    Check if argument is real numeric scalar. Raise TypeError if not. None is also accepted because it is valid for
+    Check if argument is real numeric scalar.
+
+    Raise TypeError if not. None is also accepted because it is valid for
     optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand.
 
     :param float_to_check: input argument
@@ -23,7 +26,9 @@ def check_realnum(float_to_check: float) -> bool:
 
 def check_2d_dataset(dataset_to_check: np.array) -> bool:
     """
-    Check if argument is real 2D-dataset of right shape. None is also accepted because it is
+    Check if argument is real 2D-dataset of right shape.
+
+    None is also accepted because it is
     valid for optional keys. Mandatory keys that must not contain None are checked somewhere else beforehand.
 
     :param dataset_to_check: 2d-dataset
@@ -46,7 +51,9 @@ def check_2d_dataset(dataset_to_check: np.array) -> bool:
 
 def check_str(string_to_check: str) -> bool:
     """
-    Check if argument is string. Function not necessary but helpful to keep raising of errors
+    Check if argument is string.
+
+    Function not necessary but helpful to keep raising of errors
     consistent with other type checks. None is also accepted because it is valid for optional keys. Mandatory keys that
     must not contain None are checked somewhere else beforehand.
 
@@ -64,7 +71,9 @@ def check_str(string_to_check: str) -> bool:
 def csv2array(csv_filename: str, first_xy_to_00: bool = False, second_y_to_0: bool = False,
               first_x_to_0: bool = False, mirror_xy_data: bool = False) -> np.array:
     """
-    Imports a .csv file and extracts its input to a numpy array. Delimiter in .csv file must be ';'. Both ',' or '.'
+    Import a .csv file and extracts its input to a numpy array.
+
+    Delimiter in .csv file must be ';'. Both ',' or '.'
     are supported as decimal separators. .csv file can generated from a 2D-graph for example via
     https://apps.automeris.io/wpd/
 
@@ -121,7 +130,8 @@ def csv2array(csv_filename: str, first_xy_to_00: bool = False, second_y_to_0: bo
 
 def check_float(float_to_check: int | float) -> bool:
     """
-    Checks if argument is a float.
+    Check if argument is a float.
+
     :param float_to_check: number to check
     :type float_to_check: int | float
 
@@ -137,7 +147,8 @@ def check_float(float_to_check: int | float) -> bool:
 
 def check_keys(keys_to_check: Dict, req_type: str, switch_type: str):
     """
-    A helper function for find_next_gate_voltage method of class type - switch and diode.
+    Find_next_gate_voltage method of class type - switch and diode (Helper method).
+
     Verifies if the required keys are available and their value types are valid for carrying out the export
     Used for export_gecko() and export_plecs()
 
@@ -168,7 +179,7 @@ def check_keys(keys_to_check: Dict, req_type: str, switch_type: str):
 
 def check_duplicates(current_items: List[Dict], item_to_append: Dict) -> bool:
     """
-    Helper method to check if the item being added already exists in the list.
+    Check if the item being added already exists in the list (Helper method).
 
     :param current_items: list of particular class object converted to dictionaries using which the checks are conducted
     :type current_items: list(dict)

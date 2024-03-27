@@ -1,3 +1,4 @@
+"""Manage the database with its different operation modes (json and mongodb)."""
 # Python standard libraries
 from enum import Enum
 from typing import List, Dict, Union
@@ -18,6 +19,7 @@ from transistordatabase.checker_functions import check_float
 
 class OperationMode(Enum):
     """Operation mode definitions."""
+
     JSON = "json"
     MONGODB = "mongodb"
 
@@ -57,7 +59,9 @@ class DatabaseManager:
 
     def set_operation_mode_json(self, json_folder_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database")) -> None:
         """
-        Sets operation mode to json. In order to function properly it is necessary that the given folder path
+        Set operation mode to json.
+
+        In order to function properly it is necessary that the given folder path
         is empty and is only used by this database. If no path is given the transistordatabase will be created in the package folder.
 
         :param json_path: Path to json folder.
@@ -95,7 +99,7 @@ class DatabaseManager:
 
     def set_operation_mode_mongodb(self, collection: str = "local") -> None:
         """
-        Sets the operation mode to mongodb database.
+        Set the operation mode to mongodb database.
 
         :param collection: By default local database is selected and "local" is provided as value
         :type collection: str
@@ -164,7 +168,7 @@ class DatabaseManager:
 
     def delete_transistor(self, transistor_name: str) -> None:
         """
-        Deletes the transistor with the given id from the database.
+        Delete the transistor with the given id from the database.
 
         :param transistor_name: Name of the transistor
         :type transistor_name: str
@@ -187,7 +191,7 @@ class DatabaseManager:
 
     def load_transistor(self, transistor_name: str) -> Transistor:
         """
-        Loads a transistor from the database. The database is determined by the operation mode.
+        Load a transistor from the database. The database is determined by the operation mode.
 
         :param transistor_name: Name of the transistor
         :type transistor_name: str
@@ -286,7 +290,9 @@ class DatabaseManager:
                                  "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/module_manufacturers.txt",
                                  housing_types_url: str = \
                                  "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/housing_types.txt") -> None:
-        """Update your local transistor database from transistordatabase-fileexchange from given index-file url.
+        """
+        Update your local transistor database from transistordatabase-fileexchange from given index-file url.
+
         Also updates module manufacturers and housing types.
         If no index_url or module_manufacturers_url or housing_types_url is given the default Transistordatabase Fileexchange URLs are taken.
         
@@ -520,7 +526,9 @@ class DatabaseManager:
         return Transistor(transistor_dict, switch_args, diode_args, self.housing_types, self.module_manufacturers)
 
     def parallel_transistors(self, transistor: Transistor, count_parallels: int = 2) -> Transistor:
-        """Connect [count_parallels] transistors in parallel
+        """
+        Connect [count_parallels] transistors in parallel.
+
         The returned transistor object behaves like a single transistor.
 
         - name will be modified by adding _[count_parallels]_parallel
@@ -618,7 +626,7 @@ class DatabaseManager:
     @staticmethod
     def import_xml_data(files: Dict) -> Transistor:
         """
-        A function feature of transistordatabase module to import switch and diode characteristics in plecs xml file format.
+        Import switch and diode characteristics in plecs xml file format.
 
         :param files: dictionary holding switch and diode xml file names
         :rtype files: dict

@@ -1,6 +1,4 @@
-"""
-This shall be an example file to test the new refactored class structure
-"""
+"""This shall be an example file to test the new refactored class structure."""
 # Python standard libraries
 import os
 
@@ -41,14 +39,14 @@ def insert_mongodb_from_json():
         tdb_mongodb.save_transistor(transistor)
 
 def example_json_database():
-    """Example for the json database operation mode (recommended)."""
+    """Show the json database operation mode (recommended)."""
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example")
     tdb_json = DatabaseManager()
     tdb_json.set_operation_mode_json(path)
     tdb_json.print_tdb()
 
 def example_mongodb_database():
-    """Example for the mongo-db operation mode (optional, not recommended)."""
+    """Show the mongo-db operation mode (optional, not recommended)."""
     tdb_mongodb = DatabaseManager()
     tdb_mongodb.set_operation_mode_mongodb()
     tdb_mongodb.print_tdb()

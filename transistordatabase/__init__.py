@@ -1,3 +1,4 @@
+"""Transistor database package file."""
 __version__ = "0.4.1"
 from transistordatabase.constants import *
 from transistordatabase.mongodb_handling import *

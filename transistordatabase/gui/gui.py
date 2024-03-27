@@ -1,3 +1,4 @@
+"""GUI definitions."""
 # Python standard libraries
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
@@ -33,6 +34,7 @@ import comparison_tools_functions
 
 
 def resource_path(relative_path):
+    """Bugfix method, fixing some old issue with the filepath."""
     try:
         base_path = sys._MEIPASS
     except Exception:
@@ -726,10 +728,12 @@ class MainWindow(QMainWindow):
 
     # Transistor actions #
     def webbrowser_original_datasheet(self):
+        """Open the web browser to view the original datasheet."""
         transistor = self.get_marked_transistor()
         webbrowser.open(transistor.datasheet_hyperlink)
 
     def webbrowser_virtual_datasheet(self):
+        """Open the web browser to view the virtual datasheet.."""
         transistor = self.get_marked_transistor()
         html = transistor.export_datasheet(build_collection=True)
         with tempfile.NamedTemporaryFile('w', delete=False, suffix='.html') as f:
@@ -759,12 +763,15 @@ class MainWindow(QMainWindow):
 
     # Help actions #
     def webbrowser_contribute(self):
+        """Open the web browser to the contributing guide."""
         webbrowser.open('https://github.com/upb-lea/transistordatabase/blob/main/Contributing.rst')
 
     def webbrowser_bugreport(self):
+        """Open the web browser to the GitHub issues."""
         webbrowser.open('https://github.com/upb-lea/transistordatabase/issues')
 
     def webbrowser_documentation(self):
+        """Open the web browser to view the transistor database documentation."""
         webbrowser.open('https://upb-lea.github.io/transistordatabase/main/transistordatabase.html')
 
     def closeEvent(self, event):
@@ -782,7 +789,7 @@ class MainWindow(QMainWindow):
 
     def update_database_from_fileexchange(self):
         """
-        Update the local database from the github fileexchange
+        Update the local database from the github fileexchange.
 
         :return: None
         :rtype: None
@@ -799,6 +806,7 @@ class MainWindow(QMainWindow):
         sys.stdout = sys.__stdout__
 
     def standard_output_written(self, text):
+        """For the GUI integrated console output."""
         cursor = self.textEdit_stdout.textCursor()
         cursor.movePosition(QtGui.QTextCursor.End)
         cursor.insertText(text)
@@ -1441,12 +1449,14 @@ class MainWindow(QMainWindow):
     # CREATE TRANSISTOR #
 
     def comboBox_create_transistor_switch_add_switching_losses_curve_type_changed(self):
+        """Check for changed comboBox."""
         if self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
             self.label_create_switch_switching_losses_r_g_i_x.setText("R_g [Ω]")
         elif self.comboBox_create_transistor_switch_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
             self.label_create_switch_switching_losses_r_g_i_x.setText(r"I [A]")
 
     def comboBox_create_transistor_diode_add_switching_losses_curve_type_changed(self):
+        """Check for changed comboBox."""
         if self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Channel Current":
             self.label_create_diode_switching_losses_r_g_i_x.setText("R_g [Ω]")
         elif self.comboBox_create_transistor_diode_add_switching_losses_curve_type.currentText() == "Switching Losses vs. Gate Resistor":
@@ -1716,6 +1726,7 @@ class MainWindow(QMainWindow):
         self.comboBox_create_transistor_switch_added_curves_channel_data.setDisabled(False)
 
     def add_curve_switch_switching_losses(self):
+        """Add switching loss curve."""
         t_j = float(
             self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text()) if \
             self.lineEdit_create_transistor_switch_add_switching_losses_t_j.text() != "" else None
@@ -1805,11 +1816,13 @@ class MainWindow(QMainWindow):
                                         comboBox=self.comboBox_create_transistor_switch_added_curves_switching_losses)
 
     def delete_curve_switch_switching_losses(self):
+        """Clear switching loss curve."""
         self.comboBox_create_transistor_switch_added_curves_switching_losses.removeItem(
             self.comboBox_create_transistor_switch_added_curves_switching_losses.currentIndex())
         self.comboBox_create_transistor_switch_added_curves_switching_losses.setDisabled(False)
 
     def add_curve_switch_gate_charge(self):
+        """Add gate charge curve."""
         i_channel = float(
             self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text()) if \
             self.lineEdit_create_transistor_switch_add_gate_charge_i_channel.text() != "" else None
@@ -1872,11 +1885,13 @@ class MainWindow(QMainWindow):
             ylabel="Gate Source Voltage in V")
 
     def delete_curve_switch_gate_charge(self):
+        """Clear gate charge curve."""
         self.comboBox_create_transistor_switch_added_curves_gate_charge.removeItem(
             self.comboBox_create_transistor_switch_added_curves_gate_charge.currentIndex())
         self.comboBox_create_transistor_switch_added_curves_gate_charge.setDisabled(False)
 
     def add_curve_switch_r_on(self):
+        """Add R_on curve."""
         i_channel = float(
             self.lineEdit_create_transistor_switch_add_r_on_i_channel.text()) \
             if self.lineEdit_create_transistor_switch_add_r_on_i_channel.text() != "" else None
@@ -1933,11 +1948,13 @@ class MainWindow(QMainWindow):
             ylabel="On Resistance in Ω")
 
     def delete_curve_switch_r_on(self):
+        """Clear R_on resistance curve."""
         self.comboBox_create_transistor_switch_added_curves_r_on.removeItem(
             self.comboBox_create_transistor_switch_added_curves_r_on.currentIndex())
         self.comboBox_create_transistor_switch_added_curves_r_on.setDisabled(False)
 
     def add_curve_diode_channel(self):
+        """Add channel curve."""
         t_j = float(
             self.lineEdit_create_transistor_diode_add_channel_data_t_j.text()) \
             if self.lineEdit_create_transistor_diode_add_channel_data_t_j.text() != "" else None
@@ -1987,11 +2004,13 @@ class MainWindow(QMainWindow):
             ylabel="Current in A")
 
     def delete_curve_diode_channel(self):
+        """Clear channel (forward characteristics) curve."""
         self.comboBox_create_transistor_diode_added_curves_channel_data.removeItem(
             self.comboBox_create_transistor_diode_added_curves_channel_data.currentIndex())
         self.comboBox_create_transistor_diode_added_curves_channel_data.setDisabled(False)
 
     def add_curve_diode_switching_losses(self):
+        """Add switching loss curve."""
         t_j = float(
             self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text()) if \
             self.lineEdit_create_transistor_diode_add_switching_losses_t_j.text() != "" else None
@@ -2079,11 +2098,13 @@ class MainWindow(QMainWindow):
             ylabel="Energy in J")
 
     def delete_curve_diode_switching_losses(self):
+        """Clear the SOA curve."""
         self.comboBox_create_transistor_diode_added_curves_switching_losses.removeItem(
             self.comboBox_create_transistor_diode_added_curves_switching_losses.currentIndex())
         self.comboBox_create_transistor_diode_added_curves_switching_losses.setDisabled(False)
 
     def add_curve_switch_soa_t_pulse(self):
+        """Add the SOA curve."""
         t_c = float(
             self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text()) \
             if self.lineEdit_create_transistor_switch_soa_t_pulse_t_c.text() != "" else None
@@ -2120,6 +2141,7 @@ class MainWindow(QMainWindow):
                     ylabel="I_d/I_r in A")
 
     def view_curve_switch_soa_t_pulse(self):
+        """View the SOA curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="Switch SOA Curve",
@@ -2128,11 +2150,13 @@ class MainWindow(QMainWindow):
             ylabel="I_d/I_r in A")
 
     def delete_curve_switch_soa_t_pulse(self):
+        """Clear the SOA curve."""
         self.comboBox_create_transistor_switch_added_curves_soa_t_pulse.removeItem(
             self.comboBox_create_transistor_switch_added_curves_soa_t_pulse.currentIndex())
         self.comboBox_create_transistor_switch_added_curves_soa_t_pulse.setDisabled(False)
 
     def add_curve_diode_soa_t_pulse(self):
+        """Add the SOA curve."""
         t_c = float(
             self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text()) \
             if self.lineEdit_create_transistor_diode_soa_t_pulse_t_c.text() != "" else None
@@ -2169,6 +2193,7 @@ class MainWindow(QMainWindow):
                     ylabel="I_d/I_r in A")
 
     def view_curve_diode_soa_t_pulse(self):
+        """View the SOA curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="Diode SOA Curve",
@@ -2177,11 +2202,13 @@ class MainWindow(QMainWindow):
             ylabel="I_d/I_r in A")
 
     def delete_curve_diode_soa_t_pulse(self):
+        """Clear the SOA curve."""
         self.comboBox_create_transistor_diode_added_curves_soa_t_pulse.removeItem(
             self.comboBox_create_transistor_diode_added_curves_soa_t_pulse.currentIndex())
         self.comboBox_create_transistor_diode_added_curves_soa_t_pulse.setDisabled(False)
 
     def add_curve_switch_t_rthjc(self):
+        """Add the R_th,jc (time) curve."""
         if self.comboBox_create_transistor_switch_added_curve_t_rthjc.count() == 0:
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"Path: {file_path}"
@@ -2203,6 +2230,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_switch_t_rthjc(self):
+        """View the R_th,jc (time) curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="Switch T_Rthjc Curve",
@@ -2211,10 +2239,12 @@ class MainWindow(QMainWindow):
             ylabel="T_Rthjc in Ω")
 
     def delete_curve_switch_t_rthjc(self):
+        """Clear the R_th,jc (time) curve."""
         self.comboBox_create_transistor_switch_added_curve_t_rthjc.clear()
         self.comboBox_create_transistor_diode_added_curves_soa_t_pulse.setDisabled(False)
 
     def add_curve_diode_t_rthjc(self):
+        """Add the R_th,jc (time) curve."""
         if self.comboBox_create_transistor_diode_added_curve_t_rthjc.count() == 0:
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"Path: {file_path}"
@@ -2236,6 +2266,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_diode_t_rthjc(self):
+        """View the R_th,jc (time) curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="Diode T_Rthjc Curve",
@@ -2244,10 +2275,12 @@ class MainWindow(QMainWindow):
             ylabel="T_Rthjc in Ω")
 
     def delete_curve_diode_t_rthjc(self):
+        """Clear the R_th,jc (time) curve."""
         self.comboBox_create_transistor_diode_added_curve_t_rthjc.clear()
         self.comboBox_create_transistor_diode_added_curve_t_rthjc.setDisabled(False)
 
     def add_curve_v_ecoss(self):
+        """Add the E_coss (V) curve."""
         if self.comboBox_create_transistor_added_curve_v_ecoss.count() == 0:
             file_path = self.browse_file_csv()
             comboBox_entry_name = f"Path: {file_path}"
@@ -2269,6 +2302,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_v_ecoss(self):
+        """View the E_coss (V) curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="E_coss Curve",
@@ -2277,10 +2311,12 @@ class MainWindow(QMainWindow):
             ylabel="Energy in J")
 
     def delete_curve_v_ecoss(self):
+        """Clear the E_oss (V) curve."""
         self.comboBox_create_transistor_added_curve_v_ecoss.clear()
         self.comboBox_create_transistor_added_curve_v_ecoss.setDisabled(False)
 
     def add_curve_c_iss_normal(self):
+        """Add the C_iss curve."""
         if self.comboBox_create_transistor_added_c_iss_normal.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_iss_t_j.text() != "" else None
@@ -2306,6 +2342,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_c_iss_normal(self):
+        """View the C_iss curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="C_iss_normal Curve",
@@ -2314,10 +2351,12 @@ class MainWindow(QMainWindow):
             ylabel="Capacitance in F")
 
     def delete_curve_c_iss_normal(self):
+        """Clear the C_iss curve."""
         self.comboBox_create_transistor_added_c_iss_normal.clear()
         self.comboBox_create_transistor_added_c_iss_normal.setDisabled(False)
 
     def add_curve_c_iss_detail(self):
+        """Add the C_iss_detail curve."""
         if self.comboBox_create_transistor_added_c_iss_detail.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_iss_t_j.text()) \
@@ -2345,6 +2384,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_c_iss_detail(self):
+        """View the C_iss_detail curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="C_iss_detail Curve",
@@ -2353,10 +2393,12 @@ class MainWindow(QMainWindow):
             ylabel="Capacitance in F")
 
     def delete_curve_c_iss_detail(self):
+        """Clear the C_iss_detail curve."""
         self.comboBox_create_transistor_added_c_iss_detail.clear()
         self.comboBox_create_transistor_added_c_iss_detail.setDisabled(False)
 
     def add_curve_c_oss_normal(self):
+        """Add the C_oss curve."""
         if self.comboBox_create_transistor_added_c_oss_normal.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_oss_t_j.text() != "" else None
@@ -2383,6 +2425,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_c_oss_normal(self):
+        """View the C_oss curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="C_oss_normal Curve",
@@ -2391,10 +2434,12 @@ class MainWindow(QMainWindow):
             ylabel="Capacitance in F")
 
     def delete_curve_c_oss_normal(self):
+        """Clear the C_oss curve."""
         self.comboBox_create_transistor_added_c_oss_normal.clear()
         self.comboBox_create_transistor_added_c_oss_normal.setDisabled(False)
 
     def add_curve_c_oss_detail(self):
+        """Add the C_oss_detail curve."""
         if self.comboBox_create_transistor_added_c_oss_detail.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_oss_t_j.text()) if \
@@ -2422,6 +2467,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_c_oss_detail(self):
+        """View the C_oss_detail curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="C_oss_detail Curve",
@@ -2430,10 +2476,12 @@ class MainWindow(QMainWindow):
             ylabel="Capacitance in F")
 
     def delete_curve_c_oss_detail(self):
+        """Clear the C_oss_detail curve."""
         self.comboBox_create_transistor_added_c_oss_detail.clear()
         self.comboBox_create_transistor_added_c_oss_detail.setDisabled(False)
 
     def add_curve_c_rss_normal(self):
+        """Add the C_rss curve."""
         if self.comboBox_create_transistor_added_c_rss_normal.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if self.lineEdit_create_transistor_add_curve_c_rss_t_j.text() != "" else None
@@ -2460,6 +2508,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_c_rss_normal(self):
+        """View the C_rss curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="C_rss_normal Curve",
@@ -2468,10 +2517,12 @@ class MainWindow(QMainWindow):
             ylabel="Capacitance in F")
 
     def delete_curve_c_rss_normal(self):
+        """Clear the C_rss curve."""
         self.comboBox_create_transistor_added_c_rss_normal.clear()
         self.comboBox_create_transistor_added_c_rss_normal.setDisabled(False)
 
     def add_curve_c_rss_detail(self):
+        """Add the C_rss_detail curve."""
         if self.comboBox_create_transistor_added_c_rss_detail.count() == 0:
             t_j = float(
                 self.lineEdit_create_transistor_add_curve_c_rss_t_j.text()) if \
@@ -2499,6 +2550,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Curve has already been added!")
 
     def view_curve_c_rss_detail(self):
+        """View the C_rss_detail curve."""
         self.ViewCurveWindow = ViewCurveWindow()
         self.ViewCurveWindow.view_curve(
             curve_title="C_rss_detail Curve",
@@ -2507,6 +2559,7 @@ class MainWindow(QMainWindow):
             ylabel="Capacitance in F")
 
     def delete_curve_c_rss_detail(self):
+        """Clear crss_detail curve."""
         self.comboBox_create_transistor_added_c_rss_detail.clear()
         self.comboBox_create_transistor_added_c_rss_detail.setDisabled(False)
 
@@ -2921,7 +2974,7 @@ class MainWindow(QMainWindow):
 
     def preview_transistor_on_virtual_datasheet(self):
         """
-        Previews the transistor with paramaters given in the Create Transistor Tab on a virtual datasheet
+        Previews the transistor with paramaters given in the Create Transistor Tab on a virtual datasheet.
 
         :return:
         """
@@ -3397,6 +3450,7 @@ class MainWindow(QMainWindow):
             self.show_popup_message("Error: No transistor selected!")
 
     def check_value_is_in_between(self, min, max, value):
+        """Check if value is between min and max."""
         # TODO Could be put in tdb functions?
         if not value or (float(min) < float(value) < float(max)):
             return True
@@ -4188,7 +4242,7 @@ class MainWindow(QMainWindow):
 
     def compare_pop_out_plot1(self):
         """
-        Pops out plot1 in Comparison Cools in a PopOutPlotWindow
+        Pops out plot1 in Comparison Cools in a PopOutPlotWindow.
 
         :return: None
         """
@@ -4202,6 +4256,11 @@ class MainWindow(QMainWindow):
         self.PopOutPlotWindow1.show()
 
     def compare_pop_out_plot2(self):
+        """
+        Pops out plot2 in Comparison Cools in a PopOutPlotWindow.
+
+        :return: None
+        """
         self.PopOutPlotWindow2 = PopOutPlotWindow()
         self.matplotlibwidget_pop_out_compare2 = MatplotlibWidget()
 
@@ -4212,6 +4271,11 @@ class MainWindow(QMainWindow):
         self.PopOutPlotWindow2.show()
 
     def compare_pop_out_plot3(self):
+        """
+        Pops out plot3 in Comparison Cools in a PopOutPlotWindow.
+
+        :return: None
+        """
         self.PopOutPlotWindow3 = PopOutPlotWindow()
         self.matplotlibwidget_pop_out_compare3 = MatplotlibWidget()
 
@@ -4222,6 +4286,11 @@ class MainWindow(QMainWindow):
         self.PopOutPlotWindow3.show()
 
     def compare_pop_out_plot4(self):
+        """
+        Pops out plot4 in Comparison Cools in a PopOutPlotWindow.
+
+        :return: None
+        """
         self.PopOutPlotWindow4 = PopOutPlotWindow()
         self.matplotlibwidget_pop_out_compare4 = MatplotlibWidget()
 
@@ -4232,6 +4301,11 @@ class MainWindow(QMainWindow):
         self.PopOutPlotWindow4.show()
 
     def compare_pop_out_plot5(self):
+        """
+        Pops out plot5 in Comparison Cools in a PopOutPlotWindow.
+
+        :return: None
+        """
         self.PopOutPlotWindow5 = PopOutPlotWindow()
         self.matplotlibwidget_pop_out_compare5 = MatplotlibWidget()
 
@@ -4242,6 +4316,11 @@ class MainWindow(QMainWindow):
         self.PopOutPlotWindow5.show()
 
     def compare_pop_out_plot6(self):
+        """
+        Pops out plot6 in Comparison Cools in a PopOutPlotWindow.
+
+        :return: None
+        """
         self.PopOutPlotWindow6 = PopOutPlotWindow()
         self.matplotlibwidget_pop_out_compare6 = MatplotlibWidget()
 
@@ -4252,6 +4331,11 @@ class MainWindow(QMainWindow):
         self.PopOutPlotWindow6.show()
 
     def compare_pop_out_plot7(self):
+        """
+        Pops out plot7 in Comparison Cools in a PopOutPlotWindow.
+
+        :return: None
+        """
         self.PopOutPlotWindow7 = PopOutPlotWindow()
         self.matplotlibwidget_pop_out_compare7 = MatplotlibWidget()
 
@@ -4262,6 +4346,11 @@ class MainWindow(QMainWindow):
         self.PopOutPlotWindow7.show()
 
     def compare_pop_out_plot8(self):
+        """
+        Pops out plot8 in Comparison Cools in a PopOutPlotWindow.
+
+        :return: None
+        """
         self.PopOutPlotWindow8 = PopOutPlotWindow()
         self.matplotlibwidget_pop_out_compare8 = MatplotlibWidget()
 
@@ -4272,6 +4361,11 @@ class MainWindow(QMainWindow):
         self.PopOutPlotWindow8.show()
 
     def compare_pop_out_plot9(self):
+        """
+        Pops out plot9 in Comparison Cools in a PopOutPlotWindow.
+
+        :return: None
+        """
         self.PopOutPlotWindow9 = PopOutPlotWindow()
         self.matplotlibwidget_pop_out_compare9 = MatplotlibWidget()
 
