@@ -37,7 +37,7 @@ class DatabaseManager:
 
     module_manufacturers_file_path: str
     housing_types_file_path: str
-
+    
     def __init__(self, housing_types_file_path: str = None, module_manufacturers_file_path: str = None):
         self.operation_mode = None
         self.tdb_directory = os.path.dirname(os.path.abspath(__file__))
@@ -67,7 +67,6 @@ class DatabaseManager:
         if self.operation_mode is not None:
             raise Exception("DatabaseManager operation mode can only be set once.")
         self.operation_mode = OperationMode.JSON
-
         if not os.path.isdir(json_folder_path):
             os.makedirs(json_folder_path)
             self.json_folder = json_folder_path
@@ -75,7 +74,6 @@ class DatabaseManager:
             print(index_response)
             if not index_response.ok:
                 raise Exception(f"Index file was not found. URL: {index_url}")
-
             for transistor_url in index_response.iter_lines():
                 transistor_response = requests.get(transistor_url)
                 print(transistor_url)
@@ -89,7 +87,6 @@ class DatabaseManager:
                 else:
                     transistor = self.convert_dict_to_transistor_object(transistor_response.json())
                     self.save_transistor(transistor, True)
-
         else:
             self.json_folder = json_folder_path
 
