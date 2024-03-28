@@ -291,13 +291,14 @@ class Transistor:
 
         return output_list
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Transistor) -> bool:
         """
         Check if the passed transistor object and the transistor object in scope are both same.
 
         This works by converting them to dict and checking the dict for equality (without the id).
 
         :param other: Expects transistor object
+        :type other: Transistor
         :return: True or False
         :rtype: bool
         """
@@ -548,6 +549,8 @@ class Transistor:
         :type v_dc: float
         :param buffer_req: Internally required for generating virtual datasheets
         :type buffer_req: bool
+        :param figure_size_mm: figure size in mm as a tuple (x mm, y mm)
+        :type figure_size_mm: Tuple
 
         :return: Respective plots are displayed
         """
@@ -591,6 +594,10 @@ class Transistor:
         :type v_dc: float
         :param buffer_req: Internally required for generating virtual datasheets
         :type buffer_req: bool
+        :param figure_size_mm: figure size in mm as a tuple (x mm, y mm)
+        :type figure_size_mm: Tuple
+        :param yunits: Unit for the y-axis, e.g. "J"
+        :type yunits: str
 
         :return: Respective plots are displayed
         """

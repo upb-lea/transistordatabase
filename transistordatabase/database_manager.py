@@ -62,13 +62,15 @@ class DatabaseManager:
 
     def set_operation_mode_json(self, json_folder_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database")) -> None:
         """
-        Set operation mode to json.
+        Set the database operation mode to json (default operation mode).
+
+        Another operation mode is using mongodb as a database.
 
         In order to function properly it is necessary that the given folder path
         is empty and is only used by this database. If no path is given the transistordatabase will be created in the package folder.
 
-        :param json_path: Path to json folder.
-        :type json_path: str
+        :param json_folder_path: Path to json folder.
+        :type json_folder_path: str
         """
         index_url = "https://raw.githubusercontent.com/upb-lea/transistordatabase_File_Exchange/main/index.txt"
         if self.operation_mode is not None:
@@ -99,9 +101,9 @@ class DatabaseManager:
 
     def set_operation_mode_mongodb(self, collection: str = "local") -> None:
         """
-        Set the operation mode to mongodb database.
+        Set the database operation mode to mongodb database.
 
-        :param collection: By default local database is selected and "local" is provided as value
+        :param collection: By default, local database is selected and "local" is provided as value
         :type collection: str
         """
         if self.operation_mode is not None:
@@ -120,7 +122,6 @@ class DatabaseManager:
         Receives the execution instructions from update_from_fileexchange(..).
 
         :param transistor: The transistor object which shall be stored in the database.
-        :type collection: Transistor
         :param overwrite: Indicates whether to overwrite the existing transistor object in the local database if a match is found
         :type overwrite: bool or None
         """
@@ -302,7 +303,7 @@ class DatabaseManager:
         :type overwrite: bool
         :param module_manufacturers_url: URL to the module manufacturers file
         :type module_manufacturers_url: str
-        :param housing_types_url: URL to the housing typess file
+        :param housing_types_url: URL to the housing type file
         :type housing_types_url: str
 
         :return: None
@@ -441,8 +442,8 @@ class DatabaseManager:
         - load()
         - import_json()
 
-        :param db_dict: transistor dictionary
-        :type db_dict: dict
+        :param transistor_dict: transistor dictionary
+        :type transistor_dict: dict
 
         :return: Transistor object
         :rtype: Transistor object
@@ -535,7 +536,8 @@ class DatabaseManager:
         - channel characteristics will be modified
         - e_on/e_off/e_rr characteristics will be modified
         - thermal behaviour will be modified
-
+        :param transistor: transistor object to paralize
+        :type transistor: Transistor
         :param count_parallels: count of parallel transistors of same type, default = 2
         :type count_parallels: int
 
