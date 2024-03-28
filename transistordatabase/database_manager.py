@@ -1,7 +1,7 @@
 """Manage the database with its different operation modes (json and mongodb)."""
 # Python standard libraries
 from enum import Enum
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 from datetime import datetime
 from matplotlib import pyplot as plt
 import numpy as np
@@ -686,8 +686,19 @@ class DatabaseManager:
             print(e.args[0])
 
     @staticmethod
-    def export_single_transistor_to_json(transistor: Transistor, file_path: str):
-        """Export a single transistor object to a json file."""
+    def export_single_transistor_to_json(transistor: Transistor, file_path: Optional[str] = None):
+        """
+        Export a single transistor object to a json file.
+
+        :param transistor: transistor name
+        :type transistor: Transistor
+        :param file_path: Specify a directory or a file path. In case of a directory, the transistor_name.json is used
+        as a file name. In case of None, the current working directory is used together with
+        the transistor_name.json as a file name.
+        :type file_path: Optional[str]
+        """
+        if file_path is None:
+            file_path = os.getcwd()
         if os.path.isdir(file_path):
             file_path = os.path.join(file_path, f"{transistor.name}.json")
             print(file_path)

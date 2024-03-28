@@ -225,8 +225,6 @@ if __name__ == '__main__':
 
     transistor = Template(db)
 
-    # db.export_single_transistor_to_json(transistor, os.getcwd())
-
     ####################################
     # Method examples
     ####################################
@@ -241,7 +239,8 @@ if __name__ == '__main__':
     # transistor.plot_v_qoss()
 
     # connect transistors in parallel
-    # parallel_transistors = transistor.parallel_transistors(3)
+    # parallel_transistors = db.parallel_transistors(transistor, 3)
+    # db.export_single_transistor_to_json(parallel_transistors, os.getcwd())
 
     # switch methods #
     # transistor.switch.plot_energy_data()
@@ -278,38 +277,19 @@ if __name__ == '__main__':
     ####################################
 
     # print ALL database content
-    # tdb.print_tdb()
+    # db.print_tdb()
 
     # print database content of housing and datasheet hyperlink
-    # tdb.print_tdb(['housing_type','datasheet_hyperlink'])
-
-    # before init mongo, you need to install mongodb and start the database via the command line by using 'mongo' command
-    # init mongodb
-    # collection = tdb.connect_local_tdb()  # Collection
-
-    # reset the mongodb database
-    # collection.drop()
-
-    # store transistor
-    # optional argument: collection. If no collection is specified, it connects to local TDB
-    # transistor.save()
+    # db.print_tdb(['housing_type','datasheet_hyperlink'])
 
     # load transistor
     # optional argument: collection. If no collection is specified, it connects to local TDB
-    # transistor_loaded = tdb.load({'name': 'CREE_C3M0016120K'})
+    # transistor_loaded = db.load_transistor('CREE_C3M0016120K')
     # print(transistor_loaded.switch.t_j_max)
 
     # export to json
     # optional argument: path. If no path is specified, saves exports to local folder
-    # transistor.export_json()
-
-    # import from json
-    # optional argument: path. If no path is specified, it loads from to local folder
-    # transistor_imported = tdb.import_json('CREE_C3M0016120K.json')
-    # print(transistor_imported.switch.t_j_max)
-
-    # Rename transistor arguments
-    # tdb.connect_local_tdb().update_many({}, {"$rename": {"transistor_type": "type"}})
+    # db.export_single_transistor_to_json(transistor, os.getcwd())
 
     ####################################
     # Examples to fill-in transistor.wp-class
@@ -325,10 +305,10 @@ if __name__ == '__main__':
     # transistor.wp.e_oss = transistor.calc_v_eoss()
     # transistor.wp.q_oss = transistor.calc_v_qoss()
     #
-    # # switch, linearize channel and search for losscurves
+    # # switch, linearize channel and search for loss curves
     # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(25, 15, 150, 'switch')
     # transistor.wp.e_on = transistor.get_object_i_e('e_on', 25, 15, 600, 2.5).graph_i_e
     # transistor.wp.e_off = transistor.get_object_i_e('e_off', 25, -4, 600, 2.5).graph_i_e
     #
-    # # diode, linearize channel and search for losscurves
+    # # diode, linearize channel and search for loss curves
     # transistor.wp.diode_v_channel, transistor.wp.diode_r_channel = transistor.calc_lin_channel(25, -4, 150, 'diode')
