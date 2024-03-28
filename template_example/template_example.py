@@ -5,7 +5,7 @@ import os
 
 
 # Template to generate a transistor
-def Template(db):
+def template_example(database):
     """Template to create a transistor object."""
     ####################################
     # transistor parameters
@@ -215,17 +215,18 @@ def Template(db):
     ####################################
     # create transistor object
     ####################################
-    return tdb.Transistor(transistor_args, switch_args, diode_args, possible_housing_types=db.housing_types,
-                          possible_module_manufacturers=db.module_manufacturers)
+    return tdb.Transistor(transistor_args, switch_args, diode_args, possible_housing_types=database.housing_types,
+                          possible_module_manufacturers=database.module_manufacturers)
 
 
 if __name__ == '__main__':
     db = tdb.DatabaseManager()
+    db.set_operation_mode_json()
 
     # update the database
-    db.update_from_fileexchange(True)
+    # db.update_from_fileexchange(True)
 
-    transistor = Template(db)
+    transistor = template_example(db)
 
     ####################################
     # Method examples
@@ -258,8 +259,15 @@ if __name__ == '__main__':
     # exporter example
     ####################################
 
-    # Export virtual datasheet
-    # transistor.export_datasheet()
+    # Windows users: export datasheet
+    # html_str = transistor.export_datasheet()
+
+    # Linux users: export datasheet as html
+    # look for CREE_C3M0016120K.html in template_example folder.
+    # html_str = transistor.export_datasheet(build_collection=True)
+    # Html_file = open(f"{transistor.name}.html", "w")
+    # Html_file.write(html_str)
+    # Html_file.close()
 
     # Export to MATLAB
     # transistor.export_matlab()

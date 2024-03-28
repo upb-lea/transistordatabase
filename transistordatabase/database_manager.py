@@ -57,12 +57,9 @@ class DatabaseManager:
             self.module_manufacturers_file_path = module_manufacturers_file_path
         self.module_manufacturers = read_data_file(self.module_manufacturers_file_path)
 
-        # operation mode default is json
-        self.set_operation_mode_json()
-
     def set_operation_mode_json(self, json_folder_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database")) -> None:
         """
-        Set the database operation mode to json (default operation mode).
+        Set the database operation mode to json.
 
         Another operation mode is using mongodb as a database.
 
