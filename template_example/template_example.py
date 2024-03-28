@@ -1,10 +1,11 @@
 """See how to create a transistor object."""
 # imports
 import transistordatabase as tdb
+import os
 
 
 # Template to generate a transistor
-def Template():
+def Template(db):
     """Template to create a transistor object."""
     ####################################
     # transistor parameters
@@ -214,13 +215,17 @@ def Template():
     ####################################
     # create transistor object
     ####################################
-    return tdb.Transistor(transistor_args, switch_args, diode_args)
+    return tdb.Transistor(transistor_args, switch_args, diode_args, possible_housing_types=db.housing_types,
+                          possible_module_manufacturers=db.module_manufacturers)
 
 
 if __name__ == '__main__':
-    transistor = Template()
+    db = tdb.DatabaseManager()
+    db.set_operation_mode_json()
 
-    transistor.export_json()
+    transistor = Template(db)
+
+    # db.export_single_transistor_to_json(transistor, os.getcwd())
 
     ####################################
     # Method examples
@@ -228,7 +233,7 @@ if __name__ == '__main__':
 
     # transistor methods #
     # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')
-    # linearisation at 175 degree, 15V gatevoltage, 40A channel current
+    # linearization at 175 degree, 15V gatevoltage, 40A channel current
     # print(f"{transistor.wp.switch_v_channel = } V")
     # print(f"{transistor.wp.switch_r_channel = } Ohm")
     # print(transistor.calc_v_eoss())
@@ -266,7 +271,7 @@ if __name__ == '__main__':
     # transistor.export_plecs()
 
     # Export to geckoCIRCUITS
-    # transistor.export_geckocircuits(600, 15, -4, 2.5, 2.5)
+    # transistor.export_geckocircuits(True, 600, 15, -4, 2.5, 2.5)
 
     ####################################
     # Database example

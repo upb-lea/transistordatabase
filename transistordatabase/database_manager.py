@@ -688,6 +688,9 @@ class DatabaseManager:
     @staticmethod
     def export_single_transistor_to_json(transistor: Transistor, file_path: str):
         """Export a single transistor object to a json file."""
+        if os.path.isdir(file_path):
+            file_path = os.path.join(file_path, f"{transistor.name}.json")
+            print(file_path)
         with open(file_path, "w") as fd:
             json.dump(transistor.convert_to_dict(), fd, indent=2)
 
