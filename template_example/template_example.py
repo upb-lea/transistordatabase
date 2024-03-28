@@ -221,7 +221,9 @@ def Template(db):
 
 if __name__ == '__main__':
     db = tdb.DatabaseManager()
-    db.set_operation_mode_json()
+
+    # update the database
+    db.update_from_fileexchange(True)
 
     transistor = Template(db)
 
@@ -275,6 +277,9 @@ if __name__ == '__main__':
     ####################################
     # Database example
     ####################################
+
+    # update the database
+    # db.update_from_fileexchange(True)
 
     # print ALL database content
     # db.print_tdb()

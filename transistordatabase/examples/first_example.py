@@ -53,9 +53,9 @@ def example_mongodb_database():
 
 def example_update_from_online_database():
     """Update the local database from the online database."""
+    # handle the path to the DatabaseManager(path), to handle a custom database folder to the manager.
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tdb_example_downloaded")
     db = DatabaseManager()
-    db.set_operation_mode_json(path)
     db.update_from_fileexchange(True)
 
     # Compare local database to exchange database:
