@@ -160,6 +160,9 @@ Minimal python example
     # Print database
     tdb_json.print_tdb()
 
+    # load a transistor from the database
+    transistor_loaded = tdb_json.load_transistor('CREE_C3M0016120K')
+
 In addition to that in `this <https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/housing_types.txt>`_ file there are
 more simple examples.
 
@@ -247,7 +250,7 @@ Half-automated example
 Insert a working point of interest. The algorithm will find the closest working point and fills out the Transistor.wp.-class
 .. code-block::
 
-   transistor.update_wp(125, 15, 50)
+   transistor_loaded.update_wp(125, 15, 50)
 
 Non-automated example
 ---------------------
@@ -279,8 +282,7 @@ To parallel transistors use the function.
 
 .. code-block::
 
-    transistor = load('Infineon_FF200R12KE3')
-    parallel_transistorobject = transistor.parallel_transistors(3)
+    parallel_transistorobject = tdb_json.parallel_transistors(transistor_loaded, 3)
 
 After this, you can work with the transistor object as usual, e.g. fill in the .wp-workspace or export the device to Matlab, Simulink or GeckoCIRCUITS.
 
@@ -296,8 +298,15 @@ This function exports a virtual datasheet to see stored data in the database. Fu
 
 .. code-block::
 
-    transistor = tdb.load('Fuji_2MBI100XAA120-50')
-    transistor.export_datasheet()
+    # Windows users: export datasheet
+    transistor_loaded.export_datasheet()
+
+    # Linux users: export datasheet as html
+    # look for CREE_C3M0016120K.html in your current working directory
+    html_str = transistor_loaded.export_datasheet(build_collection=True)
+    Html_file = open(f"{transistor_loaded.name}.html", "w")
+    Html_file.write(html_str)
+    Html_file.close()
 
 .. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Virtual_Datasheet.png
     :align: center
@@ -310,8 +319,7 @@ At the moment you need to know the exporting parameters like gate resistor, gate
 
 .. code-block::
 
-    transistor = tdb.load('Fuji_2MBI100XAA120-50')
-    transistor.export_geckocircuits(600, 15, -4, 2.5, 2.5)
+    transistor_loaded.export_geckocircuits(True, 600, 15, -4, 2.5, 2.5)
 
 From now on, you can load the model into your GeckoCIRCUITS schematic.
 
@@ -328,15 +336,13 @@ For a thermal and loss simulation using PLECS simulation tool, it requires the t
 
 .. code-block::
 
-    transistor = tdb.load('Fuji_2MBI200XAA065-50')
-    transistor.export_plecs()
+    transistor_loaded.export_plecs()
 
 Outputs are xml files - one for switch and one for diode (if available), which can be then loaded into your schematic following the instructions as mentioned `here <https://www.plexim.com/support/videos/thermal-modeling-part-1>`__. Note that if channel curves for the default gate-voltage are found missing then the xml files could not be possible to generate and a respective warning message is issued to the user. The user can change the default gate-voltage and switching voltage by providing an extra list argument as follows:
 
 .. code-block::
 
-    transistor = tdb.load('Fuji_2MBI200XAA065-50')
-    transistor.export_plecs([15, -15, 15, 0])
+    transistor_loaded.export_plecs([15, -15, 15, 0])
 
 Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.
 
@@ -349,8 +355,8 @@ Export to Simulink
 For a loss simulation in simulink, there is a IGBT model available, which can be found in this `simulink model <https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html>`_ . Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
 .. code-block::
 
-    transistor = tdb.load('Infineon_FF200R12KE3')
-    transistor.export_simulink_loss_model()
+    transistor_loaded = db.load_transistor('Infineon_FF200R12KE3')
+    transistor_loaded.export_simulink_loss_model()
 
 Output is a .mat-file, you can load in your matlab program to simulate. Now, you are able to sweep transistors within your simulation. E.g. some matlab-code:
 
@@ -375,8 +381,8 @@ Python dictionary can be exported to Matlab, see the following example:
 
 .. code-block::
 
-    transistor = tdb.load('Fuji_2MBI100XAA120-50')
-    transistor.export_matlab()
+    transistor_loaded = db.load_transistor('Fuji_2MBI100XAA120-50')
+    transistor_loaded.export_matlab()
 
 A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.
 
@@ -398,7 +404,7 @@ Install with standard settings. Use the MongoDB community server, as platform, c
 
 Roadmap
 *******
-Planned features in 2022
+Planned features in 2024
 
 * Focus on adding self-measured data to the database
 * Working with self-measured data in exporters
