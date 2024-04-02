@@ -1020,9 +1020,9 @@ class Transistor:
                 'v_g': i_e_object.v_g,
             }
             # check dictionary
-            self.isvalid_dict(args, 'SwitchEnergyData')
+            isvalid_dict(args, 'SwitchEnergyData')
             # pack to object
-            object_i_e_calc = self.SwitchEnergyData(args)
+            object_i_e_calc = SwitchEnergyData(args)
             return object_i_e_calc
         except Exception as e:
             print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(
