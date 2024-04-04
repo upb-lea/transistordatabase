@@ -3933,8 +3933,7 @@ class MainWindow(QMainWindow):
         """
         try:
             transistor = self.tdb.load_transistor(self.comboBox_export_transistor.currentText())
-            transistor_parallel = self.tdb.parallel_transistors(transistor,
-                int(self.lineEdit_export_number_parallel_transistors.text()))
+            transistor_parallel = self.tdb.parallel_transistors(transistor, int(self.lineEdit_export_number_parallel_transistors.text()))
             transistor_parallel.export_matlab()
 
             self.show_popup_message(
@@ -3951,8 +3950,7 @@ class MainWindow(QMainWindow):
         try:
             transistor = self.tdb.load_transistor(self.comboBox_export_transistor.currentText())
             if transistor.type == "IGBT":
-                transistor_parallel = self.tdb.parallel_transistors(transistor,
-                    int(self.lineEdit_export_number_parallel_transistors.text()))
+                transistor_parallel = self.tdb.parallel_transistors(transistor, int(self.lineEdit_export_number_parallel_transistors.text()))
                 transistor_parallel.export_simulink_loss_model(
                     r_g_on=float(self.lineEdit_export_simulink_r_g_on.text()),
                     r_g_off=float(self.lineEdit_export_simulink_r_g_off.text()),
@@ -3975,8 +3973,7 @@ class MainWindow(QMainWindow):
         """
         transistor = self.tdb.load_transistor(self.comboBox_export_transistor.currentText())
 
-        transistor_parallel = self.tdb.parallel_transistors(transistor,
-            int(self.lineEdit_export_number_parallel_transistors.text()))
+        transistor_parallel = self.tdb.parallel_transistors(transistor, int(self.lineEdit_export_number_parallel_transistors.text()))
 
         try:
             gate_voltages = [float(self.lineEdit_export_plecs_v_g_on.text()),
@@ -3998,8 +3995,7 @@ class MainWindow(QMainWindow):
         """
         try:
             transistor = self.tdb.load_transistor(self.comboBox_export_transistor.currentText())
-            transistor_parallel = self.tdb.parallel_transistors(transistor,
-                int(self.lineEdit_export_number_parallel_transistors.text()))
+            transistor_parallel = self.tdb.parallel_transistors(transistor, int(self.lineEdit_export_number_parallel_transistors.text()))
             transistor_parallel.export_geckocircuits(v_supply=float(self.lineEdit_export_gecko_v_supply.text()),
                                                      r_g_on=float(self.lineEdit_export_gecko_r_g_on.text()),
                                                      r_g_off=float(self.lineEdit_export_gecko_r_g_off.text()),
@@ -4038,14 +4034,11 @@ class MainWindow(QMainWindow):
             transistor3 = self.tdb.load_transistor(self.comboBox_compare_transistor3.currentText())
 
             if self.lineEdit_compare_number_parallel_transistor1.text() != "1":
-                transistor1 = self.tdb.parallel_transistors(transistor1,
-                    int(self.lineEdit_compare_number_parallel_transistor1.text()))
+                transistor1 = self.tdb.parallel_transistors(transistor1, int(self.lineEdit_compare_number_parallel_transistor1.text()))
             if self.lineEdit_compare_number_parallel_transistor2.text() != "1":
-                transistor2 = self.tdb.parallel_transistors(transistor2,
-                    int(self.lineEdit_compare_number_parallel_transistor2.text()))
+                transistor2 = self.tdb.parallel_transistors(transistor2, int(self.lineEdit_compare_number_parallel_transistor2.text()))
             if self.lineEdit_compare_number_parallel_transistor3.text() != "1":
-                transistor3 = self.tdb.parallel_transistors(transistor3,
-                    int(self.lineEdit_compare_number_parallel_transistor3.text()))
+                transistor3 = self.tdb.parallel_transistors(transistor3, int(self.lineEdit_compare_number_parallel_transistor3.text()))
 
             r_g_on1 = float(self.label_compare_r_g_on_value_transistor1.text())
             r_g_on2 = float(self.label_compare_r_g_on_value_transistor2.text())
@@ -4901,10 +4894,8 @@ class MainWindow(QMainWindow):
             pass
 
         try:
-            transistor1 = self.tdb.parallel_transistors(transistor1,
-                int(self.lineEdit_topology_number_parallel_transistor1.text()))
-            transistor2 = self.tdb.parallel_transistors(transistor2,
-                int(self.lineEdit_topology_number_parallel_transistor2.text()))
+            transistor1 = self.tdb.parallel_transistors(transistor1, int(self.lineEdit_topology_number_parallel_transistor1.text()))
+            transistor2 = self.tdb.parallel_transistors(transistor2, int(self.lineEdit_topology_number_parallel_transistor2.text()))
 
             if comboBox_topology_line_contour.currentText() == "Contour":
                 if comboBox_topology_plot_x_axis.currentText() == "Zeta = f*L":
