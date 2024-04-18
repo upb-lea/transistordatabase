@@ -294,20 +294,34 @@ class SwitchEnergyData:
             self.e_x = args.get('e_x')
             self.r_g = args.get('r_g')
             self.i_x = args.get('i_x')
+            self.t_j = args.get('t_j')
             self.graph_i_e = None
             self.graph_r_e = None
+            self.graph_t_e = None
         elif self.dataset_type == 'graph_i_e':
             self.e_x = None
             self.r_g = args.get('r_g')
             self.i_x = None
-            self.graph_i_e = args.get('graph_i_e')
+            self.t_j = args.get('t_j')
             self.graph_r_e = None
+            self.graph_i_e = args.get('graph_i_e')            
+            self.graph_t_e = None
         elif self.dataset_type == 'graph_r_e':
             self.e_x = None
             self.r_g = None
             self.i_x = args.get('i_x')
-            self.graph_i_e = None
+            self.t_j = args.get('t_j')
             self.graph_r_e = args.get('graph_r_e')
+            self.graph_i_e = None
+            self.graph_t_e = None            
+        elif self.dataset_type == 'graph_t_e':
+            self.e_x = None
+            self.r_g = args.get('r_g')
+            self.i_x = args.get('i_x')
+            self.t_j = None
+            self.graph_r_e = None
+            self.graph_i_e = None
+            self.graph_t_e = args.get('graph_t_e')
 
     def convert_to_dict(self) -> dict:
         """
@@ -607,7 +621,7 @@ class FosterThermalModel:
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.loglog(self.graph_t_rthjc[0], self.graph_t_rthjc[1])
-        ax.set_xlabel('Time : $t$ [sec]')
+        ax.set_jlabel('Time : $t$ [sec]')
         ax.set_ylabel('Thermal impedance: $Z_{th(j-c)}$ [K/W ]')
         ax.grid()
         # self.r_th_vector and self.tau_vector are optional.
@@ -836,7 +850,7 @@ class RawMeasurementData:
                     text1 = f"E_off = {(e_off_temp * 1000000).round(2)} µJ, time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
                     text2 = f"Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
                     fig, ax1 = plt.subplots()
-                    ax1.set_xlabel("t / ns")
+                    ax1.set_jlabel("t / ns")
                     ax1.set_ylabel("Id / A", color='r')
                     ax1.plot(((id_temp[:, 0] * 1000000000) + int(time_input)), id_temp[:, 1], color='r')
                     plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
@@ -904,7 +918,7 @@ class RawMeasurementData:
             y = [sub[1] * 1000000 for sub in e_off]
             fig, ax1 = plt.subplots()
             color = 'tab:red'
-            ax1.set_xlabel(label_x_plot)
+            ax1.set_jlabel(label_x_plot)
             ax1.set_ylabel("Eoff / µJ", color=color)
             ax1.plot(x, y, marker='o', color=color)
             plt.grid('both')
@@ -971,7 +985,7 @@ class RawMeasurementData:
                     text1 = f"E_on = {(e_on_temp * 1000000).round(2)} µJ, time correction = {(time_correction * sample_interval * 1000000000).round(2)} ns"
                     text2 = f"Integration time = {((id_temp[upper_integration_limit, 0] - id_temp[lower_integration_limit, 0]) * 1000000000).round(2)} ns"
                     fig, ax1 = plt.subplots()
-                    ax1.set_xlabel("t / ns")
+                    ax1.set_jlabel("t / ns")
                     ax1.set_ylabel("Id / A", color='r')
                     ax1.plot(id_temp[:, 0] * 1000000000, id_temp[:, 1], color='r')
                     plt.axvline(id_temp[upper_integration_limit, 0] * 1000000000, color='green', linestyle='dotted',
@@ -1038,7 +1052,7 @@ class RawMeasurementData:
             y = [sub[1] * 1000000 for sub in e_on]
             fig, ax1 = plt.subplots()
             color = 'tab:red'
-            ax1.set_xlabel(label_x_plot)
+            ax1.set_jlabel(label_x_plot)
             ax1.set_ylabel("Eon / µJ", color=color)
             ax1.plot(x, y, marker='o', color=color)
             plt.grid('both')
