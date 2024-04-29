@@ -278,10 +278,10 @@ if __name__ == '__main__':
 
     # Linux users: export datasheet as html
     # look for CREE_C3M0016120K.html in template_example folder.
-    html_str = transistor.export_datasheet(build_collection=True)
-    Html_file = open(f"{transistor.name}.html", "w")
-    Html_file.write(html_str)
-    Html_file.close()
+    # html_str = transistor.export_datasheet(build_collection=True)
+    # Html_file = open(f"{transistor.name}.html", "w")
+    # Html_file.write(html_str)
+    # Html_file.close()
 
     # Export to MATLAB
     # transistor.export_matlab()
