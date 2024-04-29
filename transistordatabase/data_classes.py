@@ -294,20 +294,34 @@ class SwitchEnergyData:
             self.e_x = args.get('e_x')
             self.r_g = args.get('r_g')
             self.i_x = args.get('i_x')
+            self.t_j = args.get('t_j')
             self.graph_i_e = None
             self.graph_r_e = None
+            self.graph_t_e = None
         elif self.dataset_type == 'graph_i_e':
             self.e_x = None
             self.r_g = args.get('r_g')
             self.i_x = None
-            self.graph_i_e = args.get('graph_i_e')
+            self.t_j = args.get('t_j')
             self.graph_r_e = None
+            self.graph_i_e = args.get('graph_i_e')            
+            self.graph_t_e = None
         elif self.dataset_type == 'graph_r_e':
             self.e_x = None
             self.r_g = None
             self.i_x = args.get('i_x')
-            self.graph_i_e = None
+            self.t_j = args.get('t_j')
             self.graph_r_e = args.get('graph_r_e')
+            self.graph_i_e = None
+            self.graph_t_e = None            
+        elif self.dataset_type == 'graph_t_e':
+            self.e_x = None
+            self.r_g = args.get('r_g')
+            self.i_x = args.get('i_x')
+            self.t_j = None
+            self.graph_r_e = None
+            self.graph_i_e = None
+            self.graph_t_e = args.get('graph_t_e')
 
     def convert_to_dict(self) -> dict:
         """

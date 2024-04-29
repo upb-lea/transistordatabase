@@ -602,6 +602,50 @@ class Switch:
             print("Switch energy r_e curves are not available for the chosen transistor")
             return None
 
+    def plot_energy_data_t(self, buffer_req: bool = False):
+        """
+        Plot all switch energy vs Tj characteristic curves.
+
+        :param buffer_req: internally required for generating virtual datasheets
+        :param buffer_req: bool
+
+        :return: Respective plots are displayed
+        """
+        e_on_t_e_curve_count, e_off_t_e_curve_count = [0, 0]
+        for i_energy_data in np.array(range(0, len(self.e_on))):
+            if self.e_on[i_energy_data].dataset_type == 'graph_t_e':
+                e_on_t_e_curve_count += 1
+        for i_energy_data in np.array(range(0, len(self.e_off))):
+            if self.e_off[i_energy_data].dataset_type == 'graph_t_e':
+                e_off_t_e_curve_count += 1
+        if e_on_t_e_curve_count and e_on_t_e_curve_count == e_off_t_e_curve_count:
+            plt.figure()
+            # look for e_on losses
+            for i_energy_data in np.array(range(0, len(self.e_on))):
+                if self.e_on[i_energy_data].dataset_type == 'graph_t_e':
+                    labelplot = "$e_{{on}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $R_{{g}}$ = {2} Ohm, $i_{{ch}}$ = {3} A".format(
+                        self.e_on[i_energy_data].v_supply, self.e_on[i_energy_data].v_g, self.e_on[i_energy_data].r_g, self.e_on[i_energy_data].i_x)
+                    plt.plot(self.e_on[i_energy_data].graph_t_e[0], self.e_on[i_energy_data].graph_t_e[1], label=labelplot)
+                    plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+            # look for e_off losses
+            for i_energy_data in np.array(range(0, len(self.e_off))):
+                if self.e_off[i_energy_data].dataset_type == 'graph_t_e':
+                    labelplot = "$e_{{off}}$: $V_{{supply}}$ = {0} V, $V_{{g}}$ = {1} V, $R_{{g}}$ = {2} Ohm, $i_{{ch}}$ = {3} A".format(
+                        self.e_off[i_energy_data].v_supply, self.e_off[i_energy_data].v_g, self.e_off[i_energy_data].r_g, self.e_off[i_energy_data].i_x)
+                    plt.plot(self.e_off[i_energy_data].graph_t_e[0], self.e_off[i_energy_data].graph_t_e[1], label=labelplot)
+                    plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+            plt.legend(fontsize=5)
+            plt.xlabel('Junction Temperature in °C')
+            plt.ylabel('Loss energy in J')
+            plt.grid()
+            if buffer_req:
+                return get_img_raw_data(plt)
+            else:
+                plt.show()
+        else:
+            print("Switch energy t_e curves are not available for the chosen transistor")
+            return None
+    
     def plot_all_on_resistance_curves(self, buffer_req: bool = False):
         """
         Plot and convert Temperature dependent on-resistance plots in raw data format. Helper function.
@@ -709,6 +753,7 @@ class Switch:
         switch_data = {}
         switch_data['plots'] = {'channel_plots': self.plot_all_channel_data(True),
                                 'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True),
+                                'energy_plots_t': self.plot_energy_data_t(True),
                                 'r_channel_th_plot': self.plot_all_on_resistance_curves(True), 'charge_curve': self.plot_all_charge_curves(True),
                                 'soa': self.plot_soa(True)}
         for attr in dir(self):

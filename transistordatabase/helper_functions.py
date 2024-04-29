@@ -105,6 +105,11 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
             'str_keys': {},
             'numeric_keys': {'t_j', 'v_supply', 'v_g', 'r_g'},
             'array_keys': {'graph_i_e'}},
+        'SwitchEnergyData_graph_t_e': {
+            'mandatory_keys': {'v_supply', 'v_g', 'graph_t_e', 'r_g', 'i_x'},
+            'str_keys': {},
+            'numeric_keys': {'v_supply', 'v_g', 'r_g', 'i_x'},
+            'array_keys': {'graph_t_e'}},
         'VoltageDependentCapacitance': {
             'mandatory_keys': {'t_j', 'graph_v_c'},
             'str_keys': {},
@@ -180,9 +185,9 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
                                 name, dataset_value, name, alphanum_values, module_file_path))
 
     if dict_type == 'SwitchEnergyData':
-        if dataset_dict.get('dataset_type') not in ['single', 'graph_r_e', 'graph_i_e']:
+        if dataset_dict.get('dataset_type') not in ['single', 'graph_r_e', 'graph_i_e', 'graph_t_e']:
             raise KeyError("Dictionary does not contain 'dataset_type' key necessary for SwitchEnergyData object "
-                           "creation. 'dataset_type' must be 'single', 'graph_r_e' or 'graph_i_e'. "
+                           "creation. 'dataset_type' must be 'single', 'graph_r_e', 'graph_i_e' or graph_t_e. "
                            "Check SwitchEnergyData class for further information.")
         if dataset_dict['dataset_type'] == 'single':
             dict_type = 'SwitchEnergyData_single'
@@ -190,6 +195,8 @@ def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
             dict_type = 'SwitchEnergyData_graph_r_e'
         if dataset_dict['dataset_type'] == 'graph_i_e':
             dict_type = 'SwitchEnergyData_graph_i_e'
+        if dataset_dict['dataset_type'] == 'graph_t_e':
+            dict_type = 'SwitchEnergyData_graph_t_e'
 
     if dict_type == 'FosterThermalModel':
         given_parameters = [p for p in ['r_th_vector', 'c_th_vector', 'tau_vector']
