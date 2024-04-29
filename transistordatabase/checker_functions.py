@@ -92,7 +92,7 @@ def csv2array(csv_filename: str, first_xy_to_00: bool = False, second_y_to_0: bo
         case of nonlinear input/output capacities, e.g. c_oss, c_iss, c_rss
     :type first_x_to_0: bool
     :param mirror_xy_data: Takes the absolute() of both axis. Used for given mirrored data,
-    e.g. some datasheet show diode data in the 3rd quadrant instead of the 1st quadrant
+        e.g. some datasheet show diode data in the 3rd quadrant instead of the 1st quadrant
     :type mirror_xy_data: bool
 
     :return: 1d array, ready to use in the transistor database

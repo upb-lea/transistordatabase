@@ -541,6 +541,7 @@ class DatabaseManager:
         - channel characteristics will be modified
         - e_on/e_off/e_rr characteristics will be modified
         - thermal behaviour will be modified
+
         :param transistor: transistor object to paralize
         :type transistor: Transistor
         :param count_parallels: count of parallel transistors of same type, default = 2
@@ -706,9 +707,7 @@ class DatabaseManager:
 
         :param transistor: transistor name
         :type transistor: Transistor
-        :param file_path: Specify a directory or a file path. In case of a directory, the transistor_name.json is used
-        as a file name. In case of None, the current working directory is used together with
-        the transistor_name.json as a file name.
+        :param file_path: Specify a directory or a file path.
         :type file_path: Optional[str]
         """
         if file_path is None:
@@ -733,21 +732,22 @@ class DatabaseManager:
         :type measurement_dict: dict
 
         example to call this function:
-        dpt_save_dict = {
-            'path': 'C:/Users/.../GaN-Systems/400V/*.csv',
-            'dataset_type': 'graph_i_e',
-            'comment': '',
-            'load_inductance': 750e-6,
-            'commutation_inductance': 15.63e-9,
-            'commutation_device': 'IDH06G65C6',
-            'measurement_date': None,
-            'measurement_testbench': 'LEA-UPB Testbench',
-            'v_g': 12,
-            'v_g_off': 0,
-            'energies': 'both',
-            'r_g_off': 1.8,
-            'integration_interval': 'IEC 60747-8',
-            'mode': 'analyze'}
+
+        >>> dpt_save_dict = {
+        >>>     'path': 'C:/Users/.../GaN-Systems/400V/*.csv',
+        >>>     'dataset_type': 'graph_i_e',
+        >>>     'comment': '',
+        >>>     'load_inductance': 750e-6,
+        >>>     'commutation_inductance': 15.63e-9,
+        >>>     'commutation_device': 'IDH06G65C6',
+        >>>     'measurement_date': None,
+        >>>     'measurement_testbench': 'LEA-UPB Testbench',
+        >>>     'v_g': 12,
+        >>>     'v_g_off': 0,
+        >>>     'energies': 'both',
+        >>>     'r_g_off': 1.8,
+        >>>     'integration_interval': 'IEC 60747-8',
+        >>>     'mode': 'analyze'}
 
         >>> import transistordatabase as tdb
         >>> dpt_energies_dict = tdb.dpt_save_data(dpt_save_dict)

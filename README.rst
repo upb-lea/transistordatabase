@@ -108,7 +108,7 @@ Install Python
 Install latest Python version: `Link <https://www.python.org/>`__.
 
 Install Pycharm (optional)
----------------
+--------------------------
 `Installation file <https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC>`_.
 
 Download and run executable
@@ -148,6 +148,7 @@ Minimal python example
 *******************************
 
 .. code-block::
+
     from transistordatabase.database_manager import DatabaseManager
 
     # Path for json files
@@ -163,7 +164,7 @@ Minimal python example
     # load a transistor from the database
     transistor_loaded = tdb_json.load_transistor('CREE_C3M0016120K')
 
-In addition to that in `this <https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/housing_types.txt>`_ file there are
+In addition to that in `this file <https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/housing_types.txt>`_ there are
 more simple examples.
 
 

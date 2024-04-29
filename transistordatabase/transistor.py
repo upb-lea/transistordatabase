@@ -1484,12 +1484,11 @@ class Transistor:
         >>> transistor.export_simulink_loss_model()
 
         .. note::
-         - temperature next to 25 and 150 degree at 15V gate voltage will be used for channel and switching loss
-         - in case of just one temperature curve, the upper temperature will increased (+1K) to bring a small
-         temperature change in the curves. Otherwise the model will not work
-         - only necessary data from tdb will be exported to simulink
-         - Simulink model need switching energy loss in 'mJ'
-         - in case of no complete curve (e.g. not starting from zero), this tool will interpolate the curve
+            - temperature next to 25 and 150 degree at 15V gate voltage will be used for channel and switching loss
+            - in case of just one temperature curve, the upper temperature will increased (+1K) to bring a small temperature change in the curves.
+            - only necessary data from tdb will be exported to simulink
+            - Simulink model need switching energy loss in 'mJ'
+            - in case of no complete curve (e.g. not starting from zero), this tool will interpolate the curve
 
         .. todo:: C_th is fixed at the moment to 1e-6 for switch an diode. Needs to be calculated from ohter data
         """
@@ -2150,8 +2149,7 @@ class Transistor:
         Collect the available information of switch and diode from transistor object and passes it to plecs_exporter(..)
         for generating the diode and switch .xml files
 
-        :param channel_recheck: if set to True, collects the channel and energy curve characteristics at nearest
-        gate voltage if the given gate voltages are not found
+        :param channel_recheck: if True, collect the channel and energy curve characteristics at nearest gate voltage if the given gate voltages are not found
         :type channel_recheck: bool
         :param gate_voltages: turn on and off gate voltages for selecting the curves of switch and diode
         :type gate_voltages: list
@@ -2499,8 +2497,7 @@ class Transistor:
 
         .. note:: Transistor object must be loaded first before calling this method
 
-        :param r_channel_data: argument represents the TemperatureDependResistance dictionaries objects that needs
-        to be added to transistor.switch.r_channel_th object
+        :param r_channel_data: TemperatureDependResistance dictionary object that needs to be added to transistor.switch.r_channel_th object
         :type r_channel_data: dict or list
         :param clear: set to true if to clear the existing r_channel_th curves on the transistor object
         :type clear: bool
