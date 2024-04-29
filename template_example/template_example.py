@@ -113,6 +113,21 @@ def template_example(database):
                     'r_g': 2.5,
                     "graph_i_e": tdb.csv2array('switch_switching_eoff_2.5Ohm_800V_25deg_-4V.csv')}  # insert csv here
 
+    e_off_75A_800V = {"dataset_type": "graph_t_e",
+                    'v_g': -4,
+                    'v_supply': 800,
+                    'r_g': 2.5,
+                    'i_x': 75,
+                    "graph_t_e": tdb.csv2array('switch_switching_eoff_2.5Ohm_800V_75A_-4V.csv')}  # insert csv here
+
+    e_on_75A_800V = {"dataset_type": "graph_t_e",
+                      'v_g': 15,
+                      'v_supply': 800,
+                      'r_g': 2.5,
+                      'i_x': 75,
+                      "graph_t_e": tdb.csv2array('switch_switching_eon_2.5Ohm_800V_75A_15V.csv')}  # insert csv here
+
+
     switch_gate_charge_curve_800 = {
         'i_channel': 20,
         't_j': 25,
@@ -163,8 +178,8 @@ def template_example(database):
         't_j_max': 175,
         'channel': [channel_m40_7, channel_m40_9, channel_m4_11, channel_m40_13, channel_m40_15, channel_25_15, channel_25_13, channel_25_11,
                     channel_25_9, channel_25_7, channel_175_15, channel_175_13, channel_175_11, channel_175_9, channel_175_7],
-        'e_on': [e_on_25_600, e_on_25_800],
-        'e_off': [e_off_25_600, e_off_25_800],
+        'e_on': [e_on_25_600, e_on_25_800, e_on_75A_800V],
+        'e_off': [e_off_25_600, e_off_25_800, e_off_75A_800V],
         'charge_curve': [switch_gate_charge_curve_800],
         'r_channel_th': [switch_ron_args_11, switch_ron_args_13, switch_ron_args_15],
         'thermal_foster': switch_foster_args,
@@ -264,10 +279,10 @@ if __name__ == '__main__':
 
     # Linux users: export datasheet as html
     # look for CREE_C3M0016120K.html in template_example folder.
-    # html_str = transistor.export_datasheet(build_collection=True)
-    # Html_file = open(f"{transistor.name}.html", "w")
-    # Html_file.write(html_str)
-    # Html_file.close()
+    html_str = transistor.export_datasheet(build_collection=True)
+    Html_file = open(f"{transistor.name}.html", "w")
+    Html_file.write(html_str)
+    Html_file.close()
 
     # Export to MATLAB
     # transistor.export_matlab()

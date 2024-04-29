@@ -15,9 +15,9 @@
 {% set trans_plots = {} %}
 {% set raw_measurement_plot = {} %}
 
-{% set trans_title = {'c_plots': 'Voltage dependant Capacitance'} %}
-{% set switch_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs Energy curves', 'energy_plots_r': 'Rg vs Energy curves', 'r_channel_th_plot':'On Resistance plots', 'charge_curve':'Gate charge,Qg','imp_plot':'Impedance plot', 'soa':'Safe operating Area'} %}
-{% set diode_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs Energy curves', 'energy_plots_r': 'Rg vs Energy curves', 'imp_plot':'Impedance plot', 'soa':'Safe operating Area' } %}
+{% set trans_title = {'c_plots': 'Voltage dependent Capacitance'} %}
+{% set switch_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs. Energy', 'energy_plots_r': 'Rg vs. Energy', 'energy_plots_t': 'Tj vs. Energy', 'r_channel_th_plot':'On Resistance', 'charge_curve':'Gate charge,Qg','imp_plot':'Thermal step response', 'soa':'Safe operating Area'} %}
+{% set diode_title = {'channel_plots': 'Channel Characteristics', 'energy_plots': 'Current vs. Energy', 'energy_plots_r': 'Rg vs. Energy', 'energy_plots_t': 'Tj vs. Energy', 'imp_plot':'Thermal step response', 'soa':'Safe operating Area' } %}
 
 <!--******* diode ********* -->
 {% for key, value in diode['plots'].items() %}

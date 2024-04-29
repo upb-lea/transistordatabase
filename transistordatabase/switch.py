@@ -645,7 +645,6 @@ class Switch:
         else:
             print("Switch energy t_e curves are not available for the chosen transistor")
             return None
-        
     
     def plot_all_on_resistance_curves(self, buffer_req: bool = False):
         """
@@ -753,7 +752,8 @@ class Switch:
         """
         switch_data = {}
         switch_data['plots'] = {'channel_plots': self.plot_all_channel_data(True),
-                                'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True), 'energy_plots_t': self.plot_energy_data_t(True), 
+                                'energy_plots': self.plot_energy_data(True), 'energy_plots_r': self.plot_energy_data_r(True),
+                                'energy_plots_t': self.plot_energy_data_t(True),
                                 'r_channel_th_plot': self.plot_all_on_resistance_curves(True), 'charge_curve': self.plot_all_charge_curves(True),
                                 'soa': self.plot_soa(True)}
         for attr in dir(self):
