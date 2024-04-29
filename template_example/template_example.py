@@ -114,19 +114,18 @@ def template_example(database):
                     "graph_i_e": tdb.csv2array('switch_switching_eoff_2.5Ohm_800V_25deg_-4V.csv')}  # insert csv here
 
     e_off_75A_800V = {"dataset_type": "graph_t_e",
-                    'v_g': -4,
-                    'v_supply': 800,
-                    'r_g': 2.5,
-                    'i_x': 75,
-                    "graph_t_e": tdb.csv2array('switch_switching_eoff_2.5Ohm_800V_75A_-4V.csv')}  # insert csv here
-
-    e_on_75A_800V = {"dataset_type": "graph_t_e",
-                      'v_g': 15,
+                      'v_g': -4,
                       'v_supply': 800,
                       'r_g': 2.5,
                       'i_x': 75,
-                      "graph_t_e": tdb.csv2array('switch_switching_eon_2.5Ohm_800V_75A_15V.csv')}  # insert csv here
+                      "graph_t_e": tdb.csv2array('switch_switching_eoff_2.5Ohm_800V_75A_-4V.csv')}  # insert csv here
 
+    e_on_75A_800V = {"dataset_type": "graph_t_e",
+                     'v_g': 15,
+                     'v_supply': 800,
+                     'r_g': 2.5,
+                     'i_x': 75,
+                     "graph_t_e": tdb.csv2array('switch_switching_eon_2.5Ohm_800V_75A_15V.csv')}  # insert csv here
 
     switch_gate_charge_curve_800 = {
         'i_channel': 20,
