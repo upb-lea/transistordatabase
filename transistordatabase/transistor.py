@@ -392,6 +392,15 @@ class Transistor:
             self.wp.switch_v_channel, self.wp.switch_r_channel = \
                 self.calc_lin_channel(self.wp.switch_channel.t_j, self.wp.switch_channel.v_g, i_channel, switch_or_diode="switch")
 
+        # working point, fill e_oss
+        if self.graph_v_ecoss is None:
+            self.wp.graph_v_eoss = self.calc_v_eoss
+        else:
+            self.wp.graph_v_eoss = self.calc_v_eoss()
+
+        # working pint, calculate q_oss
+        self.wp.graph_v_qoss = self.calc_v_qoss()
+
     def init_loss_matrices(self):
         """Experimental."""
         self.init_switch_channel_matrix()
@@ -437,11 +446,11 @@ class Transistor:
             v_channel_interpolated = np.interp(i_channel_linspace, channel_object.graph_v_i[1],
                                                channel_object.graph_v_i[0])
 
-            print(f"{channel_object.t_j = }")
-        print(f"{t_j_max = }")
-        print(f"{t_j_min = }")
-        print(f"{v_channel_max = }")
-        print(f"{i_channel_max = }")
+            print(f"{channel_object.t_j=}")
+        print(f"{t_j_max=}")
+        print(f"{t_j_min=}")
+        print(f"{v_channel_max=}")
+        print(f"{i_channel_max=}")
 
     def quickstart_wp(self) -> None:
         """
@@ -688,7 +697,7 @@ class Transistor:
 
         eoss_v, eoss_e = self.calc_v_eoss()
         e_oss_v_op = np.interp(v_op, eoss_v, eoss_e)
-        print(f"{e_oss_v_op = }")
+        print(f"{e_oss_v_op=}")
 
         e_on_corrected.graph_i_e[1] = e_on_corrected.graph_i_e[1] + e_oss_v_op
         e_off_corrected.graph_i_e[1] = e_off_corrected.graph_i_e[1] - e_oss_v_op
@@ -2093,8 +2102,8 @@ class Transistor:
         e_off: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
         e_rr: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
         v_switching_ref: float | None  #: Unit: V
-        e_oss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: J
-        q_oss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: C
+        graph_v_eoss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: J
+        graph_v_qoss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: C
         parallel_transistors: float | None  #: Unit: Number
 
         def __init__(self):
@@ -2108,8 +2117,8 @@ class Transistor:
             self.e_off = None
             self.e_rr = None
             self.v_switching_ref = None
-            self.e_oss = None
-            self.q_oss = None
+            self.graph_v_eoss = None
+            self.graph_v_qoss = None
             self.parallel_transistors = None
 
     def validate_transistor(self) -> Dict:
