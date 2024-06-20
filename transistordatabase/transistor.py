@@ -17,6 +17,7 @@ import collections
 import copy
 import base64
 import io
+import warnings
 
 # Third party libraries
 from jinja2 import Environment, FileSystemLoader
@@ -392,13 +393,15 @@ class Transistor:
             self.wp.switch_v_channel, self.wp.switch_r_channel = \
                 self.calc_lin_channel(self.wp.switch_channel.t_j, self.wp.switch_channel.v_g, i_channel, switch_or_diode="switch")
 
+        self.wp.graph_v_coss = self.c_oss[0].graph_v_c
+
         # working point, fill e_oss
         if self.graph_v_ecoss is None:
             self.wp.graph_v_eoss = self.calc_v_eoss
         else:
             self.wp.graph_v_eoss = self.calc_v_eoss()
 
-        # working pint, calculate q_oss
+        # working point, calculate q_oss
         self.wp.graph_v_qoss = self.calc_v_qoss()
 
     def init_loss_matrices(self):
@@ -2028,6 +2031,47 @@ class Transistor:
         # set print options back to default
         np.set_printoptions(linewidth=75)
 
+    def export_geckocircuits_coss(self, filepath: str = None) -> None:
+        """
+        Export a nonlinear C_oss file for GeckoCIRCUITS.
+
+        :param filepath: directory to save the .ncl file. CWD is used in case of None.
+        :type filepath: str
+        """
+        c_oss_data = self.c_oss[0].graph_v_c.T
+
+        # Maybe check if data is monotonically
+        # Check if voltage is monotonically rising
+        if not np.all(c_oss_data[1:, 0] >= c_oss_data[:-1, 0], axis=0):
+            warnings.warn("The voltage in csv file is not monotonically rising!", stacklevel=2)
+        # Check if Coss is monotonically falling
+        if not np.all(c_oss_data[1:, 1] <= c_oss_data[:-1, 1], axis=0):
+            warnings.warn("The C_oss in csv file is not monotonically falling!", stacklevel=2)
+
+        # Rescale and interpolate the csv data to have a nice 1V step size from 0V to v_max
+        # A first value with zero volt will be added
+        v_max = int(np.round(c_oss_data[-1, 0]))
+        v_interp = np.arange(v_max + 1)
+        coss_interp = np.interp(v_interp, c_oss_data[:, 0], c_oss_data[:, 1])
+        # Since we now have an evenly spaced vector where x corresponds to the element-number of the vector
+        # we don't have to store x (v_interp) with it.
+        # To get Coss(V) just get the array element coss_interp[V]
+
+        nlc_filename = f"{self.name}_c_oss.nlc"
+
+        if filepath is None:
+            file_c_oss = open(nlc_filename, "w")
+        else:
+            filename = os.path.join(filepath, nlc_filename)
+            file_c_oss = open(filename, "w")
+
+        # write Data to file, line by line
+        for count, _ in enumerate(v_interp):
+            file_c_oss.write(f"{v_interp[count]} {coss_interp[count]}\n")
+
+        file_c_oss.close()
+        print(f"Exported file {nlc_filename} to {os.getcwd()}")
+
     def export_plecs(self, recheck: bool = True, gate_voltages=None) -> None:
         """
         Generate and export the switch and diode .xmls files to be imported into plecs simulator.
@@ -2102,6 +2146,7 @@ class Transistor:
         e_off: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
         e_rr: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
         v_switching_ref: float | None  #: Unit: V
+        graph_v_coss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: F
         graph_v_eoss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: J
         graph_v_qoss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: C
         parallel_transistors: float | None  #: Unit: Number

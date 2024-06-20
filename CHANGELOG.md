@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - Date
 ### Added
+- Non-linear capacitance file export for GeckoCIRCUITS
 ### Fixed
 - Fix some GUI data does not accept float or negative values
 - Fix reading GUI graph_r_e curves 
