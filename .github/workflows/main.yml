@@ -54,7 +54,7 @@ jobs:
           pip install sphinx sphinx-multiversion sphinx_rtd_theme sphinxcontrib-email
           pwd
           ls
-          cd sphinx/
+          cd docs/
           make html
         
           
