@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased] - Date
+## [0.5.1] - 2024-06-22
 ### Fixed
 - Documentation pipeline issue
 
@@ -244,7 +245,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/upb-lea/transistordatabase/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/upb-lea/transistordatabase/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/upb-lea/transistordatabase/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/upb-lea/transistordatabase/compare/0.3.3...0.4.0
