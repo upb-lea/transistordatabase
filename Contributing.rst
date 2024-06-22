@@ -193,20 +193,20 @@ Update version strings
 
 Version strings need to be updated in
  * setup.py
- * sphinx/conf.py
+ * docs/conf.py
  * __init__.py
  * Changelog.md
 
 Make sure that new functions/methods/classes are included to the documentation
 ------------------------------------------------------------------------------
 
-The text file sphinx/transistordatabase.rst contains all functions that will be shown in the documentation build by sphinx. Make sure that this list ist up-to-date when releasing a new version.
+The text file docs/transistordatabase.rst contains all functions that will be shown in the documentation build by sphinx. Make sure that this list ist up-to-date when releasing a new version.
 
 Build a local test-documentation
 --------------------------------
 
 First, generate the sphinx documentation for the current version to see if this runs without any errors.
-Go to /sphinx and runs
+Go to /docs and runs
 
 .. code-block::
 
@@ -222,9 +222,9 @@ Next, generate the sphinx-multiversion documentation for all available versions 
 
 .. code-block::
 
-    sphinx-multiversion sphinx sphinx/_build/_html
+    sphinx-multiversion sphinx docs/_build/_html
 
-Make sure the html-generation works without errors and visit the generated file inside /spinx/_build/_html/main/index.html
+Make sure the html-generation works without errors and visit the generated file inside /docs/_build/_html/main/index.html
 
 .. note::
 
@@ -291,20 +291,20 @@ generate sphinx documentation on github pages
 .. code-block::
 
     # make sure to clean up old build data
-    cd sphinx/
+    cd docs/
     make clean
     cd ..
-    sphinx-multiversion sphinx sphinx/_build/_html
+    sphinx-multiversion sphinx docs/_build/_html
     # write the new documentation to github-pages
     git checkout gh-pages
-    # now, copy the files from sphinx/_build/_html to the gh-pages repository
+    # now, copy the files from docs/_build/_html to the gh-pages repository
     git add #newChangesHere
     git commit -m "update docu"
     git push
     # change back to the main branch
     git checkout main
     # clean up old build data
-    cd sphinx
+    cd docs
     make clean
 
 .. |br| raw:: html
