@@ -172,7 +172,7 @@ Step 2: Configure the conf.py file with necessary extensions.
 
 Step 3: Create the necessary .rst files like _introduction, installation, transistordatabase and add the tree structure in index.rst.
 
-Step 4: Point to folder where Makefile exists and execute command **"make html"** to generate documentation. The generated HTML files will be placed under _build\html folder.
+Step 4: Point to folder where Makefile exists and execute command **"make html"** to generate documentation. The generated HTML files will be placed under build\html folder.
 
 For generating multiversion documentation, py module ``sphinx-multiversion`` is used and added as extension in conf.py.
 Further steps about configuring the project to enable multiversioning documentation can be found `here <https://holzhaus.github.io/sphinx-multiversion/master/quickstart.html>`__.
@@ -212,7 +212,7 @@ Go to /docs and runs
 
     make html
 
-Make sure the html-generation works without errors and visit the generated file inside /spinx/_build/_html/index.html
+Make sure the html-generation works without errors and visit the generated file inside /spinx/build/html/index.html
 
 .. code-block::
 
@@ -222,9 +222,9 @@ Next, generate the sphinx-multiversion documentation for all available versions 
 
 .. code-block::
 
-    sphinx-multiversion sphinx docs/_build/_html
+    sphinx-multiversion sphinx docs/build/html
 
-Make sure the html-generation works without errors and visit the generated file inside /docs/_build/_html/main/index.html
+Make sure the html-generation works without errors and visit the generated file inside /docs/build/html/main/index.html
 
 .. note::
 
@@ -294,10 +294,10 @@ generate sphinx documentation on github pages
     cd docs/
     make clean
     cd ..
-    sphinx-multiversion sphinx docs/_build/_html
+    sphinx-multiversion sphinx docs/build/html
     # write the new documentation to github-pages
     git checkout gh-pages
-    # now, copy the files from docs/_build/_html to the gh-pages repository
+    # now, copy the files from docs/build/html to the gh-pages repository
     git add #newChangesHere
     git commit -m "update docu"
     git push
