@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1 Introduction &mdash; transistordatabase(TDB) 0.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=b9afe91b"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contribute.html" />
+    <link rel="prev" title="transistordatabase(TDB)" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            transistordatabase(TDB)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><span class="sectnum">1 </span>Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#transistordatabase"><span class="sectnum">2 </span>Transistordatabase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#functionality-overview"><span class="sectnum">2.1 </span>Functionality overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#features"><span class="sectnum">3 </span>Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python-interface"><span class="sectnum">3.1 </span>Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gui"><span class="sectnum">3.2 </span>GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transistordatabase-fileexchange"><span class="sectnum">3.3 </span>Transistordatabase Fileexchange</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#installation"><span class="sectnum">4 </span>Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#windows"><span class="sectnum">4.1 </span>Windows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-python"><span class="sectnum">4.1.1 </span>Install Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-pycharm-optional"><span class="sectnum">4.1.2 </span>Install Pycharm (optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-and-run-executable"><span class="sectnum">4.1.3 </span>Download and run executable</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#linux"><span class="sectnum">4.2 </span>Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all-operating-systems-install-the-transistor-database"><span class="sectnum">4.3 </span>All Operating systems: Install the transistor database</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#complete-documentation"><span class="sectnum">5 </span>Complete documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#usage"><span class="sectnum">6 </span>Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#minimal-python-example"><span class="sectnum">6.1 </span>Minimal python example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate-a-new-transistor"><span class="sectnum">6.2 </span>Generate a new transistor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#transistor-object-basics"><span class="sectnum">6.2.1 </span>Transistor object basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reading-curves-from-the-datasheet"><span class="sectnum">6.2.2 </span>Reading curves from the datasheet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-the-template-to-generate-a-new-transistor-object"><span class="sectnum">6.2.3 </span>Use the template to generate a new transistor object</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-of-transistor-wp-in-your-programs"><span class="sectnum">6.3 </span>Usage of Transistor.wp. in your programs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#full-automated-example"><span class="sectnum">6.3.1 </span>Full-automated example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#half-automated-example"><span class="sectnum">6.3.2 </span>Half-automated example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#non-automated-example"><span class="sectnum">6.3.3 </span>Non-automated example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#calculations-with-transistor-objects"><span class="sectnum">6.4 </span>Calculations with transistor objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-transistors"><span class="sectnum">6.4.1 </span>Parallel transistors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#export-transistor-objects"><span class="sectnum">7 </span>Export transistor objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#export-a-virtual-datasheet"><span class="sectnum">7.1 </span>Export a Virtual datasheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export-to-geckocircuits"><span class="sectnum">7.2 </span>Export to GeckoCIRCUITS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export-to-plecs"><span class="sectnum">7.3 </span>Export to PLECS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export-to-simulink"><span class="sectnum">7.4 </span>Export to Simulink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export-to-matlab-octave"><span class="sectnum">7.5 </span>Export to Matlab/Octave</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#others"><span class="sectnum">8 </span>Others</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#for-developers"><span class="sectnum">8.1 </span>For developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#roadmap"><span class="sectnum">8.2 </span>Roadmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#organisation"><span class="sectnum">8.3 </span>Organisation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bug-reports"><span class="sectnum">8.3.1 </span>Bug Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changelog"><span class="sectnum">8.3.2 </span>Changelog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#contributing"><span class="sectnum">8.3.3 </span>Contributing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#about"><span class="sectnum">8.4 </span>About</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#history-and-project-status"><span class="sectnum">8.4.1 </span>History and project status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#license"><span class="sectnum">8.4.2 </span>License</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transistordatabase.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">transistordatabase(TDB)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="sectnum">1 </span>Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/upb-lea/transistordatabase/blob/database-edits/docs/intro.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1><span class="sectnum">1 </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h1>
+</section>
+<section id="transistordatabase">
+<h1><span class="sectnum">2 </span>Transistordatabase<a class="headerlink" href="#transistordatabase" title="Link to this heading"></a></h1>
+<p>The Transistordatabase is a tool developed by LEA from the University Paderborn which helps working with choosing transistors for the developement of electronics.
+When it comes to the point of choosing a transistor, there is typically a lot of trouble with different programs. Often there are multiple programs for
+calculating transistor parameters and a schematic simulator to verify the results.
+Now your colleague is working on a different electronics topology and may use different programs. This is a problem because in most cases your transistors will never be
+compatible with the ones from your colleague. The Transistordatabase now solves this problem:
+Here Transistors can be saved in a database and makes them easy to interchange between platforms. It is possible to export
+Transistor data to various simulation software and share it to a colleague using a .json-File.</p>
+<img alt="Why transistor database?" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Why_transistordatabase.png" />
+<section id="functionality-overview">
+<h2><span class="sectnum">2.1 </span>Functionality overview<a class="headerlink" href="#functionality-overview" title="Link to this heading"></a></h2>
+<p>Here are some examples on the functionality of the Transistordatabase:</p>
+<img alt="Workflow" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Workflow.png" />
+<ul class="simple">
+<li><p>digitize transistor datasheet parameters and graphs and save it to the TDB (Transistordatabase)</p></li>
+<li><p>use this data for calculations in python (e.g. some loss calulations for a boost-converter)</p></li>
+<li><p>export this data to matlab for calculations in matlab</p></li>
+<li><p>export transistors to GeckoCIRCUITS simulation program</p></li>
+<li><p>export transistors to Simulink simulation program</p></li>
+<li><p>export transistors to PLECS simulation program</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Development status: Alpha</p>
+</div>
+</section>
+</section>
+<section id="features">
+<h1><span class="sectnum">3 </span>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h1>
+<p>There are 3 features implemented in the Transistordatabase. First is the python interface which can be used to manage the Database and
+their Transistors. The python interface can also be used to implemement optimization routines.
+Then there is a GUI which is mostly used to manage the Database and visualize different properties of the stored Transistors.
+As the third feature the Transistordatabase can be updated by an Online-Database. You can choose to work with our Online Repository or create your own if needed.</p>
+<section id="python-interface">
+<h2><span class="sectnum">3.1 </span>Python interface<a class="headerlink" href="#python-interface" title="Link to this heading"></a></h2>
+<p>Use the transistor data in you self-written optimization program, see figure:</p>
+<ul class="simple">
+<li><p>Automatic calculate your converter losses with many different transistors</p></li>
+<li><p>Search the database for usable transistors for your application</p></li>
+<li><p>Functions provided, to search for closest operating point</p></li>
+<li><p>Functions provided, to linearize the transistor/diode conduction behaviour</p></li>
+<li><p>Functions provided, to calculate the output capacitances Energy from the C_oss-curve</p></li>
+<li><p>Use own loss measurements for above features (coming soon)</p></li>
+</ul>
+<img alt="optimization" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/documentation/workflow_wp.png" />
+</section>
+<section id="gui">
+<h2><span class="sectnum">3.2 </span>GUI<a class="headerlink" href="#gui" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Manage, store and search the transistors</p></li>
+<li><p>Export transistor models to programs like GeckoCIRCUITS, PLECS, Matlab/Octave</p></li>
+<li><p>Compare transistors (interpolate switch loss data for new gate resistors and temperatures, …)</p></li>
+</ul>
+<p>Here are some screenshots of the GUI:</p>
+<img alt="gui_database" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_database.png" />
+<img alt="gui_comparison" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_comparison.png" />
+<img alt="gui_create_transistor" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_create_transistor.png" />
+</section>
+<section id="transistordatabase-fileexchange">
+<h2><span class="sectnum">3.3 </span>Transistordatabase Fileexchange<a class="headerlink" href="#transistordatabase-fileexchange" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/upb-lea/transistordatabase_File_Exchange">This</a> repository contains the Transistors currently added to the Transistordatabase.
+Every Transistor from this repository can be automatically downloaded to your local Database. Since this only relies on the index.txt containing the links
+to each transistor which shall be downloaded it is possible to create your own repository. Next to the Transistor updates there is a list of housing types and
+module manufacturers which are supported by the Database which are also set in the Fileexchange respository.</p>
+<p>You can publish your own Transistors to this repository by generating a pull request.
+If you don’t want to create a github account, you can also send the .json file to this <script type="text/javascript">document.write(
+    "<n pynff=\"ersrerapr rkgreany\" uers=\"znvygb:gqo\100yrn\056hco\056qr\">rznvy nqqerff<\057n>".replace(/[a-zA-Z]/g,
+        function(c){
+            return String.fromCharCode(
+                (c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26
+            );
+        }
+    )
+);</script>.</p>
+</section>
+</section>
+<section id="installation">
+<h1><span class="sectnum">4 </span>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<section id="windows">
+<h2><span class="sectnum">4.1 </span>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h2>
+<section id="install-python">
+<h3><span class="sectnum">4.1.1 </span>Install Python<a class="headerlink" href="#install-python" title="Link to this heading"></a></h3>
+<p>Install latest Python version: <a class="reference external" href="https://www.python.org/">Link</a>.</p>
+</section>
+<section id="install-pycharm-optional">
+<h3><span class="sectnum">4.1.2 </span>Install Pycharm (optional)<a class="headerlink" href="#install-pycharm-optional" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&amp;code=PCC">Installation file</a>.</p>
+</section>
+<section id="download-and-run-executable">
+<h3><span class="sectnum">4.1.3 </span>Download and run executable<a class="headerlink" href="#download-and-run-executable" title="Link to this heading"></a></h3>
+<p>Download exe-file <a class="reference external" href="https://groups.uni-paderborn.de/lea/public/downloads/transistordatabase.zip">here</a></p>
+</section>
+</section>
+<section id="linux">
+<h2><span class="sectnum">4.2 </span>Linux<a class="headerlink" href="#linux" title="Link to this heading"></a></h2>
+<p>Ubuntu</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Install pycharm from Snapstore</p>
+</div>
+</section>
+<section id="all-operating-systems-install-the-transistor-database">
+<h2><span class="sectnum">4.3 </span>All Operating systems: Install the transistor database<a class="headerlink" href="#all-operating-systems-install-the-transistor-database" title="Link to this heading"></a></h2>
+<p>Inside pycharm, create a new project. Select ‘new environment using’ -&gt; ‘Virtualenv’. <br>
+As a base interpreter, select ‘C:UsersxxxxxxAppDataLocalProgramsPythonPython39Python.exe’. Click on create. <br>
+Navigate to file -&gt; settings -&gt; Project -&gt; Python Interpreter -&gt; ‘+’ -&gt; search for ‘transistordatabase’ -&gt; ‘Install Package’ <br></p>
+</section>
+</section>
+<section id="complete-documentation">
+<h1><span class="sectnum">5 </span>Complete documentation<a class="headerlink" href="#complete-documentation" title="Link to this heading"></a></h1>
+<p>The complete documentation can be found <a class="reference external" href="https://upb-lea.github.io/transistordatabase/main/transistordatabase.html">here</a>.</p>
+</section>
+<section id="usage">
+<h1><span class="sectnum">6 </span>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h1>
+<section id="minimal-python-example">
+<h2><span class="sectnum">6.1 </span>Minimal python example<a class="headerlink" href="#minimal-python-example" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transistordatabase.database_manager</span> <span class="kn">import</span> <span class="n">DatabaseManager</span>
+
+<span class="c1"># Path for json files</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;tdb_example&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create DatabaseManager instance and set it to json format</span>
+<span class="n">tdb_json</span> <span class="o">=</span> <span class="n">DatabaseManager</span><span class="p">()</span>
+<span class="n">tdb_json</span><span class="o">.</span><span class="n">set_operation_mode_json</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<span class="c1"># Print database</span>
+<span class="n">tdb_json</span><span class="o">.</span><span class="n">print_tdb</span><span class="p">()</span>
+
+<span class="c1"># load a transistor from the database</span>
+<span class="n">transistor_loaded</span> <span class="o">=</span> <span class="n">tdb_json</span><span class="o">.</span><span class="n">load_transistor</span><span class="p">(</span><span class="s1">&#39;CREE_C3M0016120K&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In addition to that in <a class="reference external" href="https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/housing_types.txt">this file</a> there are
+more simple examples.</p>
+</section>
+<section id="generate-a-new-transistor">
+<h2><span class="sectnum">6.2 </span>Generate a new transistor<a class="headerlink" href="#generate-a-new-transistor" title="Link to this heading"></a></h2>
+<section id="transistor-object-basics">
+<h3><span class="sectnum">6.2.1 </span>Transistor object basics<a class="headerlink" href="#transistor-object-basics" title="Link to this heading"></a></h3>
+<p>Transistor <br>
+| <br>
++-Metadata <br>
+| <br>
++-Switch <br>
+| +-Switch Metadata <br>
+| +-Channel Data <br>
+| +-Switching Data <br>
+| <br>
++-Diode <br>
+| +-Diode Metadata <br>
+| +-Channel Data <br>
+| +-Switching Data <br>
+| <br>
++-wp (temporary storage for further calculations) <br></p>
+</section>
+<section id="reading-curves-from-the-datasheet">
+<h3><span class="sectnum">6.2.2 </span>Reading curves from the datasheet<a class="headerlink" href="#reading-curves-from-the-datasheet" title="Link to this heading"></a></h3>
+<p>For reading datasheet curves, use the tool <a class="reference external" href="https://apps.automeris.io/wpd/">WebPlotDigitizer</a>. There is a online-version available. Also you can download it for Linux, Mac and Windows. WebPlotDigitizer is open source software.</p>
+<p>Channel data for switch and diode always needs to be positive. Some Manufacturers give diode data in the 3rd quadrant. Here is an example how to set the axes and export the data inside WebPlotDigitizer:</p>
+<img alt="diode channel data negative" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Diode_channel_data_negative.png" />
+</section>
+<section id="use-the-template-to-generate-a-new-transistor-object">
+<h3><span class="sectnum">6.2.3 </span>Use the template to generate a new transistor object<a class="headerlink" href="#use-the-template-to-generate-a-new-transistor-object" title="Link to this heading"></a></h3>
+<p>After digitizing the curves, you can use a template to generate a new transistor object and store it to the database. For this, see the  <a class="reference external" href="/template_example/template_example.py">template</a>.</p>
+<p>Some values need to follow some rules, e.g. due to different spelling versions, the manufacturers name or housing types must be written as in the lists below. Some general hints to fill the template:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/module_manufacturers.txt">List of manufacturers</a></p></li>
+<li><p><a class="reference external" href="https://github.com/upb-lea/transistordatabase/blob/main/transistordatabase/housing_types.txt">List of housing types</a></p></li>
+<li><p><a class="reference external" href="https://www.fujielectric.com/products/semiconductor/model/igbt/2pack.html">Fuji housing overview</a></p></li>
+</ul>
+</div></blockquote>
+<p>In many cases, two capacity curves are specified in the data sheets. One curve for the full voltage range, and one with zoom to a small voltage range. To represent the stored curves in the best possible way, both curves can be read in and then merged.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c_rss_normal</span> <span class="o">=</span> <span class="n">csv2array</span><span class="p">(</span><span class="s1">&#39;transistor_c_rss.csv&#39;</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">c_rss_detail</span> <span class="o">=</span> <span class="n">csv2array</span><span class="p">(</span><span class="s1">&#39;transistor_c_rss_detail.csv&#39;</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">transistor_args</span> <span class="o">=</span> <span class="p">{</span>
+               <span class="o">...</span>
+               <span class="s1">&#39;c_rss&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;t_j&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">&quot;graph_v_c&quot;</span><span class="p">:</span> <span class="n">c_rss_merged</span><span class="p">},</span>
+                               <span class="o">...</span>
+               <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="usage-of-transistor-wp-in-your-programs">
+<h2><span class="sectnum">6.3 </span>Usage of Transistor.wp. in your programs<a class="headerlink" href="#usage-of-transistor-wp-in-your-programs" title="Link to this heading"></a></h2>
+<p>There is a subclass .wp where you can fill for further program calculations.</p>
+<section id="full-automated-example">
+<h3><span class="sectnum">6.3.1 </span>Full-automated example<a class="headerlink" href="#full-automated-example" title="Link to this heading"></a></h3>
+<p><strong>Use the quickstart method to fill in the wp-class</strong></p>
+<p>There is a search function, that chooses the closes operating point. In the full-automated method, there are some predefined values</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Chooses transistor.switch.t_j_max - 25°C as operating temperature to start search</p></li>
+<li><p>Chooses transistor.i_abs_max/2 as operating current to start search</p></li>
+<li><p>Chooses v_g = 15V as gate voltage to start search</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span><span class="o">.</span><span class="n">quickstart_wp</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="half-automated-example">
+<h3><span class="sectnum">6.3.2 </span>Half-automated example<a class="headerlink" href="#half-automated-example" title="Link to this heading"></a></h3>
+<p><strong>Fill in the wp-class by a search-method to find the closes working point to your methods</strong></p>
+<p>Insert a working point of interest. The algorithm will find the closest working point and fills out the Transistor.wp.-class
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span><span class="o">.</span><span class="n">update_wp</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="non-automated-example">
+<h3><span class="sectnum">6.3.3 </span>Non-automated example<a class="headerlink" href="#non-automated-example" title="Link to this heading"></a></h3>
+<p><strong>Fill in the wp-class manually</strong></p>
+<p>Look for all operating points manually. This will result in an error in case of no match.
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">e_oss</span> <span class="o">=</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">calc_v_eoss</span><span class="p">()</span>
+<span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">q_oss</span> <span class="o">=</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">calc_v_qoss</span><span class="p">()</span>
+
+<span class="c1"># switch, linearize channel and search for losscurves</span>
+<span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">switch_v_channel</span><span class="p">,</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">switch_r_channel</span> <span class="o">=</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">calc_lin_channel</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="s1">&#39;switch&#39;</span><span class="p">)</span>
+<span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">e_on</span> <span class="o">=</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">get_object_i_e</span><span class="p">(</span><span class="s1">&#39;e_on&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span><span class="o">.</span><span class="n">graph_i_e</span>
+<span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">e_off</span> <span class="o">=</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">get_object_i_e</span><span class="p">(</span><span class="s1">&#39;e_off&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span><span class="o">.</span><span class="n">graph_i_e</span>
+
+<span class="c1"># diode, linearize channel and search for losscurves</span>
+<span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">diode_v_channel</span><span class="p">,</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">wp</span><span class="o">.</span><span class="n">diode_r_channel</span> <span class="o">=</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">calc_lin_channel</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="s1">&#39;diode&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="calculations-with-transistor-objects">
+<h2><span class="sectnum">6.4 </span>Calculations with transistor objects<a class="headerlink" href="#calculations-with-transistor-objects" title="Link to this heading"></a></h2>
+<section id="parallel-transistors">
+<h3><span class="sectnum">6.4.1 </span>Parallel transistors<a class="headerlink" href="#parallel-transistors" title="Link to this heading"></a></h3>
+<p>To parallel transistors use the function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In case of no parameter paralleling is for 2 transistors</p></li>
+<li><p>In case of parameter, paralleling is for x transistors. Example here is for three transistors.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">parallel_transistorobject</span> <span class="o">=</span> <span class="n">tdb_json</span><span class="o">.</span><span class="n">parallel_transistors</span><span class="p">(</span><span class="n">transistor_loaded</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After this, you can work with the transistor object as usual, e.g. fill in the .wp-workspace or export the device to Matlab, Simulink or GeckoCIRCUITS.</p>
+</section>
+</section>
+</section>
+<section id="export-transistor-objects">
+<h1><span class="sectnum">7 </span>Export transistor objects<a class="headerlink" href="#export-transistor-objects" title="Link to this heading"></a></h1>
+<p>Using transistors within pyhton you have already seen. Now we want to take a closer look at exporting the transistors to other programs. These exporters are currently working. Some others are planned for the future.</p>
+<section id="export-a-virtual-datasheet">
+<h2><span class="sectnum">7.1 </span>Export a Virtual datasheet<a class="headerlink" href="#export-a-virtual-datasheet" title="Link to this heading"></a></h2>
+<p>This function exports a virtual datasheet to see stored data in the database. Function display the output path of .html-file, which can be opened in your preferred browser.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Windows users: export datasheet</span>
+<span class="n">transistor_loaded</span><span class="o">.</span><span class="n">export_datasheet</span><span class="p">()</span>
+
+<span class="c1"># Linux users: export datasheet as html</span>
+<span class="c1"># look for CREE_C3M0016120K.html in your current working directory</span>
+<span class="n">html_str</span> <span class="o">=</span> <span class="n">transistor_loaded</span><span class="o">.</span><span class="n">export_datasheet</span><span class="p">(</span><span class="n">build_collection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Html_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">transistor_loaded</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+<span class="n">Html_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html_str</span><span class="p">)</span>
+<span class="n">Html_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Generated virtual datasheet example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Virtual_Datasheet.png" />
+</section>
+<section id="export-to-geckocircuits">
+<h2><span class="sectnum">7.2 </span>Export to GeckoCIRCUITS<a class="headerlink" href="#export-to-geckocircuits" title="Link to this heading"></a></h2>
+<p>GeckoCIRCUITS is an open source multi platform schematic simulator. Java required. Direct <a class="reference external" href="http://gecko-simulations.com/GeckoCIRCUITS/GeckoCIRCUITS.zip">download link</a>.
+At the moment you need to know the exporting parameters like gate resistor, gate-voltage and switching voltage. This will be simplified in the near future.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span><span class="o">.</span><span class="n">export_geckocircuits</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From now on, you can load the model into your GeckoCIRCUITS schematic.</p>
+<img alt="GeckoExporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Example_Gecko_Exporter.png" />
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>It is also possible to control GeckoCIRCUITS from python, e.g. to sweep transistors. In this case, linux users should consider to run <a class="reference external" href="https://github.com/tinix84/gecko/releases/tag/v1.1">this</a> Version of GeckoCIRCUITS instead the above one (port to OpenJDK).</p>
+</div>
+</section>
+<section id="export-to-plecs">
+<h2><span class="sectnum">7.3 </span>Export to PLECS<a class="headerlink" href="#export-to-plecs" title="Link to this heading"></a></h2>
+<p>For a thermal and loss simulation using PLECS simulation tool, it requires the transistor loss and characteristic curves to be loaded in XML(Version 1.1) file format. More information on how to load the XML data can be found from here. To export the transistor object from your database to plecs required xml file format, following lines need to be executed starting with loading the required datasheet.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span><span class="o">.</span><span class="n">export_plecs</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Outputs are xml files - one for switch and one for diode (if available), which can be then loaded into your schematic following the instructions as mentioned <a class="reference external" href="https://www.plexim.com/support/videos/thermal-modeling-part-1">here</a>. Note that if channel curves for the default gate-voltage are found missing then the xml files could not be possible to generate and a respective warning message is issued to the user. The user can change the default gate-voltage and switching voltage by providing an extra list argument as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span><span class="o">.</span><span class="n">export_plecs</span><span class="p">([</span><span class="mi">15</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.</p>
+<img alt="PLECS thermal exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/PLECS_thermal_editor.png" />
+</section>
+<section id="export-to-simulink">
+<h2><span class="sectnum">7.4 </span>Export to Simulink<a class="headerlink" href="#export-to-simulink" title="Link to this heading"></a></h2>
+<p>For a loss simulation in simulink, there is a IGBT model available, which can be found in this <a class="reference external" href="https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html">simulink model</a> . Copy the model to you schematic and fill the parameters as shown in the figure. Export a transistor object from your database by using the following command. Example for a Infineon transistor.
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">load_transistor</span><span class="p">(</span><span class="s1">&#39;Infineon_FF200R12KE3&#39;</span><span class="p">)</span>
+<span class="n">transistor_loaded</span><span class="o">.</span><span class="n">export_simulink_loss_model</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Output is a .mat-file, you can load in your matlab program to simulate. Now, you are able to sweep transistors within your simulation. E.g. some matlab-code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load</span> <span class="n">Infineon_FF200R12KE3_Simulink_lossmodel</span><span class="o">.</span><span class="n">mat</span><span class="p">;</span>
+<span class="n">load</span> <span class="n">Infineon_FF300R12KE3_Simulink_lossmodel</span><span class="o">.</span><span class="n">mat</span><span class="p">;</span>
+<span class="n">load</span> <span class="n">Fuji_2MBI200XBE120</span><span class="o">-</span><span class="mi">50</span><span class="n">_Simulink_lossmodel</span><span class="o">.</span><span class="n">mat</span><span class="p">;</span>
+<span class="n">load</span> <span class="n">Fuji_2MBI300XBE120</span><span class="o">-</span><span class="mi">50</span><span class="n">_Simulink_lossmodel</span><span class="o">.</span><span class="n">mat</span><span class="p">;</span>
+<span class="n">Transistor_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">Infineon_FF200R12KE3</span> <span class="n">Infineon_FF300R12KE3</span> <span class="n">Fuji_2MBI200XBE120</span><span class="o">-</span><span class="mi">50</span> <span class="n">Fuji_2MBI300XBE120</span><span class="o">-</span><span class="mi">50</span><span class="p">];</span>
+<span class="k">for</span> <span class="n">i_Transistor</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">length</span><span class="p">(</span><span class="n">Transistor_array</span><span class="p">)</span>
+    <span class="n">Transistor</span> <span class="o">=</span> <span class="n">Transistor_array</span><span class="p">(</span><span class="n">i_Transistor</span><span class="p">);</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">sim</span><span class="p">(</span><span class="s1">&#39;YourSimulinkSimulationHere&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="Simulink exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Example_Simulink_Exporter.png" />
+</section>
+<section id="export-to-matlab-octave">
+<h2><span class="sectnum">7.5 </span>Export to Matlab/Octave<a class="headerlink" href="#export-to-matlab-octave" title="Link to this heading"></a></h2>
+<p>Python dictionary can be exported to Matlab, see the following example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transistor_loaded</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">load_transistor</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">)</span>
+<span class="n">transistor_loaded</span><span class="o">.</span><span class="n">export_matlab</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.</p>
+<img alt="Matlab .mat exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Matlab.png" />
+</section>
+</section>
+<section id="others">
+<h1><span class="sectnum">8 </span>Others<a class="headerlink" href="#others" title="Link to this heading"></a></h1>
+<section id="for-developers">
+<h2><span class="sectnum">8.1 </span>For developers<a class="headerlink" href="#for-developers" title="Link to this heading"></a></h2>
+<p>Currently the transistordatabase does not only support a json format but also a mongodb database.
+Therefore mongodb needs to be installed:
+Install with standard settings. Use the MongoDB community server, as platform, choose windows <a class="reference external" href="https://www.mongodb.com/try/download/community">Link</a>.</p>
+</section>
+<section id="roadmap">
+<h2><span class="sectnum">8.2 </span>Roadmap<a class="headerlink" href="#roadmap" title="Link to this heading"></a></h2>
+<p>Planned features in 2024</p>
+<ul class="simple">
+<li><p>Focus on adding self-measured data to the database</p></li>
+<li><p>Working with self-measured data in exporters</p></li>
+<li><p>Usability improvements</p></li>
+<li><p>Stable software</p></li>
+</ul>
+</section>
+<section id="organisation">
+<h2><span class="sectnum">8.3 </span>Organisation<a class="headerlink" href="#organisation" title="Link to this heading"></a></h2>
+<section id="bug-reports">
+<h3><span class="sectnum">8.3.1 </span>Bug Reports<a class="headerlink" href="#bug-reports" title="Link to this heading"></a></h3>
+<p>Please use the issues report button within github to report bugs.</p>
+</section>
+<section id="changelog">
+<h3><span class="sectnum">8.3.2 </span>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h3>
+<p>Find the changelog <a class="reference external" href="https://github.com/upb-lea/transistordatabase/blob/main/CHANGELOG.md">here</a>.</p>
+</section>
+<section id="contributing">
+<h3><span class="sectnum">8.3.3 </span>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h3>
+<p>Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. For contributing, please refer to this <a class="reference external" href="https://github.com/upb-lea/transistordatabase/blob/main/Contributing.rst">section</a>.</p>
+</section>
+</section>
+<section id="about">
+<h2><span class="sectnum">8.4 </span>About<a class="headerlink" href="#about" title="Link to this heading"></a></h2>
+<section id="history-and-project-status">
+<h3><span class="sectnum">8.4.1 </span>History and project status<a class="headerlink" href="#history-and-project-status" title="Link to this heading"></a></h3>
+<p>This project started in 2020 as a side project and was initially written in matlab. It quickly became clear that the project was no longer a side project. The project should be completely rewritten, because many new complex levels have been added. To place the project in the open source world, the programming language python is used.</p>
+<p>In January 2021 a very early alpha status was reached. First pip package was provided in may 2021. First GUI is provided in June 2022.</p>
+</section>
+<section id="license">
+<h3><span class="sectnum">8.4.2 </span>License<a class="headerlink" href="#license" title="Link to this heading"></a></h3>
+<p>Licensed under <a class="reference external" href="https://choosealicense.com/licenses/gpl-3.0/">GPLv3</a></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="transistordatabase(TDB)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contribute.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, LEA, Paderborn University.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

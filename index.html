@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>transistordatabase(TDB) &mdash; transistordatabase(TDB) 0.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=b9afe91b"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1 Introduction" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            transistordatabase(TDB)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html"><span class="sectnum">1 </span>Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase"><span class="sectnum">2 </span>Transistordatabase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#features"><span class="sectnum">3 </span>Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">4 </span>Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#complete-documentation"><span class="sectnum">5 </span>Complete documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#usage"><span class="sectnum">6 </span>Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">7 </span>Export transistor objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">8 </span>Others</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transistordatabase.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">transistordatabase(TDB)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">transistordatabase(TDB)</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/upb-lea/transistordatabase/blob/database-edits/docs/index.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transistordatabase-tdb">
+<h1>transistordatabase(TDB)<a class="headerlink" href="#transistordatabase-tdb" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html"><span class="sectnum">1 </span>Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#transistordatabase"><span class="sectnum">2 </span>Transistordatabase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#functionality-overview"><span class="sectnum">2.1 </span>Functionality overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#features"><span class="sectnum">3 </span>Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#python-interface"><span class="sectnum">3.1 </span>Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#gui"><span class="sectnum">3.2 </span>GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#transistordatabase-fileexchange"><span class="sectnum">3.3 </span>Transistordatabase Fileexchange</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#installation"><span class="sectnum">4 </span>Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#windows"><span class="sectnum">4.1 </span>Windows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#install-python"><span class="sectnum">4.1.1 </span>Install Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#install-pycharm-optional"><span class="sectnum">4.1.2 </span>Install Pycharm (optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#download-and-run-executable"><span class="sectnum">4.1.3 </span>Download and run executable</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#linux"><span class="sectnum">4.2 </span>Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#all-operating-systems-install-the-transistor-database"><span class="sectnum">4.3 </span>All Operating systems: Install the transistor database</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#complete-documentation"><span class="sectnum">5 </span>Complete documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#usage"><span class="sectnum">6 </span>Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#minimal-python-example"><span class="sectnum">6.1 </span>Minimal python example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#generate-a-new-transistor"><span class="sectnum">6.2 </span>Generate a new transistor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#transistor-object-basics"><span class="sectnum">6.2.1 </span>Transistor object basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#reading-curves-from-the-datasheet"><span class="sectnum">6.2.2 </span>Reading curves from the datasheet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#use-the-template-to-generate-a-new-transistor-object"><span class="sectnum">6.2.3 </span>Use the template to generate a new transistor object</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#usage-of-transistor-wp-in-your-programs"><span class="sectnum">6.3 </span>Usage of Transistor.wp. in your programs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#full-automated-example"><span class="sectnum">6.3.1 </span>Full-automated example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#half-automated-example"><span class="sectnum">6.3.2 </span>Half-automated example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#non-automated-example"><span class="sectnum">6.3.3 </span>Non-automated example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#calculations-with-transistor-objects"><span class="sectnum">6.4 </span>Calculations with transistor objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#parallel-transistors"><span class="sectnum">6.4.1 </span>Parallel transistors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#export-transistor-objects"><span class="sectnum">7 </span>Export transistor objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#export-a-virtual-datasheet"><span class="sectnum">7.1 </span>Export a Virtual datasheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#export-to-geckocircuits"><span class="sectnum">7.2 </span>Export to GeckoCIRCUITS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#export-to-plecs"><span class="sectnum">7.3 </span>Export to PLECS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#export-to-simulink"><span class="sectnum">7.4 </span>Export to Simulink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#export-to-matlab-octave"><span class="sectnum">7.5 </span>Export to Matlab/Octave</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#others"><span class="sectnum">8 </span>Others</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#for-developers"><span class="sectnum">8.1 </span>For developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#roadmap"><span class="sectnum">8.2 </span>Roadmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#organisation"><span class="sectnum">8.3 </span>Organisation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#bug-reports"><span class="sectnum">8.3.1 </span>Bug Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#changelog"><span class="sectnum">8.3.2 </span>Changelog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#contributing"><span class="sectnum">8.3.3 </span>Contributing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#about"><span class="sectnum">8.4 </span>About</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#history-and-project-status"><span class="sectnum">8.4.1 </span>History and project status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#license"><span class="sectnum">8.4.2 </span>License</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#drawings">Drawings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#install-the-transistordatabase-as-a-pip-package-in-developer-mode">Install the transistordatabase as a pip-package in developer mode</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#set-up-a-virtual-environment">Set up a virtual environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#write-code">Write Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#code-structure">Code Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#folder-and-file-structure">Folder and File Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#packages-and-dependencies">Packages and Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#use-type-hints">Use type hints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#sphinx-documentation-using-docstrings">Sphinx documentation using docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#unittesting-with-pytest">unittesting with pytest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#update-the-changelog">update the changelog</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#install-and-setup-pytest">Install and setup pytest</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#configuring-pycharm">Configuring Pycharm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#writing-a-test-case">Writing a test case</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#install-and-setup-sphinx">Install and setup Sphinx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#release-workflow">Release Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#update-version-strings">Update version strings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#make-sure-that-new-functions-methods-classes-are-included-to-the-documentation">Make sure that new functions/methods/classes are included to the documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#build-a-local-test-documentation">Build a local test-documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#generate-requirements-txt">Generate requirements.txt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#generate-pip-package-by-using-setup-py">Generate pip-package by using setup.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#upload-pip-package-to-pypi">Upload pip package to pypi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#create-a-git-release-and-upload-it-to-github">create a git release and upload it to github</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#generate-sphinx-documentation-on-github-pages">generate sphinx documentation on github pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#generate-executable-file-with-all-dependencies-to-run-the-gui">generate executable file with all dependencies to run the GUI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="transistordatabase.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="transistordatabase.html#the-databasemanager-class">The <code class="docutils literal notranslate"><span class="pre">DatabaseManager</span></code> class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager"><code class="docutils literal notranslate"><span class="pre">DatabaseManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.__init__"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.operation_mode"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.operation_mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.tdb_directory"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.tdb_directory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.housing_types_file_path"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.housing_types_file_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.housing_types"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.housing_types</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.module_manufacturers_file_path"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.module_manufacturers_file_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.module_manufacturers"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.module_manufacturers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.set_operation_mode_json"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.set_operation_mode_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.set_operation_mode_mongodb"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.set_operation_mode_mongodb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.save_transistor"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.save_transistor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.delete_transistor"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.delete_transistor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.load_transistor"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.load_transistor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.get_transistor_names_list"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.get_transistor_names_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.print_tdb"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.print_tdb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.update_from_fileexchange"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.update_from_fileexchange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.compare_with_fileexchange"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.compare_with_fileexchange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.export_all_datasheets"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.export_all_datasheets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.convert_dict_to_transistor_object"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.convert_dict_to_transistor_object()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.parallel_transistors"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.parallel_transistors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.import_xml_data"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.import_xml_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.export_single_transistor_to_json"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.export_single_transistor_to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.dpt_save_data"><code class="docutils literal notranslate"><span class="pre">DatabaseManager.dpt_save_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transistordatabase.html#the-transistor-class">The <code class="docutils literal notranslate"><span class="pre">Transistor</span></code> class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor"><code class="docutils literal notranslate"><span class="pre">Transistor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.__init__"><code class="docutils literal notranslate"><span class="pre">Transistor.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.name"><code class="docutils literal notranslate"><span class="pre">Transistor.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.type"><code class="docutils literal notranslate"><span class="pre">Transistor.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.author"><code class="docutils literal notranslate"><span class="pre">Transistor.author</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.template_version"><code class="docutils literal notranslate"><span class="pre">Transistor.template_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.template_date"><code class="docutils literal notranslate"><span class="pre">Transistor.template_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.creation_date"><code class="docutils literal notranslate"><span class="pre">Transistor.creation_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.comment"><code class="docutils literal notranslate"><span class="pre">Transistor.comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.datasheet_hyperlink"><code class="docutils literal notranslate"><span class="pre">Transistor.datasheet_hyperlink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.datasheet_date"><code class="docutils literal notranslate"><span class="pre">Transistor.datasheet_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.datasheet_version"><code class="docutils literal notranslate"><span class="pre">Transistor.datasheet_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.housing_area"><code class="docutils literal notranslate"><span class="pre">Transistor.housing_area</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.cooling_area"><code class="docutils literal notranslate"><span class="pre">Transistor.cooling_area</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.t_c_max"><code class="docutils literal notranslate"><span class="pre">Transistor.t_c_max</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.r_g_int"><code class="docutils literal notranslate"><span class="pre">Transistor.r_g_int</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.r_g_on_recommended"><code class="docutils literal notranslate"><span class="pre">Transistor.r_g_on_recommended</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.r_g_off_recommended"><code class="docutils literal notranslate"><span class="pre">Transistor.r_g_off_recommended</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.c_oss_fix"><code class="docutils literal notranslate"><span class="pre">Transistor.c_oss_fix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.c_iss_fix"><code class="docutils literal notranslate"><span class="pre">Transistor.c_iss_fix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.c_rss_fix"><code class="docutils literal notranslate"><span class="pre">Transistor.c_rss_fix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.housing_type"><code class="docutils literal notranslate"><span class="pre">Transistor.housing_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.manufacturer"><code class="docutils literal notranslate"><span class="pre">Transistor.manufacturer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.r_th_cs"><code class="docutils literal notranslate"><span class="pre">Transistor.r_th_cs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.r_th_switch_cs"><code class="docutils literal notranslate"><span class="pre">Transistor.r_th_switch_cs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.r_th_diode_cs"><code class="docutils literal notranslate"><span class="pre">Transistor.r_th_diode_cs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.v_abs_max"><code class="docutils literal notranslate"><span class="pre">Transistor.v_abs_max</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.i_abs_max"><code class="docutils literal notranslate"><span class="pre">Transistor.i_abs_max</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.i_cont"><code class="docutils literal notranslate"><span class="pre">Transistor.i_cont</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.c_oss"><code class="docutils literal notranslate"><span class="pre">Transistor.c_oss</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.c_iss"><code class="docutils literal notranslate"><span class="pre">Transistor.c_iss</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.c_rss"><code class="docutils literal notranslate"><span class="pre">Transistor.c_rss</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.raw_measurement_data"><code class="docutils literal notranslate"><span class="pre">Transistor.raw_measurement_data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.graph_v_ecoss"><code class="docutils literal notranslate"><span class="pre">Transistor.graph_v_ecoss</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.c_oss_er"><code class="docutils literal notranslate"><span class="pre">Transistor.c_oss_er</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.c_oss_tr"><code class="docutils literal notranslate"><span class="pre">Transistor.c_oss_tr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.diode"><code class="docutils literal notranslate"><span class="pre">Transistor.diode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.switch"><code class="docutils literal notranslate"><span class="pre">Transistor.switch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.convert_raw_measurement_data"><code class="docutils literal notranslate"><span class="pre">Transistor.convert_raw_measurement_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.convert_voltage_dependent_capacitance"><code class="docutils literal notranslate"><span class="pre">Transistor.convert_voltage_dependent_capacitance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.convert_to_dict"><code class="docutils literal notranslate"><span class="pre">Transistor.convert_to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.update_wp"><code class="docutils literal notranslate"><span class="pre">Transistor.update_wp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.init_loss_matrices"><code class="docutils literal notranslate"><span class="pre">Transistor.init_loss_matrices()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.init_switch_channel_matrix"><code class="docutils literal notranslate"><span class="pre">Transistor.init_switch_channel_matrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.quickstart_wp"><code class="docutils literal notranslate"><span class="pre">Transistor.quickstart_wp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_v_eoss"><code class="docutils literal notranslate"><span class="pre">Transistor.calc_v_eoss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_v_qoss"><code class="docutils literal notranslate"><span class="pre">Transistor.calc_v_qoss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.plot_v_eoss"><code class="docutils literal notranslate"><span class="pre">Transistor.plot_v_eoss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.plot_v_qoss"><code class="docutils literal notranslate"><span class="pre">Transistor.plot_v_qoss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.plot_v_coss"><code class="docutils literal notranslate"><span class="pre">Transistor.plot_v_coss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.plot_half_bridge_equivalent_coss"><code class="docutils literal notranslate"><span class="pre">Transistor.plot_half_bridge_equivalent_coss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.plot_half_bridge_equivalent_eoss"><code class="docutils literal notranslate"><span class="pre">Transistor.plot_half_bridge_equivalent_eoss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_energy_object_voltage_correction"><code class="docutils literal notranslate"><span class="pre">Transistor.calc_energy_object_voltage_correction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_real_on_off_loss"><code class="docutils literal notranslate"><span class="pre">Transistor.calc_real_on_off_loss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.plot_energy_objects"><code class="docutils literal notranslate"><span class="pre">Transistor.plot_energy_objects()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.get_object_v_i"><code class="docutils literal notranslate"><span class="pre">Transistor.get_object_v_i()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.get_object_i_e"><code class="docutils literal notranslate"><span class="pre">Transistor.get_object_i_e()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.get_object_i_e_simplified"><code class="docutils literal notranslate"><span class="pre">Transistor.get_object_i_e_simplified()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.get_object_r_e_simplified"><code class="docutils literal notranslate"><span class="pre">Transistor.get_object_r_e_simplified()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_object_i_e"><code class="docutils literal notranslate"><span class="pre">Transistor.calc_object_i_e()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_i_e_curve_using_r_e_curve"><code class="docutils literal notranslate"><span class="pre">Transistor.calc_i_e_curve_using_r_e_curve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_lin_channel"><code class="docutils literal notranslate"><span class="pre">Transistor.calc_lin_channel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_thermal_params"><code class="docutils literal notranslate"><span class="pre">Transistor.calc_thermal_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.compare_channel_linearized"><code class="docutils literal notranslate"><span class="pre">Transistor.compare_channel_linearized()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.raw_measurement_data_plots"><code class="docutils literal notranslate"><span class="pre">Transistor.raw_measurement_data_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.plot_curves"><code class="docutils literal notranslate"><span class="pre">Transistor.plot_curves()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.export_datasheet"><code class="docutils literal notranslate"><span class="pre">Transistor.export_datasheet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.export_simulink_loss_model"><code class="docutils literal notranslate"><span class="pre">Transistor.export_simulink_loss_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.export_matlab"><code class="docutils literal notranslate"><span class="pre">Transistor.export_matlab()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.collect_i_e_and_r_e_combination"><code class="docutils literal notranslate"><span class="pre">Transistor.collect_i_e_and_r_e_combination()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.export_geckocircuits"><code class="docutils literal notranslate"><span class="pre">Transistor.export_geckocircuits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.export_geckocircuits_coss"><code class="docutils literal notranslate"><span class="pre">Transistor.export_geckocircuits_coss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.export_plecs"><code class="docutils literal notranslate"><span class="pre">Transistor.export_plecs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP"><code class="docutils literal notranslate"><span class="pre">Transistor.WP</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.graph_v_coss"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.graph_v_coss</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.__init__"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.__init__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.switch_v_channel"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.switch_v_channel</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.switch_r_channel"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.switch_r_channel</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.diode_v_channel"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.diode_v_channel</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.diode_r_channel"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.diode_r_channel</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.switch_channel"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.switch_channel</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.diode_channel"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.diode_channel</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.e_on"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.e_on</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.e_off"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.e_off</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.e_rr"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.e_rr</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.v_switching_ref"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.v_switching_ref</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.graph_v_eoss"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.graph_v_eoss</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.graph_v_qoss"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.graph_v_qoss</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.parallel_transistors"><code class="docutils literal notranslate"><span class="pre">Transistor.WP.parallel_transistors</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.validate_transistor"><code class="docutils literal notranslate"><span class="pre">Transistor.validate_transistor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.get_curve_data"><code class="docutils literal notranslate"><span class="pre">Transistor.get_curve_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.add_dpt_measurement"><code class="docutils literal notranslate"><span class="pre">Transistor.add_dpt_measurement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.add_soa_data"><code class="docutils literal notranslate"><span class="pre">Transistor.add_soa_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.add_gate_charge_data"><code class="docutils literal notranslate"><span class="pre">Transistor.add_gate_charge_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.add_temp_depend_resistor_data"><code class="docutils literal notranslate"><span class="pre">Transistor.add_temp_depend_resistor_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="transistordatabase.html#transistordatabase.transistor.Transistor.compare_measurement_datasheet"><code class="docutils literal notranslate"><span class="pre">Transistor.compare_measurement_datasheet()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transistordatabase.html#module-transistordatabase.helper_functions">General methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transistordatabase.html#transistordatabase.helper_functions.merge_curve"><code class="docutils literal notranslate"><span class="pre">merge_curve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transistordatabase.html#transistordatabase.helper_functions.r_g_max_rapid_channel_turn_off"><code class="docutils literal notranslate"><span class="pre">r_g_max_rapid_channel_turn_off()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transistordatabase.html#transistordatabase.checker_functions.csv2array"><code class="docutils literal notranslate"><span class="pre">csv2array()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-right" title="1 Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, LEA, Paderborn University.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
