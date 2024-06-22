@@ -6,11 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased] - Date
+## [0.5.0] - 2024-06-22
 ### Added
 - Non-linear capacitance file export for GeckoCIRCUITS
+- Introduction of database manager. See the template_example.py for API changes.
 ### Fixed
 - Fix some GUI data does not accept float or negative values
 - Fix reading GUI graph_r_e curves 
+### Changed
+- API has changed according to the introduction of the database manager. See the template_example.py for API changes. 
 
 ## [0.4.1] - 2022-07-18
 ### Added
@@ -237,8 +241,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the database
 - Matlab-Exporter
 
-[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.4.1...HEAD
-[0.4.0]: https://github.com/upb-lea/transistordatabase/compare/0.4.0...0.4.1
+[Unreleased]: https://github.com/upb-lea/transistordatabase/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/upb-lea/transistordatabase/compare/0.4.1...0.5.0
+[0.4.1]: https://github.com/upb-lea/transistordatabase/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/upb-lea/transistordatabase/compare/0.3.3...0.4.0
 [0.3.3]: https://github.com/upb-lea/transistordatabase/compare/0.3.2...0.3.3
 [0.3.2]: https://github.com/upb-lea/transistordatabase/compare/0.3.1...0.3.2

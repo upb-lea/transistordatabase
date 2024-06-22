@@ -56,7 +56,7 @@ setup(
     long_description=readme + '\n\n' + history,
     long_description_content_type="text/markdown",
     include_package_data=True,
-    keywords='Transtordatabase',
+    keywords='Transistordatabase',
     name='transistordatabase',
     packages=find_packages(include=['transistordatabase', 'transistordatabase.*']),
     setup_requires=setup_requirements,
@@ -68,7 +68,7 @@ setup(
         "Documentation": "https://upb-lea.github.io/transistordatabase/main/transistordatabase.html",
         "Source Code": "https://github.com/upb-lea/transistordatabase",
     },
-    version='0.4.1',
+    version='0.5.0',
     zip_safe=False,
     data_files=[('', ['CHANGELOG.md'])]
 )

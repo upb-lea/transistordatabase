@@ -17,11 +17,11 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'transistordatabase(TDB)'
-copyright = '2021, LEA, Paderborn University'
+copyright = '2024, LEA, Paderborn University'
 author = 'LEA-UPB'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.1'
+release = '0.5.0'
 
 # -- General configuration ---------------------------------------------------
 
