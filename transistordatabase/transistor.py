@@ -2031,12 +2031,14 @@ class Transistor:
         # set print options back to default
         np.set_printoptions(linewidth=75)
 
-    def export_geckocircuits_coss(self, filepath: str = None) -> None:
+    def export_geckocircuits_coss(self, filepath: str = None, margin_factor: float = 1.2) -> None:
         """
         Export a nonlinear C_oss file for GeckoCIRCUITS.
 
         :param filepath: directory to save the .ncl file. CWD is used in case of None.
         :type filepath: str
+        :param margin_factor: factor for margin. [1.0 = no margin], [1.2 = 20 % margin: DEFAULT]
+        :type margin_factor: float
         """
         c_oss_data = self.c_oss[0].graph_v_c.T
 
@@ -2052,7 +2054,7 @@ class Transistor:
         # A first value with zero volt will be added
         v_max = int(np.round(c_oss_data[-1, 0]))
         v_interp = np.arange(v_max + 1)
-        coss_interp = np.interp(v_interp, c_oss_data[:, 0], c_oss_data[:, 1])
+        coss_interp = margin_factor * np.interp(v_interp, c_oss_data[:, 0], c_oss_data[:, 1])
         # Since we now have an evenly spaced vector where x corresponds to the element-number of the vector
         # we don't have to store x (v_interp) with it.
         # To get Coss(V) just get the array element coss_interp[V]

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased] - Date
+### Updated
+- Add marging for non-linear capacitance file export for GeckoCIRCUITS
+
+
 ## [0.5.1] - 2024-06-22
 ### Fixed
 - Documentation pipeline issue
