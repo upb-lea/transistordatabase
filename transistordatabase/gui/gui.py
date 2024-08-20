@@ -3177,7 +3177,7 @@ class MainWindow(QMainWindow):
 
             # TRANSISTOR CURVES#
             graph_v_ecoss = transistor_dict["graph_v_ecoss"]
-            if graph_v_ecoss is not None and graph_v_ecoss is not []:
+            if graph_v_ecoss is not None and graph_v_ecoss != []:
                 self.comboBox_create_transistor_added_curve_v_ecoss.addItem("V_Ecoss Curve",
                                                                             {"graph_v_ecoss": np.array(graph_v_ecoss)})
 
@@ -3205,7 +3205,7 @@ class MainWindow(QMainWindow):
             # SWITCH CURVES#
 
             thermal_foster_switch = transistor_switch_dict["thermal_foster"]
-            if thermal_foster_switch["graph_t_rthjc"] is not None and thermal_foster_switch["graph_t_rthjc"] is not []:
+            if thermal_foster_switch["graph_t_rthjc"] is not None and thermal_foster_switch["graph_t_rthjc"] != []:
                 self.comboBox_create_transistor_switch_added_curve_t_rthjc.addItem("T_Rthjc Curve", {
                     "graph_t_rthjc": np.array(thermal_foster_switch["graph_t_rthjc"])})
 
@@ -3275,7 +3275,7 @@ class MainWindow(QMainWindow):
             # DIODE CURVES #
 
             thermal_foster_diode = transistor_diode_dict["thermal_foster"]
-            if thermal_foster_diode["graph_t_rthjc"] is not None and thermal_foster_diode["graph_t_rthjc"] is not []:
+            if thermal_foster_diode["graph_t_rthjc"] is not None and thermal_foster_diode["graph_t_rthjc"] != []:
                 self.comboBox_create_transistor_diode_added_curve_t_rthjc.addItem("T_Rthjc Curve", {
                     "graph_t_rthjc": np.array(thermal_foster_diode["graph_t_rthjc"])})
 
