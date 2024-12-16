@@ -12,7 +12,7 @@ compatible with the ones from your colleague. The Transistordatabase now solves 
 Here Transistors can be saved in a database and makes them easy to interchange between platforms. It is possible to export
 Transistor data to various simulation software and share it to a colleague using a .json-File.
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Why_transistordatabase.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Why_transistordatabase.png
     :align: center
     :alt: Why transistor database?
 
@@ -22,7 +22,7 @@ Functionality overview
 
 Here are some examples on the functionality of the Transistordatabase:
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Workflow.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Workflow.png
     :align: center
     :alt: Workflow
 
@@ -58,7 +58,7 @@ Use the transistor data in you self-written optimization program, see figure:
 * Functions provided, to calculate the output capacitances Energy from the C_oss-curve 
 * Use own loss measurements for above features (coming soon)
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/documentation/workflow_wp.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/documentation/workflow_wp.png
     :align: center
     :alt: optimization
 
@@ -71,15 +71,15 @@ GUI
 
 Here are some screenshots of the GUI:
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_database.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/gui_database.png
     :align: center
     :alt: gui_database
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_comparison.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/gui_comparison.png
     :align: center
     :alt: gui_comparison
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_create_transistor.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/gui_create_transistor.png
     :align: center
     :alt: gui_create_transistor
 
@@ -195,7 +195,7 @@ For reading datasheet curves, use the tool `WebPlotDigitizer <https://apps.autom
 
 Channel data for switch and diode always needs to be positive. Some Manufacturers give diode data in the 3rd quadrant. Here is an example how to set the axes and export the data inside WebPlotDigitizer:
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Diode_channel_data_negative.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Diode_channel_data_negative.png
     :align: center
     :alt: diode channel data negative
 
@@ -309,7 +309,7 @@ This function exports a virtual datasheet to see stored data in the database. Fu
     Html_file.write(html_str)
     Html_file.close()
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Virtual_Datasheet.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Virtual_Datasheet.png
     :align: center
     :alt: Generated virtual datasheet example
 
@@ -324,7 +324,7 @@ At the moment you need to know the exporting parameters like gate resistor, gate
 
 From now on, you can load the model into your GeckoCIRCUITS schematic.
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Example_Gecko_Exporter.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Example_Gecko_Exporter.png
     :align: center
     :alt: GeckoExporter usage example
 
@@ -347,7 +347,7 @@ Outputs are xml files - one for switch and one for diode (if available), which c
 
 Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/PLECS_thermal_editor.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/PLECS_thermal_editor.png
     :align: center
     :alt: PLECS thermal exporter usage example
 
@@ -372,7 +372,7 @@ Output is a .mat-file, you can load in your matlab program to simulate. Now, you
         Transistor = Transistor_array(i_Transistor);
         out = sim('YourSimulinkSimulationHere');
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Example_Simulink_Exporter.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Example_Simulink_Exporter.png
     :align: center
     :alt: Simulink exporter usage example
 
@@ -387,7 +387,7 @@ Python dictionary can be exported to Matlab, see the following example:
 
 A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.
 
-.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Matlab.png
+.. image:: https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Matlab.png
     :align: center
     :alt: Matlab .mat exporter usage example
 
