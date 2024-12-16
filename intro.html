@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,18 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1 Introduction &mdash; transistordatabase(TDB) 0.5.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=b9afe91b"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b9afe91b"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -153,11 +151,11 @@ Now your colleague is working on a different electronics topology and may use di
 compatible with the ones from your colleague. The Transistordatabase now solves this problem:
 Here Transistors can be saved in a database and makes them easy to interchange between platforms. It is possible to export
 Transistor data to various simulation software and share it to a colleague using a .json-File.</p>
-<img alt="Why transistor database?" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Why_transistordatabase.png" />
+<img alt="Why transistor database?" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Why_transistordatabase.png" />
 <section id="functionality-overview">
 <h2><span class="sectnum">2.1 </span>Functionality overview<a class="headerlink" href="#functionality-overview" title="Link to this heading"></a></h2>
 <p>Here are some examples on the functionality of the Transistordatabase:</p>
-<img alt="Workflow" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Workflow.png" />
+<img alt="Workflow" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Workflow.png" />
 <ul class="simple">
 <li><p>digitize transistor datasheet parameters and graphs and save it to the TDB (Transistordatabase)</p></li>
 <li><p>use this data for calculations in python (e.g. some loss calulations for a boost-converter)</p></li>
@@ -189,7 +187,7 @@ As the third feature the Transistordatabase can be updated by an Online-Database
 <li><p>Functions provided, to calculate the output capacitances Energy from the C_oss-curve</p></li>
 <li><p>Use own loss measurements for above features (coming soon)</p></li>
 </ul>
-<img alt="optimization" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/documentation/workflow_wp.png" />
+<img alt="optimization" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/documentation/workflow_wp.png" />
 </section>
 <section id="gui">
 <h2><span class="sectnum">3.2 </span>GUI<a class="headerlink" href="#gui" title="Link to this heading"></a></h2>
@@ -199,9 +197,9 @@ As the third feature the Transistordatabase can be updated by an Online-Database
 <li><p>Compare transistors (interpolate switch loss data for new gate resistors and temperatures, …)</p></li>
 </ul>
 <p>Here are some screenshots of the GUI:</p>
-<img alt="gui_database" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_database.png" />
-<img alt="gui_comparison" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_comparison.png" />
-<img alt="gui_create_transistor" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/gui_create_transistor.png" />
+<img alt="gui_database" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/gui_database.png" />
+<img alt="gui_comparison" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/gui_comparison.png" />
+<img alt="gui_create_transistor" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/gui_create_transistor.png" />
 </section>
 <section id="transistordatabase-fileexchange">
 <h2><span class="sectnum">3.3 </span>Transistordatabase Fileexchange<a class="headerlink" href="#transistordatabase-fileexchange" title="Link to this heading"></a></h2>
@@ -307,7 +305,7 @@ more simple examples.</p>
 <h3><span class="sectnum">6.2.2 </span>Reading curves from the datasheet<a class="headerlink" href="#reading-curves-from-the-datasheet" title="Link to this heading"></a></h3>
 <p>For reading datasheet curves, use the tool <a class="reference external" href="https://apps.automeris.io/wpd/">WebPlotDigitizer</a>. There is a online-version available. Also you can download it for Linux, Mac and Windows. WebPlotDigitizer is open source software.</p>
 <p>Channel data for switch and diode always needs to be positive. Some Manufacturers give diode data in the 3rd quadrant. Here is an example how to set the axes and export the data inside WebPlotDigitizer:</p>
-<img alt="diode channel data negative" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Diode_channel_data_negative.png" />
+<img alt="diode channel data negative" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Diode_channel_data_negative.png" />
 </section>
 <section id="use-the-template-to-generate-a-new-transistor-object">
 <h3><span class="sectnum">6.2.3 </span>Use the template to generate a new transistor object<a class="headerlink" href="#use-the-template-to-generate-a-new-transistor-object" title="Link to this heading"></a></h3>
@@ -414,7 +412,7 @@ more simple examples.</p>
 <span class="n">Html_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="Generated virtual datasheet example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Virtual_Datasheet.png" />
+<img alt="Generated virtual datasheet example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Virtual_Datasheet.png" />
 </section>
 <section id="export-to-geckocircuits">
 <h2><span class="sectnum">7.2 </span>Export to GeckoCIRCUITS<a class="headerlink" href="#export-to-geckocircuits" title="Link to this heading"></a></h2>
@@ -424,7 +422,7 @@ At the moment you need to know the exporting parameters like gate resistor, gate
 </pre></div>
 </div>
 <p>From now on, you can load the model into your GeckoCIRCUITS schematic.</p>
-<img alt="GeckoExporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Example_Gecko_Exporter.png" />
+<img alt="GeckoExporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Example_Gecko_Exporter.png" />
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>It is also possible to control GeckoCIRCUITS from python, e.g. to sweep transistors. In this case, linux users should consider to run <a class="reference external" href="https://github.com/tinix84/gecko/releases/tag/v1.1">this</a> Version of GeckoCIRCUITS instead the above one (port to OpenJDK).</p>
@@ -441,7 +439,7 @@ At the moment you need to know the exporting parameters like gate resistor, gate
 </pre></div>
 </div>
 <p>Note that all the four parameters (Vg_on, Vg_off) for IGBTs/Mosfets and (Vd_on, Vd_off) for reverse/body diodes are necessary to select the required curves that needs to be exported to switch and diode XMLs respectively.</p>
-<img alt="PLECS thermal exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/PLECS_thermal_editor.png" />
+<img alt="PLECS thermal exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/PLECS_thermal_editor.png" />
 </section>
 <section id="export-to-simulink">
 <h2><span class="sectnum">7.4 </span>Export to Simulink<a class="headerlink" href="#export-to-simulink" title="Link to this heading"></a></h2>
@@ -462,7 +460,7 @@ At the moment you need to know the exporting parameters like gate resistor, gate
     <span class="n">out</span> <span class="o">=</span> <span class="n">sim</span><span class="p">(</span><span class="s1">&#39;YourSimulinkSimulationHere&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-<img alt="Simulink exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Example_Simulink_Exporter.png" />
+<img alt="Simulink exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Example_Simulink_Exporter.png" />
 </section>
 <section id="export-to-matlab-octave">
 <h2><span class="sectnum">7.5 </span>Export to Matlab/Octave<a class="headerlink" href="#export-to-matlab-octave" title="Link to this heading"></a></h2>
@@ -472,7 +470,7 @@ At the moment you need to know the exporting parameters like gate resistor, gate
 </pre></div>
 </div>
 <p>A .mat-file is generated, the exporting path will be displayed in the python console. You can load this file into matlab or octave.</p>
-<img alt="Matlab .mat exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/sphinx/images/Matlab.png" />
+<img alt="Matlab .mat exporter usage example" class="align-center" src="https://raw.githubusercontent.com/upb-lea/transistordatabase/main/docs/images/Matlab.png" />
 </section>
 </section>
 <section id="others">
