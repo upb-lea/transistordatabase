@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Documentation &mdash; transistordatabase(TDB) 0.5.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -447,7 +447,7 @@ If no index_url or module_manufacturers_url or housing_types_url is given the de
 <dt class="field-even">Example<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Infineon_FF200R12KE3&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parallel_transistorobject</span> <span class="o">=</span> <span class="n">transistor</span><span class="o">.</span><span class="n">parallel_transistors</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
@@ -522,7 +522,7 @@ Link: <a class="reference external" href="https://ieeexplore.ieee.org/document/8
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;analyze&#39;</span><span class="p">}</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dpt_energies_dict</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">dpt_save_data</span><span class="p">(</span><span class="n">dpt_save_dict</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1357,7 +1357,7 @@ rtype decoded raw image data to utf-8</p>
 <dt class="field-odd">Example<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_datasheet</span><span class="p">()</span>
 </pre></div>
@@ -1397,7 +1397,7 @@ rtype decoded raw image data to utf-8</p>
 <dt class="field-odd">Example<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Infineon_FF200R12KE3&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_simulink_loss_model</span><span class="p">()</span>
 </pre></div>
@@ -1432,7 +1432,7 @@ rtype decoded raw image data to utf-8</p>
 <dt class="field-odd">Example<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_matlab</span><span class="p">()</span>
 </pre></div>
@@ -1483,7 +1483,7 @@ rtype decoded raw image data to utf-8</p>
 <dt class="field-even">Example<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_geckocircuits</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">v_supply</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">v_g_on</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">v_g_off</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">r_g_on</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">r_g_off</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
 </pre></div>
@@ -1528,7 +1528,7 @@ rtype decoded raw image data to utf-8</p>
 <dt class="field-even">Example<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI200XAA065-50&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_plecs</span><span class="p">(</span><span class="n">recheck</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">gate_voltages</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 </pre></div>
@@ -1837,7 +1837,7 @@ for generating the diode and switch .xml files</p>
 <dd class="field-even"><p>(e.g. merges c_oss curve from 0-200V and from 0-1000V)</p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">transistordatabase</span> <span class="k">as</span> <span class="nn">tdb</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_normal</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">csv2array</span><span class="p">(</span><span class="s1">&#39;transistor_c_oss.csv&#39;</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_detail</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">csv2array</span><span class="p">(</span><span class="s1">&#39;transistor_c_oss_detail.csv&#39;</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_merged</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">merge_curve</span><span class="p">(</span><span class="n">c_oss_normal</span><span class="p">,</span> <span class="n">c_oss_detail</span><span class="p">)</span>
