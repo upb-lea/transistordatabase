@@ -17,3 +17,4 @@ transistordatabase/tdb_example_downloaded
 database/
 output/
 .vscode/
+.venv/
