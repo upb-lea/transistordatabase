@@ -361,12 +361,6 @@ If no index_url or module_manufacturers_url or housing_types_url is given the de
 <li><p><strong>housing_types_url</strong> (<em>str</em>) – URL to the housing type file</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -392,9 +386,6 @@ If no index_url or module_manufacturers_url or housing_types_url is given the de
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filter_list</strong> (<em>list</em>) – a list of transistor names that needs to be exported in specific</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -859,12 +850,6 @@ values to the pre-existed types stored in the form of ‘housing.txt’ and ‘m
 <li><p><strong>normalize_t_to_v</strong> (<em>float</em>) – ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -889,11 +874,6 @@ values to the pre-existed types stored in the form of ‘housing.txt’ and ‘m
 <li><p>channel linearization next to v_g = 15V, i_cont and t_j = t_j_abs_max - 25 degree</p></li>
 <li><p>switching loss curves next to t_j = t_j_abs_max - 25 degree</p></li>
 </ul>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1045,6 +1025,9 @@ values to the pre-existed types stored in the form of ‘housing.txt’ and ‘m
 <li><p><strong>energy_scale</strong> (<em>str</em>) – Choose y-label, e.g. ‘µJ’ or ‘mJ’ or ‘nJ’</p></li>
 <li><p><strong>figure_size</strong> (<em>Tuple</em>) – figures size in mm (width, height)</p></li>
 <li><p><strong>figure_directory</strong> (<em>str</em>) – Directory to store the figure</p></li>
+<li><p><strong>additional_label</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – addition to the existing label</p></li>
+<li><p><strong>line_style</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – line style, see also matplotlib documentation</p></li>
+<li><p><strong>color</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – color</p></li>
 </ul>
 </dd>
 </dl>
@@ -1308,12 +1291,6 @@ Curve available</p></td>
 <li><p><strong>v_g</strong> (<em>float</em>) – gate voltage of interest, default set to 15V</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Plot, showing original channel data and linearized channel data</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -1337,25 +1314,33 @@ rtype list of img plots along test conditions</p>
 <dd><p>Take three lists of time, vds and id values and generates a combined plot.</p>
 <p>Calls the get_img_raw_data function for returning img form of the plot and returns the images.</p>
 <p>:param time_array : time values in the raw measurement data
+:type time_array: list
 :param vds_values : vds values in the raw measurement data
-:param id_values : id values in the raw measurement data
+:type vds_values: list
+:param ids_values : id values in the raw measurement data
+:type ids_values: list
+:param buffer_req: True to set a buffer
+:type buffer_req: bool
 return image form of the plot
 rtype decoded raw image data to utf-8</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="transistordatabase.transistor.Transistor.export_datasheet">
-<span class="sig-name descname"><span class="pre">export_datasheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">build_collection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#transistordatabase.transistor.Transistor.export_datasheet" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">export_datasheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">build_collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#transistordatabase.transistor.Transistor.export_datasheet" title="Link to this definition"></a></dt>
 <dd><p>Generate and export the virtual datasheet in form of a pdf-file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pdf file is created in the current working directory</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>build_collection</strong> (<em>bool</em>)</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pdf file is created in the current working directory</p>
 </dd>
-<dt class="field-odd">Example<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">)</span>
@@ -1372,6 +1357,7 @@ rtype decoded raw image data to utf-8</p>
 <dt class="sig sig-object py" id="transistordatabase.transistor.Transistor.export_simulink_loss_model">
 <span class="sig-name descname"><span class="pre">export_simulink_loss_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_g_on</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_g_off</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_supply</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_t_to_v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#transistordatabase.transistor.Transistor.export_simulink_loss_model" title="Link to this definition"></a></dt>
 <dd><p>Export a simulation model for simulink inverter loss models.</p>
+<p>.mat file for import in matlab/simulink</p>
 <p>See also: <a class="reference external" href="https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html">https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1387,12 +1373,6 @@ rtype decoded raw image data to utf-8</p>
 <li><p><strong>Exception</strong> – Re-raised excception by calling calc_object_i_e(..)</p></li>
 <li><p><strong>ValueError</strong> – Raised when the switch type is other than IGBT</p></li>
 </ul>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>.mat file for import in matlab/simulink</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
 </dd>
 <dt class="field-odd">Example<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
@@ -1423,12 +1403,6 @@ rtype decoded raw image data to utf-8</p>
 <span class="sig-name descname"><span class="pre">export_matlab</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#transistordatabase.transistor.Transistor.export_matlab" title="Link to this definition"></a></dt>
 <dd><p>Export a transistor dictionary to a matlab dictionary.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>File stored in current working path</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
 <dt class="field-odd">Example<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
@@ -1463,6 +1437,7 @@ rtype decoded raw image data to utf-8</p>
 <dt class="sig sig-object py" id="transistordatabase.transistor.Transistor.export_geckocircuits">
 <span class="sig-name descname"><span class="pre">export_geckocircuits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recheck</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_supply</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g_on</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_g_off</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_g_on</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_g_off</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#transistordatabase.transistor.Transistor.export_geckocircuits" title="Link to this definition"></a></dt>
 <dd><p>Export transistor data to GeckoCIRCUITS.</p>
+<p>Two output files: ‘Transistor.name’_Switch.scl and ‘Transistor.name’_Diode.scl created in the current working directory</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1473,12 +1448,6 @@ rtype decoded raw image data to utf-8</p>
 <li><p><strong>r_g_on</strong> (<em>float</em>) – gate resistor for turn-on</p></li>
 <li><p><strong>r_g_off</strong> (<em>float</em>) – gate resistor for turn-off</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Two output files: ‘Transistor.name’_Switch.scl and ‘Transistor.name’_Diode.scl created in the current working directory</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
 </dd>
 <dt class="field-even">Example<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
@@ -1510,20 +1479,15 @@ rtype decoded raw image data to utf-8</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="transistordatabase.transistor.Transistor.export_plecs">
-<span class="sig-name descname"><span class="pre">export_plecs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recheck</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_voltages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#transistordatabase.transistor.Transistor.export_plecs" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">export_plecs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recheck</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_voltages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#transistordatabase.transistor.Transistor.export_plecs" title="Link to this definition"></a></dt>
 <dd><p>Generate and export the switch and diode .xmls files to be imported into plecs simulator.</p>
+<p>Two output files: ‘Transistor.name’_Switch.xml and ‘Transistor.name’_Diode.xml created in the current working directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>recheck</strong> (<em>bool</em>) – enables the selection of gate voltages near to the provided values if not found</p></li>
-<li><p><strong>gate_voltages</strong> – gate voltage like v_g_on, v_g_off, v_d_on, v_d_off</p></li>
+<li><p><strong>gate_voltages</strong> (<em>list</em>) – gate voltage like v_g_on, v_g_off, v_d_on, v_d_off</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Two output files: ‘Transistor.name’_Switch.xml and ‘Transistor.name’_Diode.xml created in the current working directory</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
 </dd>
 <dt class="field-even">Example<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
@@ -1755,9 +1719,6 @@ for generating the diode and switch .xml files</p>
 <li><p><strong>clear</strong> (<em>bool</em>) – set to true if to clear the existing soa curves on the selected transistor switch or diode object</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>updated transistor switch or diode object with added soa characteristics</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -1776,9 +1737,6 @@ for generating the diode and switch .xml files</p>
 <li><p><strong>clear</strong> (<em>bool</em>) – set to true if to clear the existing gatechargecurve curves on the transistor object</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>updated transistor object with added gate charge characteristics</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -1796,9 +1754,6 @@ for generating the diode and switch .xml files</p>
 <li><p><strong>r_channel_data</strong> (<em>dict</em><em> or </em><em>list</em>) – TemperatureDependResistance dictionary object that needs to be added to transistor.switch.r_channel_th object</p></li>
 <li><p><strong>clear</strong> (<em>bool</em>) – set to true if to clear the existing r_channel_th curves on the transistor object</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>updated transistor object with added gate charge characteristics</p>
 </dd>
 </dl>
 </dd></dl>
