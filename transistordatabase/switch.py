@@ -402,9 +402,6 @@ class Switch:
 
         :param gatevoltage: gatevoltage at which the channel curves are selected and plotted
         :type gatevoltage: float
-
-        :return: Respective plots are displayed
-        :rtype: None
         """
         plt.figure()
         for i_channel in np.array(range(0, len(self.channel))):
@@ -425,9 +422,6 @@ class Switch:
 
         :param temperature: junction temperature at which the channel curves are selected and plotted
         :param temperature: float
-
-        :return: Respective plots are displayed
-        :rtype: None
         """
         plt.figure()
         for i_channel in np.array(range(0, len(self.channel))):

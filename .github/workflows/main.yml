@@ -33,6 +33,9 @@ jobs:
           
             pip install ruff
             ruff check $(git ls-files '*.py')
+          
+            pip install pylint
+            pylint $(git ls-files '*.py' ':!/transistordatabase/gui/*.py' ':!/transistordatabase/gui/**/*.py')
 
       # Runs a single command using the runners shell
       - name: install tdb package

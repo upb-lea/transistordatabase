@@ -5865,11 +5865,9 @@ class ViewCurveWindow(QMainWindow):
         self.matplotlibwidget.cursor = Cursor(self.matplotlibwidget.axis, horizOn=True, vertOn=True, useblit=True,
                                               color="Green", linewidth=1)
 
-    def view_curve(self, comboBox, curve_title, xlabel, ylabel):
+    def view_curve(self, comboBox, curve_title, xlabel, ylabel) -> None:
         """
         Show currently selected curve in a ViewCurveWindow.
-
-        :return: None
         """
         try:
             self.layout = QVBoxLayout(self.widget_plot)
@@ -5940,11 +5938,12 @@ class EmittingStream(QtCore.QObject):
 
     text_written = QtCore.pyqtSignal(str)
 
-    def write(self, text):
+    def write(self, text: str):
         """
         Write standard output in stdout-textEdit.
 
-        :return: None
+        :param text: Text to write
+        :type text: str
         """
         self.text_written.emit(str(text))
 

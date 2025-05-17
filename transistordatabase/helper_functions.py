@@ -23,8 +23,15 @@ transistor_name_regex = "(\S*)( \((\d*)\))?"
 
 
 # ==== Validation functions ====
-def isvalid_transistor_name(transistor_name):
-    """Check if the given transistor name is valid."""
+def isvalid_transistor_name(transistor_name: str) -> bool:
+    """
+    Check if the given transistor name is valid.
+
+    :param transistor_name: transistor name
+    :type transistor_name: str
+    :return: True in case of the transistor name is valid
+    :rtype: bool
+    """
     return False if re.match(transistor_name_regex, transistor_name) is None else True
 
 def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
@@ -250,8 +257,8 @@ def matlab_compatibility_test(transistor, attribute):
 
     .. todo: This function might can be replaced by dict_clean()
 
-    :param Transistor: transistor object
-    :type Transistor: Transistor
+    :param transistor: transistor object
+    :type transistor: Transistor
     :param attribute: path to given attribute
     :type attribute: str
 
@@ -479,6 +486,12 @@ def compare_plot(transistor_list: List, temperature: float, gatevoltage: float):
     - turn-on energies
     - turn-off energies
     - c_oss
+    :param transistor_list: list of transistors
+    :type transistor_list: list
+    :param temperature: junction temperature in °C
+    :type temperature: float
+    :param gatevoltage: gate voltage
+    :type gatevoltage: float
     """
     fig1, axs = plt.subplots(3, 2, sharex='row', sharey='row')
 
@@ -744,7 +757,12 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     return (v_gsth - v_driver_off) / i_off * (1 + c_ds / c_gd)
 
 def compare_list(parameter: List):
-    """Check through the list of value for odd one out."""
+    """
+    Check through the list of value for odd one out.
+
+    :param parameter:
+    :type parameter: list
+    """
     for i, j in enumerate(parameter[:-1]):
         if j != parameter[i + 1]:
             return False
@@ -753,6 +771,9 @@ def compare_list(parameter: List):
 def get_copy_transistor_name(current_name: str) -> str:
     """
     Return the current name but with an index at the end similar to windows copies.
+
+    :param current_name: name of transistor
+    :type current_name: str
 
     '{current_name} (i)'
     """
@@ -772,6 +793,7 @@ def get_img_raw_data(plot):
     Convert the plot images to raw data which is further used to display plots in virtual datasheet. Helper method.
 
     :param plot: pyplot object
+    :type plot: plt.Figure
 
     :return: decoded raw image data to utf-8
     """

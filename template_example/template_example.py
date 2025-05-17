@@ -6,7 +6,12 @@ import os
 
 # Template to generate a transistor
 def template_example(database):
-    """Template to create a transistor object."""
+    """
+    Template to create a transistor object.
+
+    :param database: database
+    :type database:
+    """
     ####################################
     # transistor parameters
     ####################################

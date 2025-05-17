@@ -302,9 +302,6 @@ class DatabaseManager:
         :type module_manufacturers_url: str
         :param housing_types_url: URL to the housing type file
         :type housing_types_url: str
-
-        :return: None
-        :rtype: None
         """
         print("Note: Please make sure that you have installed the latest version of the transistor database, "
               "especially if the update_from_fileexchange()-method ends in an error. "
@@ -404,8 +401,6 @@ class DatabaseManager:
 
         :param filter_list: a list of transistor names that needs to be exported in specific
         :type filter_list: list
-
-        :return: None
         """
         transistor_list = self.get_transistor_names_list()
         filtered_list = list()

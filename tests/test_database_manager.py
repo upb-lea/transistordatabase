@@ -36,7 +36,12 @@ def database_json():
         
 
 def test_load_transistor_json(database_json: DatabaseManager):
-    """Unit test for load_transistor."""
+    """
+    Unit test for load_transistor.
+
+    :param database_json: json database
+    :type database_json: DatabaseManager
+    """
     # Get transistor manually from the database
     t1_dict = None
     with open(os.path.join(database_dir, database_transistor_path), "r") as fd:
@@ -51,7 +56,12 @@ def test_load_transistor_json(database_json: DatabaseManager):
     assert t1 == uut, "Transistors are not equal."
 
 def test_save_transistor_json(database_json: DatabaseManager):
-    """Unit test for save_transistor."""
+    """
+    Unit test for save_transistor.
+
+    :param database_json: json database
+    :type database_json: DatabaseManager
+    """
     # Get transistor manually from single data folder
     t1_dict = None
     with open(os.path.join(database_dir, fixed_transistor_path), "r") as fd:
@@ -80,7 +90,12 @@ def test_save_transistor_json(database_json: DatabaseManager):
     assert t1 == t2
 
 def test_delete_transistor_json(database_json: DatabaseManager):
-    """Unit test for delete_transistor."""
+    """
+    Unit test for delete_transistor.
+
+    :param database_json: json database
+    :type database_json: DatabaseManager
+    """
     database_json.delete_transistor("CREE_C3M0016120K")
 
     # Check if transistor names list is empty
@@ -90,7 +105,12 @@ def test_delete_transistor_json(database_json: DatabaseManager):
     assert not os.path.isfile(database_transistor_path)
 
 def test_get_transistor_names_list_json(database_json: DatabaseManager):
-    """Unit test for get_transistor_names_list."""
+    """
+    Unit test for get_transistor_names_list.
+
+    :param database_json: json database
+    :type database_json: DatabaseManager
+    """
     transistor_list = database_json.get_transistor_names_list()
 
     assert transistor_list == ["CREE_C3M0016120K"]

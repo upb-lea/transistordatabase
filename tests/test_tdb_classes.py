@@ -152,7 +152,12 @@ def my_transistor():
 
 
 def test_transistor(my_transistor):
-    """Unit test for a test transistor."""
+    """
+    Unit test for a test transistor.
+
+    :param my_transistor: Transistor
+    :type my_transistor: Transistor
+    """
     transistor_args, switch_args, diode_args = my_transistor
     possible_housing_types = ['TO247']
     possible_module_manufacturers = ["Fuji Electric"]
@@ -234,8 +239,7 @@ def test_calc_thermal_params(my_transistor):
     Test case for the transistor method to check if respective thermal parameters are generated or ignored as per the 4 possible handling situations.
 
     :param my_transistor: a fixture a load the arrange the required transistor object that goes into testing
-
-    :return: assertion based result
+    :type my_transistor: transistor object
     """
     transistor_args, switch_args, diode_args = my_transistor
     possible_housing_types = ['TO247']
@@ -316,9 +320,8 @@ def data_setup_for_gecko_exporter(request):
 
     The recorded results are used for assertion.
     :param request: a dict which is provided as parameter which enacts the 4 test scenarios of the gecko exporter
-
+    :type request:
     :return: dict with read .scl files generated after the act process
-
     """
     tdb_json = tdb.DatabaseManager()
     tdb_json.set_operation_mode_json()
@@ -361,9 +364,8 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
     Test case for the transistor method to check if the gecko exporter handles the 4 possible cases while exporting a transistor to .scl files.
 
     :param data_setup_for_gecko_exporter: a fixture to arrange the required transistor object and recording the results that obtained during act operation.
+    :type data_setup_for_gecko_exporter: dict
     The recorded results are used for assertion
-
-    :return: assertion based result
     """
     actual_data = data_setup_for_gecko_exporter
     expected = {}
@@ -399,7 +401,12 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
 
 
 def test_export_json(my_transistor):
-    """Pytest for export_json() function. Test for incorrect inputs."""
+    """
+    Pytest for export_json() function. Test for incorrect inputs.
+
+    :param my_transistor: transistor object
+    :type my_transistor: transistor object
+    """
     transistor_args, switch_args, diode_args = my_transistor
     possible_housing_types = ['TO247']
     possible_module_manufacturers = ["Fuji Electric"]
@@ -445,7 +452,12 @@ def test_check_str():
 
 @patch.object(tdb, "connect_local_tdb")
 def test_connect_local_tdb(connect_local_tdb):
-    """TDB local connection to mongodb."""
+    """
+    TDB local connection to mongodb.
+
+    :param connect_local_tdb:
+    :type connect_local_tdb:
+    """
     mocked_mongo = mongomock.MongoClient()
     db = mocked_mongo['transistor_databasefake']
     connect_local_tdb.return_value = db.collection
@@ -455,7 +467,12 @@ def test_connect_local_tdb(connect_local_tdb):
 
 @pytest.fixture()
 def my_database(my_transistor):
-    """Fixture for unit tests."""
+    """
+    Fixture for unit tests.
+
+    :param my_transistor: transistor object
+    :type my_transistor: transistor object
+    """
     transistor_args, switch_args, diode_args = my_transistor
     switch_args['soa'].clear()
     possible_housing_types = ['TO247']
@@ -474,7 +491,14 @@ def my_database(my_transistor):
 
 
 def test_add_soa_data(my_database, monkeypatch):
-    """Unit test for add_soa_data."""
+    """
+    Unit test for add_soa_data.
+
+    :param my_database: database
+    :type my_database: database
+    :param monkeypatch:
+    :type monkeypatch:
+    """
     graph_i_v_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
     graph_i_v_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
     graph_i_v_three = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 3 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
@@ -507,7 +531,14 @@ def test_add_soa_data(my_database, monkeypatch):
 
 
 def test_add_gate_charge_data(my_database, monkeypatch):
-    """Unit test for add_gate_charge_data."""
+    """
+    Unit test for add_gate_charge_data.
+
+    :param my_database: database
+    :type my_database: database
+    :param monkeypatch:
+    :type monkeypatch:
+    """
     graph_q_v_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
     graph_q_v_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
 
@@ -543,7 +574,14 @@ def test_add_gate_charge_data(my_database, monkeypatch):
 
 
 def test_add_temp_depend_resis_data(my_database, monkeypatch):
-    """Unit test for add_temp_depend_resistor_data."""
+    """
+    Unit test for add_temp_depend_resistor_data.
+
+    :param my_database: database
+    :type my_database: database
+    :param monkeypatch:
+    :type monkeypatch:
+    """
     graph_t_r_one = np.array([[1, 2, 3, 4, 5, 6], [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]])
     graph_t_r_two = np.array([[1.5, 3, 3.4, 4.5, 5.8, 7], [i * 2 for i in [1.2, 2.5, 3.6, 4.8, 8.2, 9.5]]])
     switch_ron_args = {
@@ -574,7 +612,12 @@ def test_add_temp_depend_resis_data(my_database, monkeypatch):
 
 
 def test_get_object_i_e_simplified(my_transistor):
-    """Unit test for get_object_i_e_simplified."""
+    """
+    Unit test for get_object_i_e_simplified.
+
+    :param my_transistor: transistor object
+    :type my_transistor: transistor object
+    """
     transistor_args, switch_args, diode_args = my_transistor
     switch_energy_new = {'dataset_type': 'graph_i_e', 't_j': 25, 'v_supply': 600, 'v_g': 12,
                          'r_g': 1, 'graph_i_e': np.array([[1, 2, 3], [4, 5, 6]])}
@@ -597,7 +640,12 @@ def test_get_object_i_e_simplified(my_transistor):
 
 
 def test_get_object_r_e_simplified(my_transistor):
-    """Unit test for get_object_r_e_simplified."""
+    """
+    Unit test for get_object_r_e_simplified.
+
+    :param my_transistor: transistor object
+    :type my_transistor: transistor object
+    """
     transistor_args, switch_args, diode_args = my_transistor
     possible_housing_types = ['TO247']
     possible_module_manufacturers = ["Fuji Electric"]

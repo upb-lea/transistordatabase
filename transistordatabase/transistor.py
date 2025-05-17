@@ -365,8 +365,6 @@ class Transistor:
         :type switch_or_diode: str
         :param normalize_t_to_v: ratio between t_j and v_g. e.g. 10 means 10°C is same difference as 1V
         :type normalize_t_to_v: float
-        :return: None
-        :rtype: None
         """
         if switch_or_diode in ["diode", "both"]:
             self.wp.diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
@@ -462,8 +460,6 @@ class Transistor:
         Uses typical working points
          - channel linearization next to v_g = 15V, i_cont and t_j = t_j_abs_max - 25 degree
          - switching loss curves next to t_j = t_j_abs_max - 25 degree
-
-        :return: None
         """
         # ToDo: may separate data for IGBT, MOSFET, SiC-MOSFET and GaN-Transistor
         self.update_wp(self.switch.t_j_max - 25, 15, self.i_cont)
@@ -722,6 +718,12 @@ class Transistor:
         :type figure_size: Tuple
         :param figure_directory: Directory to store the figure
         :type figure_directory: str
+        :param additional_label: addition to the existing label
+        :type additional_label: Optional[List]
+        :param line_style: line style, see also matplotlib documentation
+        :type line_style: List[str]
+        :param color: color
+        :type color: List[str]
         """
         plt.figure(figsize=[x / 25.4 for x in figure_size] if figure_size is not None else None, dpi=80)
         for count, eo in enumerate(energy_objects):
@@ -1284,9 +1286,6 @@ class Transistor:
         :type t_j: float
         :param v_g: gate voltage of interest, default set to 15V
         :type v_g: float
-
-        :return: Plot, showing original channel data and linearized channel data
-        :rtype: None
         """
         # search for closest objects
         switch_channel, eon, eoff = self.switch.find_approx_wp(t_j, v_g, normalize_t_to_v=10, switch_energy_dataset_type="graph_i_e")
@@ -1387,9 +1386,14 @@ class Transistor:
 
         Calls the get_img_raw_data function for returning img form of the plot and returns the images.
         
-        :param time_array : time values in the raw measurement data 
+        :param time_array : time values in the raw measurement data
+        :type time_array: list
         :param vds_values : vds values in the raw measurement data
-        :param id_values : id values in the raw measurement data  
+        :type vds_values: list
+        :param ids_values : id values in the raw measurement data
+        :type ids_values: list
+        :param buffer_req: True to set a buffer
+        :type buffer_req: bool
         return image form of the plot
         rtype decoded raw image data to utf-8
         """
@@ -1407,10 +1411,12 @@ class Transistor:
         plt.grid(color='green', linestyle='--', linewidth=0.5)
         return get_img_raw_data(plt)
 
-    def export_datasheet(self, build_collection=False) -> str | None:
+    def export_datasheet(self, build_collection: bool = False) -> str | None:
         """
         Generate and export the virtual datasheet in form of a pdf-file.
 
+        :param build_collection:
+        :type build_collection: bool
         :return: pdf file is created in the current working directory
         :rtype: None
 
@@ -1472,6 +1478,8 @@ class Transistor:
         """
         Export a simulation model for simulink inverter loss models.
 
+        .mat file for import in matlab/simulink
+
         See also: https://de.mathworks.com/help/physmod/sps/ug/loss-calculation-in-a-three-phase-3-level-inverter.html
 
         :param r_g_on: gate turn on resistance, optional
@@ -1485,9 +1493,6 @@ class Transistor:
 
         :raises Exception: Re-raised excception by calling calc_object_i_e(..)
         :raises ValueError: Raised when the switch type is other than IGBT
-
-        :return: .mat file for import in matlab/simulink
-        :rtype: None
 
         :Example:
 
@@ -1662,9 +1667,6 @@ class Transistor:
         """
         Export a transistor dictionary to a matlab dictionary.
 
-        :return: File stored in current working path
-        :rtype: None
-
         :Example:
 
         >>> import transistordatabase as tdb
@@ -1722,6 +1724,8 @@ class Transistor:
         """
         Export transistor data to GeckoCIRCUITS.
 
+        Two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl created in the current working directory
+
         :param recheck: Default to set to true, to enable the neighbouring select feature of the exporter
         :type recheck: bool
         :param v_supply: supply voltage for turn-on/off losses
@@ -1734,9 +1738,6 @@ class Transistor:
         :type r_g_on: float
         :param r_g_off: gate resistor for turn-off
         :type r_g_off: float
-
-        :return: Two output files: 'Transistor.name'_Switch.scl and 'Transistor.name'_Diode.scl created in the current working directory
-        :rtype: None
 
         :Example:
 
@@ -2074,16 +2075,16 @@ class Transistor:
         file_c_oss.close()
         print(f"Exported file {nlc_filename} to {os.getcwd()}")
 
-    def export_plecs(self, recheck: bool = True, gate_voltages=None) -> None:
+    def export_plecs(self, recheck: bool = True, gate_voltages: list | None = None) -> None:
         """
         Generate and export the switch and diode .xmls files to be imported into plecs simulator.
+
+        Two output files: 'Transistor.name'_Switch.xml and 'Transistor.name'_Diode.xml created in the current working directory.
 
         :param recheck: enables the selection of gate voltages near to the provided values if not found
         :type recheck: bool
         :param gate_voltages: gate voltage like v_g_on, v_g_off, v_d_on, v_d_off
-
-        :return: Two output files: 'Transistor.name'_Switch.xml and 'Transistor.name'_Diode.xml created in the current working directory
-        :rtype: None
+        :type gate_voltages: list
 
         :Example:
 
@@ -2439,8 +2440,6 @@ class Transistor:
         :type switch_type: str
         :param clear: set to true if to clear the existing soa curves on the selected transistor switch or diode object
         :type clear: bool
-
-        :return: updated transistor switch or diode object with added soa characteristics
         """
         soa_list = []
 
@@ -2504,8 +2503,6 @@ class Transistor:
         :type charge_data: dict or list
         :param clear: set to true if to clear the existing gatechargecurve curves on the transistor object
         :type clear: bool
-
-        :return: updated transistor object with added gate charge characteristics
         """
         charge_list = []
         transistor_id = {'_id': self._id}
@@ -2557,8 +2554,6 @@ class Transistor:
         :type r_channel_data: dict or list
         :param clear: set to true if to clear the existing r_channel_th curves on the transistor object
         :type clear: bool
-
-        :return: updated transistor object with added gate charge characteristics
         """
         r_channel_list = []
         transistor_id = {'_id': self._id}

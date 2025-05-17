@@ -52,6 +52,7 @@ class GateChargeCurve:
         Plot the gate charge vs. gate source/ gate emitter voltage of switch type mosfet and igbt respectively.
 
         :param ax: figure axes to append the curves
+        :type ax: figure axis
 
         :return: Respective plots are displayed if available else None is returned
         """
@@ -105,6 +106,7 @@ class SOA:
         Plot drain current/reverse diode current vs drain-to-source voltage/diode applied reverse voltage of switch type mosfet/igbt.
 
         :param ax: figure axes to append the curves
+        :type ax: figure axis
 
         :return: Respective plots are displayed if available else None is returned
         """
@@ -162,6 +164,7 @@ class TemperatureDependResistance:
         Plot the on-resistance vs. Junction temperature.
 
         :param ax: figure axes to append the curves
+        :type ax: figure axis
 
         :return: Respective plots are displayed if available else None is returned
         """
@@ -337,12 +340,7 @@ class SwitchEnergyData:
         return d
 
     def plot_graph(self) -> None:
-        """
-        Plot switch / diode energy curve characteristics (either from graph_i_e or graph_r_e dataset).
-
-        :return: Respective plots are displayed
-        :rtype: None
-        """
+        """Plot switch / diode energy curve characteristics (either from graph_i_e or graph_r_e dataset)."""
         plt.figure()
         if self.dataset_type == 'graph_i_e':
             label = f"v_g = {self.v_g} V, v_supply = {self.v_supply} V, r_g = {self.r_g} Ohm, t_j = {self.t_j} °C"
@@ -424,12 +422,7 @@ class ChannelData:
         return d
 
     def plot_graph(self) -> None:
-        """
-        Plot the channel curve v_i characteristics called by using any ChannelData object.
-
-        :return: Respective plots are displayed
-        :rtype: None
-        """
+        """Plot the channel curve v_i characteristics called by using any ChannelData object."""
         plt.figure()
         label = f"v_g = {self.v_g} V, t_j = {self.t_j} °C"
         plt.plot(self.graph_v_i[0], self.graph_v_i[1], label=label)
@@ -518,9 +511,9 @@ class VoltageDependentCapacitance:
         Also attaches the plot to figure axes for the purpose virtual datasheet if ax argument is specified
 
         :param ax: figure axes for making the graph_v_c plot in virtual datasheet
+        :type ax: axis
         :param label: label of the plot for virtual datasheet plot
-
-        :return: Respective plots are displayed
+        :type label: str
         """
         if ax:
             label_plot = label + ", $T_{{J}}$ = {0} °C".format(self.t_j)
@@ -737,7 +730,8 @@ class RawMeasurementData:
         :type dataset_type: str
         :param energies: defines which switching energies should be calculated
         :type energies: str
-
+        :param mode: Can be 'analyze'
+        :type mode: str
 
         """
         if integration_interval == 'IEC 60747-9':
