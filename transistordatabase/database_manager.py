@@ -10,12 +10,15 @@ import json
 import requests
 import deepdiff
 import glob  # Can this be removed?
+import logging
 
 # Local libraries
 from transistordatabase.transistor import Transistor
 from transistordatabase.mongodb_handling import connect_local_tdb 
 from transistordatabase.helper_functions import get_copy_transistor_name, isvalid_transistor_name, read_data_file, html_to_pdf, get_xml_data, compare_list
 from transistordatabase.checker_functions import check_float
+
+logger = logging.getLogger(__name__)
 
 class OperationMode(Enum):
     """Operation mode definitions."""
@@ -77,18 +80,18 @@ class DatabaseManager:
             os.makedirs(json_folder_path)
             self.json_folder = json_folder_path
             index_response = requests.get(index_url)
-            print(index_response)
+            logger.info(index_response)
             if not index_response.ok:
                 raise Exception(f"Index file was not found. URL: {index_url}")
             for transistor_url in index_response.iter_lines():
                 transistor_response = requests.get(transistor_url)
-                print(transistor_url)
+                logger.info(transistor_url)
 
                 # filename = transistor_url.split('/')[-1].decode()
                 filename = transistor_url.decode().split('/')[-1]
-                print(filename)
+                logger.info(filename)
                 if not transistor_response.ok:
-                    print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
+                    logger.info(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
                     continue
                 else:
                     transistor = self.convert_dict_to_transistor_object(transistor_response.json())
@@ -132,7 +135,7 @@ class DatabaseManager:
             transistor_path = os.path.join(self.json_folder, f"{transistor.name}.json")
             if str(transistor.name) in os.listdir(self.json_folder):
                 if overwrite is None:
-                    print(f"A transistor object with name {transistor.name} already exists. \
+                    logger.info(f"A transistor object with name {transistor.name} already exists. \
                     If you want to override it please set the override argument to true, if you want to create a copy with a \
                     different id please set it to false")
                     return
@@ -151,7 +154,7 @@ class DatabaseManager:
         elif self.operation_mode == OperationMode.MONGODB:
             if self.mongodb_collection.find_one({"_id": transistor._id}) is not None:
                 if overwrite is None:
-                    print(f"A transistor object with id {transistor._id} already exists in the database. \
+                    logger.info(f"A transistor object with id {transistor._id} already exists in the database. \
                     If you want to override it please set the override argument to true, if you want to create a copy with a \
                     different id please set it to false")
                     return
@@ -180,12 +183,12 @@ class DatabaseManager:
                 if file.endswith(".json") and file[:-5] == transistor_name and isvalid_transistor_name(file[:-5]):
                     os.remove(os.path.join(self.json_folder, file))
             else:
-                print(f"Can not find transistor with name {transistor_name} in the database. Therefore it cannot be deleted.")
+                logger.info(f"Can not find transistor with name {transistor_name} in the database. Therefore it cannot be deleted.")
         elif self.operation_mode == OperationMode.MONGODB:
             if self.mongodb_collection.find_one({"name": transistor_name}) is not None:
                 self.mongodb_collection.delete_one({"name": transistor_name})
             else:
-                print(f"Can not find transistor with name {transistor_name} in the database. Therefore it cannot be deleted.")
+                logger.info(f"Can not find transistor with name {transistor_name} in the database. Therefore it cannot be deleted.")
 
     def load_transistor(self, transistor_name: str) -> Transistor:
         """
@@ -205,7 +208,7 @@ class DatabaseManager:
                 if file_name.endswith(".json") and file_name.startswith(str(transistor_name)) and isvalid_transistor_name(file_name[:-5]):
                     with open(os.path.join(self.json_folder, file_name), "r") as fd:
                         return self.convert_dict_to_transistor_object(json.load(fd))
-            print(f"Transitor with name {transistor_name} not found.")
+            logger.info(f"Transitor with name {transistor_name} not found.")
         elif self.operation_mode == OperationMode.MONGODB:
             return self.convert_dict_to_transistor_object(self.mongodb_collection.find_one({"name": transistor_name}))
 
@@ -271,7 +274,7 @@ class DatabaseManager:
             for tran in returned_cursor:
                 transistor = self.convert_dict_to_transistor_object(tran)
                 transistor_list.append(transistor)
-            print(transistor_list)
+            logger.info(transistor_list)
             return transistor_list
         elif self.operation_mode == OperationMode.JSON:
             all_transistor_names = self.get_transistor_names_list()
@@ -279,7 +282,7 @@ class DatabaseManager:
             for transistor_name in all_transistor_names:
                 transistor = self.load_transistor(transistor_name)
                 transistor_list.append(transistor)
-            print(transistor_list)
+            logger.info(transistor_list)
             return transistor_list
 
     def update_from_fileexchange(self, overwrite: bool = True,
@@ -303,9 +306,9 @@ class DatabaseManager:
         :param housing_types_url: URL to the housing type file
         :type housing_types_url: str
         """
-        print("Note: Please make sure that you have installed the latest version of the transistor database, "
-              "especially if the update_from_fileexchange()-method ends in an error. "
-              "Find the latest version here: https://pypi.org/project/transistordatabase/")
+        logger.info("Note: Please make sure that you have installed the latest version of the transistor database, "
+                    "especially if the update_from_fileexchange()-method ends in an error. "
+                    "Find the latest version here: https://pypi.org/project/transistordatabase/")
         # Read links from index_url
         index_response = requests.get(index_url)
         if not index_response.ok:
@@ -314,13 +317,13 @@ class DatabaseManager:
         for transistor_url in index_response.iter_lines():
             transistor_response = requests.get(transistor_url)
             if not transistor_response.ok:
-                print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
+                logger.info(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
                 continue
 
             transistor = self.convert_dict_to_transistor_object(transistor_response.json())
             self.save_transistor(transistor, overwrite)
 
-        # Get module manufactuers and housing types if URLs are given
+        # Get module manufacturers and housing types if URLs are given
         # Then overwrite local files and update lists
         if module_manufacturers_url is not None:
             module_manufacturers_response = requests.get(module_manufacturers_url)
@@ -331,7 +334,7 @@ class DatabaseManager:
                 fd.write(module_manufacturers_response.text)
 
             self.module_manufacturers = read_data_file(self.module_manufacturers_file_path)
-            print("Updated module manufacturers.")
+            logger.info("Updated module manufacturers.")
 
         if housing_types_url is not None:
             housing_types_response = requests.get(housing_types_url)
@@ -342,7 +345,7 @@ class DatabaseManager:
                 fd.write(housing_types_response.text)
 
             self.housing_types = read_data_file(self.housing_types_file_path)
-            print("Updated housing types.")
+            logger.info("Updated housing types.")
 
     def compare_with_fileexchange(self, index_url: str, output_file: str):
         """
@@ -366,7 +369,7 @@ class DatabaseManager:
         for transistor_url in index_response.iter_lines():
             transistor_response = requests.get(transistor_url)
             if not transistor_response.ok:
-                print(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
+                logger.info(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
                 continue
 
             downloaded_transistor_dict = transistor_response.json()
@@ -389,9 +392,9 @@ class DatabaseManager:
             diff_dict[not_found_transistor] = "Transistor exists in local database but is not on the given fileexchange."
 
         if not diff_dict:
-            print("The local database is equal to the given fileexchange database.") 
+            logger.info("The local database is equal to the given fileexchange database.") 
         else:
-            print("There are differences found between the local database and the given fileexchange database. Please have a look at the output file.")
+            logger.info("There are differences found between the local database and the given fileexchange database. Please have a look at the output file.")
             with open(output_file, "w") as fd:
                 json.dump(diff_dict, fd, indent=2)
 
@@ -410,7 +413,7 @@ class DatabaseManager:
         if filter_list is not None:
             for item in filter_list:
                 if item not in transistor_list:
-                    print("{0} transistor is not present in database".format(item))
+                    logger.info("{0} transistor is not present in database".format(item))
                 else:
                     filtered_list.append(item)
         else:
@@ -423,7 +426,7 @@ class DatabaseManager:
                 paths_list.append(os.path.join(os.getcwd(), transistor.name + ".pdf"))
             html_to_pdf(html_list, pdf_name_list, paths_list)
         else:
-            print("Nothing to export, please recheck inputs")
+            logger.info("Nothing to export, please recheck inputs")
 
     def convert_dict_to_transistor_object(self, transistor_dict: dict) -> Transistor:
         """
@@ -693,7 +696,7 @@ class DatabaseManager:
                 'r_th_switch_cs': 0}
             return Transistor(transistor_args, switch_args, diode_args)
         except ImportError as e:
-            print(e.args[0])
+            logger.info(e.args[0])
 
     @staticmethod
     def export_single_transistor_to_json(transistor: Transistor, file_path: Optional[str] = None):
@@ -709,7 +712,7 @@ class DatabaseManager:
             file_path = os.getcwd()
         if os.path.isdir(file_path):
             file_path = os.path.join(file_path, f"{transistor.name}.json")
-            print(file_path)
+            logger.info(file_path)
         with open(file_path, "w") as fd:
             json.dump(transistor.convert_to_dict(), fd, indent=2)
 
@@ -826,7 +829,7 @@ class DatabaseManager:
                     position_v_supply_off_start = csv_files[csv_count].rfind("_", 0, position_v_supply_off)
                     v_supply_off.append(csv_files[csv_count][position_v_supply_off_start + 1:position_v_supply_off])
                 csv_count += 1
-            print('v_supply_off=', v_supply_off)
+            logger.info('v_supply_off=', v_supply_off)
             if not compare_list(v_supply_off):
                 raise ValueError
             i = 0
@@ -837,7 +840,7 @@ class DatabaseManager:
                     position_v_g_off_start = csv_files[i].rfind("_", 0, position_v_g_off)
                     v_g_off.append(csv_files[i][position_v_g_off_start + 1:position_v_g_off])
                 i += 1
-            print('vg_off=', v_g_off)
+            logger.info('vg_off=', v_g_off)
             if not compare_list(v_g_off):
                 raise ValueError
             j = 0
@@ -848,7 +851,7 @@ class DatabaseManager:
                     position_r_g_off_start = csv_files[j].rfind("_", 0, position_r_g_off)
                     r_g_off.append(csv_files[j][position_r_g_off_start + 1:position_r_g_off])
                 j += 1
-            print('Rg_off=', r_g_off)
+            logger.info('Rg_off=', r_g_off)
             if not compare_list(r_g_off):
                 raise ValueError
             k = 0
@@ -859,7 +862,7 @@ class DatabaseManager:
                     position_t_j_off_start = csv_files[k].rfind("_", 0, position_t_j_off)
                     t_j_off.append(csv_files[k][position_t_j_off_start + 1:position_t_j_off])
                 k += 1
-            print('t_j_off=', t_j_off)
+            logger.info('t_j_off=', t_j_off)
             if not compare_list(t_j_off):
                 raise ValueError
 
@@ -1064,7 +1067,7 @@ class DatabaseManager:
                     position_v_g_start = csv_files[i].rfind("_", 0, position_v_g)
                     v_g.append(csv_files[i][position_v_g_start + 1:position_v_g])
                 i += 1
-            print('vg=', v_g)
+            logger.info('vg=', v_g)
             if not compare_list(v_g):
                 raise ValueError
             j = 0
@@ -1075,7 +1078,7 @@ class DatabaseManager:
                     position_r_g_start = csv_files[j].rfind("_", 0, position_r_g)
                     r_g.append(csv_files[j][position_r_g_start + 1:position_r_g])
                 j += 1
-            print('Rg=', r_g)
+            logger.info('Rg=', r_g)
             if not compare_list(r_g):
                 raise ValueError
             k = 0
@@ -1086,7 +1089,7 @@ class DatabaseManager:
                     position_t_j_start = csv_files[k].rfind("_", 0, position_t_j)
                     t_j.append(csv_files[k][position_t_j_start + 1:position_t_j])
                 k += 1
-            print('t_j=', t_j)
+            logger.info('t_j=', t_j)
             if not compare_list(t_j):
                 raise ValueError
             csv_count = 0
@@ -1097,7 +1100,7 @@ class DatabaseManager:
                     position_v_supply_on_start = csv_files[csv_count].rfind("_", 0, position_v_supply_on)
                     v_supply_on.append(csv_files[csv_count][position_v_supply_on_start + 1:position_v_supply_on])
                 csv_count += 1
-            print('v_supply=', v_supply_on)
+            logger.info('v_supply=', v_supply_on)
             if not compare_list(v_supply_on):
                 raise ValueError
             ##############################

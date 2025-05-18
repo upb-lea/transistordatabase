@@ -4,6 +4,8 @@ transistordatabase/__pycache__/
 gpgit/
 *.pyc
 *.pdf
+*.html
+*.scl
 build/
 dist/
 transistordatabase.egg-info/
@@ -18,3 +20,5 @@ database/
 output/
 .vscode/
 .venv/
+docs/_build
+dictionary.dic

@@ -6,10 +6,13 @@ from typing import Dict, Union, List
 from datetime import datetime
 import numpy as np
 import numpy.typing as npt
+import logging
 
 # Local libraries
 from transistordatabase.checker_functions import check_float
 from transistordatabase.helper_functions import isvalid_dict, get_img_raw_data
+
+logger = logging.getLogger(__name__)
 
 class GateChargeCurve:
     """A class to hold gate charge characteristics of switch which is added as a optional attribute inside switch class."""
@@ -609,7 +612,7 @@ class FosterThermalModel:
         :return: Respective plots are displayed if available else None is returned
         """
         if self.graph_t_rthjc is None:
-            print('No Foster impedance information exists!')
+            logger.info('No Foster impedance information exists!')
             return None
         fig = plt.figure()
         ax = fig.add_subplot(111)

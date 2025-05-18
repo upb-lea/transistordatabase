@@ -5866,9 +5866,7 @@ class ViewCurveWindow(QMainWindow):
                                               color="Green", linewidth=1)
 
     def view_curve(self, comboBox, curve_title, xlabel, ylabel) -> None:
-        """
-        Show currently selected curve in a ViewCurveWindow.
-        """
+        """Show currently selected curve in a ViewCurveWindow."""
         try:
             self.layout = QVBoxLayout(self.widget_plot)
             self.layout.addWidget(self.matplotlibwidget)

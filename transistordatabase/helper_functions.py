@@ -11,6 +11,7 @@ import os
 import re
 import base64
 import io
+import logging
 
 # Third party libraries
 from bson.objectid import ObjectId
@@ -18,6 +19,8 @@ from bson.objectid import ObjectId
 # Local libraries
 from transistordatabase.checker_functions import check_realnum, check_str, check_2d_dataset
 from transistordatabase.constants import *
+
+logger = logging.getLogger(__name__)
 
 transistor_name_regex = "(\S*)( \((\d*)\))?"
 
@@ -432,8 +435,8 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
         return True
 
     def handle_print_finished(filepath, status):
-        print(f"Export virtual datasheet {name_item} to {os.getcwd()}")
-        print(f"Open Datasheet here: {os.getcwd()}")
+        logger.info(f"Export virtual datasheet {name_item} to {os.getcwd()}")
+        logger.info(f"Open Datasheet here: {os.getcwd()}")
         if not fetch_next():
             app.quit()
 
@@ -442,7 +445,7 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
             nonlocal path_item
             page.printToPdf(path_item)
         else:
-            print("Failed")
+            logger.info("Failed")
             app.quit()
 
     page.pdfPrintingFinished.connect(handle_print_finished)

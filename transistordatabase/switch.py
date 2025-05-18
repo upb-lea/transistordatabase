@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from typing import List, Dict, Tuple
 from scipy.spatial import distance
 import numpy as np
+import logging
 
 # Local libraries
 from transistordatabase.helper_functions import get_img_raw_data, isvalid_dict
@@ -12,6 +13,8 @@ from transistordatabase.checker_functions import check_keys
 from transistordatabase.data_classes import FosterThermalModel, ChannelData, SwitchEnergyData, LinearizedModel, TemperatureDependResistance, \
     GateChargeCurve, SOA
 from transistordatabase.exceptions import MissingDataError
+
+logger = logging.getLogger(__name__)
 
 class Switch:
     """
@@ -340,9 +343,9 @@ class Switch:
             if not req_gate_vltgs['v_supply'] == v_off_supply:
                 raise ValueError("Not implemented: Mismatch in v_supply for the selected loss curves")
 
-        print("--Switch Recheck--")
+        logger.info("--Switch Recheck--")
         for key, value in req_gate_vltgs.items():
-            print(key + ': ', value)
+            logger.info(key + ': ', value)
         return req_gate_vltgs.values()
 
     def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
@@ -389,10 +392,10 @@ class Switch:
         e_off_v_gs = np.array([0 if e.v_g is None else e.v_g for e in e_offs])
         nodes = np.array([e_off_t_js / normalize_t_to_v, e_off_v_gs]).transpose()
         index_e_off = distance.cdist(node, nodes).argmin()
-        print("run switch.find_approx_wp: closest working point for t_j = {0} °C and v_g = {1} V:".format(t_j, v_g))
-        print(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
-        print(f"eon:     t_j = {e_ons[index_e_on].t_j} °C and v_g = {e_ons[index_e_on].v_g} V")
-        print(f"eoff:    t_j = {e_offs[index_e_off].t_j} °C and v_g = {e_offs[index_e_off].v_g} V")
+        logger.info("run switch.find_approx_wp: closest working point for t_j = {0} °C and v_g = {1} V:".format(t_j, v_g))
+        logger.info(f"channel: t_j = {self.channel[index_channeldata].t_j} °C and v_g = {self.channel[index_channeldata].v_g} V")
+        logger.info(f"eon:     t_j = {e_ons[index_e_on].t_j} °C and v_g = {e_ons[index_e_on].v_g} V")
+        logger.info(f"eoff:    t_j = {e_offs[index_e_off].t_j} °C and v_g = {e_offs[index_e_off].v_g} V")
 
         return self.channel[index_channeldata], e_ons[index_e_on], e_offs[index_e_off]
 
@@ -549,7 +552,7 @@ class Switch:
             else:
                 plt.show()
         else:
-            print("Switch energy i_e curves are not available for the chosen transistor")
+            logger.info("Switch energy i_e curves are not available for the chosen transistor")
             return None
 
     def plot_energy_data_r(self, buffer_req: bool = False):
@@ -593,7 +596,7 @@ class Switch:
             else:
                 plt.show()
         else:
-            print("Switch energy r_e curves are not available for the chosen transistor")
+            logger.info("Switch energy r_e curves are not available for the chosen transistor")
             return None
 
     def plot_energy_data_t(self, buffer_req: bool = False):
@@ -637,7 +640,7 @@ class Switch:
             else:
                 plt.show()
         else:
-            print("Switch energy t_e curves are not available for the chosen transistor")
+            logger.info("Switch energy t_e curves are not available for the chosen transistor")
             return None
     
     def plot_all_on_resistance_curves(self, buffer_req: bool = False):

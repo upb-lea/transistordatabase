@@ -18,6 +18,7 @@ import copy
 import base64
 import io
 import warnings
+import logging
 
 # Third party libraries
 from jinja2 import Environment, FileSystemLoader
@@ -34,6 +35,8 @@ from transistordatabase.diode import Diode
 from transistordatabase.exceptions import MissingDataError
 from transistordatabase.exporter import dict2matlab
 import transistordatabase.colors as tdb_colors
+
+logger = logging.getLogger(__name__)
 
 class Transistor:
     """
@@ -215,9 +218,9 @@ class Transistor:
             # self.calc_thermal_params(input_type='switch')
             # self.calc_thermal_params(input_type='diode')
             self.wp = self.WP()
-            print(f"Transistor {self.name} generated / loaded successfully!")
+            logger.info(f"Transistor {self.name} generated / loaded successfully!")
         except Exception as e:
-            print('Exception occurred: Selected datasheet or module could not be created or loaded\n' + str(e))
+            logger.error('Exception occurred: Selected datasheet or module could not be created or loaded\n' + str(e))
             raise
 
     def convert_raw_measurement_data(self, input: List | Dict, name: str = None) -> List[RawMeasurementData]:
@@ -369,9 +372,9 @@ class Transistor:
         if switch_or_diode in ["diode", "both"]:
             self.wp.diode_channel, self.wp.e_rr = self.diode.find_approx_wp(t_j, v_g, normalize_t_to_v)
             if self.wp.e_rr is None:
-                print("run diode.find_approx_wp: closest working point for t_j = {0} °C and {1} V:".format(t_j, v_g))
-                print("There is no err, may due to MOSFET, SiC-MOSFET or GaN device: Set err to [[0, 0], [0, 0]]")
-                print("Note: Values are set to t_j = 25°C, v_g = 15V, r_g = 1 Ohm")
+                logger.info("run diode.find_approx_wp: closest working point for t_j = {0} °C and {1} V:".format(t_j, v_g))
+                logger.info("There is no err, may due to MOSFET, SiC-MOSFET or GaN device: Set err to [[0, 0], [0, 0]]")
+                logger.info("Note: Values are set to t_j = 25°C, v_g = 15V, r_g = 1 Ohm")
                 args = {"dataset_type": "graph_i_e",
                         "t_j": 25,
                         'v_g': 15,
@@ -447,11 +450,11 @@ class Transistor:
             v_channel_interpolated = np.interp(i_channel_linspace, channel_object.graph_v_i[1],
                                                channel_object.graph_v_i[0])
 
-            print(f"{channel_object.t_j=}")
-        print(f"{t_j_max=}")
-        print(f"{t_j_min=}")
-        print(f"{v_channel_max=}")
-        print(f"{i_channel_max=}")
+            logger.info(f"{channel_object.t_j=}")
+        logger.info(f"{t_j_max=}")
+        logger.info(f"{t_j_min=}")
+        logger.info(f"{v_channel_max=}")
+        logger.info(f"{i_channel_max=}")
 
     def quickstart_wp(self) -> None:
         """
@@ -696,7 +699,7 @@ class Transistor:
 
         eoss_v, eoss_e = self.calc_v_eoss()
         e_oss_v_op = np.interp(v_op, eoss_v, eoss_e)
-        print(f"{e_oss_v_op=}")
+        logger.info(f"{e_oss_v_op=}")
 
         e_on_corrected.graph_i_e[1] = e_on_corrected.graph_i_e[1] + e_oss_v_op
         e_off_corrected.graph_i_e[1] = e_off_corrected.graph_i_e[1] - e_oss_v_op
@@ -771,14 +774,14 @@ class Transistor:
                                   (channel.t_j == t_j and channel.v_g == v_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(channel.t_j, channel.v_g) for channel in self.switch.channel]
-                print("Available operating points: (t_j, v_g)")
-                print(available_datasets)
+                logger.info("Available operating points: (t_j, v_g)")
+                logger.info(available_datasets)
                 raise ValueError("No data available for linearization at the given operating point. "
                                  "A list of available operating points is printed above.")
             elif len(candidate_datasets) > 1:
-                print("Multiple datasets were found that are consistent with the chosen "
-                      "operating point. The first of these sets is automatically chosen because selection of a "
-                      "different dataset is not yet implemented.")
+                logger.info("Multiple datasets were found that are consistent with the chosen "
+                            "operating point. The first of these sets is automatically chosen because selection of a "
+                            "different dataset is not yet implemented.")
             dataset = candidate_datasets[0]
 
         elif switch_or_diode == 'diode':
@@ -787,28 +790,28 @@ class Transistor:
                                       (channel.t_j == t_j and channel.v_g == v_g)]
                 if len(candidate_datasets) == 0:
                     available_datasets = [(channel.t_j, channel.v_g) for channel in self.diode.channel]
-                    print("Available operating points: (t_j, v_g)")
-                    print(available_datasets)
+                    logger.info("Available operating points: (t_j, v_g)")
+                    logger.info(available_datasets)
                     raise ValueError("No data available for linearization at the given operating point. "
                                      "A list of available operating points is printed above.")
                 elif len(candidate_datasets) > 1:
-                    print("Multiple datasets were found that are consistent with the chosen "
-                          "operating point. The first of these sets is automatically chosen because selection of a "
-                          "different dataset is not yet implemented.")
+                    logger.info("Multiple datasets were found that are consistent with the chosen "
+                                "operating point. The first of these sets is automatically chosen because selection of a "
+                                "different dataset is not yet implemented.")
                 dataset = candidate_datasets[0]
             else:
                 candidate_datasets = [channel for channel in self.diode.channel
                                       if channel.t_j == t_j]
                 if len(candidate_datasets) == 0:
                     available_datasets = [channel.t_j for channel in self.diode.channel]
-                    print("Available operating points: (t_j)")
-                    print(available_datasets)
+                    logger.info("Available operating points: (t_j)")
+                    logger.info(available_datasets)
                     raise ValueError("No data available for linearization at the given operating point. "
                                      "A list of available operating points is printed above.")
                 elif len(candidate_datasets) > 1:
-                    print("Multiple datasets were found that are consistent with the chosen "
-                          "operating point. The first of these sets is automatically chosen because selection of a "
-                          "different dataset is not yet implemented.")
+                    logger.info("Multiple datasets were found that are consistent with the chosen "
+                                "operating point. The first of these sets is automatically chosen because selection of a "
+                                "different dataset is not yet implemented.")
                 dataset = candidate_datasets[0]
 
         return dataset
@@ -837,14 +840,14 @@ class Transistor:
                 e_on.t_j == t_j and e_on.v_g == v_g and e_on.v_supply == v_supply and e_on.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_on.t_j, e_on.v_g, e_on.v_supply, e_on.r_g) for e_on in self.switch.e_on]
-                print("Available operating points: (t_j, v_g, v_supply, r_g)")
-                print(available_datasets)
+                logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
+                logger.info(available_datasets)
                 raise ValueError("No data available for get_graph_i_e at the given operating point. "
                                  "A list of available operating points is printed above.")
             elif len(candidate_datasets) > 1:
-                print("multiple datasets were found that are consistent with the chosen "
-                      "operating point. The first of these sets is automatically chosen because selection of a "
-                      "different dataset is not yet implemented.")
+                logger.info("multiple datasets were found that are consistent with the chosen "
+                            "operating point. The first of these sets is automatically chosen because selection of a "
+                            "different dataset is not yet implemented.")
             dataset = candidate_datasets[0]
 
         if e_on_off_rr == 'e_off':
@@ -852,14 +855,14 @@ class Transistor:
                 e_off.t_j == t_j and e_off.v_g == v_g and e_off.v_supply == v_supply and e_off.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_off.t_j, e_off.v_g, e_off.v_supply, e_off.r_g) for e_off in self.switch.e_off]
-                print("Available operating points: (t_j, v_g, v_supply, r_g)")
-                print(available_datasets)
+                logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
+                logger.info(available_datasets)
                 raise ValueError("No data available for get_graph_i_e at the given operating point. "
                                  "A list of available operating points is printed above.")
             elif len(candidate_datasets) > 1:
-                print("multiple datasets were found that are consistent with the chosen "
-                      "operating point. The first of these sets is automatically chosen because selection of a "
-                      "different dataset is not yet implemented.")
+                logger.info("multiple datasets were found that are consistent with the chosen "
+                            "operating point. The first of these sets is automatically chosen because selection of a "
+                            "different dataset is not yet implemented.")
             dataset = candidate_datasets[0]
 
         if e_on_off_rr == 'e_rr':
@@ -867,14 +870,14 @@ class Transistor:
                 e_rr.t_j == t_j and e_rr.v_g == v_g and e_rr.v_supply == v_supply and e_rr.r_g == r_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(e_rr.t_j, e_rr.v_g, e_rr.v_supply, e_rr.r_g) for e_rr in self.diode.e_rr]
-                print("Available operating points: (t_j, v_g, v_supply, r_g)")
-                print(available_datasets)
+                logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
+                logger.info(available_datasets)
                 raise ValueError("No data available for get_graph_i_e at the given operating point. "
                                  "A list of available operating points is printed above.")
             elif len(candidate_datasets) > 1:
-                print("multiple datasets were found that are consistent with the chosen "
-                      "operating point. The first of these sets is automatically chosen because selection of a "
-                      "different dataset is not yet implemented.")
+                logger.info("multiple datasets were found that are consistent with the chosen "
+                            "operating point. The first of these sets is automatically chosen because selection of a "
+                            "different dataset is not yet implemented.")
             dataset = candidate_datasets[0]
         return dataset
 
@@ -913,12 +916,12 @@ class Transistor:
                 f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]",
                 "<string>", "eval")
             available_datasets = eval(code)
-            print("Available operating points: (t_j, v_g, v_supply, r_g)")
-            print(available_datasets)
+            logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
+            logger.info(available_datasets)
             raise ValueError("No data available for get_graph_i_e at the given operating point. "
                              "A list of available operating points is printed above.")
         elif len(ie_datasets) > 1:
-            print("multiple datasets were found that are consistent with the chosen operating point.")
+            logger.info("multiple datasets were found that are consistent with the chosen operating point.")
             match = False
             for re_curve in re_datasets:
                 for curve in ie_datasets:
@@ -928,7 +931,7 @@ class Transistor:
                         match = True
             text_to_print = "A match found in r_e characteristics for the chosen operating point and therefore will be used" \
                 if match else "The first of these sets is automatically chosen because selection of a different dataset is not yet implemented."
-            print(text_to_print)
+            logger.info(text_to_print)
         elif len(ie_datasets) == 1:
             # function get_object_r_e_simplified can be called here instead of calling in a separate line of calc_object_i_e method
             i_e_dataset = ie_datasets[0]
@@ -979,8 +982,8 @@ class Transistor:
                 f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]",
                 "<string>", "eval")
             available_datasets = eval(code)
-            print("Available operating points: (t_j, v_g, v_supply, r_g)")
-            print(available_datasets)
+            logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
+            logger.info(available_datasets)
             raise ValueError("No data available for get_graph_r_e at the given operating point. "
                              "A list of available operating points is printed above.")
         return dataset
@@ -1023,7 +1026,7 @@ class Transistor:
                 raise Exception("Given r_g exceeds the graph range : r_g_max = {0}".format(r_g_max))
             if not v_supply or v_supply > self.v_abs_max:
                 v_supply_chosen = i_e_object.v_supply
-                print("Invalid v_supply provided : v_supply = {0} and choosing v_supply = {1} ".format(v_supply, v_supply_chosen))
+                logger.info("Invalid v_supply provided : v_supply = {0} and choosing v_supply = {1} ".format(v_supply, v_supply_chosen))
 
             args = {
                 'dataset_type': 'graph_i_e',
@@ -1039,7 +1042,7 @@ class Transistor:
             object_i_e_calc = SwitchEnergyData(args)
             return object_i_e_calc
         except Exception as e:
-            print("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(
+            logger.info("{0} loss at chosen parameters: R_g = {1}, T_j = {2}, v_supply = {3} could not be possible due to \n {4}".format(
                 e_on_off_rr, r_g, t_j, v_supply, e.args[0]))
             raise e
 
@@ -1116,14 +1119,14 @@ class Transistor:
                                   if (channel.t_j == t_j and channel.v_g == v_g)]
             if len(candidate_datasets) == 0:
                 available_datasets = [(channel.t_j, channel.v_g) for channel in self.switch.channel]
-                print("Available operating points: (t_j, v_g)")
-                print(available_datasets)
+                logger.info("Available operating points: (t_j, v_g)")
+                logger.info(available_datasets)
                 raise ValueError("No data available for linearization at the given operating point. "
                                  "A list of available operating points is printed above.")
             elif len(candidate_datasets) > 1:
-                print("During linearization, multiple datasets were found that are consistent with the chosen "
-                      "operating point. The first of these sets is automatically chosen because selection of a "
-                      "different dataset is not yet implemented.")
+                logger.info("During linearization, multiple datasets were found that are consistent with the chosen "
+                            "operating point. The first of these sets is automatically chosen because selection of a "
+                            "different dataset is not yet implemented.")
 
             # interpolate data
             voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
@@ -1147,27 +1150,27 @@ class Transistor:
                                       if (channel.t_j == t_j and channel.v_g == v_g)]
                 if len(candidate_datasets) == 0:
                     available_datasets = [(channel.t_j, channel.v_g) for channel in self.diode.channel]
-                    print("Available operating points: (t_j, v_g)")
-                    print(available_datasets)
+                    logger.info("Available operating points: (t_j, v_g)")
+                    logger.info(available_datasets)
                     raise ValueError("No data available for linearization at the given operating point. "
                                      "A list of available operating points is printed above.")
                 elif len(candidate_datasets) > 1:
-                    print("During linearization, multiple datasets were found that are consistent with the chosen "
-                          "operating point. The first of these sets is automatically chosen because selection of a "
-                          "different dataset is not yet implemented.")
+                    logger.info("During linearization, multiple datasets were found that are consistent with the chosen "
+                                "operating point. The first of these sets is automatically chosen because selection of a "
+                                "different dataset is not yet implemented.")
             else:
                 candidate_datasets = [channel for channel in self.diode.channel
                                       if channel.t_j == t_j]
                 if len(candidate_datasets) == 0:
                     available_datasets = [channel.t_j for channel in self.diode.channel]
-                    print("Available operating points: (t_j)")
-                    print(available_datasets)
+                    logger.info("Available operating points: (t_j)")
+                    logger.info(available_datasets)
                     raise ValueError("No data available for linearization at the given operating point. "
                                      "A list of available operating points is printed above.")
                 elif len(candidate_datasets) > 1:
-                    print("During linearization, multiple datasets were found that are consistent with the chosen "
-                          "operating point. The first of these sets is automatically chosen because selection of a "
-                          "different dataset is not yet implemented.")
+                    logger.info("During linearization, multiple datasets were found that are consistent with the chosen "
+                                "operating point. The first of these sets is automatically chosen because selection of a "
+                                "different dataset is not yet implemented.")
             # interpolate data
             voltage_interpolated = np.interp(i_channel, candidate_datasets[0].graph_v_i[1],
                                              candidate_datasets[0].graph_v_i[0])
@@ -1242,7 +1245,7 @@ class Transistor:
                     ss_res = np.sum(residuals ** 2)
                     ss_tot = np.sum((rth - np.mean(rth)) ** 2)
                     r_squared = 1 - (ss_res / ss_tot)
-                    print("R^2 score:", r_squared)
+                    logger.info("R^2 score:", r_squared)
                     if len(rth_values) > 1:
                         foster_args.r_th_vector = [round(x, 5) for x in rth_values]
                         foster_args.tau_vector = [round(x, 5) for x in tau_values]
@@ -1252,9 +1255,9 @@ class Transistor:
                     foster_args.tau_total = round(sum(tau_values), 4)
                     foster_args.c_th_total = round(foster_args.tau_total / foster_args.r_th_total, 4)
                     if plotbit:
-                        print("Computed Rth values: ", rth_values)
-                        print("Computed tau values: ", tau_values)
-                        print("Computed Cth values: ", cap_values)
+                        logger.info("Computed Rth values: ", rth_values)
+                        logger.info("Computed tau values: ", tau_values)
+                        logger.info("Computed Cth values: ", cap_values)
                         fig = plt.figure()
                         ax = fig.add_subplot(111)
                         ax.loglog(time, rth)
@@ -1268,11 +1271,11 @@ class Transistor:
                 else:
                     raise Exception(f"graph_t_rthjc in {input_type}'s foster thermal object is empty!")
         except Exception as e:
-            print("Thermal parameter computation failed: {0}".format(e))
-            print("This also occurs when there is no thermal impedance given.")
+            logger.info("Thermal parameter computation failed: {0}".format(e))
+            logger.info("This also occurs when there is no thermal impedance given.")
         else:
             exec(f"self.{input_type}.thermal_foster = foster_args")
-            print(input_type, ':Thermal parameters re-assigned to foster object')
+            logger.info(input_type, ':Thermal parameters re-assigned to foster object')
 
     def compare_channel_linearized(self, i_channel: float, t_j: float = 150, v_g: float = 15) -> None:
         """
@@ -1295,12 +1298,12 @@ class Transistor:
         s_v_channel, s_r_channel = self.calc_lin_channel(switch_channel.t_j, switch_channel.v_g, i_channel, 'switch')
         d_v_channel, d_r_channel = self.calc_lin_channel(diode_channel.t_j, diode_channel.v_g, i_channel, 'diode')
 
-        print('Linearized values. Switch at {0} °C and {1} V, diode at {2} °C and {3} V'.format(switch_channel.t_j,
-                                                                                                switch_channel.v_g, diode_channel.t_j, diode_channel.v_g))
-        print(" s_v_channel = {0} V".format(s_v_channel))
-        print(" s_r_channel = {0} Ohm".format(s_r_channel))
-        print(" d_v_channel = {0} V".format(d_v_channel))
-        print(" d_r_channel = {0} Ohm".format(d_r_channel))
+        logger.info('Linearized values. Switch at {0} °C and {1} V, diode at {2} °C and {3} V'.format(switch_channel.t_j, switch_channel.v_g,
+                                                                                                      diode_channel.t_j, diode_channel.v_g))
+        logger.info(" s_v_channel = {0} V".format(s_v_channel))
+        logger.info(" s_r_channel = {0} Ohm".format(s_r_channel))
+        logger.info(" d_v_channel = {0} V".format(d_v_channel))
+        logger.info(" d_r_channel = {0} Ohm".format(d_r_channel))
 
         i_vec = np.linspace(0, self.i_abs_max)
         s_v_vec = s_v_channel + s_r_channel * i_vec
@@ -1435,10 +1438,10 @@ class Transistor:
         cap_plots = {'$c_{oss}$': self.c_oss, '$c_{rss}$': self.c_rss, '$c_{iss}$': self.c_iss}
         if (len(self.raw_measurement_data) > 0):
             raw_measurement_plots = self.raw_measurement_data_plots()
-            # print(raw_measurement_plots)
+            # logger.info(raw_measurement_plots)
             # conditions = raw_measurement_plots[-1]
             # plots = raw_measurement_plots[:-1]
-            print(raw_measurement_plots[0])
+            logger.info(raw_measurement_plots[0])
             pdf_data['plots'] = {'c_plots': get_vc_plots(cap_plots)}
             pdf_data.update({'raw_measurement_data': raw_measurement_plots})    
         else:
@@ -1520,7 +1523,7 @@ class Transistor:
             t_j_upper = 150
             v_g = 15
 
-            print("---------------------IGBT properties----------------------")
+            logger.info("---------------------IGBT properties----------------------")
             switch_channel_object_lower, eon_object_lower, eoff_object_lower = self.switch.find_approx_wp(t_j_lower, v_g, normalize_t_to_v,
                                                                                                           switch_energy_dataset_type="graph_i_e")
             switch_channel_object_upper, eon_object_upper, eoff_object_upper = self.switch.find_approx_wp(t_j_upper, v_g, normalize_t_to_v,
@@ -1535,12 +1538,12 @@ class Transistor:
                         eon_object_lower = eon_object_lower_calc
                         eon_object_upper = eon_object_upper_calc
                 except Exception as e:
-                    print('Choosing the default curve properties for e_on')
+                    logger.info('Choosing the default curve properties for e_on')
                 else:
-                    print('Generated curve properties for e_on')
-                    print("Lower : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(eon_object_lower.r_g, eon_object_lower.v_g,
-                                                                                                  eon_object_lower.t_j, eon_object_lower.v_supply))
-                    print("Upper : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(
+                    logger.info('Generated curve properties for e_on')
+                    logger.info("Lower : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(eon_object_lower.r_g, eon_object_lower.v_g,
+                                                                                                        eon_object_lower.t_j, eon_object_lower.v_supply))
+                    logger.info("Upper : R_g(on) = {0}, v_g(on)= {1}, T_j = {2}, v_supply = {3}".format(
                         eon_object_upper.r_g, eon_object_upper.v_g, eon_object_upper.t_j, eon_object_upper.v_supply))
             if r_g_off:
                 try:
@@ -1552,14 +1555,12 @@ class Transistor:
                         eoff_object_lower = eoff_object_lower_calc
                         eoff_object_upper = eoff_object_upper_calc
                 except Exception as e:
-                    print('Choosing the default curve properties for e_off')
+                    logger.info('Choosing the default curve properties for e_off')
                 else:
-                    print('Generated curve properties for e_off')
-                    print("Lower : R_g(off) = {0}, v_g(off) = {1}, T_j = {2}, v_supply = {3}".format(eoff_object_lower.r_g,
-                                                                                                     eoff_object_lower.v_g,
-                                                                                                     eoff_object_lower.t_j,
-                                                                                                     eoff_object_lower.v_supply))
-                    print("Upper : R_g(off) = {0}, v_g(off) = {1}, T_j = {2}, v_supply = {3}".format(
+                    logger.info('Generated curve properties for e_off')
+                    logger.info("Lower : R_g(off) = {0}, v_g(off) = {1}, T_j = {2}, v_supply = {3}".format(eoff_object_lower.r_g, eoff_object_lower.v_g,
+                                                                                                           eoff_object_lower.t_j, eoff_object_lower.v_supply))
+                    logger.info("Upper : R_g(off) = {0}, v_g(off) = {1}, T_j = {2}, v_supply = {3}".format(
                         eoff_object_upper.r_g, eoff_object_upper.v_g, eoff_object_upper.t_j, eoff_object_upper.v_supply))
 
             # all elements need the same current vector size
@@ -1596,7 +1597,7 @@ class Transistor:
                            'v_channel': np.double(switch_channel_array),
                            'i_vec': np.double(i_interp),
                            }
-            print("---------------------Diode properties----------------------")
+            logger.info("---------------------Diode properties----------------------")
             diode_channel_object_lower, err_object_lower = self.diode.find_approx_wp(t_j_lower, v_g)
             diode_channel_object_upper, err_object_upper = self.diode.find_approx_wp(t_j_upper, v_g)
             if r_g_on:
@@ -1609,14 +1610,12 @@ class Transistor:
                         err_object_lower = err_object_lower_calc
                         err_object_upper = err_object_upper_calc
                 except Exception as e:
-                    print('Choosing the default properties for e_rr')
+                    logger.info('Choosing the default properties for e_rr')
                 else:
-                    print('Generated curve properties for e_rr')
-                    print("Lower : R_g = {0}, v_g = {1}, T_j = {2}, v_supply = {3}".format(err_object_lower.r_g,
-                                                                                           err_object_lower.v_g,
-                                                                                           err_object_lower.t_j,
-                                                                                           err_object_lower.v_supply))
-                    print("Upper : R_g = {0}, v_g = {1}, T_j = {2}, v_supply = {3}".format(
+                    logger.info('Generated curve properties for e_rr')
+                    logger.info("Lower : R_g = {0}, v_g = {1}, T_j = {2}, v_supply = {3}".format(err_object_lower.r_g, err_object_lower.v_g,
+                                                                                                 err_object_lower.t_j, err_object_lower.v_supply))
+                    logger.info("Upper : R_g = {0}, v_g = {1}, T_j = {2}, v_supply = {3}".format(
                         err_object_upper.r_g, err_object_upper.v_g, err_object_upper.t_j, err_object_upper.v_supply))
 
             diode_channel_lower_interp = np.interp(i_interp, diode_channel_object_lower.graph_v_i[1], diode_channel_object_lower.graph_v_i[0])
@@ -1659,9 +1658,9 @@ class Transistor:
                                }
 
             sio.savemat(self.name.replace('-', '_') + '_Simulink_lossmodel.mat', {self.name.replace('-', '_'): transistor_dict})
-            print(f"Export files {self.name}_Simulink_lossmodel.mat to {os.getcwd()}")
+            logger.info(f"Export files {self.name}_Simulink_lossmodel.mat to {os.getcwd()}")
         except Exception as e:
-            print("Simulink exporter failed: {0}".format(e))
+            logger.info("Simulink exporter failed: {0}".format(e))
 
     def export_matlab(self) -> None:
         """
@@ -1683,7 +1682,7 @@ class Transistor:
         transistor_clean_dict['file_generated_by'] = "https://github.com/upb-lea/transistordatabase",
 
         sio.savemat(self.name.replace('-', '_') + '_Matlab.mat', {self.name.replace('-', '_'): transistor_clean_dict})
-        print(f"Export files {self.name.replace('-', '_')}_Matlab.mat to {os.getcwd()}")
+        logger.info(f"Export files {self.name.replace('-', '_')}_Matlab.mat to {os.getcwd()}")
 
     def collect_i_e_and_r_e_combination(self, switch_type: str, loss_type: str) -> Tuple[List, List]:
         """
@@ -1785,7 +1784,7 @@ class Transistor:
                 diode_channel_vg, diode_v_supply, v_d_err = self.diode.find_next_gate_voltage(diode_selected_params, export_type='gecko',
                                                                                               check_specific_curves=err_i_e_indexes)
             except MissingDataError as e:
-                print(e.args[0], e.em[e.args[0]] + ' .scl')
+                logger.info(e.args[0], e.em[e.args[0]] + ' .scl')
 
         # Gather data
         # Channel curves
@@ -1810,11 +1809,12 @@ class Transistor:
                     mapped_r_e_object = self.switch.e_on[mapped_set[index]]
                     new_curve = curve.copy()
                     new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_on, switch_v_supply)
-                    print('E_on curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_on, switch_v_supply))
+                    logger.info('E_on curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_on, switch_v_supply))
                     new_curve.r_g = r_g_on
                     eon_curves.append(new_curve)
                 else:
-                    print('Exporting default E_on curves at the selected voltage parameters.->Either re-estimation not possible or r_g specific curve found!')
+                    logger.info('Exporting default E_on curves at the selected voltage parameters.'
+                                '->Either re-estimation not possible or r_g specific curve found!')
                     eon_curves.append(self.switch.e_on[index])
                     r_g_on = self.switch.e_on[index].r_g
 
@@ -1827,11 +1827,12 @@ class Transistor:
                     mapped_r_e_object = self.switch.e_off[mapped_set[index]]
                     new_curve = curve.copy()
                     new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_off, switch_v_supply)
-                    print('E_off curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_off, switch_v_supply))
+                    logger.info('E_off curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_off, switch_v_supply))
                     new_curve.r_g = r_g_on
                     eoff_curves.append(new_curve)
                 else:
-                    print('Exporting default E_off curves at the selected voltage parameters.->Either re-estimation not possible or r_g specific curve found!')
+                    logger.info('Exporting default E_off curves at the selected voltage parameters.'
+                                '->Either re-estimation not possible or r_g specific curve found!')
                     eoff_curves.append(self.switch.e_off[index])
                     r_g_off = self.switch.e_off[index].r_g
 
@@ -1844,11 +1845,12 @@ class Transistor:
                     mapped_r_e_object = self.diode.e_rr[mapped_set[index]]
                     new_curve = curve.copy()
                     new_curve.graph_i_e = self.calc_i_e_curve_using_r_e_curve(new_curve, mapped_r_e_object, r_g_err, diode_v_supply)
-                    print('E_rr curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_err, diode_v_supply))
+                    logger.info('E_rr curve estimated at {0} Ohm and supply voltage of {1}V'.format(r_g_err, diode_v_supply))
                     new_curve.r_g = r_g_err
                     err_curves.append(new_curve)
                 else:
-                    print('Exporting default E_rr curves at the selected voltage parameters.->Either re-estimation not possible or r_g specific curve found!')
+                    logger.info('Exporting default E_rr curves at the selected voltage parameters.'
+                                '->Either re-estimation not possible or r_g specific curve found!')
                     err_curves.append(self.diode.e_rr[index])
                     r_g_err = self.diode.e_rr[index].r_g
 
@@ -1910,7 +1912,7 @@ class Transistor:
             file_switch.write(f"anzMesskurvenPvSWITCH {len(eon_curves) if len(eon_curves) else 1}\n")
 
             if not any(eon_curves) or not any(eoff_curves):
-                print('Switch: No loss curves found!')
+                logger.info('Switch: No loss curves found!')
                 file_switch.write("<SchaltverlusteMesskurve>\n")
                 file_switch.write("data[][] 3 2 0 10 0 0 0 0")
                 file_switch.write("\ntj 25\n")
@@ -1947,9 +1949,9 @@ class Transistor:
                             file_switch.write("<\SchaltverlusteMesskurve>\n")
 
             file_switch.close()
-            print(f"Exported file {self.name}_Switch(rg_on_{r_g_on})(rg_off_{r_g_off}).scl  to {os.getcwd()}")
+            logger.info(f"Exported file {self.name}_Switch(rg_on_{r_g_on})(rg_off_{r_g_off}).scl  to {os.getcwd()}")
         else:
-            print('\nGecko exporter switch failed: No channel curve available at the selected v_g \n Try by setting recheck = True if set to False')
+            logger.info('\nGecko exporter switch failed: No channel curve available at the selected v_g \n Try by setting recheck = True if set to False')
 
         ########################
         # export file for diode
@@ -1992,7 +1994,7 @@ class Transistor:
             # in case of no switching losses available, set curves to zero.
             # if switching losses will not set to zero, geckoCIRCUITS will use initial values
             if len(err_curves) == 0:
-                print('Diode: No loss curves found!')
+                logger.info('Diode: No loss curves found!')
                 file_diode.write("anzMesskurvenPvSWITCH 1\n")
                 file_diode.write("<SchaltverlusteMesskurve>\n")
                 file_diode.write("data[][] 3 2 0 10 0 0 0 0")
@@ -2025,9 +2027,9 @@ class Transistor:
                         file_diode.write("<\SchaltverlusteMesskurve>\n")
 
             file_diode.close()
-            print(f"Exported file {self.name}_Diode(rg_{r_g_err}).scl to {os.getcwd()}")
+            logger.info(f"Exported file {self.name}_Diode(rg_{r_g_err}).scl to {os.getcwd()}")
         else:
-            print('\nGecko exporter diode failed: No channel curve available at the selected v_g \n Try by setting recheck = True if set to False')
+            logger.info('\nGecko exporter diode failed: No channel curve available at the selected v_g \n Try by setting recheck = True if set to False')
 
         # set print options back to default
         np.set_printoptions(linewidth=75)
@@ -2073,7 +2075,7 @@ class Transistor:
             file_c_oss.write(f"{v_interp[count]} {coss_interp[count]}\n")
 
         file_c_oss.close()
-        print(f"Exported file {nlc_filename} to {os.getcwd()}")
+        logger.info(f"Exported file {nlc_filename} to {os.getcwd()}")
 
     def export_plecs(self, recheck: bool = True, gate_voltages: list | None = None) -> None:
         """
@@ -2122,7 +2124,7 @@ class Transistor:
                 str_decoded = output.encode()
                 with open(data['partnumber'] + "_switch.xml", "w") as fh:
                     fh.write(str_decoded.decode())
-        print("Export files {0}_switch.xml and {1}_diode.xml to {2}".format(data['partnumber'], data['partnumber'], os.getcwd()))
+        logger.info("Export files {0}_switch.xml and {1}_diode.xml to {2}".format(data['partnumber'], data['partnumber'], os.getcwd()))
 
     class WP:
         """
@@ -2300,7 +2302,7 @@ class Transistor:
                 plecs_transistor['TauElement'] = transistor_dict['switch']['thermal_foster']['tau_total'] if \
                     transistor_dict['switch']['thermal_foster']['tau_total'] else plecs_transistor['RElement']
         except MissingDataError as e:
-            print(e.args[0], e.em[e.args[0]] + '.scl')
+            logger.info(e.args[0], e.em[e.args[0]] + '.scl')
         # Gather diode data to fill in plecs template exporter
         plecs_diode = None
         try:
@@ -2358,7 +2360,7 @@ class Transistor:
                 plecs_diode['TauElement'] = transistor_dict['diode']['thermal_foster']['tau_total'] if \
                     transistor_dict['diode']['thermal_foster']['tau_total'] else plecs_diode['RElement']
         except MissingDataError as e:
-            print(e.args[0], e.em[e.args[0]] + '.scl')
+            logger.info(e.args[0], e.em[e.args[0]] + '.scl')
         return plecs_transistor if plecs_transistor is not None and 'Channel' in plecs_transistor['ConductionLoss'] \
             else None, plecs_diode if plecs_diode is not None and 'Channel' in plecs_diode['ConductionLoss'] \
             else None
@@ -2489,9 +2491,9 @@ class Transistor:
                 self.diode.soa.clear()
                 for soa_item in soa_list:
                     self.diode.soa.append(SOA(soa_item))
-            print('Updated Switch.SOA successfully!')
+            logger.info('Updated Switch.SOA successfully!')
         else:
-            print('No new item to add!')
+            logger.info('No new item to add!')
 
     def add_gate_charge_data(self, charge_data: Union[Dict, List], clear: bool = False):
         """
@@ -2540,9 +2542,9 @@ class Transistor:
             self.switch.charge_curve.clear()
             for charge_item in charge_list:
                 self.switch.charge_curve.append(GateChargeCurve(charge_item))
-            print('Updated Switch.Charge_Curve successfully!')
+            logger.info('Updated Switch.Charge_Curve successfully!')
         else:
-            print('No new item to add!')
+            logger.info('No new item to add!')
 
     def add_temp_depend_resistor_data(self, r_channel_data: Union[Dict, List], clear: bool = False):
         """
@@ -2591,9 +2593,9 @@ class Transistor:
             self.switch.r_channel_th.clear()
             for r_channel_item in r_channel_list:
                 self.switch.r_channel_th.append(TemperatureDependResistance(r_channel_item))
-            print('Updated Switch.r_channel_th successfully!')
+            logger.info('Updated Switch.r_channel_th successfully!')
         else:
-            print('No new item to add!')
+            logger.info('No new item to add!')
 
     def compare_measurement_datasheet(self):
         """Compare measurements to datasheet."""

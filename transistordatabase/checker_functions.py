@@ -3,6 +3,8 @@
 from __future__ import annotations
 from typing import List, Dict
 import numpy as np
+import logging
+logger = logging.getLogger(__name__)
 
 def check_realnum(float_to_check: float) -> bool:
     """
@@ -201,6 +203,6 @@ def check_duplicates(current_items: List[Dict], item_to_append: Dict) -> bool:
                     count += 1
             if count == len(c_item):
                 msg = "Duplicate object detected: already present at index {0} of {1} object" .format(index, type(current_items).__name__)
-                print(msg)
+                logger.info(msg)
                 return False
         return True

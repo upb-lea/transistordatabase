@@ -2,6 +2,8 @@
 # imports
 import transistordatabase as tdb
 import os
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 
 # Template to generate a transistor
@@ -254,8 +256,8 @@ if __name__ == '__main__':
     # transistor methods #
     # transistor.wp.switch_v_channel, transistor.wp.switch_r_channel = transistor.calc_lin_channel(175, 15, 40, 'switch')
     # linearization at 175 degree, 15V gatevoltage, 40A channel current
-    # print(f"{transistor.wp.switch_v_channel = } V")
-    # print(f"{transistor.wp.switch_r_channel = } Ohm")
+    # print(f"{transistor.wp.switch_v_channel=} V")
+    # print(f"{transistor.wp.switch_r_channel=} Ohm")
     # print(transistor.calc_v_eoss())
     # transistor.plot_v_eoss()
     # transistor.plot_v_qoss()
@@ -306,18 +308,18 @@ if __name__ == '__main__':
     ####################################
 
     # update the database
-    # db.update_from_fileexchange(True)
+    db.update_from_fileexchange(True)
 
     # print ALL database content
-    # db.print_tdb()
+    db.print_tdb()
 
     # print database content of housing and datasheet hyperlink
-    # db.print_tdb(['housing_type','datasheet_hyperlink'])
+    db.print_tdb(['housing_type', 'datasheet_hyperlink'])
 
     # load transistor
     # optional argument: collection. If no collection is specified, it connects to local TDB
-    # transistor_loaded = db.load_transistor('CREE_C3M0016120K')
-    # print(transistor_loaded.switch.t_j_max)
+    transistor_loaded = db.load_transistor('CREE_C3M0016120K')
+    print(transistor_loaded.switch.t_j_max)
 
     # export to json
     # optional argument: path. If no path is specified, saves exports to local folder

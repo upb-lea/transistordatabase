@@ -5,12 +5,15 @@ from matplotlib import pyplot as plt
 from typing import List
 from scipy.spatial import distance
 import numpy as np
+import logging
 
 # Local libraries
 from transistordatabase.helper_functions import get_img_raw_data, isvalid_dict
 from transistordatabase.checker_functions import check_keys
 from transistordatabase.data_classes import FosterThermalModel, ChannelData, SwitchEnergyData, LinearizedModel, SOA
 from transistordatabase.exceptions import MissingDataError
+
+logger = logging.getLogger(__name__)
 
 class Diode:
     """Data associated with the (reverse) diode-characteristics of a MOSFET/SiC-MOSFET or IGBT. Can contain multiple channel- and e_rr- datasets."""
@@ -202,9 +205,9 @@ class Diode:
             v_supply = min(e_rr_v_supply, key=lambda x: abs(x - req_gate_vltgs['v_supply']))
             req_gate_vltgs['v_supply'] = v_supply
 
-        print("--Diode Recheck--")
+        logger.info("--Diode Recheck--")
         for key, value in req_gate_vltgs.items():
-            print(key + ': ', value)
+            logger.info(key + ': ', value)
         return req_gate_vltgs.values()
 
     def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
@@ -243,9 +246,9 @@ class Diode:
             nodes = np.array([e_rr_t_js / normalize_t_to_v, e_rr_v_gs]).transpose()
             index_e_rr = distance.cdist(node, nodes).argmin()
 
-            print("run diode.find_approx_wp: closest working point for t_j = {0} °C and v_g = {1} V:".format(t_j, v_g))
-            print("channel: t_j = {0} °C and v_g = {1} V".format(self.channel[index_channeldata].t_j, self.channel[index_channeldata].v_g))
-            print("err:     t_j = {0} °C and v_g = {1} V".format(e_rrs[index_e_rr].t_j, e_rrs[index_e_rr].v_g))
+            logger.info("run diode.find_approx_wp: closest working point for t_j = {0} °C and v_g = {1} V:".format(t_j, v_g))
+            logger.info("channel: t_j = {0} °C and v_g = {1} V".format(self.channel[index_channeldata].t_j, self.channel[index_channeldata].v_g))
+            logger.info("err:     t_j = {0} °C and v_g = {1} V".format(e_rrs[index_e_rr].t_j, e_rrs[index_e_rr].v_g))
 
         return self.channel[index_channeldata], e_rrs[index_e_rr]
 
@@ -358,7 +361,7 @@ class Diode:
             else:
                 plt.show()
         else:
-            print("Diode reverse recovery energy i_e curves are not available for the chosen transistor")
+            logger.info("Diode reverse recovery energy i_e curves are not available for the chosen transistor")
             return None
 
     def plot_energy_data_r(self, buffer_req: bool = False):
@@ -401,7 +404,7 @@ class Diode:
             else:
                 plt.show()
         else:
-            print("Diode reverse recovery energy r_e curves are not available for the chosen transistor")
+            logger.info("Diode reverse recovery energy r_e curves are not available for the chosen transistor")
             return None
 
     def plot_soa(self, buffer_req: bool = False):
