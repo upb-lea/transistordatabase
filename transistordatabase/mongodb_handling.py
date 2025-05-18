@@ -30,6 +30,7 @@ def connect_local_tdb():
     :return: transistor_database collection
 
     :raises pymongo.errors.ServerSelectionTimeoutError: if there is no mongoDB instance running
+    :raises MissingServerConnection:
     """
     try:
         max_server_delay = 1
@@ -49,6 +50,7 @@ def drop_local_tdb():
     Drop the local database.
 
     :raises pymongo.errors.ServerSelectionTimeoutError: if there is no mongoDB instance running
+    :raises MissingServerConnection: Missing server connection
     """
     try:
         max_server_delay = 1
