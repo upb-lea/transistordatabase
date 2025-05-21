@@ -1,8 +1,6 @@
 """Switch class."""
 # Python standard libraries
-from __future__ import annotations
 from matplotlib import pyplot as plt
-from typing import List, Dict, Tuple
 from scipy.spatial import distance
 import numpy as np
 import logging
@@ -29,16 +27,16 @@ class Switch:
     technology: str | None  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7  (Optional key)
     # These are documented in their respective class definitions.
     thermal_foster: FosterThermalModel  #: Transient thermal_foster model. (Optional key)
-    channel: List[ChannelData] | None  #: Switch channel voltage and current data.
-    e_on: List[SwitchEnergyData] | None  #: Switch on energy data.
-    e_off: List[SwitchEnergyData] | None  #: Switch of energy data.
-    e_on_meas: List[SwitchEnergyData] | None  #: Switch on energy data.
-    e_off_meas: List[SwitchEnergyData] | None  #: Switch on energy data.
-    linearized_switch: List[LinearizedModel] | None  #: Static data valid for a specific operating point.
-    r_channel_th: List[TemperatureDependResistance] | None  #: Temperature dependant on resistance.
-    charge_curve: List[GateChargeCurve] | None  #: Gate voltage dependant charge characteristics
+    channel: list[ChannelData] | None  #: Switch channel voltage and current data.
+    e_on: list[SwitchEnergyData] | None  #: Switch on energy data.
+    e_off: list[SwitchEnergyData] | None  #: Switch of energy data.
+    e_on_meas: list[SwitchEnergyData] | None  #: Switch on energy data.
+    e_off_meas: list[SwitchEnergyData] | None  #: Switch on energy data.
+    linearized_switch: list[LinearizedModel] | None  #: Static data valid for a specific operating point.
+    r_channel_th: list[TemperatureDependResistance] | None  #: Temperature dependant on resistance.
+    charge_curve: list[GateChargeCurve] | None  #: Gate voltage dependant charge characteristics
     t_j_max: float   #: Maximum junction temperature. Units in °C (Mandatory key)
-    soa: List[SOA] | None  #: Safe operating area of switch
+    soa: list[SOA] | None  #: Safe operating area of switch
 
     def __init__(self, switch_args):
         """
@@ -251,7 +249,7 @@ class Switch:
             self.r_channel_th = []
             self.charge_curve = []
 
-    def convert_to_dict(self) -> Dict:
+    def convert_to_dict(self) -> dict:
         """
         Convert Switch object into dict datatype.
 
@@ -271,8 +269,8 @@ class Switch:
         d['soa'] = [c.convert_to_dict() for c in self.soa]
         return d
 
-    def find_next_gate_voltage(self, req_gate_vltgs: Dict, export_type: str, check_specific_curves: List = None,
-                               switch_loss_dataset_type: str = "graph_i_e") -> Dict:
+    def find_next_gate_voltage(self, req_gate_vltgs: dict, export_type: str, check_specific_curves: list = None,
+                               switch_loss_dataset_type: str = "graph_i_e") -> dict:
         """
         Find the switch gate voltage nearest to the specified values from the available gate voltages in curve datasets.
 
@@ -350,7 +348,7 @@ class Switch:
 
     def find_approx_wp(self, t_j: float, v_g: float, normalize_t_to_v: float = 10,
                        switch_energy_dataset_type: str = "graph_i_e") \
-            -> Tuple[ChannelData, SwitchEnergyData, SwitchEnergyData]:
+            -> tuple[ChannelData, SwitchEnergyData, SwitchEnergyData]:
         """
         Search for the smallest distance to stored object value and returns this working point.
 
@@ -740,7 +738,7 @@ class Switch:
         else:
             plt.show()
 
-    def collect_data(self) -> Dict:
+    def collect_data(self) -> dict:
         """
         Collect switch data in form of dictionary for generating virtual datasheet.
 

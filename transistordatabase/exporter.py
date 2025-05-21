@@ -1,9 +1,8 @@
 """Exporter functions."""
 # Python standard libraries
-from typing import Dict
 import numpy as np
 
-def dict2matlab(input_dict: Dict) -> Dict:
+def dict2matlab(input_dict: dict) -> dict:
     """
     Clean a python dict and make it compatible with matlab.
 

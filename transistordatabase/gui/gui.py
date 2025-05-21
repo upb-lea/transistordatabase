@@ -14,6 +14,7 @@ import os
 import webbrowser
 import tempfile
 import datetime
+import logging
 
 # Third party libraries
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QMessageBox, QFileDialog, QLineEdit, \
@@ -32,6 +33,7 @@ import boost_converter_functions
 import buck_boost_converter_functions
 import comparison_tools_functions
 
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 def resource_path(relative_path):
     """Bugfix method, fixing some old issue with the filepath."""

@@ -1,8 +1,6 @@
 """Diode class."""
 # Python standard libraries
-from __future__ import annotations
 from matplotlib import pyplot as plt
-from typing import List
 from scipy.spatial import distance
 import numpy as np
 import logging
@@ -24,11 +22,11 @@ class Diode:
     technology: str | None  #: Semiconductor technology. e.g. IGBT3/IGBT4/IGBT7. (Optional key)
     # These are documented in their respective class definitions.
     thermal_foster: FosterThermalModel | None  #: Transient thermal_foster model.
-    channel: List[ChannelData] | None  #: Diode forward voltage and forward current data.
-    e_rr: List[SwitchEnergyData] | None  #: Reverse recovery energy data.
-    linearized_diode: List[LinearizedModel] | None  #: Static data. Valid for a specific operating point.
+    channel: list[ChannelData] | None  #: Diode forward voltage and forward current data.
+    e_rr: list[SwitchEnergyData] | None  #: Reverse recovery energy data.
+    linearized_diode: list[LinearizedModel] | None  #: Static data. Valid for a specific operating point.
     t_j_max: float  #: Diode maximum junction temperature. Units in °C (Mandatory key)
-    soa: List[SOA] | None  #: Safe operating area of Diode
+    soa: list[SOA] | None  #: Safe operating area of Diode
 
     def __init__(self, diode_args: dict):
         """

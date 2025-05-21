@@ -1,7 +1,6 @@
 """Helper functions."""
 # Python standard libraries
 from __future__ import annotations
-from typing import List, Dict, Tuple
 from matplotlib import pyplot as plt
 from PyQt5 import QtWidgets, QtWebEngineWidgets
 import xml.etree.ElementTree as et
@@ -37,7 +36,7 @@ def isvalid_transistor_name(transistor_name: str) -> bool:
     """
     return False if re.match(transistor_name_regex, transistor_name) is None else True
 
-def isvalid_dict(dataset_dict: Dict, dict_type: str) -> bool:
+def isvalid_dict(dataset_dict: dict, dict_type: str) -> bool:
     """
     Check input argument dictionaries for their validity.
 
@@ -281,7 +280,7 @@ def matlab_compatibility_test(transistor, attribute):
     
 
 # ==== Input/Output ====
-def get_xml_data(file: str) -> Dict:
+def get_xml_data(file: str) -> dict:
     """
     Import_xml_data method to extract the xml file data i.e turn on/off energies, channel data, foster thermal data. Helper function.
 
@@ -459,7 +458,7 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
 
 
 # ==== Plot ====
-def get_vc_plots(cap_data: Dict):
+def get_vc_plots(cap_data: dict):
     """
     Plot and convert voltage dependant capacitance plots in raw data format. Invoked internally by export_datasheet() method. Helper function.
 
@@ -482,7 +481,7 @@ def get_vc_plots(cap_data: Dict):
     plt.grid()
     return get_img_raw_data(plt)
 
-def compare_plot(transistor_list: List, temperature: float, gatevoltage: float):
+def compare_plot(transistor_list: list, temperature: float, gatevoltage: float):
     """Compare transistors.
 
     - forward characteristics
@@ -549,7 +548,7 @@ def compare_plot(transistor_list: List, temperature: float, gatevoltage: float):
 
 
 # === Data ===
-def get_gatedefaults(transistor_type: str) -> List:
+def get_gatedefaults(transistor_type: str) -> list:
     """
     Define gate voltage defaults depending on the transistor type.
 
@@ -566,7 +565,7 @@ def get_gatedefaults(transistor_type: str) -> List:
                      }.get(transistor_type.lower(), [15, -15, 0, 15])
     return gate_voltages
 
-def negate_and_append(voltage: List, current: List) -> Tuple[List, np.array]:
+def negate_and_append(voltage: list, current: list) -> tuple[list, np.array]:
     """
     Negate the channel current x-axis data for the transistors of type mosfet. Helper function.
 
@@ -593,7 +592,7 @@ def negate_and_append(voltage: List, current: List) -> Tuple[List, np.array]:
         voltage[index] = np.append(voltage_reverse, vData).tolist()
     return voltage, current
 
-def get_loss_curves(loss_data: List, plecs_holder: Dict, loss_type: str, v_g: int, is_recovery_loss: bool) -> Dict:
+def get_loss_curves(loss_data: list, plecs_holder: dict, loss_type: str, v_g: int, is_recovery_loss: bool) -> dict:
     """
     Extract loss information of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature. Helper function.
 
@@ -635,7 +634,7 @@ def get_loss_curves(loss_data: List, plecs_holder: Dict, loss_type: str, v_g: in
                 if energy_dict['t_j'] not in plecs_holder[loss_type]['TemperatureAxis'] else None
     return plecs_holder
 
-def get_channel_data(channel_data: List, plecs_holder: Dict, v_on: int, is_diode: bool, has_body_diode: bool) -> Dict:
+def get_channel_data(channel_data: list, plecs_holder: dict, v_on: int, is_diode: bool, has_body_diode: bool) -> dict:
     """
     Extract channel data of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature. Helper function.
 
@@ -730,7 +729,7 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
             type(merged_curve)
     return merged_curve
 
-def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: float | List[float],
+def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: float | list[float],
                                    v_driver_off: float) -> float:
     """
     Calculate the maximum gate resistor to achieve no turn-off losses when working with MOSFETs 'rapid channel turn-off' (rcto).
@@ -742,7 +741,7 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     :param c_gd: equivalent gate-drain capacitance
     :type c_gd: float
     :param i_off: turn-off current
-    :type i_off: float or List[float]
+    :type i_off: float or list[float]
     :param v_driver_off: Driver voltage during turn-off
     :type v_driver_off: float
 
@@ -759,7 +758,7 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     """
     return (v_gsth - v_driver_off) / i_off * (1 + c_ds / c_gd)
 
-def compare_list(parameter: List):
+def compare_list(parameter: list):
     """
     Check through the list of value for odd one out.
 

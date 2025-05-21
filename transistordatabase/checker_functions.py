@@ -1,7 +1,5 @@
 """Different type checkers, adapted to the needs of the transistor database."""
 # Python standard libraries
-from __future__ import annotations
-from typing import List, Dict
 import numpy as np
 import logging
 logger = logging.getLogger(__name__)
@@ -147,7 +145,7 @@ def check_float(float_to_check: int | float) -> bool:
         return False
 
 
-def check_keys(keys_to_check: Dict, req_type: str, switch_type: str):
+def check_keys(keys_to_check: dict, req_type: str, switch_type: str):
     """
     Find_next_gate_voltage method of class type - switch and diode (Helper method).
 
@@ -179,7 +177,7 @@ def check_keys(keys_to_check: Dict, req_type: str, switch_type: str):
         raise KeyError("Not all keys exists for re-estimating gate voltages")
 
 
-def check_duplicates(current_items: List[Dict], item_to_append: Dict) -> bool:
+def check_duplicates(current_items: list[dict], item_to_append: dict) -> bool:
     """
     Check if the item being added already exists in the list (Helper method).
 

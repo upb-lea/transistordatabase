@@ -2,7 +2,6 @@
 # Python standard libraries
 from __future__ import annotations
 import matplotlib.pyplot as plt
-from typing import Dict, List, Union, Tuple, Optional
 from scipy import integrate
 from scipy.spatial import distance
 from scipy.optimize import curve_fit
@@ -77,7 +76,7 @@ class Transistor:
     # Recommended gate resistors
     r_g_on_recommended: float | None  #: Recommended turn on gate resistance of switch (Optional key)
     r_g_off_recommended: float | None  #: Recommended turn off gate resistance of switch (Optional key)
-    raw_measurement_data: List[RawMeasurementData] | None  #: Member instance for class type RawMeasurementData
+    raw_measurement_data: list[RawMeasurementData] | None  #: Member instance for class type RawMeasurementData
     # Thermal data. See git for equivalent thermal_foster circuit diagram.
     r_th_cs: float | None  #: Module specific case to sink thermal resistance.  Units in K/W  (Mandatory key)
     r_th_switch_cs: float | None  #: Switch specific case to sink thermal resistance. Units in K/W  (Mandatory key)
@@ -93,9 +92,9 @@ class Transistor:
     c_iss_fix: float | None  #: Parasitic constant capacitance. Units in F  (Optional key)
     c_rss_fix: float | None  #: Parasitic constant capacitance. Units in F  (Optional key)
     # Voltage dependent capacities
-    c_oss: List[VoltageDependentCapacitance] | None  #: List of VoltageDependentCapacitance. (Optional key)
-    c_iss: List[VoltageDependentCapacitance] | None  #: List of VoltageDependentCapacitance. (Optional key)
-    c_rss: List[VoltageDependentCapacitance] | None  #: List of VoltageDependentCapacitance. (Optional key)
+    c_oss: list[VoltageDependentCapacitance] | None  #: list of VoltageDependentCapacitance. (Optional key)
+    c_iss: list[VoltageDependentCapacitance] | None  #: list of VoltageDependentCapacitance. (Optional key)
+    c_rss: list[VoltageDependentCapacitance] | None  #: list of VoltageDependentCapacitance. (Optional key)
     # Energy stored in c_oss
     graph_v_ecoss: npt.NDArray[np.float64] | None  #: Member instance for storing voltage dependant capacitance graph in the form of 2D numpy array.
     # Units of Row 1 = V; Row 2 = J  (Optional key)
@@ -105,8 +104,8 @@ class Transistor:
     r_g_int: float  #: Internal gate resistance. Units in Ohm (Mandatory key)
     # raw_measurement_plots = []
 
-    def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict, possible_housing_types: List[str],
-                 possible_module_manufacturers: List[str]) -> None:
+    def __init__(self, transistor_args: dict, switch_args: dict, diode_args: dict, possible_housing_types: list[str],
+                 possible_module_manufacturers: list[str]) -> None:
         """
         Create a transistor element.
 
@@ -121,10 +120,10 @@ class Transistor:
         :type switch_args: dict
         :param diode_args: diode argument object
         :type diode_args: dict
-        :param possible_housing_types: List of housing types which are valid
-        :type possible_housing_types: List[str]
+        :param possible_housing_types: list of housing types which are valid
+        :type possible_housing_types: list[str]
         :param possible_module_manufacturers: List of module manufacturers which are valid
-        :type possible_module_manufacturers: List[str]
+        :type possible_module_manufacturers: list[str]
 
         :raises TypeError: Raised if isvalid_dict() return false
         :raises ValueError: Raised if index based search for module_manufacturer or housing_type values fails
@@ -223,19 +222,19 @@ class Transistor:
             logger.error('Exception occurred: Selected datasheet or module could not be created or loaded\n' + str(e))
             raise
 
-    def convert_raw_measurement_data(self, input: List | Dict, name: str = None) -> List[RawMeasurementData]:
+    def convert_raw_measurement_data(self, input: list | dict, name: str = None) -> list[RawMeasurementData]:
         """
         Convert input (list or dict) to list of raw_measurement_data.
 
         :param input: Input data
-        :type input: List | Dict
+        :type input: list | dict
         :param name: Name of variable, only used for error message, optional
         :type name: str, optional
         :return: List of RawMeasurementData objects
-        :rtype: List[RawMeasurementData]
+        :rtype: list[RawMeasurementData]
         """
         output_list = []
-        if isinstance(input, List):
+        if isinstance(input, list):
             # Loop through list and check each dict for validity. Only create RawMeasurementData objects from
             # valid dicts. 'None' and empty dicts are ignored.
             for index, dataset in enumerate(input):
@@ -259,19 +258,19 @@ class Transistor:
 
         return output_list
 
-    def convert_voltage_dependent_capacitance(self, input: List | Dict, name: str = None) -> List[VoltageDependentCapacitance]:
+    def convert_voltage_dependent_capacitance(self, input: list | dict, name: str = None) -> list[VoltageDependentCapacitance]:
         """
         Convert input (list or dict) to list of raw_measurement_data.
 
         :param input: Input data
-        :type input: List | Dict
+        :type input: list | dict
         :param name: Name of variable, only used for error message, optional
         :type name: str, optional
         :return: List of VoltageDependentCapacitance objects
-        :rtype: List[VoltageDependentCapacitance]
+        :rtype: list[VoltageDependentCapacitance]
         """
         output_list = []
-        if isinstance(input, List):
+        if isinstance(input, list):
             # Loop through list and check each dict for validity. Only create VoltageDependentCapacitance objects from
             # valid dicts. 'None' and empty dicts are ignored.
             for index, dataset in enumerate(input):
@@ -325,7 +324,7 @@ class Transistor:
         """Transistor object string representation."""
         return f"{self.name}, {self.type}, {self.manufacturer}"
 
-    def convert_to_dict(self) -> Dict:
+    def convert_to_dict(self) -> dict:
         """
         Convert the transistor object in scope to a dictionary datatype.
 
@@ -552,7 +551,7 @@ class Transistor:
         else:
             plt.show()
 
-    def plot_half_bridge_equivalent_coss(self, v_dc: float, figure_size_mm: Optional[Tuple] = None, buffer_req: bool = False):
+    def plot_half_bridge_equivalent_coss(self, v_dc: float, figure_size_mm: tuple | None = None, buffer_req: bool = False):
         """
         Plot the half-bridge equivalent output capacitance C_oss.
 
@@ -561,7 +560,7 @@ class Transistor:
         :param buffer_req: Internally required for generating virtual datasheets
         :type buffer_req: bool
         :param figure_size_mm: figure size in mm as a tuple (x mm, y mm)
-        :type figure_size_mm: Tuple
+        :type figure_size_mm: tuple
 
         :return: Respective plots are displayed
         """
@@ -597,7 +596,7 @@ class Transistor:
         else:
             plt.show()
 
-    def plot_half_bridge_equivalent_eoss(self, v_dc: float, figure_size_mm: Optional[Tuple] = None, buffer_req: bool = False, yunits: str = 'J'):
+    def plot_half_bridge_equivalent_eoss(self, v_dc: float, figure_size_mm: tuple | None = None, buffer_req: bool = False, yunits: str = 'J'):
         """
         Plot the half-bridge equivalent output capacitance C_oss.
 
@@ -606,7 +605,7 @@ class Transistor:
         :param buffer_req: Internally required for generating virtual datasheets
         :type buffer_req: bool
         :param figure_size_mm: figure size in mm as a tuple (x mm, y mm)
-        :type figure_size_mm: Tuple
+        :type figure_size_mm: tuple
         :param yunits: Unit for the y-axis, e.g. "J"
         :type yunits: str
 
@@ -708,8 +707,8 @@ class Transistor:
 
     @staticmethod
     def plot_energy_objects(*energy_objects: SwitchEnergyData, energy_scale: str = "µJ",
-                            figure_size: Optional[Tuple] = None, figure_directory: Optional[str] = None,
-                            additional_label: Optional[List] = None, line_style: List = None, color: List = None):
+                            figure_size: tuple | None = None, figure_directory: str | None = None,
+                            additional_label: list | None = None, line_style: list = None, color: list = None):
         """
         Plot multiple energy objects into one plot.
 
@@ -718,15 +717,15 @@ class Transistor:
         :param energy_scale: Choose y-label, e.g. 'µJ' or 'mJ' or 'nJ'
         :type energy_scale: str
         :param figure_size: figures size in mm (width, height)
-        :type figure_size: Tuple
+        :type figure_size: tuple
         :param figure_directory: Directory to store the figure
         :type figure_directory: str
         :param additional_label: addition to the existing label
-        :type additional_label: Optional[List]
+        :type additional_label: Optional[list]
         :param line_style: line style, see also matplotlib documentation
-        :type line_style: List[str]
+        :type line_style: list[str]
         :param color: color
-        :type color: List[str]
+        :type color: list[str]
         """
         plt.figure(figsize=[x / 25.4 for x in figure_size] if figure_size is not None else None, dpi=80)
         for count, eo in enumerate(energy_objects):
@@ -753,7 +752,7 @@ class Transistor:
             plt.savefig(figure_directory, bbox_inches="tight")
         plt.show()
 
-    def get_object_v_i(self, switch_or_diode: str, t_j: float, v_g: float) -> List:
+    def get_object_v_i(self, switch_or_diode: str, t_j: float, v_g: float) -> list:
         """
         Get a channel curve including boundary conditions.
 
@@ -816,7 +815,7 @@ class Transistor:
 
         return dataset
 
-    def get_object_i_e(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, r_g: float) -> List:
+    def get_object_i_e(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, r_g: float) -> list:
         """
         Get the loss graphs out of the transistor class.
 
@@ -937,7 +936,7 @@ class Transistor:
             i_e_dataset = ie_datasets[0]
         return i_e_dataset, r_e_dataset
 
-    def get_object_r_e_simplified(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, normalize_t_to_v: float) -> List:
+    def get_object_r_e_simplified(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, normalize_t_to_v: float) -> list:
         """
         Get the loss graphs out of the transistor class, simplified version.
 
@@ -1079,7 +1078,7 @@ class Transistor:
         # generate dictionary for class SwitchEnergyData
         return object_i_e_calc
 
-    def calc_lin_channel(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str) -> Tuple[float, float]:
+    def calc_lin_channel(self, t_j: float, v_g: float, i_channel: float, switch_or_diode: str) -> tuple[float, float]:
         """
         Get interpolated channel parameters.
 
@@ -1684,7 +1683,7 @@ class Transistor:
         sio.savemat(self.name.replace('-', '_') + '_Matlab.mat', {self.name.replace('-', '_'): transistor_clean_dict})
         logger.info(f"Export files {self.name.replace('-', '_')}_Matlab.mat to {os.getcwd()}")
 
-    def collect_i_e_and_r_e_combination(self, switch_type: str, loss_type: str) -> Tuple[List, List]:
+    def collect_i_e_and_r_e_combination(self, switch_type: str, loss_type: str) -> tuple[list, list]:
         """
         Gather the i_e and r_e graph combinations from the available energy curves which are further used in gecko circuit exporter function.
 
@@ -2171,7 +2170,7 @@ class Transistor:
             self.graph_v_qoss = None
             self.parallel_transistors = None
 
-    def validate_transistor(self) -> Dict:
+    def validate_transistor(self) -> dict:
         """
         Check the transistor object if it is valid for plecs exporter.
 
@@ -2201,7 +2200,7 @@ class Transistor:
             codes['Diode'].append(202)
         return codes
 
-    def get_curve_data(self, channel_recheck: bool, gate_voltages: List) -> Dict:
+    def get_curve_data(self, channel_recheck: bool, gate_voltages: list) -> dict:
         """
         Prepare data for the PLECS exporter.
 
@@ -2432,7 +2431,7 @@ class Transistor:
                 self.raw_measurement_data.append(
                     RawMeasurementData(measurement_data.get('raw_measurement_data')))
 
-    def add_soa_data(self, soa_data: Union[Dict, List], switch_type: str, clear: bool = False):
+    def add_soa_data(self, soa_data: dict | list, switch_type: str, clear: bool = False):
         """
         Add the SOA class object to the loaded transistor.switch.soa or transistor.diode.soa attribute.
 
@@ -2495,7 +2494,7 @@ class Transistor:
         else:
             logger.info('No new item to add!')
 
-    def add_gate_charge_data(self, charge_data: Union[Dict, List], clear: bool = False):
+    def add_gate_charge_data(self, charge_data: dict | list, clear: bool = False):
         """
         Add the GateChargeCurve class objects to the loaded transistor.switch.charge_curve attribute.
 
@@ -2546,7 +2545,7 @@ class Transistor:
         else:
             logger.info('No new item to add!')
 
-    def add_temp_depend_resistor_data(self, r_channel_data: Union[Dict, List], clear: bool = False):
+    def add_temp_depend_resistor_data(self, r_channel_data: dict | list, clear: bool = False):
         """
         Add the TemperatureDependResistance class objects to the loaded transistor.switch.r_channel_th attribute.
 
@@ -2654,7 +2653,7 @@ class Transistor:
         plt.show()
 
 
-def attach_units(trans: Dict, devices: Dict):
+def attach_units(trans: dict, devices: dict):
     """
     Attach units for the virtual datasheet parameters when a call is made in export_datasheet() method.
 

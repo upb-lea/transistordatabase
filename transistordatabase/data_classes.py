@@ -1,8 +1,6 @@
 """Contains important data classes like SOA, SwitchEnergyData, GateChargeCurve, ..."""
 # Python standard libraries
-from __future__ import annotations
 from matplotlib import pyplot as plt
-from typing import Dict, Union, List
 from datetime import datetime
 import numpy as np
 import numpy.typing as npt
@@ -655,10 +653,10 @@ class RawMeasurementData:
     # Type of the dataset:
     # dpt_u_i: U/t I/t graph from double pulse measurements
     dataset_type: str  #: e.g. dpt_u_i (Mandatory key)
-    dpt_on_vds: List[npt.NDArray[np.float64]] | None  #: measured Vds data at turn on event. Units in V and s
-    dpt_on_id: List[npt.NDArray[np.float64]] | None  #: measured Id data at turn on event. Units in A and s
-    dpt_off_vds: List[npt.NDArray[np.float64]] | None  #: measured Vds data at turn off event. Units in V and s
-    dpt_off_id: List[npt.NDArray[np.float64]] | None  #: measured Vds data at turn off event. Units in A and s
+    dpt_on_vds: list[npt.NDArray[np.float64]] | None  #: measured Vds data at turn on event. Units in V and s
+    dpt_on_id: list[npt.NDArray[np.float64]] | None  #: measured Id data at turn on event. Units in A and s
+    dpt_off_vds: list[npt.NDArray[np.float64]] | None  #: measured Vds data at turn off event. Units in V and s
+    dpt_off_id: list[npt.NDArray[np.float64]] | None  #: measured Vds data at turn off event. Units in A and s
     measurement_date: datetime | None  #: Specifies the measurements date and time
     measurement_testbench: str | None  #: Specifies the testbench used for the measurement.
     commutation_device: str | None  #: Second device used in half-bridge test condition
@@ -668,13 +666,13 @@ class RawMeasurementData:
     v_supply: float | None  #: Supply voltage. Units in V
     v_g: float | None  #: Gate voltage. Units in V
     v_g_off: float | None  #: Gate voltage for turn off. Units in V
-    r_g: List[npt.NDArray[np.float64]] | None  #: gate resistance. Units in Ohm
-    r_g_off: List[npt.NDArray[np.float64]] | None  #: gate resistance. Units in Ohm
+    r_g: list[npt.NDArray[np.float64]] | None  #: gate resistance. Units in Ohm
+    r_g_off: list[npt.NDArray[np.float64]] | None  #: gate resistance. Units in Ohm
     load_inductance: float | None  #: Load inductance. Units in µH
     commutation_inductance: float | None  #: Commutation inductance. Units in µH
 
-    e_off_meas = Union[Dict, None]  # Union[] is used here because | somehow didn't work
-    e_on_meas = Union[Dict, None]
+    e_off_meas = dict | None
+    e_on_meas = dict | None
 
     def __init__(self, args):
         """

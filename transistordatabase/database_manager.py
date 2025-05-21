@@ -1,7 +1,6 @@
 """Manage the database with its different operation modes (json and mongodb)."""
 # Python standard libraries
 from enum import Enum
-from typing import List, Dict, Union, Optional
 from datetime import datetime
 from matplotlib import pyplot as plt
 import numpy as np
@@ -37,8 +36,8 @@ class DatabaseManager:
     operation_mode: OperationMode
     tdb_directory: str
 
-    housing_types: List[str]
-    module_manufacturers: List[str]
+    housing_types: list[str]
+    module_manufacturers: list[str]
 
     module_manufacturers_file_path: str
     housing_types_file_path: str
@@ -214,12 +213,12 @@ class DatabaseManager:
 
         return None
 
-    def get_transistor_names_list(self) -> List[str]:
+    def get_transistor_names_list(self) -> list[str]:
         """
         Return a list containing every transistor name.
 
         :return: List containing the names.
-        :rtype:  List[str]
+        :rtype:  list[str]
         """
         if self.operation_mode is None:
             raise Exception("Please select an operation mode for the database manager.")
@@ -242,15 +241,15 @@ class DatabaseManager:
 
         return None
 
-    def print_tdb(self, filters: List[str] = None) -> List[str]:
+    def print_tdb(self, filters: list[str] = None) -> list[str]:
         """
         Print all transistor elements stored in the local database.
 
         :param filters: filters for searching the database, e.g. 'name' or 'type'
-        :type filters: List[str]
+        :type filters: list[str]
 
         :return: Return a list with all transistor objects fitting to the search-filter
-        :rtype: List
+        :rtype: list
         """
         # Note: Never use mutable default arguments
         # see https://florimond.dev/en/posts/2018/08/python-mutable-defaults-are-the-source-of-all-evil/
@@ -634,7 +633,7 @@ class DatabaseManager:
         return self.convert_dict_to_transistor_object(transistor_dict)
 
     @staticmethod
-    def import_xml_data(files: Dict) -> Transistor:
+    def import_xml_data(files: dict) -> Transistor:
         """
         Import switch and diode characteristics in plecs xml file format.
 
@@ -699,14 +698,14 @@ class DatabaseManager:
             logger.info(e.args[0])
 
     @staticmethod
-    def export_single_transistor_to_json(transistor: Transistor, file_path: Optional[str] = None):
+    def export_single_transistor_to_json(transistor: Transistor, file_path: str | None = None):
         """
         Export a single transistor object to a json file.
 
         :param transistor: transistor name
         :type transistor: Transistor
         :param file_path: Specify a directory or a file path.
-        :type file_path: Optional[str]
+        :type file_path: str | None
         """
         if file_path is None:
             file_path = os.getcwd()
@@ -717,7 +716,7 @@ class DatabaseManager:
             json.dump(transistor.convert_to_dict(), fd, indent=2)
 
     @staticmethod
-    def dpt_save_data(measurement_dict: Dict) -> Dict:
+    def dpt_save_data(measurement_dict: dict) -> dict:
         """Import double pulse measurements and calculates switching losses to each given working point.
 
         Note: This function brings the measurement data to a dictionary.
@@ -961,7 +960,7 @@ class DatabaseManager:
                 ##############################
                 # Integrate the power with predefined integration limits
                 ##############################
-                time_delay: Union[int, None] = measurement_dict.get('global_delay_time')
+                time_delay: int | None = measurement_dict.get('global_delay_time')
                 while id_temp[i - time_correction, 1] >= (id_avg_max * off_is_limit):
                     e_off_temp = e_off_temp + (vds_temp[i, 1] * id_temp[i - time_correction, 1] * sample_interval)
                     i += 1
