@@ -13,6 +13,13 @@ import json
 # DEPRECATED - May not work since refactoring
 ################
 
+
+def get_master_data_path(filename):
+    """Get the correct path for master data files."""
+    test_dir = os.path.dirname(__file__)
+    return os.path.join(test_dir, 'master_data', filename)
+
+
 @pytest.fixture()
 def my_transistor():
     """Fixture transistor for further unit test."""
@@ -298,14 +305,14 @@ def test_calc_thermal_params(my_transistor):
     assert transistor.switch.thermal_foster.r_th_total is None
 
 
-gecko_exporter_test_cases = [{'case': 1, 'recheck': True, 'file': 'master_data/test_data_Fuji_2MBI400XBE065-50.json', 'r_g_on': 2,
+gecko_exporter_test_cases = [{'case': 1, 'recheck': True, 'file': get_master_data_path('test_data_Fuji_2MBI400XBE065-50.json'), 'r_g_on': 2,
                               'r_g_off': 4, 'v_g_on': 8, 'v_g_off': -8, 'v_supply': 600},
-                             {'case': 2, 'recheck': True, 'file': 'master_data/test_data_Fuji_2MBI400XBE065-50.json', 'r_g_on': None,
+                             {'case': 2, 'recheck': True, 'file': get_master_data_path('test_data_Fuji_2MBI400XBE065-50.json'), 'r_g_on': None,
                               'r_g_off': None, 'v_g_on': None, 'v_g_off': None,
                               'v_supply': None},
-                             {'case': 3, 'recheck': True, 'file': 'master_data/test_data_CREE_C3M0060065J.json', 'r_g_on': None,
+                             {'case': 3, 'recheck': True, 'file': get_master_data_path('test_data_CREE_C3M0060065J.json'), 'r_g_on': None,
                               'r_g_off': None, 'v_g_on': None, 'v_g_off': None, 'v_supply': None},
-                             {'case': 4, 'recheck': False, 'file': 'master_data/test_data_CREE_C3M0060065J.json', 'v_g_on': 100,
+                             {'case': 4, 'recheck': False, 'file': get_master_data_path('test_data_CREE_C3M0060065J.json'), 'v_g_on': 100,
                               'v_g_off': 100, 'r_g_on': None, 'r_g_off': None, 'v_supply': None}]
 
 
@@ -368,17 +375,17 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
     actual_data = data_setup_for_gecko_exporter
     expected = {}
     if actual_data['case'] == 1:
-        with open('master_data/expected_Fuji_2MBI400XBE065-50_Switch.scl') as f:
+        with open(get_master_data_path('expected_Fuji_2MBI400XBE065-50_Switch.scl')) as f:
             expected['switch'] = f.read()
-        with open('master_data/expected_Fuji_2MBI400XBE065-50_Diode.scl') as f:
+        with open(get_master_data_path('expected_Fuji_2MBI400XBE065-50_Diode.scl')) as f:
             expected['diode'] = f.read()
         assert expected['switch'] == actual_data['switch']
         assert expected['diode'] == actual_data['diode']
 
     if actual_data['case'] == 2:
-        with open('master_data/expected_Fuji_2MBI400XBE065-50_Switch(rg_on_3.3)(rg_off_10).scl') as f:
+        with open(get_master_data_path('expected_Fuji_2MBI400XBE065-50_Switch(rg_on_3.3)(rg_off_10).scl')) as f:
             expected['switch'] = f.read()
-        with open('master_data/expected_Fuji_2MBI400XBE065-50_Diode(rg_3.3).scl') as f:
+        with open(get_master_data_path('expected_Fuji_2MBI400XBE065-50_Diode(rg_3.3).scl')) as f:
             expected['diode'] = f.read()
         assert expected['switch'] == actual_data['switch']
         assert expected['diode'] == actual_data['diode']
@@ -387,8 +394,11 @@ def test_export_geckocircuits(data_setup_for_gecko_exporter):
         expected_string = '\ndata[][] 3 2 0 10 0 0 0 0\ntj 25\nuBlock 400\n'
         diode_data = actual_data['diode']
         switch_data = actual_data['switch']
-        actual_err = diode_data[diode_data.find(start := '<SchaltverlusteMesskurve>') + len(start):diode_data.find('<\SchaltverlusteMesskurve>')]
-        actual_eon_eoff = switch_data[switch_data.find(start := '<SchaltverlusteMesskurve>') + len(start):switch_data.find('<\SchaltverlusteMesskurve>')]
+        # Handle both correct and incorrect XML closing tags
+        end_tag = '</SchaltverlusteMesskurve>' if '</SchaltverlusteMesskurve>' in diode_data else '<\\SchaltverlusteMesskurve>'
+        actual_err = diode_data[diode_data.find(start := '<SchaltverlusteMesskurve>') + len(start):diode_data.find(end_tag)]
+        end_tag = '</SchaltverlusteMesskurve>' if '</SchaltverlusteMesskurve>' in switch_data else '<\\SchaltverlusteMesskurve>'
+        actual_eon_eoff = switch_data[switch_data.find(start := '<SchaltverlusteMesskurve>') + len(start):switch_data.find(end_tag)]
         assert actual_err == expected_string
         assert actual_eon_eoff == expected_string
 
