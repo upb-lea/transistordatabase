@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "name": "Test_MOSFET_600V_10A",
+    "manufacturer": "Test Manufacturer",
+    "datasheet": "https://example.com/datasheet.pdf",
+    "type": "MOSFET",
+    "technology": "SiC",
+    "housing_type": "TO-247",
+    "author": "Test User",
+    "comment": "Test transistor for file upload"
+  },
+  "electrical": {
+    "v_abs_max": 600.0,
+    "i_abs_max": 10.0,
+    "r_ds_on": 0.15,
+    "v_gs_th": 3.5,
+    "c_oss": 45e-12,
+    "c_iss": 850e-12,
+    "c_rss": 8e-12
+  },
+  "thermal": {
+    "r_th_jc": 2.5,
+    "r_th_cs": 0.5,
+    "t_j_max": 175.0
+  }
+}

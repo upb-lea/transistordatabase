@@ -51,7 +51,7 @@
               accept=".json"
               style="display: none"
             />
-            <button @click="$refs.fileInput.click()" class="btn btn-secondary">
+            <button @click="triggerFileInput" class="btn btn-secondary">
               📁 Load from File
             </button>
           </div>
@@ -328,6 +328,7 @@ const emit = defineEmits(['open-database-search'])
 const selectedTransistors = ref([])
 const activeFormat = ref('matlab')
 const exportHistory = ref([])
+const fileInput = ref(null)
 
 // Export format definitions
 const exportFormats = ref([
@@ -406,24 +407,97 @@ function loadExample() {
   }
 }
 
+function triggerFileInput() {
+  console.log('Triggering file input...')
+  if (fileInput.value) {
+    fileInput.value.click()
+    console.log('File input clicked')
+  } else {
+    console.error('File input ref not found')
+  }
+}
+
 function loadFromFile(event) {
   const file = event.target.files[0]
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result)
-        if (Array.isArray(data)) {
-          selectedTransistors.value = data
-        } else if (data.metadata && data.metadata.name) {
-          selectedTransistors.value = [data]
-        }
-      } catch (error) {
-        alert('Error reading file: ' + error.message)
-      }
-    }
-    reader.readAsText(file)
+  if (!file) {
+    console.log('No file selected')
+    return
   }
+  
+  console.log('Loading file:', file.name, 'Size:', file.size, 'Type:', file.type)
+  
+  if (!file.name.toLowerCase().endsWith('.json')) {
+    alert('Please select a JSON file (.json)')
+    return
+  }
+  
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    try {
+      console.log('File content loaded, parsing JSON...')
+      const data = JSON.parse(e.target.result)
+      console.log('Parsed data:', data)
+      
+      let loadedTransistors = []
+      
+      if (Array.isArray(data)) {
+        loadedTransistors = data
+        console.log('Loaded array of', data.length, 'transistors')
+      } else if (data.metadata && data.metadata.name) {
+        // Standard format with nested metadata
+        loadedTransistors = [data]
+        console.log('Loaded single transistor (nested format):', data.metadata.name)
+      } else if (data.name && data.type) {
+        // TDB format with flat structure - convert to nested format
+        console.log('Converting TDB format to nested format...')
+        const convertedData = {
+          metadata: {
+            name: data.name,
+            manufacturer: data.manufacturer || 'Unknown',
+            datasheet: data.datasheet || '',
+            type: data.type,
+            technology: data.technology || '',
+            housing_type: data.housing_type || data.housing || '',
+            author: data.author || '',
+            comment: data.comment || ''
+          },
+          electrical: {
+            v_abs_max: data.v_abs_max || 0,
+            i_abs_max: data.i_abs_max || 0,
+            i_cont: data.i_cont || data.i_abs_max || 0,
+            r_ds_on: data.r_ds_on || 0,
+            v_gs_th: data.v_gs_th || 0,
+            c_oss: data.c_oss || 0,
+            c_iss: data.c_iss || 0,
+            c_rss: data.c_rss || 0
+          },
+          thermal: {
+            r_th_jc: data.r_th_jc || 0,
+            r_th_cs: data.r_th_cs || 0,
+            t_j_max: data.t_j_max || 0
+          }
+        }
+        loadedTransistors = [convertedData]
+        console.log('Loaded single transistor (TDB format):', data.name)
+      } else {
+        throw new Error('Invalid file format. Expected transistor data with either:\n- metadata.name property (nested format)\n- name and type properties (TDB format)')
+      }
+      
+      selectedTransistors.value = loadedTransistors
+      alert(`Successfully loaded ${loadedTransistors.length} transistor(s) from file!`)
+      
+    } catch (error) {
+      console.error('Error parsing file:', error)
+      alert('Error reading file: ' + error.message + '\n\nPlease ensure the file contains valid transistor JSON data.')
+    }
+  }
+  
+  reader.onerror = () => {
+    console.error('Error reading file')
+    alert('Error reading file. Please try again.')
+  }
+  
+  reader.readAsText(file)
 }
 
 function generateMatlabPreview() {
