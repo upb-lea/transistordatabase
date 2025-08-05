@@ -104,10 +104,9 @@ class TestFileUpload:
             transistor = transistors_db[transistor_id]
             assert transistor.metadata.name == "CREE_C3M0016120K"
             assert transistor.metadata.manufacturer == "Wolfspeed"
-            assert transistor.electrical.v_abs_max == 1200
-            assert transistor.electrical.i_abs_max == 250
-            assert transistor.electrical.i_cont == 115
-            
+            assert transistor.electrical_ratings.v_abs_max == 1200
+            assert transistor.electrical_ratings.i_abs_max == 250
+            assert transistor.electrical_ratings.i_cont == 115
         finally:
             os.unlink(tmp_file_path)
     
@@ -138,8 +137,8 @@ class TestFileUpload:
             
             # Verify defaults were applied
             transistor = transistors_db[data["id"]]
-            assert transistor.electrical.t_j_max == 150  # Default value
-            assert transistor.thermal.r_th_cs == 0  # Default value
+            assert transistor.electrical_ratings.t_j_max == 150  # Default value
+            assert transistor.thermal_properties.r_th_cs == 0  # Default value
             
         finally:
             os.unlink(tmp_file_path)
@@ -168,7 +167,7 @@ class TestFileUpload:
             
             assert response.status_code == 200
             transistor = transistors_db[response.json()["id"]]
-            assert transistor.electrical.t_j_max == 125
+            assert transistor.electrical_ratings.t_j_max == 125
             
         finally:
             os.unlink(tmp_file_path)

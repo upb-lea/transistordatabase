@@ -15,6 +15,7 @@ from typing import List, Dict, Optional, Any
 import json
 import tempfile
 import uvicorn
+from transistordatabase.core.models import Transistor, TransistorMetadata, ElectricalRatings, ThermalProperties
 
 app = FastAPI(
     title="Transistor Database API",
@@ -33,6 +34,34 @@ app.add_middleware(
 
 # In-memory storage for demo (replace with actual database in production)
 transistors_db: Dict[str, Dict] = {}
+
+# Placeholder services (replace with actual implementations)
+class ValidationService:
+    def validate_transistor(self, transistor):
+        return {"valid": True, "errors": [], "warnings": []}
+
+class ComparisonService:
+    def compare_transistors(self, transistors):
+        return {"comparison": "Feature not implemented yet"}
+
+class ExportService:
+    def export_to_json(self, transistor, path):
+        with open(path, 'w') as f:
+            json.dump(transistor_to_dict(transistor), f, indent=2)
+    
+    def export_to_csv(self, transistors, path):
+        # Placeholder implementation
+        with open(path, 'w') as f:
+            f.write("CSV export not implemented yet\n")
+    
+    def export_to_spice(self, transistor, path):
+        # Placeholder implementation
+        with open(path, 'w') as f:
+            f.write("SPICE export not implemented yet\n")
+
+validation_service = ValidationService()
+comparison_service = ComparisonService()
+export_service = ExportService()
 
 @app.get("/")
 async def root():
@@ -192,15 +221,15 @@ def transistor_to_dict(transistor: Transistor) -> Dict[str, Any]:
             "comment": transistor.metadata.comment
         },
         "electrical": {
-            "v_abs_max": transistor.electrical.v_abs_max,
-            "i_abs_max": transistor.electrical.i_abs_max,
-            "i_cont": transistor.electrical.i_cont,
-            "t_j_max": transistor.electrical.t_j_max
+            "v_abs_max": transistor.electrical_ratings.v_abs_max,
+            "i_abs_max": transistor.electrical_ratings.i_abs_max,
+            "i_cont": transistor.electrical_ratings.i_cont,
+            "t_j_max": transistor.electrical_ratings.t_j_max
         },
         "thermal": {
-            "r_th_cs": transistor.thermal.r_th_cs,
-            "housing_area": transistor.thermal.housing_area,
-            "cooling_area": transistor.thermal.cooling_area
+            "r_th_cs": transistor.thermal_properties.r_th_cs,
+            "housing_area": transistor.thermal_properties.housing_area,
+            "cooling_area": transistor.thermal_properties.cooling_area
         }
     }
 
