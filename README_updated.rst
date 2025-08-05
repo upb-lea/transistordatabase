@@ -141,7 +141,7 @@ Installation
 - Python 3.8+ with pip
 - Node.js 16+ with npm
 
-**Quick Start:**
+**Local Development:**
 
 1. **Clone and setup backend:**
 
@@ -162,6 +162,32 @@ Installation
 3. **Access the application:**
    - Web Interface: http://localhost:5174
    - API Documentation: http://localhost:8002/docs
+
+**🚀 Production Deployment (Vercel):**
+
+For production deployment to Vercel (recommended hosting platform):
+
+.. code-block:: bash
+
+   # Navigate to gui_web directory
+   cd transistordatabase/gui_web
+   
+   # Install Vercel CLI
+   npm i -g vercel
+   
+   # Deploy to Vercel
+   vercel
+
+**Alternative: GitHub + Vercel Integration:**
+
+1. Push your repository to GitHub
+2. Connect to Vercel at https://vercel.com
+3. Import your repository with root directory: ``transistordatabase/gui_web``
+4. Deploy automatically
+
+**Live Demo:** Once deployed, your app will be available at ``https://your-app.vercel.app``
+
+See `VERCEL_DEPLOYMENT.md <transistordatabase/gui_web/VERCEL_DEPLOYMENT.md>`_ for detailed deployment instructions.
 
 🖥️ Desktop Application
 ***********************

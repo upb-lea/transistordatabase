@@ -1,12 +1,13 @@
 {
-  "name": "gui_web",
+  "name": "transistor-database-web",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vercel-build": "vite build"
   },
   "dependencies": {
     "axios": "^1.11.0",

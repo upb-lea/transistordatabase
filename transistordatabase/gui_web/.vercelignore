@@ -1,0 +1,36 @@
+# Development files
+node_modules
+.vite
+.env
+.env.local
+.env.*.local
+
+# Backend development server (not needed for Vercel deployment)
+backend/
+
+# Test files
+tests/
+*.test.js
+*.spec.js
+
+# Documentation
+VERCEL_DEPLOYMENT.md
+verify-deployment.sh
+
+# Logs
+*.log
+backend.log
+
+# Cache
+.cache
+.vercel
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
