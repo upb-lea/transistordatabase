@@ -1,0 +1,83 @@
+[project]
+name = "transistordatabase"
+version = "0.6.0"
+authors = [
+    { name = "UPB-LEA" },
+]
+description = "Transistor Database"
+readme = "README.rst"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Topic :: Scientific/Engineering",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+]
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[project.urls]
+Homepage = "https://github.com/upb-lea/transistordatabase"
+Documentation = "https://upb-lea.github.io/transistordatabase/main/transistordatabase.html"
+Issues = "https://github.com/upb-lea/transistordatabase/issues"
+
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["transistordatabase/"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "transistordatabase/*.py",
+    "tests",
+    "requirements.txt",
+]
+
+[tool.ruff]
+exclude = [
+    ".eggs",
+    ".git",
+    ".venv",
+    "venv",
+]
+
+line-length = 88
+indent-width = 4
+
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B", "D", "D417"]
+ignore = ["B008", "D107", "D203", "D212", "D213", "D402", "D413", "D415", "D416", "E722", "E731", "F403", "F405", "F841", "B904", "F401"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_incomplete_defs = true
+ignore_missing_imports = true

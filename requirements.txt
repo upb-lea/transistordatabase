@@ -1,0 +1,16 @@
+numpy
+persistent
+scipy
+setuptools
+pymongo
+matplotlib
+Jinja2
+packaging
+Pillow
+pytest
+PyQt5
+PyQtWebEngine
+mongomock
+requests
+deepdiff
+xmltodict
