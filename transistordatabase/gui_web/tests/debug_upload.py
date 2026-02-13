@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-Simple test script to debug the file upload issue.
-"""
+"""Simple test script to debug the file upload issue."""
 
 import json
 import requests
@@ -10,8 +8,7 @@ import os
 from pathlib import Path
 
 def test_upload_endpoint():
-    """Test the upload endpoint directly"""
-    
+    """Test the upload endpoint directly."""
     # Create test data in CREE format
     cree_data = {
         "name": "CREE_C3M0016120K",
@@ -83,13 +80,13 @@ def test_upload_endpoint():
                 
                 if response.status_code == 200:
                     data = response.json()
-                    print(f"   ✅ Upload successful!")
+                    print("   ✅ Upload successful!")
                     print(f"   Transistor ID: {data.get('id')}")
                     print(f"   Transistor Name: {data.get('name')}")
                     print(f"   Manufacturer: {data.get('manufacturer')}")
                     return True
                 else:
-                    print(f"   ❌ Upload failed!")
+                    print("   ❌ Upload failed!")
                     try:
                         error_data = response.json()
                         print(f"   Error detail: {error_data.get('detail')}")
@@ -125,7 +122,7 @@ def test_upload_endpoint():
             os.unlink(tmp_file_path)
 
 def test_minimal_upload():
-    """Test with minimal data"""
+    """Test with minimal data."""
     print("\n🔬 Testing minimal data upload...")
     print("=" * 50)
     

@@ -37,24 +37,35 @@ transistors_db: Dict[str, Dict] = {}
 
 # Placeholder services (replace with actual implementations)
 class ValidationService:
+    """Provide transistor validation functionality."""
+
     def validate_transistor(self, transistor):
+        """Validate a transistor and return results."""
         return {"valid": True, "errors": [], "warnings": []}
 
 class ComparisonService:
+    """Provide transistor comparison functionality."""
+
     def compare_transistors(self, transistors):
+        """Compare multiple transistors and return results."""
         return {"comparison": "Feature not implemented yet"}
 
 class ExportService:
+    """Provide transistor export functionality."""
+
     def export_to_json(self, transistor, path):
+        """Export a transistor to JSON format."""
         with open(path, 'w') as f:
             json.dump(transistor_to_dict(transistor), f, indent=2)
-    
+
     def export_to_csv(self, transistors, path):
+        """Export transistors to CSV format."""
         # Placeholder implementation
         with open(path, 'w') as f:
             f.write("CSV export not implemented yet\n")
-    
+
     def export_to_spice(self, transistor, path):
+        """Export a transistor to SPICE format."""
         # Placeholder implementation
         with open(path, 'w') as f:
             f.write("SPICE export not implemented yet\n")

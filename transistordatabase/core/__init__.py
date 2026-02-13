@@ -7,14 +7,22 @@ that define the domain logic separated from presentation and infrastructure conc
 
 from .models import (
     Transistor,
-    Switch, 
+    Switch,
     Diode,
     TransistorMetadata,
     ElectricalRatings,
     ThermalProperties,
     ChannelCharacteristics,
     SwitchingLossData,
-    ITransistorComponent
+    ITransistorComponent,
+    FosterThermalModel,
+    GateChargeCurve,
+    SOA,
+    VoltageDependentCapacitance,
+    EffectiveOutputCapacitance,
+    TemperatureDependResistance,
+    RawMeasurementData,
+    LinearizedModel,
 )
 
 from .services import (
@@ -23,42 +31,49 @@ from .services import (
     IExportService,
     IValidationService,
     IPlottingService,
+    IComparisonService,
     TransistorRepository,
-    TransistorService
+    TransistorService,
 )
 
 from .repository import (
     JsonTransistorRepository,
     JsonTransistorLoader,
-    TransistorFactory
+    TransistorFactory,
 )
 
 __all__ = [
     # Models
     'Transistor',
     'Switch',
-    'Diode', 
+    'Diode',
     'TransistorMetadata',
     'ElectricalRatings',
     'ThermalProperties',
     'ChannelCharacteristics',
     'SwitchingLossData',
     'ITransistorComponent',
-    
+    'FosterThermalModel',
+    'GateChargeCurve',
+    'SOA',
+    'VoltageDependentCapacitance',
+    'EffectiveOutputCapacitance',
+    'TemperatureDependResistance',
+    'RawMeasurementData',
+    'LinearizedModel',
     # Services
     'ITransistorLoader',
-    'ICalculationService', 
+    'ICalculationService',
     'IExportService',
     'IValidationService',
     'IPlottingService',
+    'IComparisonService',
     'TransistorRepository',
     'TransistorService',
-    
     # Repository
     'JsonTransistorRepository',
     'JsonTransistorLoader',
-    'TransistorFactory'
+    'TransistorFactory',
 ]
 
-# Version info
 __version__ = '1.0.0'

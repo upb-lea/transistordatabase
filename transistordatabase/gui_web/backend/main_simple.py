@@ -1,6 +1,4 @@
-"""
-Simplified FastAPI backend for Transistor Database Web Application.
-"""
+"""Simplified FastAPI backend for Transistor Database Web Application."""
 
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware

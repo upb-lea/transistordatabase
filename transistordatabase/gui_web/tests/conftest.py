@@ -1,6 +1,4 @@
-"""
-Test configuration for the transistor database web application.
-"""
+"""Test configuration for the transistor database web application."""
 
 import pytest
 import sys
@@ -12,12 +10,12 @@ sys.path.insert(0, str(project_root))
 
 @pytest.fixture(scope="session")
 def test_data_dir():
-    """Provide path to test data directory"""
+    """Provide path to test data directory."""
     return Path(__file__).parent / "data"
 
 @pytest.fixture
 def sample_transistor_flat():
-    """Sample transistor data in flat format (TDB format)"""
+    """Return sample transistor data in flat format (TDB format)."""
     return {
         "name": "Test_CREE_C3M0016120K",
         "type": "SiC-MOSFET",
@@ -53,7 +51,7 @@ def sample_transistor_flat():
 
 @pytest.fixture
 def sample_transistor_nested():
-    """Sample transistor data in nested format (web interface format)"""
+    """Return sample transistor data in nested format (web interface format)."""
     return {
         "metadata": {
             "name": "Test_Nested_Device",
@@ -78,7 +76,7 @@ def sample_transistor_nested():
 
 @pytest.fixture
 def multiple_transistors_data():
-    """Multiple transistor samples for testing collections"""
+    """Return multiple transistor samples for testing collections."""
     return [
         {
             "name": "Device_A",

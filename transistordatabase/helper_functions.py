@@ -3,7 +3,6 @@
 from __future__ import annotations
 from typing import List, Dict, Tuple
 from matplotlib import pyplot as plt
-from PyQt5 import QtWidgets, QtWebEngineWidgets
 import xml.etree.ElementTree as et
 import numpy as np
 import sys
@@ -399,6 +398,8 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
     """
     Convert the generated html document to pdf file using qt WebEngineWidgets tool. Helper method.
 
+    Delegates to transistordatabase.helper_pdf which isolates the PyQt5 dependency.
+
     :param html: html string that needs to be converted to pdf file
     :type html: str or list
     :param name: name of the file that will be saved as (basically the transistor name)
@@ -408,44 +409,8 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
 
     :return: saves the html string to pdf file format
     """
-    app = QtWidgets.QApplication(sys.argv)
-    page = QtWebEngineWidgets.QWebEnginePage()
-    path_item = str()
-    name_item = str()
-    html_item = str()
-
-    def fetch_next():
-        try:
-            nonlocal html_item, name_item, path_item
-            html_item, name_item, path_item = next(html_and_paths)
-        except StopIteration:
-            return False
-        else:
-            page.setHtml(html_item)
-        return True
-
-    def handle_print_finished(filepath, status):
-        print(f"Export virtual datasheet {name_item} to {os.getcwd()}")
-        print(f"Open Datasheet here: {os.getcwd()}")
-        if not fetch_next():
-            app.quit()
-
-    def handle_load_finished(status):
-        if status:
-            nonlocal path_item
-            page.printToPdf(path_item)
-        else:
-            print("Failed")
-            app.quit()
-
-    page.pdfPrintingFinished.connect(handle_print_finished)
-    page.loadFinished.connect(handle_load_finished)
-    if isinstance(html, list):
-        html_and_paths = iter(zip(html, name, path))
-    else:
-        html_and_paths = iter(zip([html], [name], [path]))
-    fetch_next()
-    app.exec_()
+    from transistordatabase.helper_pdf import html_to_pdf as _html_to_pdf
+    _html_to_pdf(html, name, path)
 
 
 # ==== Plot ====

@@ -9,7 +9,6 @@ import json
 import tempfile
 from pathlib import Path
 from typing import Dict, Any
-from fastapi.testclient import TestClient
 from unittest.mock import Mock, patch
 import sys
 import os
@@ -18,22 +17,22 @@ import os
 backend_dir = Path(__file__).parent.parent / "backend"
 sys.path.insert(0, str(backend_dir))
 
-# Import the FastAPI app and functions
-from main import app, dict_to_transistor, transistor_to_dict, transistors_db
+from fastapi.testclient import TestClient  # noqa: E402
+from main import app, dict_to_transistor, transistor_to_dict, transistors_db  # noqa: E402
 
 # Create test client
 client = TestClient(app)
 
 class TestMainFunctions:
-    """Test the utility functions in main.py"""
+    """Test the utility functions in main.py."""
     
     def setup_method(self):
-        """Setup for each test method"""
+        """Set up for each test method."""
         # Clear the database before each test
         transistors_db.clear()
     
     def test_dict_to_transistor_nested_format(self):
-        """Test dict_to_transistor with nested format (web interface format)"""
+        """Test dict_to_transistor with nested format (web interface format)."""
         data = {
             "metadata": {
                 "name": "Test_MOSFET",
@@ -73,7 +72,7 @@ class TestMainFunctions:
         assert transistor.thermal_properties.cooling_area == 0.0005
     
     def test_dict_to_transistor_flat_format(self):
-        """Test dict_to_transistor with flat format (TDB file format)"""
+        """Test dict_to_transistor with flat format (TDB file format)."""
         data = {
             "name": "CREE_C3M0016120K",
             "type": "SiC-MOSFET",
@@ -103,7 +102,7 @@ class TestMainFunctions:
         assert transistor.thermal_properties.r_th_cs == 0.27
     
     def test_dict_to_transistor_flat_format_with_missing_fields(self):
-        """Test dict_to_transistor with missing fields (should use defaults)"""
+        """Test dict_to_transistor with missing fields (should use defaults)."""
         data = {
             "name": "Minimal_Device",
             "type": "IGBT",
@@ -128,7 +127,7 @@ class TestMainFunctions:
         assert transistor.thermal_properties.r_th_cs == 0  # Default
     
     def test_dict_to_transistor_with_t_c_max_fallback(self):
-        """Test dict_to_transistor uses t_c_max when t_j_max is missing"""
+        """Test dict_to_transistor uses t_c_max when t_j_max is missing."""
         data = {
             "name": "Test_Device",
             "type": "MOSFET",
@@ -144,7 +143,7 @@ class TestMainFunctions:
         assert transistor.electrical_ratings.t_j_max == 125
     
     def test_transistor_to_dict(self):
-        """Test transistor_to_dict conversion"""
+        """Test transistor_to_dict conversion."""
         # First create a transistor from flat format
         data = {
             "name": "Test_Transistor",
@@ -179,15 +178,15 @@ class TestMainFunctions:
 
 
 class TestAPIEndpoints:
-    """Test all API endpoints"""
+    """Test all API endpoints."""
     
     def setup_method(self):
-        """Setup for each test method"""
+        """Set up for each test method."""
         # Clear the database before each test
         transistors_db.clear()
     
     def test_root_endpoint(self):
-        """Test the root endpoint"""
+        """Test the root endpoint."""
         response = client.get("/")
         assert response.status_code == 200
         data = response.json()
@@ -195,13 +194,13 @@ class TestAPIEndpoints:
         assert data["version"] == "1.0.0"
     
     def test_get_transistors_empty(self):
-        """Test getting transistors when database is empty"""
+        """Test getting transistors when database is empty."""
         response = client.get("/api/transistors")
         assert response.status_code == 200
         assert response.json() == []
     
     def test_get_transistors_with_data(self):
-        """Test getting transistors when database has data"""
+        """Test getting transistors when database has data."""
         # Add a test transistor to the database
         test_data = {
             "metadata": {
@@ -235,7 +234,7 @@ class TestAPIEndpoints:
         assert data[0]["metadata"]["name"] == "Test_Device"
     
     def test_get_transistor_by_id_existing(self):
-        """Test getting a specific transistor by ID"""
+        """Test getting a specific transistor by ID."""
         test_data = {
             "name": "Test_Device",
             "type": "MOSFET",
@@ -259,13 +258,13 @@ class TestAPIEndpoints:
         assert data["metadata"]["name"] == "Test_Device"
     
     def test_get_transistor_by_id_not_found(self):
-        """Test getting a non-existent transistor"""
+        """Test getting a non-existent transistor."""
         response = client.get("/api/transistors/NonExistent")
         assert response.status_code == 404
         assert "not found" in response.json()["detail"]
     
     def test_create_transistor_success(self):
-        """Test creating a new transistor"""
+        """Test creating a new transistor."""
         test_data = {
             "metadata": {
                 "name": "New_Device",
@@ -298,7 +297,7 @@ class TestAPIEndpoints:
         assert len(transistors_db) == 1
     
     def test_create_transistor_invalid_data(self):
-        """Test creating transistor with minimal/invalid data (should use defaults)"""
+        """Test creating transistor with minimal/invalid data (should use defaults)."""
         minimal_data = {
             "invalid": "data"  # No valid transistor fields
         }
@@ -316,7 +315,7 @@ class TestAPIEndpoints:
         assert transistor.metadata.type == "Unknown"  # Default value
     
     def test_update_transistor_success(self):
-        """Test updating an existing transistor"""
+        """Test updating an existing transistor."""
         # First create a transistor
         original_data = {
             "name": "Update_Test",
@@ -365,7 +364,7 @@ class TestAPIEndpoints:
         assert updated_transistor.electrical_ratings.v_abs_max == 800
     
     def test_update_transistor_not_found(self):
-        """Test updating a non-existent transistor"""
+        """Test updating a non-existent transistor."""
         update_data = {
             "metadata": {"name": "NonExistent"},
             "electrical": {"v_abs_max": 600},
@@ -376,7 +375,7 @@ class TestAPIEndpoints:
         assert response.status_code == 404
     
     def test_delete_transistor_success(self):
-        """Test deleting an existing transistor"""
+        """Test deleting an existing transistor."""
         # First create a transistor
         test_data = {
             "name": "Delete_Test",
@@ -397,12 +396,12 @@ class TestAPIEndpoints:
         assert "Delete_Test" not in transistors_db
     
     def test_delete_transistor_not_found(self):
-        """Test deleting a non-existent transistor"""
+        """Test deleting a non-existent transistor."""
         response = client.delete("/api/transistors/NonExistent")
         assert response.status_code == 404
     
     def test_upload_transistor_success(self):
-        """Test uploading a transistor from JSON file"""
+        """Test uploading a transistor from JSON file."""
         # Create test JSON data (TDB format)
         test_data = {
             "name": "CREE_C3M0016120K",
@@ -448,7 +447,7 @@ class TestAPIEndpoints:
             os.unlink(tmp_file_path)
     
     def test_upload_transistor_invalid_file_type(self):
-        """Test uploading a non-JSON file"""
+        """Test uploading a non-JSON file."""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as tmp_file:
             tmp_file.write("This is not JSON")
             tmp_file_path = tmp_file.name
@@ -467,7 +466,7 @@ class TestAPIEndpoints:
             os.unlink(tmp_file_path)
     
     def test_upload_transistor_invalid_json(self):
-        """Test uploading invalid JSON"""
+        """Test uploading invalid JSON."""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp_file:
             tmp_file.write("{ invalid json")
             tmp_file_path = tmp_file.name
@@ -486,7 +485,7 @@ class TestAPIEndpoints:
             os.unlink(tmp_file_path)
     
     def test_compare_transistors_success(self):
-        """Test comparing transistors"""
+        """Test comparing transistors."""
         # Add two transistors to compare
         data1 = {
             "name": "Device1",
@@ -512,7 +511,7 @@ class TestAPIEndpoints:
         # The exact response depends on the comparison service implementation
     
     def test_compare_transistors_insufficient_devices(self):
-        """Test comparing with less than 2 transistors"""
+        """Test comparing with less than 2 transistors."""
         data1 = {"name": "Device1", "type": "MOSFET", "manufacturer": "Corp1"}
         transistors_db["Device1"] = dict_to_transistor(data1)
         
@@ -521,12 +520,12 @@ class TestAPIEndpoints:
         assert "At least 2 transistors required" in response.json()["detail"]
     
     def test_compare_transistors_not_found(self):
-        """Test comparing with non-existent transistor"""
+        """Test comparing with non-existent transistor."""
         response = client.post("/api/transistors/compare", json=["NonExistent1", "NonExistent2"])
         assert response.status_code == 404
     
     def test_validate_transistor(self):
-        """Test transistor validation"""
+        """Test transistor validation."""
         data = {
             "name": "Validate_Test",
             "type": "MOSFET",
@@ -542,7 +541,7 @@ class TestAPIEndpoints:
         # The exact response depends on the validation service implementation
     
     def test_export_transistor_json(self):
-        """Test exporting transistor as JSON"""
+        """Test exporting transistor as JSON."""
         data = {
             "name": "Export_Test",
             "type": "MOSFET",
@@ -558,7 +557,7 @@ class TestAPIEndpoints:
         assert response.headers["content-type"] == "application/json"
     
     def test_export_transistor_invalid_format(self):
-        """Test exporting with invalid format"""
+        """Test exporting with invalid format."""
         data = {"name": "Export_Test", "type": "MOSFET"}
         transistors_db["Export_Test"] = dict_to_transistor(data)
         
@@ -568,14 +567,14 @@ class TestAPIEndpoints:
 
 
 class TestIntegration:
-    """Integration tests for complete workflows"""
+    """Integration tests for complete workflows."""
     
     def setup_method(self):
-        """Setup for each test method"""
+        """Set up for each test method."""
         transistors_db.clear()
     
     def test_full_transistor_lifecycle(self):
-        """Test complete transistor lifecycle: create, read, update, delete"""
+        """Test complete transistor lifecycle: create, read, update, delete."""
         # 1. Create
         create_data = {
             "metadata": {
@@ -628,7 +627,7 @@ class TestIntegration:
         assert final_response.status_code == 404
     
     def test_upload_and_use_workflow(self):
-        """Test uploading a transistor and then using it in other operations"""
+        """Test uploading a transistor and then using it in other operations."""
         # Upload
         test_data = {
             "name": "Upload_Workflow_Test",

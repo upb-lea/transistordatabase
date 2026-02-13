@@ -21,19 +21,19 @@ except ImportError:
     # Provide mock classes for testing without PyQt5
     
     class QWidget:
-        pass
-    
+        """Mock QWidget for headless environments."""
+
     class QMainWindow:
-        pass
-    
+        """Mock QMainWindow for headless environments."""
+
     class QVBoxLayout:
-        pass
-    
+        """Mock QVBoxLayout for headless environments."""
+
     class FigureCanvas:
-        pass
-    
+        """Mock FigureCanvas for headless environments."""
+
     class Figure:
-        pass
+        """Mock Figure for headless environments."""
 
 from transistordatabase.frontend.interfaces import (
     IPlotWidget, ITransistorView, IMainWindow, IDialogFactory
@@ -138,7 +138,7 @@ class TransistorEditWidget(QWidget, ITransistorView):
         self._setup_ui()
     
     def _setup_ui(self):
-        """Setup the user interface."""
+        """Set up the user interface."""
         layout = QVBoxLayout()
         
         # Create scroll area for large forms
@@ -413,7 +413,7 @@ class MainWindowImpl(QMainWindow, IMainWindow):
         self._setup_ui()
     
     def _setup_ui(self):
-        """Setup the user interface."""
+        """Set up the user interface."""
         # Create central widget
         central_widget = QWidget()
         self.setCentralWidget(central_widget)

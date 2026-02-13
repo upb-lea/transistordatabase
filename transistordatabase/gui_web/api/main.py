@@ -1,6 +1,4 @@
-"""
-Main API entry point for Vercel serverless deployment.
-"""
+"""Main API entry point for Vercel serverless deployment."""
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,7 +27,7 @@ async def health_check():
 
 @app.get("/api")
 async def root():
-    """API root endpoint."""
+    """Return the API root endpoint."""
     return {
         "message": "Transistor Database API",
         "version": "1.0.0",

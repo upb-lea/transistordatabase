@@ -1,6 +1,4 @@
-"""
-Unit tests for core transistor models using master data.
-"""
+"""Unit tests for core transistor models using master data."""
 import pytest
 import json
 from pathlib import Path
@@ -135,7 +133,7 @@ class TestTransistor:
             transistor.get_component("invalid")
     
     def _create_test_transistor(self) -> Transistor:
-        """Helper to create test transistor."""
+        """Create a test transistor for use in tests."""
         return TransistorFactory.create_empty_transistor("TEST", "IGBT")
 
 

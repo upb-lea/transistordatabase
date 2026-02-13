@@ -1,0 +1,6 @@
+Part Number,Manufacturer,Type,Voltage - Drain to Source,Current - Drain,Rds On,Gate Charge,Package,Price
+C3M0060065J,Wolfspeed,SiC MOSFET,650V,35A,60mOhm,30nC,TO-247,5.50
+IPW65R090CFD7,Infineon,MOSFET,650V,25A,90mOhm,45nC,TO-247,3.20
+GS66516T,GaN Systems,GaN Transistor,650V,60A,25mOhm,12nC,GaN PX,8.75
+SCT3060AW7,ROHM,SiC MOSFET,650V,39A,60mOhm,35nC,TO-247,6.00
+IMZA65R048M1H,Infineon,SiC MOSFET,650V,56A,48mOhm,42nC,TO-247,7.50

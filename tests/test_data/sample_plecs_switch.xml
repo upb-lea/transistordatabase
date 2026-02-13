@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SemiconductorLibrary xmlns="http://www.plexim.com/xml/semiconductors/" version="1.1">
+    <Package class="MOSFET" vendor="TestVendor" partnumber="TEST_MOSFET_001">
+        <Variables/>
+        <SemiconductorData type="MOSFET">
+            <TurnOnLoss>
+                <ComputationMethod>Table only</ComputationMethod>
+                <CurrentAxis>0 10 20 30 40 50</CurrentAxis>
+                <VoltageAxis>400 800</VoltageAxis>
+                <TemperatureAxis>25 150</TemperatureAxis>
+                <Energy scale="0.001">
+                    <Temperature>
+                        <Voltage>0.00 0.10 0.30 0.60 1.00 1.50</Voltage>
+                        <Voltage>0.00 0.15 0.45 0.90 1.50 2.25</Voltage>
+                    </Temperature>
+                    <Temperature>
+                        <Voltage>0.00 0.12 0.36 0.72 1.20 1.80</Voltage>
+                        <Voltage>0.00 0.18 0.54 1.08 1.80 2.70</Voltage>
+                    </Temperature>
+                </Energy>
+            </TurnOnLoss>
+            <TurnOffLoss>
+                <ComputationMethod>Table only</ComputationMethod>
+                <CurrentAxis>0 10 20 30 40 50</CurrentAxis>
+                <VoltageAxis>400 800</VoltageAxis>
+                <TemperatureAxis>25 150</TemperatureAxis>
+                <Energy scale="0.001">
+                    <Temperature>
+                        <Voltage>0.00 0.05 0.15 0.30 0.50 0.75</Voltage>
+                        <Voltage>0.00 0.08 0.23 0.45 0.75 1.13</Voltage>
+                    </Temperature>
+                    <Temperature>
+                        <Voltage>0.00 0.06 0.18 0.36 0.60 0.90</Voltage>
+                        <Voltage>0.00 0.09 0.27 0.54 0.90 1.35</Voltage>
+                    </Temperature>
+                </Energy>
+            </TurnOffLoss>
+            <ConductionLoss>
+                <ComputationMethod>Table only</ComputationMethod>
+                <CurrentAxis>0 5 10 15 20 25 30</CurrentAxis>
+                <TemperatureAxis>25 150</TemperatureAxis>
+                <VoltageDrop scale="1">
+                    <Temperature>0.00 0.25 0.50 0.80 1.10 1.45 1.85</Temperature>
+                    <Temperature>0.00 0.35 0.70 1.12 1.54 2.03 2.59</Temperature>
+                </VoltageDrop>
+            </ConductionLoss>
+        </SemiconductorData>
+        <ThermalModel>
+            <Branch type="Foster">
+                <RTauElement R="0.05" Tau="0.001"/>
+                <RTauElement R="0.10" Tau="0.01"/>
+                <RTauElement R="0.15" Tau="0.1"/>
+                <RTauElement R="0.20" Tau="1.0"/>
+            </Branch>
+        </ThermalModel>
+        <Comment>
+            <Line>Test MOSFET for PLECS import testing</Line>
+            <Line>Generated for transistordatabase unit tests</Line>
+        </Comment>
+    </Package>
+</SemiconductorLibrary>

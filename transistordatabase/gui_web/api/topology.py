@@ -1,6 +1,4 @@
-"""
-Topology calculator API endpoints for Vercel serverless deployment.
-"""
+"""Topology calculator API endpoints for Vercel serverless deployment."""
 
 from fastapi import FastAPI
 from typing import Dict, Any
@@ -12,7 +10,6 @@ app = FastAPI()
 @app.post("/calculate")
 async def calculate_topology(params: Dict[str, Any]):
     """Calculate power converter topology parameters."""
-    
     topology = params.get("topology", "buck")
     vin = params.get("vin", 12)
     vout = params.get("vout", 5)
@@ -31,7 +28,6 @@ async def calculate_topology(params: Dict[str, Any]):
 
 def calculate_buck_converter(vin: float, vout: float, iout: float, fsw: float) -> Dict[str, Any]:
     """Calculate Buck converter parameters."""
-    
     # Duty cycle
     duty = vout / vin
     
@@ -67,7 +63,6 @@ def calculate_buck_converter(vin: float, vout: float, iout: float, fsw: float) -
 
 def calculate_boost_converter(vin: float, vout: float, iout: float, fsw: float) -> Dict[str, Any]:
     """Calculate Boost converter parameters."""
-    
     # Duty cycle
     duty = 1 - (vin / vout)
     
@@ -101,7 +96,6 @@ def calculate_boost_converter(vin: float, vout: float, iout: float, fsw: float) 
 
 def calculate_buck_boost_converter(vin: float, vout: float, iout: float, fsw: float) -> Dict[str, Any]:
     """Calculate Buck-Boost converter parameters."""
-    
     # Duty cycle
     duty = vout / (vin + vout)
     

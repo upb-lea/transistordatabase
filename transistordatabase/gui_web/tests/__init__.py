@@ -1,1 +1,1 @@
-# Test package for transistor database web application
+"""Test package for transistor database web application."""

@@ -1216,7 +1216,7 @@ class Transistor:
             code = compile(f"self.{input_type}.thermal_foster", "<string>", "eval")
             foster_args = eval(code)
             if foster_args.r_th_vector is not None and foster_args.tau_vector is not None and len(foster_args.tau_vector) == len(foster_args.r_th_vector):
-                foster_args.c_th_vector = [x / y for x, y in zip(foster_args.r_th_vector, foster_args.tau_vector)]
+                foster_args.c_th_vector = [x / y for x, y in zip(foster_args.r_th_vector, foster_args.tau_vector, strict=True)]
                 if foster_args.tau_total is None:
                     foster_args.tau_total = round(sum(foster_args.tau_vector), 4)
                 if foster_args.r_th_total is None:
@@ -1238,9 +1238,9 @@ class Transistor:
                     rth_op = func(time, *popt)
                     tau_values = popt[1::2]
                     rth_values = popt[0::2]
-                    tuple_list = sorted(zip(tau_values, rth_values))
+                    tuple_list = sorted(zip(tau_values, rth_values, strict=True))
                     cap_values = [x / y for x, y in tuple_list]
-                    tau_values, rth_values = (list(t) for t in zip(*tuple_list))
+                    tau_values, rth_values = (list(t) for t in zip(*tuple_list, strict=True))
                     residuals = rth - rth_op
                     ss_res = np.sum(residuals ** 2)
                     ss_tot = np.sum((rth - np.mean(rth)) ** 2)
@@ -1805,7 +1805,7 @@ class Transistor:
 
         # Loss energy curves : From the computed neighbours and recheck for provided or recommended r_g, if not compute the energy curve
         eon_curves = list()
-        mapped_set = dict(zip(eon_i_e_indexes, eon_r_e_indexes))  # empty dict if no r_e and i_e combinations exists
+        mapped_set = dict(zip(eon_i_e_indexes, eon_r_e_indexes, strict=False))  # empty dict if no r_e and i_e combinations exists
         for index, curve in enumerate(self.switch.e_on):
             if index in eon_i_e_indexes and curve.v_supply == switch_v_supply and curve.v_g == v_g_on:
                 # if no r_g is provided and also recommended is None final resort to get a r_g
@@ -1823,7 +1823,7 @@ class Transistor:
                     r_g_on = self.switch.e_on[index].r_g
 
         eoff_curves = list()
-        mapped_set = dict(zip(eoff_i_e_indexes, eoff_r_e_indexes))  # empty dict if no r_e and i_e combinations exists
+        mapped_set = dict(zip(eoff_i_e_indexes, eoff_r_e_indexes, strict=False))  # empty dict if no r_e and i_e combinations exists
         for index, curve in enumerate(self.switch.e_off):
             if index in eoff_i_e_indexes and curve.v_supply == switch_v_supply and curve.v_g == v_g_off:
                 r_g_off = curve.r_g if r_g_off is None and len(mapped_set) else r_g_off
@@ -1840,7 +1840,7 @@ class Transistor:
                     r_g_off = self.switch.e_off[index].r_g
 
         err_curves = list()
-        mapped_set = dict(zip(err_i_e_indexes, err_r_e_indexes))  # empty dict if no r_e and i_e combinations exists
+        mapped_set = dict(zip(err_i_e_indexes, err_r_e_indexes, strict=False))  # empty dict if no r_e and i_e combinations exists
         for index, curve in enumerate(self.diode.e_rr):
             if index in err_i_e_indexes and curve.v_supply == diode_v_supply and (0 if curve.v_g is None else curve.v_g) == v_d_err:
                 r_g_err = curve.r_g if r_g_err is None and len(mapped_set) else r_g_err

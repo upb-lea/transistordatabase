@@ -1,3 +1,6 @@
+"""Quick test for transistordatabase package and environment setup."""
+import os
+
 print("Test starting...")
 
 # Test 1: Import main package
@@ -14,8 +17,7 @@ try:
 except Exception as e:
     print(f"❌ Failed to import Transistor: {e}")
 
-# Test 3: Test master data availability 
-import os
+# Test 3: Test master data availability
 master_data_path = "tests/master_data"
 if os.path.exists(master_data_path):
     print(f"✅ Master data directory found: {master_data_path}")

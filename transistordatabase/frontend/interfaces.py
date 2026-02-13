@@ -8,9 +8,9 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 from pathlib import Path
 
-# Import backend services
-from transistordatabase.backend.services import (
-    IPlottingService, ICalculationService, IExportService, 
+# Import backend services from core
+from transistordatabase.core.services import (
+    IPlottingService, ICalculationService, IExportService,
     IComparisonService, IValidationService
 )
 from transistordatabase.core.models import Transistor
@@ -418,7 +418,7 @@ class TransistorController:
             
             # Additional validation with service if available
             if self.validation_service:
-                service_validation = self.validation_service.validate_transistor_data(transistor)
+                service_validation = self.validation_service.validate_transistor(transistor)
                 if service_validation.get('errors'):
                     print(f"Service validation errors: {service_validation['errors']}")
                     return None
@@ -449,10 +449,11 @@ class TransistorController:
 
 
 class ApplicationController:
+    """Main application controller coordinating all components."""
+
     def handle_error(self, message: str) -> None:
         """Handle errors by displaying a message in the main window."""
         self.main_window.show_message(message, "error")
-    """Main application controller coordinating all components."""
     
     def __init__(self, main_window: IMainWindow, dialog_factory: IDialogFactory):
         """
@@ -467,9 +468,9 @@ class ApplicationController:
         self.transistor_controller: Optional[TransistorController] = None
         
         # Backend services
-        from transistordatabase.backend.services import ServiceFactory
-        self.plotting_service = ServiceFactory.create_plotting_service()
-        self.calculation_service = ServiceFactory.create_calculation_service()
+        from transistordatabase.backend.concrete_services import ConcreteServiceFactory
+        self.plotting_service = ConcreteServiceFactory.create_plotting_service()
+        self.calculation_service = ConcreteServiceFactory.create_calculation_service()
     
     def register_plot_controller(self, name: str, plot_controller: PlotController) -> None:
         """Register a plot controller."""

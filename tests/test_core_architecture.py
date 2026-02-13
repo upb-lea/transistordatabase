@@ -1,5 +1,5 @@
-"""
-Standalone test for new core models architecture.
+"""Standalone test for new core models architecture.
+
 This test file can run independently to verify the new design.
 """
 import sys

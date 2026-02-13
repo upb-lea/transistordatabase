@@ -1,11 +1,10 @@
-"""
-Repository implementations and factory patterns for transistor data management.
-"""
+"""Repository implementations and factory patterns for transistor data management."""
 from __future__ import annotations
-from pathlib import Path
-from typing import List, Optional, Dict, Any
+
 import json
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from .models import (
     Transistor, TransistorMetadata, ElectricalRatings, ThermalProperties,
@@ -264,7 +263,7 @@ class JsonTransistorLoader(ITransistorLoader):
         return data
     
     def _json_serializer(self, obj: Any) -> Any:
-        """Custom JSON serializer for special types."""
+        """Serialize special types to JSON-compatible format."""
         if isinstance(obj, datetime):
             return obj.isoformat()
         raise TypeError(f"Object of type {type(obj)} is not JSON serializable")

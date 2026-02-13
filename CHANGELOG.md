@@ -5,6 +5,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.6.0] - 2026-02-13
+### Added
+- Clean architecture `core/` layer with domain models, service interfaces, and repository pattern
+- PLECS XML importer (`plecs_importer.py`) for importing semiconductor library files
+- Analytical switching loss models (`analytical_models.py`): Biela, gate charge, IGBT tail current
+- Waveform-based loss calculation (`waveform_losses.py`) with ZVS/ZCS detection
+- Catalog CSV importer (`catalog_importer.py`) with FOM ranking (Rds*Qg)
+- Gate resistance dependent energy interpolation (`rg_formula.py`)
+- Power converter topology analyzers (`topologies/`): Bridgeless PFC, DAB, LLC, SRC-ZVS
+- LTspice Double Pulse Test utility (`utils/ltspice_dpt.py`) with netlist generation and waveform analysis
+- Backend service implementations: ExportService, ComparisonService, ValidationService, CalculationService
+- Frontend/backend separation with ABC interfaces and concrete implementations
+- FastAPI web backend and Vue 3 frontend scaffolding
+
+### Changed
+- Python 3.10+ required (was 3.9)
+- Ruff target updated to py310 with strict mode (0 violations)
+- Isolated PyQt5 dependency to `helper_pdf.py` for headless compatibility
+- Fixed GeckoCIRCUITS exporter `zip(strict=True)` crash with mismatched index lists
+
+### Documentation
+- Added `docs/ARCHITECTURE.md` with clean architecture overview
+- Added `docs/PRD.md` with product requirements
+- Updated `CLAUDE.md` with core architecture guidance
+
 ## [Unreleased] - Date
 ### Updated
 - Add marging for non-linear capacitance file export for GeckoCIRCUITS

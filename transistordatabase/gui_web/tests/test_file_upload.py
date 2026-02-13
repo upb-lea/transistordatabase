@@ -9,27 +9,27 @@ import json
 import tempfile
 import os
 from pathlib import Path
-from fastapi.testclient import TestClient
 import sys
 
 # Add the backend directory to the Python path
 backend_dir = Path(__file__).parent.parent / "backend"
 sys.path.insert(0, str(backend_dir))
 
-from main import app, transistors_db
+from fastapi.testclient import TestClient  # noqa: E402
+from main import app, transistors_db  # noqa: E402
 
 client = TestClient(app)
 
 
 class TestFileUpload:
-    """Test file upload functionality with various scenarios"""
+    """Test file upload functionality with various scenarios."""
     
     def setup_method(self):
-        """Setup for each test method"""
+        """Set up for each test method."""
         transistors_db.clear()
     
     def test_upload_cree_format(self):
-        """Test uploading a file in CREE TDB format"""
+        """Test uploading a file in CREE TDB format."""
         # Real CREE data structure based on the actual file
         cree_data = {
             "name": "CREE_C3M0016120K",
@@ -111,7 +111,7 @@ class TestFileUpload:
             os.unlink(tmp_file_path)
     
     def test_upload_minimal_format(self):
-        """Test uploading with minimal required fields"""
+        """Test uploading with minimal required fields."""
         minimal_data = {
             "name": "Minimal_Device",
             "type": "MOSFET",
@@ -144,7 +144,7 @@ class TestFileUpload:
             os.unlink(tmp_file_path)
     
     def test_upload_with_t_c_max_fallback(self):
-        """Test that t_c_max is used when t_j_max is missing"""
+        """Test that t_c_max is used when t_j_max is missing."""
         data_with_tc = {
             "name": "TC_Fallback_Device",
             "type": "IGBT",
@@ -173,7 +173,7 @@ class TestFileUpload:
             os.unlink(tmp_file_path)
     
     def test_upload_large_file(self):
-        """Test uploading a larger file with extensive data"""
+        """Test uploading a larger file with extensive data."""
         large_data = {
             "name": "Large_Dataset_Device",
             "type": "SiC-MOSFET",
@@ -233,8 +233,7 @@ class TestFileUpload:
             os.unlink(tmp_file_path)
     
     def test_upload_error_handling(self):
-        """Test various error conditions"""
-        
+        """Test various error conditions."""
         # Test 1: Invalid JSON
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp_file:
             tmp_file.write("{ invalid json content")
@@ -290,7 +289,7 @@ class TestFileUpload:
             os.unlink(empty_json_path)
     
     def test_upload_duplicate_handling(self):
-        """Test uploading the same device twice"""
+        """Test uploading the same device twice."""
         device_data = {
             "name": "Duplicate_Test",
             "type": "MOSFET",
@@ -329,14 +328,14 @@ class TestFileUpload:
 
 
 class TestFileUploadIntegration:
-    """Integration tests for file upload with other operations"""
+    """Integration tests for file upload with other operations."""
     
     def setup_method(self):
-        """Setup for each test method"""
+        """Set up for each test method."""
         transistors_db.clear()
     
     def test_upload_then_operations(self):
-        """Test uploading a file and then performing various operations"""
+        """Test uploading a file and then performing various operations."""
         # Upload a device
         device_data = {
             "name": "Integration_Test_Device",

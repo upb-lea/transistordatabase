@@ -10,7 +10,7 @@ import subprocess
 from pathlib import Path
 
 def run_tests():
-    """Run all tests and return the result"""
+    """Run all tests and return the result."""
     test_dir = Path(__file__).parent
     
     print("🧪 Running Transistor Database Web Application Tests")
@@ -94,7 +94,7 @@ def run_tests():
         return 1
 
 def run_specific_test():
-    """Run a specific test for debugging"""
+    """Run a specific test for debugging."""
     print("🔍 Running specific test for debugging...")
     
     # Test the file upload functionality specifically
@@ -108,7 +108,7 @@ def run_specific_test():
     return result.returncode
 
 def check_dependencies():
-    """Check if required dependencies are installed"""
+    """Check if required dependencies are installed."""
     required_packages = ["pytest", "fastapi", "httpx"]
     
     missing_packages = []

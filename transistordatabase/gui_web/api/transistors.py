@@ -1,6 +1,4 @@
-"""
-Transistors API endpoints for Vercel serverless deployment.
-"""
+"""Transistors API endpoints for Vercel serverless deployment."""
 
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.responses import JSONResponse
@@ -71,7 +69,7 @@ async def search_transistors(search_params: Dict[str, Any]):
     """Search transistors based on criteria."""
     results = []
     
-    for transistor_id, transistor in SAMPLE_TRANSISTORS.items():
+    for _transistor_id, transistor in SAMPLE_TRANSISTORS.items():
         match = True
         
         # Simple filtering logic
