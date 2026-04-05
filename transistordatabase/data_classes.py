@@ -1,4 +1,6 @@
 """Contains important data classes like SOA, SwitchEnergyData, GateChargeCurve, ..."""
+import dataclasses
+
 # Python standard libraries
 from matplotlib import pyplot as plt
 from datetime import datetime
@@ -1055,3 +1057,23 @@ class RawMeasurementData:
 
         dpt_dict = {'e_off_meas': e_off_meas, 'e_on_meas': e_on_meas}
         return dpt_dict
+
+@dataclasses.dataclass
+class SwitchingLossFitFactors:
+    """Fit parameters for the switching losses."""
+
+    a_current: np.float64
+    b_current: np.float64
+    c_current: np.float64
+    voltage_factor: np.float64
+    voltage_exponent: np.float64
+    ct_0: np.float64
+    ct_1: np.float64
+    ct_2: np.float64
+    # min / max values to avoid extrapolation
+    temperature_min: np.float64
+    temperature_max: np.float64
+    voltage_min: np.float64
+    voltage_max: np.float64
+    current_min: np.float64
+    current_max: np.float64
