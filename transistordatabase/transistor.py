@@ -406,8 +406,15 @@ class Transistor:
         # working point, calculate q_oss
         self.wp.graph_v_qoss = self.calc_v_qoss()
 
-        self.wp.e_on_meas_fit = self.calc_e_on_off_switch_loss_fit_parameters("on")
-        self.wp.e_off_meas_fit = self.calc_e_on_off_switch_loss_fit_parameters("off")
+        # check if lists are not empty
+        if self.switch.e_on_meas:
+            self.wp.e_on_meas_fit = self.calc_e_on_off_switch_loss_fit_parameters("on")
+        else:
+            self.wp.e_on_meas_fit = None
+        if self.switch.e_off_meas:
+            self.wp.e_off_meas_fit = self.calc_e_on_off_switch_loss_fit_parameters("off")
+        else:
+            self.wp.e_off_meas_fit = None
 
     def init_loss_matrices(self):
         """Experimental."""
@@ -2718,6 +2725,8 @@ class Transistor:
         else:
             raise ValueError("on_off_key must be 'on' or 'off'.")
 
+        print(df.head())
+
         df_to_split = df.copy().drop(columns=["energy"])
 
         X_train, X_test, y_train, y_test = train_test_split(
@@ -2771,7 +2780,15 @@ class Transistor:
         else:
             raise ValueError("on_off_key must be 'on' or 'off'.")
 
-        return current_vec, energy_vec
+        # correct data with the energy in c_oss
+        energy_in_capacitance_at_dpt_voltage =np.interp(voltage, self.graph_v_eoss[0], self.graph_v_ecoss[1])
+
+        if on_off_key == "on":
+            energy_vec_corrected = energy_vec + energy_in_capacitance_at_dpt_voltage
+        elif on_off_key == "off":
+            energy_vec_corrected = energy_vec - energy_in_capacitance_at_dpt_voltage
+
+        return current_vec, energy_vec, energy_vec_corrected
 
 
 def attach_units(trans: dict, devices: dict):
