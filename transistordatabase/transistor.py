@@ -2158,9 +2158,9 @@ class Transistor:
         diode_r_channel: float | None
         switch_channel: float | None
         diode_channel: float | None
-        e_on: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
-        e_off: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
-        e_rr: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
+        e_on: SwitchEnergyData | None
+        e_off: SwitchEnergyData | None
+        e_rr: SwitchEnergyData | None
         v_switching_ref: float | None  #: Unit: V
         graph_v_coss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: F
         graph_v_eoss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: J
@@ -2724,8 +2724,6 @@ class Transistor:
                 df = pd.concat([df, df_local], axis=0)
         else:
             raise ValueError("on_off_key must be 'on' or 'off'.")
-
-        print(df.head())
 
         df_to_split = df.copy().drop(columns=["energy"])
 
