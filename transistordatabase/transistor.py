@@ -2779,7 +2779,7 @@ class Transistor:
             raise ValueError("on_off_key must be 'on' or 'off'.")
 
         # correct data with the energy in c_oss
-        energy_in_capacitance_at_dpt_voltage =np.interp(voltage, self.graph_v_eoss[0], self.graph_v_ecoss[1])
+        energy_in_capacitance_at_dpt_voltage = np.interp(voltage, self.graph_v_eoss[0], self.graph_v_ecoss[1])
 
         if on_off_key == "on":
             energy_vec_corrected = energy_vec + energy_in_capacitance_at_dpt_voltage
