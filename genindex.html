@@ -7,14 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Index &mdash; transistordatabase(TDB) 0.5.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=b9afe91b"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -86,6 +86,7 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
@@ -153,6 +154,8 @@
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.c_rss_fix">c_rss_fix (transistordatabase.transistor.Transistor attribute)</a>
 </li>
+      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_e_on_off_switch_loss_fit_parameters">calc_e_on_off_switch_loss_fit_parameters() (transistordatabase.transistor.Transistor method)</a>
+</li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_energy_object_voltage_correction">calc_energy_object_voltage_correction() (transistordatabase.transistor.Transistor static method)</a>
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_i_e_curve_using_r_e_curve">calc_i_e_curve_using_r_e_curve() (transistordatabase.transistor.Transistor method)</a>
@@ -163,10 +166,10 @@
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_real_on_off_loss">calc_real_on_off_loss() (transistordatabase.transistor.Transistor method)</a>
 </li>
-      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_thermal_params">calc_thermal_params() (transistordatabase.transistor.Transistor method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_thermal_params">calc_thermal_params() (transistordatabase.transistor.Transistor method)</a>
+</li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_v_eoss">calc_v_eoss() (transistordatabase.transistor.Transistor method)</a>
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.calc_v_qoss">calc_v_qoss() (transistordatabase.transistor.Transistor method)</a>
@@ -231,16 +234,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.e_off">e_off (transistordatabase.transistor.Transistor.WP attribute)</a>
 </li>
+      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.e_off_meas_fit">e_off_meas_fit (transistordatabase.transistor.Transistor.WP attribute)</a>
+</li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.e_on">e_on (transistordatabase.transistor.Transistor.WP attribute)</a>
+</li>
+      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.e_on_meas_fit">e_on_meas_fit (transistordatabase.transistor.Transistor.WP attribute)</a>
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.e_rr">e_rr (transistordatabase.transistor.Transistor.WP attribute)</a>
 </li>
       <li><a href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.export_all_datasheets">export_all_datasheets() (transistordatabase.database_manager.DatabaseManager method)</a>
 </li>
-      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.export_datasheet">export_datasheet() (transistordatabase.transistor.Transistor method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.export_datasheet">export_datasheet() (transistordatabase.transistor.Transistor method)</a>
+</li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.export_geckocircuits">export_geckocircuits() (transistordatabase.transistor.Transistor method)</a>
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.export_geckocircuits_coss">export_geckocircuits_coss() (transistordatabase.transistor.Transistor method)</a>
@@ -256,9 +263,19 @@
   </ul></td>
 </tr></table>
 
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.fit_function">fit_function() (transistordatabase.transistor.Transistor static method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.generate_energy_loss_curve_from_fit_factors">generate_energy_loss_curve_from_fit_factors() (transistordatabase.transistor.Transistor method)</a>
+</li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.get_curve_data">get_curve_data() (transistordatabase.transistor.Transistor method)</a>
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.get_object_i_e">get_object_i_e() (transistordatabase.transistor.Transistor method)</a>
@@ -267,10 +284,10 @@
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.get_object_r_e_simplified">get_object_r_e_simplified() (transistordatabase.transistor.Transistor method)</a>
 </li>
-      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.get_object_v_i">get_object_v_i() (transistordatabase.transistor.Transistor method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.get_object_v_i">get_object_v_i() (transistordatabase.transistor.Transistor method)</a>
+</li>
       <li><a href="transistordatabase.html#transistordatabase.database_manager.DatabaseManager.get_transistor_names_list">get_transistor_names_list() (transistordatabase.database_manager.DatabaseManager method)</a>
 </li>
       <li><a href="transistordatabase.html#transistordatabase.transistor.Transistor.WP.graph_v_coss">graph_v_coss (transistordatabase.transistor.Transistor.WP attribute)</a>
