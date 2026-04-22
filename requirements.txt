@@ -13,3 +13,5 @@ PyQtWebEngine
 mongomock
 requests
 deepdiff
+pandas
+scikit-learn

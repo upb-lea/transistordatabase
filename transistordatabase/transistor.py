@@ -23,6 +23,8 @@ import logging
 from jinja2 import Environment, FileSystemLoader
 from bson.objectid import ObjectId
 from bson import json_util
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
 # Local libraries
 from transistordatabase.constants import *
@@ -403,6 +405,16 @@ class Transistor:
 
         # working point, calculate q_oss
         self.wp.graph_v_qoss = self.calc_v_qoss()
+
+        # check if lists are not empty
+        if self.switch.e_on_meas:
+            self.wp.e_on_meas_fit = self.calc_e_on_off_switch_loss_fit_parameters("on")
+        else:
+            self.wp.e_on_meas_fit = None
+        if self.switch.e_off_meas:
+            self.wp.e_off_meas_fit = self.calc_e_on_off_switch_loss_fit_parameters("off")
+        else:
+            self.wp.e_off_meas_fit = None
 
     def init_loss_matrices(self):
         """Experimental."""
@@ -2146,14 +2158,16 @@ class Transistor:
         diode_r_channel: float | None
         switch_channel: float | None
         diode_channel: float | None
-        e_on: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
-        e_off: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
-        e_rr: npt.NDArray[np.float64] | None  #: Units: Row 1: A; Row 2: J
+        e_on: SwitchEnergyData | None
+        e_off: SwitchEnergyData | None
+        e_rr: SwitchEnergyData | None
         v_switching_ref: float | None  #: Unit: V
         graph_v_coss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: F
         graph_v_eoss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: J
         graph_v_qoss: npt.NDArray[np.float64] | None  #: Units: Row 1: V; Row 2: C
         parallel_transistors: float | None  #: Unit: Number
+        e_on_meas_fit: None
+        e_off_meas_fit: None
 
         def __init__(self):
             self.switch_v_channel = None
@@ -2651,6 +2665,128 @@ class Transistor:
         plt.legend()
         plt.grid()
         plt.show()
+
+    @staticmethod
+    def fit_function(input_params: tuple, a_current: np.float64, b_current: np.float64, c_current: np.float64, voltage_factor: np.float64,
+                     voltage_exponent: np.float64, ct_0: np.float64, ct_1: np.float64, ct_2: np.float64):
+        """
+        Fit the switching loss curves.
+
+        :param input_params: (current, voltage, temperature) as tuple
+        :type input_params: tuple
+        :param a_current: constant offset factor to fit
+        :type a_current: np.float64
+        :param b_current: linear factor to fit
+        :type b_current: np.float64
+        :param c_current: quadratic factor to fit
+        :type c_current: np.float64
+        :param voltage_factor: linear voltage factor to fit
+        :type voltage_factor: np.float64
+        :param voltage_exponent: voltage exponent factor to fit
+        :type voltage_exponent: np.float64
+        :param ct_0: constant temperature factor
+        :type ct_0: np.float64
+        :param ct_1: linear temperature factor
+        :type ct_1: np.float64
+        :param ct_2: quadratic temperature factor
+        :type ct_2: np.float64
+        """
+        current, voltage, t_j = input_params
+
+        loss_current = a_current + b_current * current + c_current * current ** 2
+
+        loss_voltage_current = loss_current * ((voltage * voltage_factor) ** voltage_exponent)
+
+        loss_voltage_current_temperature = loss_voltage_current * (ct_0 + t_j * (ct_1 + ct_2 ** 2))
+
+        return loss_voltage_current_temperature
+
+    def calc_e_on_off_switch_loss_fit_parameters(self, on_off_key: str):
+        """
+        Fit the parameters for the turn-on and the turn-off losses.
+
+        :param on_off_key: "on" or "off"
+        :type on_off_key: str
+        """
+        df = pd.DataFrame()
+
+        if on_off_key == "on":
+            for lossfile in self.switch.e_on_meas:
+                voltage = np.full_like(lossfile.graph_i_e[0], lossfile.v_supply)
+                temperature = np.full_like(lossfile.graph_i_e[0], lossfile.t_j)
+                df_local = pd.DataFrame({"current": lossfile.graph_i_e[0], "energy": lossfile.graph_i_e[1], "voltage": voltage, "temperature": temperature})
+                df = pd.concat([df, df_local], axis=0)
+        elif on_off_key == "off":
+            for lossfile in self.switch.e_off_meas:
+                voltage = np.full_like(lossfile.graph_i_e[0], lossfile.v_supply)
+                temperature = np.full_like(lossfile.graph_i_e[0], lossfile.t_j)
+                df_local = pd.DataFrame({"current": lossfile.graph_i_e[0], "energy": lossfile.graph_i_e[1], "voltage": voltage, "temperature": temperature})
+                df = pd.concat([df, df_local], axis=0)
+        else:
+            raise ValueError("on_off_key must be 'on' or 'off'.")
+
+        df_to_split = df.copy().drop(columns=["energy"])
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            df_to_split, df["energy"], test_size=0.3, random_state=42)
+        popt, pcov = curve_fit(self.fit_function, (X_train["current"], X_train["voltage"], X_train["temperature"]), y_train, maxfev=int(1e6))
+
+        a_current, b_current, c_current, voltage_factor, voltage_exponent, ct_0, ct_1, ct_2 = popt
+
+        fitted_switching_factors = SwitchingLossFitFactors(
+            a_current=a_current,
+            b_current=b_current,
+            c_current=c_current,
+            voltage_factor=voltage_factor,
+            voltage_exponent=voltage_exponent,
+            ct_0=ct_0,
+            ct_1=ct_1,
+            ct_2=ct_2,
+            temperature_min=df["temperature"].min(),
+            temperature_max=df["temperature"].max(),
+            voltage_min=df["voltage"].min(),
+            voltage_max=df["voltage"].max(),
+            current_min=df["current"].min(),
+            current_max=df["current"].max()
+        )
+
+        return fitted_switching_factors
+
+    def generate_energy_loss_curve_from_fit_factors(self, on_off_key: str, voltage: np.float64, temperature: np.float64):
+        """
+        Generate the turn-on/off loss over current from the fit factors.
+
+        :param on_off_key: "on" or "off"
+        :type on_off_key: str
+        :param voltage: Voltage in V
+        :type voltage: np.float64
+        :param temperature: Temperature in °C
+        :type temperature: np.float64
+        """
+        if on_off_key == "on":
+            current_vec = np.linspace(0, self.wp.e_on_meas_fit.current_max)
+            energy_vec = self.fit_function(
+                (current_vec, voltage, temperature), self.wp.e_on_meas_fit.a_current, self.wp.e_on_meas_fit.b_current,
+                self.wp.e_on_meas_fit.c_current, self.wp.e_on_meas_fit.voltage_factor, self.wp.e_on_meas_fit.voltage_exponent, self.wp.e_on_meas_fit.ct_0,
+                self.wp.e_on_meas_fit.ct_1, self.wp.e_on_meas_fit.ct_2)
+        elif on_off_key == "off":
+            current_vec = np.linspace(0, self.wp.e_off_meas_fit.current_max)
+            energy_vec = self.fit_function(
+                (current_vec, voltage, temperature), self.wp.e_off_meas_fit.a_current, self.wp.e_off_meas_fit.b_current,
+                self.wp.e_off_meas_fit.c_current, self.wp.e_off_meas_fit.voltage_factor, self.wp.e_off_meas_fit.voltage_exponent, self.wp.e_off_meas_fit.ct_0,
+                self.wp.e_off_meas_fit.ct_1, self.wp.e_off_meas_fit.ct_2)
+        else:
+            raise ValueError("on_off_key must be 'on' or 'off'.")
+
+        # correct data with the energy in c_oss
+        energy_in_capacitance_at_dpt_voltage = np.interp(voltage, self.graph_v_eoss[0], self.graph_v_ecoss[1])
+
+        if on_off_key == "on":
+            energy_vec_corrected = energy_vec + energy_in_capacitance_at_dpt_voltage
+        elif on_off_key == "off":
+            energy_vec_corrected = energy_vec - energy_in_capacitance_at_dpt_voltage
+
+        return current_vec, energy_vec, energy_vec_corrected
 
 
 def attach_units(trans: dict, devices: dict):
