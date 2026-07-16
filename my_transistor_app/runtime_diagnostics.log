@@ -1,0 +1,18 @@
+sys.executable = C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase\.venv\Scripts\python.exe
+sys.version = 3.14.5 (tags/v3.14.5:5607950, May 10 2026, 10:43:50) [MSC v.1944 64 bit (AMD64)]
+os.getcwd() = C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase\my_transistor_app
+_PROJECT_ROOT = C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase
+PYTHONPATH env = C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase
+sys.path =
+    C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase\my_transistor_app\streamlit_app.py
+    C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase\my_transistor_app
+    C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase\my_transistor_app
+    C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase
+    C:\Users\Ala\AppData\Local\Python\pythoncore-3.14-64\python314.zip
+    C:\Users\Ala\AppData\Local\Python\pythoncore-3.14-64\DLLs
+    C:\Users\Ala\AppData\Local\Python\pythoncore-3.14-64\Lib
+    C:\Users\Ala\AppData\Local\Python\pythoncore-3.14-64
+    C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase\.venv
+    C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase\.venv\Lib\site-packages
+pymongo find_spec = ModuleSpec(name='pymongo', loader=<_frozen_importlib_external.SourceFileLoader object at 0x00000255546C33B0>, origin='C:\\Users\\Ala\\Desktop\\Semestr 6\\Tuluza\\STAZ\\Fork\\TransistorDataBase\\.venv\\Lib\\site-packages\\pymongo\\__init__.py', submodule_search_locations=['C:\\Users\\Ala\\Desktop\\Semestr 6\\Tuluza\\STAZ\\Fork\\TransistorDataBase\\.venv\\Lib\\site-packages\\pymongo'])
+transistordatabase find_spec = ModuleSpec(name='transistordatabase', loader=<_frozen_importlib_external.SourceFileLoader object at 0x00000255546C3110>, origin='C:\\Users\\Ala\\Desktop\\Semestr 6\\Tuluza\\STAZ\\Fork\\TransistorDataBase\\transistordatabase\\__init__.py', submodule_search_locations=['C:\\Users\\Ala\\Desktop\\Semestr 6\\Tuluza\\STAZ\\Fork\\TransistorDataBase\\transistordatabase'])
