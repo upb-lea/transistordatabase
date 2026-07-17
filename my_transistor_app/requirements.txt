@@ -1,0 +1,17 @@
+# Core TDB library (install from source or via pip)
+transistordatabase>=0.5.1
+
+# API layer
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.7.0
+
+# UI prototype
+streamlit>=1.35.0
+plotly>=5.22.0
+pandas>=2.2.0
+
+# Scientific (already required by transistordatabase)
+numpy>=1.26.0
+scipy>=1.13.0
+matplotlib>=3.9.0

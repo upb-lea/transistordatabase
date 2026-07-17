@@ -2,7 +2,6 @@
 # Python standard libraries
 from __future__ import annotations
 from matplotlib import pyplot as plt
-from PyQt5 import QtWidgets, QtWebEngineWidgets
 import xml.etree.ElementTree as et
 import numpy as np
 import sys
@@ -35,6 +34,7 @@ def isvalid_transistor_name(transistor_name: str) -> bool:
     :rtype: bool
     """
     return False if re.match(transistor_name_regex, transistor_name) is None else True
+
 
 def isvalid_dict(dataset_dict: dict, dict_type: str) -> bool:
     """
@@ -185,8 +185,9 @@ def isvalid_dict(dataset_dict: dict, dict_type: str) -> bool:
                     name = key.capitalize().replace("_", " ")
                     if name == 'Housing type':
                         housing_file_path = os.path.join(os.path.dirname(__file__), 'housing_types.txt')
-                        raise ValueError('{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported housing types.'.format(
-                            name, dataset_value, name, alphanum_values, housing_file_path))
+                        raise ValueError(
+                            '{} {} is not allowed. The supported {}s are\n {} \n See file {} for a list of supported housing types.'.format(
+                                name, dataset_value, name, alphanum_values, housing_file_path))
                     elif name == 'Manufacturer':
                         module_file_path = os.path.join(os.path.dirname(__file__), 'module_manufacturers.txt')
                         raise ValueError(
@@ -253,6 +254,7 @@ def isvalid_dict(dataset_dict: dict, dict_type: str) -> bool:
             all([check_2d_dataset(dataset_dict.get(array_key)) for array_key in array_keys]):
         return True
 
+
 def matlab_compatibility_test(transistor, attribute):
     """
     Check attribute for occurrences of None an replace it with np.nan.
@@ -277,7 +279,7 @@ def matlab_compatibility_test(transistor, attribute):
 
     except AttributeError:
         return np.nan
-    
+
 
 # ==== Input/Output ====
 def get_xml_data(file: str) -> dict:
@@ -377,11 +379,13 @@ def get_xml_data(file: str) -> dict:
                 r_par.append(float(attr.attrib['R']))
                 tau_par.append(float(attr.attrib['Tau']) if attr.attrib['Tau'] else None)
             foster_args['r_th_vector'], foster_args['tau_vector'] = (r_par, tau_par) if len(r_par) > 1 else (None, None)
-            foster_args['r_th_total'], foster_args['tau_total'] = (r_par[0], tau_par[0]) if len(r_par) == 1 else (sum(foster_args['r_th_vector']),
-                                                                                                                  sum(foster_args['tau_vector']))
+            foster_args['r_th_total'], foster_args['tau_total'] = (r_par[0], tau_par[0]) if len(r_par) == 1 else (
+                sum(foster_args['r_th_vector']),
+                sum(foster_args['tau_vector']))
         return info, energy_on_list, energy_off_list, channel_list, foster_args
     else:
         raise ImportError('Import of ' + file + ' Not possible: Only table type xml data are accepted')
+
 
 def read_data_file(file_path: str):
     """
@@ -392,7 +396,7 @@ def read_data_file(file_path: str):
     """
     if not os.path.isfile(file_path):
         raise Exception(f"File {file_path} does not exist.")
-    
+
     data = []
 
     with open(file_path, "r") as fd:
@@ -403,6 +407,7 @@ def read_data_file(file_path: str):
             data.append(str(line))
 
     return data
+
 
 def html_to_pdf(html: List | str, name: List | str, path: List | str):
     """
@@ -417,6 +422,12 @@ def html_to_pdf(html: List | str, name: List | str, path: List | str):
 
     :return: saves the html string to pdf file format
     """
+    # Lazy import: PyQt5/QtWebEngineWidgets is only needed by this one function.
+    # Importing it at module load time would force EVERY user of
+    # `transistordatabase` (even those only reading JSON data) to install
+    # a ~200 MB Qt/WebEngine stack. Only pay that cost if this function is
+    # actually called.
+    from PyQt5 import QtWidgets, QtWebEngineWidgets
     app = QtWidgets.QApplication(sys.argv)
     page = QtWebEngineWidgets.QWebEnginePage()
     path_item = str()
@@ -480,6 +491,7 @@ def get_vc_plots(cap_data: dict):
     plt.ylabel('Capacitance in F')
     plt.grid()
     return get_img_raw_data(plt)
+
 
 def compare_plot(transistor_list: list, temperature: float, gatevoltage: float):
     """Compare transistors.
@@ -565,6 +577,7 @@ def get_gatedefaults(transistor_type: str) -> list:
                      }.get(transistor_type.lower(), [15, -15, 0, 15])
     return gate_voltages
 
+
 def negate_and_append(voltage: list, current: list) -> tuple[list, np.array]:
     """
     Negate the channel current x-axis data for the transistors of type mosfet. Helper function.
@@ -592,6 +605,7 @@ def negate_and_append(voltage: list, current: list) -> tuple[list, np.array]:
         voltage[index] = np.append(voltage_reverse, vData).tolist()
     return voltage, current
 
+
 def get_loss_curves(loss_data: list, plecs_holder: dict, loss_type: str, v_g: int, is_recovery_loss: bool) -> dict:
     """
     Extract loss information of switch/diode for plecs exporter. Called internally by get_curve_data() for using plecs exporter feature. Helper function.
@@ -611,14 +625,16 @@ def get_loss_curves(loss_data: list, plecs_holder: dict, loss_type: str, v_g: in
     :rtype: dict
     """
     for energy_dict in loss_data:
-        if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict['graph_i_e'] is not None:
+        if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict[
+            'graph_i_e'] is not None:
             try:
                 if limit_current and limit_current > max(energy_dict['graph_i_e'][0]):
                     limit_current = max(energy_dict['graph_i_e'][0])
             except NameError:
                 limit_current = max(energy_dict['graph_i_e'][0])
     for energy_dict in loss_data:
-        if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict['graph_i_e'] is not None:
+        if energy_dict['v_g'] == v_g and energy_dict['dataset_type'] == 'graph_i_e' and energy_dict[
+            'graph_i_e'] is not None:
             interp_current = np.linspace(0, limit_current, 20)
             loss_energy = np.interp(interp_current, energy_dict['graph_i_e'][0], energy_dict['graph_i_e'][1])
             if 'Energy' not in plecs_holder[loss_type]:
@@ -633,6 +649,7 @@ def get_loss_curves(loss_data: list, plecs_holder: dict, loss_type: str, v_g: in
             plecs_holder[loss_type]['TemperatureAxis'].append(energy_dict['t_j']) \
                 if energy_dict['t_j'] not in plecs_holder[loss_type]['TemperatureAxis'] else None
     return plecs_holder
+
 
 def get_channel_data(channel_data: list, plecs_holder: dict, v_on: int, is_diode: bool, has_body_diode: bool) -> dict:
     """
@@ -672,6 +689,7 @@ def get_channel_data(channel_data: list, plecs_holder: dict, v_on: int, is_diode
             plecs_holder['ConductionLoss']['Channel'].append(channel_data.tolist())
     return plecs_holder
 
+
 def gen_exp_func(order: int):
     """
     Generate the required ordered function for curve fitting. A helper function to calc_thermal_params method.
@@ -686,14 +704,18 @@ def gen_exp_func(order: int):
     elif order == 2:
         return lambda t, rn, tau, rn2, tau2: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2))
     elif order == 3:
-        return lambda t, rn, tau, rn2, tau2, rn3, tau3: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3))
+        return lambda t, rn, tau, rn2, tau2, rn3, tau3: rn * (1 - np.exp(-t / tau)) + rn2 * (
+                    1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3))
     elif order == 4:
         return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, \
-            tau4: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4))
+                      tau4: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (
+                    1 - np.exp(-t / tau3)) + rn4 * (1 - np.exp(-t / tau4))
     elif order == 5:
         return lambda t, rn, tau, rn2, tau2, rn3, tau3, rn4, tau4, rn5, \
-            tau5: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (1 - np.exp(-t / tau3)) + rn4 * \
-            (1 - np.exp(-t / tau4)) + rn5 * (1 - np.exp(-t / tau5))
+                      tau5: rn * (1 - np.exp(-t / tau)) + rn2 * (1 - np.exp(-t / tau2)) + rn3 * (
+                    1 - np.exp(-t / tau3)) + rn4 * \
+                            (1 - np.exp(-t / tau4)) + rn5 * (1 - np.exp(-t / tau5))
+
 
 def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
     """
@@ -729,6 +751,7 @@ def merge_curve(curve: np.array, curve_detail: np.array) -> np.array:
             type(merged_curve)
     return merged_curve
 
+
 def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_off: float | list[float],
                                    v_driver_off: float) -> float:
     """
@@ -758,6 +781,7 @@ def r_g_max_rapid_channel_turn_off(v_gsth: float, c_ds: float, c_gd: float, i_of
     """
     return (v_gsth - v_driver_off) / i_off * (1 + c_ds / c_gd)
 
+
 def compare_list(parameter: list):
     """
     Check through the list of value for odd one out.
@@ -769,6 +793,7 @@ def compare_list(parameter: list):
         if j != parameter[i + 1]:
             return False
     return True
+
 
 def get_copy_transistor_name(current_name: str) -> str:
     """
@@ -786,9 +811,11 @@ def get_copy_transistor_name(current_name: str) -> str:
     elif len(result.group) == 4:
         # Name is already a copy-name -> Copy number will be raised
         index = result.group(4)
-        return f"{current_name[-2]}{index+1})"
+        return f"{current_name[-2]}{index + 1})"
     else:
-        raise Exception(f"Given transistor name {current_name} is not a valid name and therefore a copy-name cannot be created.")
+        raise Exception(
+            f"Given transistor name {current_name} is not a valid name and therefore a copy-name cannot be created.")
+
 
 def get_img_raw_data(plot):
     """
