@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JsonSchemaMappingsProjectConfiguration">
+    <state>
+      <map>
+        <entry key="Cody Settings">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="Cody Settings" />
+              <option name="relativePathToSchema" value="C:\Users\Ala\Desktop\Semestr 6\Tuluza\STAZ\Fork\TransistorDataBase\.idea\.sourcegraph\cody_settings.schema.json" />
+              <option name="schemaVersion" value="JSON Schema 7" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="pattern" value="true" />
+                    <option name="path" value="*/cody_settings.json" />
+                    <option name="mappingKind" value="Pattern" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+      </map>
+    </state>
+  </component>
+</project>

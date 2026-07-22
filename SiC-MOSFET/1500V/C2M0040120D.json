@@ -1,0 +1,512 @@
+{
+    "name": "C2M0040120D",
+    "manufacturer": "Wolfspeed",
+    "type": "SiC-MOSFET",
+    "technology": "SiC-MOSFET",
+    "housing_type": "PLECS Import",
+    "housing_area": "",
+    "cooling_area": "",
+    "author": "PLECS XML Importer",
+    "creation_date": "2026-07-22",
+    "last_modified": "2026-07-22",
+    "template_version": "0.4.1",
+    "template_date": "2026-07-22",
+    "datasheet_version": "unknown",
+    "datasheet_date": "",
+    "datasheet_hyperlink": "https://www.plexim.com/xml/semiconductors/C2M0040120D",
+    "comment": "Imported from PLECS XML. v_abs_max, i_abs_max and other absolute ratings are not present in PLECS XML - fill them using the 'edit' command.",
+    "v_abs_max": "1500",
+    "i_abs_max": 99.97,
+    "i_cont": "",
+    "t_c_max": "",
+    "r_g_int": 0,
+    "r_th_cs": 0,
+    "r_th_switch_cs": 0,
+    "r_th_diode_cs": 0,
+    "c_iss": null,
+    "c_iss_fix": null,
+    "c_oss": null,
+    "c_oss_fix": null,
+    "c_oss_tr": null,
+    "c_oss_tr_c_o": null,
+    "c_oss_tr_v_ds": null,
+    "c_oss_tr_v_gs": null,
+    "c_oss_er": null,
+    "c_oss_er_c_o": null,
+    "c_oss_er_v_ds": null,
+    "c_oss_er_v_gs": null,
+    "c_rss": null,
+    "c_rss_fix": null,
+    "switch": {
+        "manufacturer": "Wolfspeed",
+        "technology": "SiC-MOSFET",
+        "t_j_max": 175,
+        "comment": "Imported from PLECS XML",
+        "channel": [
+            {
+                "t_j": -55.0,
+                "v_g": 12.0,
+                "graph_v_i": [
+                    [
+                        0.0,
+                        0.05654,
+                        0.1988,
+                        0.6074,
+                        1.756,
+                        5.672
+                    ],
+                    [
+                        0.0,
+                        1.517,
+                        5.334,
+                        14.94,
+                        39.12,
+                        99.97
+                    ]
+                ]
+            },
+            {
+                "t_j": 25.0,
+                "v_g": 12.0,
+                "graph_v_i": [
+                    [
+                        0.0,
+                        0.06456,
+                        0.227,
+                        0.6342,
+                        1.831,
+                        6.194
+                    ],
+                    [
+                        0.0,
+                        1.517,
+                        5.334,
+                        14.94,
+                        39.12,
+                        99.97
+                    ]
+                ]
+            },
+            {
+                "t_j": 150.0,
+                "v_g": 12.0,
+                "graph_v_i": [
+                    [
+                        0.0,
+                        0.1049,
+                        0.369,
+                        1.1,
+                        3.268,
+                        12.47
+                    ],
+                    [
+                        0.0,
+                        1.517,
+                        5.334,
+                        14.94,
+                        39.12,
+                        99.97
+                    ]
+                ]
+            },
+            {
+                "t_j": 900.0,
+                "v_g": 12.0,
+                "graph_v_i": [
+                    [
+                        0.0,
+                        0.1573,
+                        0.5535,
+                        1.65,
+                        4.902,
+                        18.71
+                    ],
+                    [
+                        0.0,
+                        1.517,
+                        5.334,
+                        14.94,
+                        39.12,
+                        99.97
+                    ]
+                ]
+            },
+            {
+                "t_j": 1000.0,
+                "v_g": 12.0,
+                "graph_v_i": [
+                    [
+                        0.0,
+                        0.1573,
+                        0.5535,
+                        1.65,
+                        4.902,
+                        18.71
+                    ],
+                    [
+                        0.0,
+                        1.517,
+                        5.334,
+                        14.94,
+                        39.12,
+                        99.97
+                    ]
+                ]
+            }
+        ],
+        "e_on": [
+            {
+                "dataset_type": "graph_i_e",
+                "t_j": 25.0,
+                "v_supply": 800.0,
+                "v_g": 12.0,
+                "r_g": 0,
+                "graph_i_e": [
+                    [
+                        -10.0,
+                        0.0,
+                        12.88,
+                        24.98,
+                        36.59,
+                        47.69
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0003247,
+                        0.0008218,
+                        0.001267,
+                        0.001777
+                    ]
+                ]
+            },
+            {
+                "dataset_type": "graph_i_e",
+                "t_j": 125.0,
+                "v_supply": 800.0,
+                "v_g": 12.0,
+                "r_g": 0,
+                "graph_i_e": [
+                    [
+                        -10.0,
+                        0.0,
+                        12.88,
+                        24.98,
+                        36.59,
+                        47.69
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.000504,
+                        0.0009048000000000001,
+                        0.0013823000000000002,
+                        0.0018997999999999999
+                    ]
+                ]
+            },
+            {
+                "dataset_type": "graph_i_e",
+                "t_j": 900.0,
+                "v_supply": 800.0,
+                "v_g": 12.0,
+                "r_g": 0,
+                "graph_i_e": [
+                    [
+                        -10.0,
+                        0.0,
+                        12.88,
+                        24.98,
+                        36.59,
+                        47.69
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.000756,
+                        0.0013572000000000002,
+                        0.002073,
+                        0.0028499999999999997
+                    ]
+                ]
+            },
+            {
+                "dataset_type": "graph_i_e",
+                "t_j": 1000.0,
+                "v_supply": 800.0,
+                "v_g": 12.0,
+                "r_g": 0,
+                "graph_i_e": [
+                    [
+                        -10.0,
+                        0.0,
+                        12.88,
+                        24.98,
+                        36.59,
+                        47.69
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.000756,
+                        0.001357,
+                        0.002073,
+                        0.00285
+                    ]
+                ]
+            }
+        ],
+        "e_off": [
+            {
+                "dataset_type": "graph_i_e",
+                "t_j": 25.0,
+                "v_supply": 800.0,
+                "v_g": 0.0,
+                "r_g": 0,
+                "graph_i_e": [
+                    [
+                        -10.0,
+                        0.0,
+                        12.88,
+                        24.98,
+                        36.59,
+                        47.69
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        5.6240000000000004e-05,
+                        7.04e-05,
+                        0.00012448,
+                        0.00018864000000000004
+                    ]
+                ]
+            },
+            {
+                "dataset_type": "graph_i_e",
+                "t_j": 125.0,
+                "v_supply": 800.0,
+                "v_g": 0.0,
+                "r_g": 0,
+                "graph_i_e": [
+                    [
+                        -10.0,
+                        0.0,
+                        12.88,
+                        24.98,
+                        36.59,
+                        47.69
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        7.03e-05,
+                        8.8e-05,
+                        0.0001556,
+                        0.0002358
+                    ]
+                ]
+            },
+            {
+                "dataset_type": "graph_i_e",
+                "t_j": 900.0,
+                "v_supply": 800.0,
+                "v_g": 0.0,
+                "r_g": 0,
+                "graph_i_e": [
+                    [
+                        -10.0,
+                        0.0,
+                        12.88,
+                        24.98,
+                        36.59,
+                        47.69
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.00010545,
+                        0.000132,
+                        0.0002334,
+                        0.00035370000000000003
+                    ]
+                ]
+            },
+            {
+                "dataset_type": "graph_i_e",
+                "t_j": 1000.0,
+                "v_supply": 800.0,
+                "v_g": 0.0,
+                "r_g": 0,
+                "graph_i_e": [
+                    [
+                        -10.0,
+                        0.0,
+                        12.88,
+                        24.98,
+                        36.59,
+                        47.69
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.00010545,
+                        0.000132,
+                        0.0002334,
+                        0.00035370000000000003
+                    ]
+                ]
+            }
+        ],
+        "e_on_meas": [],
+        "e_off_meas": [],
+        "linearized_switch": [],
+        "r_channel_th": [],
+        "thermal_foster": {
+            "r_th_total": 0.37815,
+            "r_th_vector": [
+                0.0258,
+                0.08572,
+                0.08423,
+                0.1824
+            ],
+            "tau_total": 0.0764161176,
+            "tau_vector": [
+                0.00016362360000000002,
+                0.001410094,
+                0.00943376,
+                0.06540864
+            ],
+            "c_th_total": null,
+            "c_th_vector": null,
+            "graph_t_rthjc": [],
+            "note": "Converted from a Cauer (R/C) thermal network - tau values are an R*C approximation, not an exact Cauer-to-Foster transform."
+        },
+        "soa": [],
+        "charge_curve": []
+    },
+    "diode": {
+        "manufacturer": "Wolfspeed",
+        "technology": "body diode",
+        "t_j_max": 175,
+        "comment": "Imported from PLECS XML",
+        "channel": [
+            {
+                "t_j": -55.0,
+                "v_g": 0.0,
+                "graph_v_i": [
+                    [
+                        -0.0,
+                        3.294,
+                        3.769,
+                        4.385,
+                        5.249,
+                        6.672
+                    ],
+                    [
+                        -0.0,
+                        1.516,
+                        5.33,
+                        14.93,
+                        39.07,
+                        99.82
+                    ]
+                ]
+            },
+            {
+                "t_j": 25.0,
+                "v_g": 0.0,
+                "graph_v_i": [
+                    [
+                        -0.0,
+                        2.997,
+                        3.415,
+                        3.921,
+                        4.714,
+                        5.992
+                    ],
+                    [
+                        -0.0,
+                        1.516,
+                        5.33,
+                        14.93,
+                        39.07,
+                        99.82
+                    ]
+                ]
+            },
+            {
+                "t_j": 150.0,
+                "v_g": 0.0,
+                "graph_v_i": [
+                    [
+                        -0.0,
+                        2.624,
+                        2.988,
+                        3.498,
+                        4.274,
+                        5.6
+                    ],
+                    [
+                        -0.0,
+                        1.516,
+                        5.33,
+                        14.93,
+                        39.07,
+                        99.82
+                    ]
+                ]
+            },
+            {
+                "t_j": 900.0,
+                "v_g": 0.0,
+                "graph_v_i": [
+                    [
+                        -0.0,
+                        2.362,
+                        2.689,
+                        3.148,
+                        3.847,
+                        5.04
+                    ],
+                    [
+                        -0.0,
+                        1.516,
+                        5.33,
+                        14.93,
+                        39.07,
+                        99.82
+                    ]
+                ]
+            },
+            {
+                "t_j": 1000.0,
+                "v_g": 0.0,
+                "graph_v_i": [
+                    [
+                        -0.0,
+                        2.362,
+                        2.689,
+                        3.148,
+                        3.847,
+                        5.04
+                    ],
+                    [
+                        -0.0,
+                        1.516,
+                        5.33,
+                        14.93,
+                        39.07,
+                        99.82
+                    ]
+                ]
+            }
+        ],
+        "e_rr": [],
+        "linearized_diode": [],
+        "thermal_foster": {},
+        "soa": []
+    },
+    "graph_v_ecoss": [],
+    "raw_measurement_data": ""
+}

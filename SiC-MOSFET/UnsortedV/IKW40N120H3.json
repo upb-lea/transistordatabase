@@ -1,0 +1,9 @@
+{
+    "name": "IKW40N120H3",
+    "type": "SiC-MOSFET",
+    "technology": "SiC-MOSFET",
+    "v_abs_max": "",
+    "manufacturer": "",
+    "author": "PLECS import",
+    "diode_source_file": "IKW40N120H3"
+}
