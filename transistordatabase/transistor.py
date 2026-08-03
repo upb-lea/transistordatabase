@@ -2709,6 +2709,18 @@ class Transistor:
         """
         df = pd.DataFrame()
 
+        # a_current
+        # b_current
+        # c_current
+        # voltage_factor
+        # voltage_exponent
+        # ct_0
+        # ct_1
+        # ct_2
+
+
+        bounds = ([-np.inf, -np.inf, -np.inf, 0, 0, -np.inf, -np.inf, -np.inf], [np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf])
+
         if on_off_key == "on":
             for lossfile in self.switch.e_on_meas:
                 voltage = np.full_like(lossfile.graph_i_e[0], lossfile.v_supply)
@@ -2727,8 +2739,8 @@ class Transistor:
         df_to_split = df.copy().drop(columns=["energy"])
 
         X_train, X_test, y_train, y_test = train_test_split(
-            df_to_split, df["energy"], test_size=0.3, random_state=42)
-        popt, pcov = curve_fit(self.fit_function, (X_train["current"], X_train["voltage"], X_train["temperature"]), y_train, maxfev=int(1e6))
+            df_to_split, df["energy"], test_size=0.2, random_state=42)
+        popt, pcov = curve_fit(self.fit_function, (X_train["current"], X_train["voltage"], X_train["temperature"]), y_train, maxfev=int(1e6), bounds=bounds, method="trf")
 
         a_current, b_current, c_current, voltage_factor, voltage_exponent, ct_0, ct_1, ct_2 = popt
 
@@ -2778,7 +2790,7 @@ class Transistor:
             raise ValueError("on_off_key must be 'on' or 'off'.")
 
         # correct data with the energy in c_oss
-        energy_in_capacitance_at_dpt_voltage = np.interp(voltage, self.graph_v_eoss[0], self.graph_v_ecoss[1])
+        energy_in_capacitance_at_dpt_voltage = np.interp(voltage, self.graph_v_ecoss[0], self.graph_v_ecoss[1])
 
         if on_off_key == "on":
             energy_vec_corrected = energy_vec + energy_in_capacitance_at_dpt_voltage
