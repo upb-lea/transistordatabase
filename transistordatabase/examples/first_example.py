@@ -1,9 +1,13 @@
 """This shall be an example file to test the new refactored class structure."""
 # Python standard libraries
 import os
+import logging
 
 # Local libraries
 from transistordatabase.database_manager import DatabaseManager
+
+# configure logging to show femmt terminal output
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 def extract_from_mongodb_to_json():
     """Extract transistors from the mongo-database to single json-files."""
