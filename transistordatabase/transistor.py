@@ -2718,7 +2718,6 @@ class Transistor:
         # ct_1
         # ct_2
 
-
         bounds = ([-np.inf, -np.inf, -np.inf, 0, 0, -np.inf, -np.inf, -np.inf], [np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf])
 
         if on_off_key == "on":
