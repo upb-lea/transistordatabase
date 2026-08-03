@@ -1913,7 +1913,7 @@ class Transistor:
                 file_switch.write("<LeitverlusteMesskurve>\n")
                 file_switch.write(f"data[][] 2 {len(current)} {print_voltage} {print_current}")
                 file_switch.write(f"\ntj {channel.t_j}\n")
-                file_switch.write("<\LeitverlusteMesskurve>\n")
+                file_switch.write("<\\LeitverlusteMesskurve>\n")
 
             # switch switching loss
             # check for availability of switching loss curves
@@ -1927,7 +1927,7 @@ class Transistor:
                 file_switch.write("data[][] 3 2 0 10 0 0 0 0")
                 file_switch.write("\ntj 25\n")
                 file_switch.write("uBlock 400\n")
-                file_switch.write("<\SchaltverlusteMesskurve>\n")
+                file_switch.write("<\\SchaltverlusteMesskurve>\n")
             else:
                 for e_on in eon_curves:
                     on_current = e_on.graph_i_e[0]
@@ -1956,7 +1956,7 @@ class Transistor:
                             file_switch.write(f"data[][] 3 {len(interp_current)} {print_current} {print_on_energy} {print_off_energy}")
                             file_switch.write(f"\ntj {e_on.t_j}\n")
                             file_switch.write(f"uBlock {e_on.v_supply}\n")
-                            file_switch.write("<\SchaltverlusteMesskurve>\n")
+                            file_switch.write("<\\SchaltverlusteMesskurve>\n")
 
             file_switch.close()
             logger.info(f"Exported file {self.name}_Switch(rg_on_{r_g_on})(rg_off_{r_g_off}).scl  to {os.getcwd()}")
@@ -1997,7 +1997,7 @@ class Transistor:
                 file_diode.write("<LeitverlusteMesskurve>\n")
                 file_diode.write(f"data[][] 2 {len(current)} {print_voltage} {print_current}")
                 file_diode.write(f"\ntj {n_channel.t_j}\n")
-                file_diode.write("<\LeitverlusteMesskurve>\n")
+                file_diode.write("<\\LeitverlusteMesskurve>\n")
 
             # diode err loss
             # check for availability of switching loss curves
@@ -2010,7 +2010,7 @@ class Transistor:
                 file_diode.write("data[][] 3 2 0 10 0 0 0 0")
                 file_diode.write("\ntj 25\n")
                 file_diode.write("uBlock 400\n")
-                file_diode.write("<\SchaltverlusteMesskurve>\n")
+                file_diode.write("<\\SchaltverlusteMesskurve>\n")
             else:
                 file_diode.write(f"anzMesskurvenPvSWITCH {len(err_curves)}\n")
                 for curve_rr in err_curves:
@@ -2034,7 +2034,7 @@ class Transistor:
                         file_diode.write(f"data[][] 3 {len(rr_current)} {print_current} {print_fr_energy} {print_rr_energy}")
                         file_diode.write(f"\ntj {curve_rr.t_j}\n")
                         file_diode.write(f"uBlock {curve_rr.v_supply}\n")
-                        file_diode.write("<\SchaltverlusteMesskurve>\n")
+                        file_diode.write("<\\SchaltverlusteMesskurve>\n")
 
             file_diode.close()
             logger.info(f"Exported file {self.name}_Diode(rg_{r_g_err}).scl to {os.getcwd()}")
