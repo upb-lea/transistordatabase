@@ -16,7 +16,6 @@ import collections
 import copy
 import base64
 import io
-import warnings
 import logging
 
 # Third party libraries
@@ -2059,10 +2058,10 @@ class Transistor:
         # Maybe check if data is monotonically
         # Check if voltage is monotonically rising
         if not np.all(c_oss_data[1:, 0] >= c_oss_data[:-1, 0], axis=0):
-            warnings.warn("The voltage in csv file is not monotonically rising!", stacklevel=2)
+            logger.warning("The voltage in csv file is not monotonically rising!", stacklevel=2)
         # Check if Coss is monotonically falling
         if not np.all(c_oss_data[1:, 1] <= c_oss_data[:-1, 1], axis=0):
-            warnings.warn("The C_oss in csv file is not monotonically falling!", stacklevel=2)
+            logger.info("The C_oss in csv file is not monotonically falling!", stacklevel=2)
 
         # Rescale and interpolate the csv data to have a nice 1V step size from 0V to v_max
         # A first value with zero volt will be added
