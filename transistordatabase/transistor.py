@@ -2740,7 +2740,8 @@ class Transistor:
 
         X_train, X_test, y_train, y_test = train_test_split(
             df_to_split, df["energy"], test_size=0.2, random_state=42)
-        popt, pcov = curve_fit(self.fit_function, (X_train["current"], X_train["voltage"], X_train["temperature"]), y_train, maxfev=int(1e6), bounds=bounds, method="trf")
+        popt, pcov = curve_fit(self.fit_function, (X_train["current"], X_train["voltage"], X_train["temperature"]), y_train, maxfev=int(1e6),
+                               bounds=bounds, method="trf")
 
         a_current, b_current, c_current, voltage_factor, voltage_exponent, ct_0, ct_1, ct_2 = popt
 
