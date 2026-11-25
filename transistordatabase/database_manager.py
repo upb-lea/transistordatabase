@@ -19,6 +19,19 @@ from transistordatabase.checker_functions import check_float
 
 logger = logging.getLogger(__name__)
 
+_REQUEST_TIMEOUT = (5, 30)
+
+
+def _request_get(url: str | bytes, purpose: str) -> requests.Response:
+    """Fetch a URL with bounded connect/read timeouts and contextual errors."""
+    try:
+        return requests.get(url, timeout=_REQUEST_TIMEOUT)
+    except requests.Timeout as exc:
+        raise TimeoutError(f"Timed out while {purpose}: {url}") from exc
+    except requests.RequestException as exc:
+        raise ConnectionError(f"Network request failed while {purpose}: {url}") from exc
+
+
 class OperationMode(Enum):
     """Operation mode definitions."""
 
@@ -78,12 +91,17 @@ class DatabaseManager:
         if not os.path.isdir(json_folder_path):
             os.makedirs(json_folder_path)
             self.json_folder = json_folder_path
-            index_response = requests.get(index_url)
+            index_response = _request_get(index_url, "fetching the file-exchange index")
             logger.info(index_response)
             if not index_response.ok:
                 raise Exception(f"Index file was not found. URL: {index_url}")
             for transistor_url in index_response.iter_lines():
-                transistor_response = requests.get(transistor_url)
+                try:
+                    transistor_response = _request_get(transistor_url, "downloading transistor data")
+                except (TimeoutError, ConnectionError) as exc:
+                    logger.warning("Transistor with URL %s could not be downloaded and was skipped: %s",
+                                   transistor_url, exc)
+                    continue
                 logger.info(transistor_url)
 
                 # filename = transistor_url.split('/')[-1].decode()
@@ -318,12 +336,17 @@ class DatabaseManager:
                     "especially if the update_from_fileexchange()-method ends in an error. "
                     "Find the latest version here: https://pypi.org/project/transistordatabase/")
         # Read links from index_url
-        index_response = requests.get(index_url)
+        index_response = _request_get(index_url, "fetching the file-exchange index")
         if not index_response.ok:
             raise Exception(f"Index file was not found. URL: {index_url}")
         
         for transistor_url in index_response.iter_lines():
-            transistor_response = requests.get(transistor_url)
+            try:
+                transistor_response = _request_get(transistor_url, "downloading transistor data")
+            except (TimeoutError, ConnectionError) as exc:
+                logger.warning("Transistor with URL %s could not be downloaded and was skipped: %s",
+                               transistor_url, exc)
+                continue
             if not transistor_response.ok:
                 logger.info(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
                 continue
@@ -334,7 +357,8 @@ class DatabaseManager:
         # Get module manufacturers and housing types if URLs are given
         # Then overwrite local files and update lists
         if module_manufacturers_url is not None:
-            module_manufacturers_response = requests.get(module_manufacturers_url)
+            module_manufacturers_response = _request_get(
+                module_manufacturers_url, "downloading module manufacturers")
             if not module_manufacturers_response.ok:
                 raise Exception(f"Given module manufacturers file was not found. URL: {module_manufacturers_url}")
 
@@ -345,7 +369,7 @@ class DatabaseManager:
             logger.info("Updated module manufacturers.")
 
         if housing_types_url is not None:
-            housing_types_response = requests.get(housing_types_url)
+            housing_types_response = _request_get(housing_types_url, "downloading housing types")
             if not housing_types_response.ok:
                 raise Exception(f"Given housing types file was not found. URL: {housing_types_response}")
 
@@ -370,12 +394,17 @@ class DatabaseManager:
 
         # Read links from index_url
         diff_dict = {}  # Dictionary containing the key as the name of the transistor and the value is the diff text.
-        index_response = requests.get(index_url)
+        index_response = _request_get(index_url, "fetching the file-exchange index")
         if not index_response.ok:
             raise Exception(f"Index file was not found. URL: {index_url}")
         
         for transistor_url in index_response.iter_lines():
-            transistor_response = requests.get(transistor_url)
+            try:
+                transistor_response = _request_get(transistor_url, "downloading transistor data")
+            except (TimeoutError, ConnectionError) as exc:
+                logger.warning("Transistor with URL %s could not be downloaded and was skipped: %s",
+                               transistor_url, exc)
+                continue
             if not transistor_response.ok:
                 logger.info(f"Transistor with URL {transistor_url} couldn't be downloaded. Transistor was skipped.")
                 continue

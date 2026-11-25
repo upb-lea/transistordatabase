@@ -1,8 +1,10 @@
 """Unit tests for the database manager."""
-from transistordatabase.database_manager import DatabaseManager
+from transistordatabase.database_manager import DatabaseManager, _request_get
 import pytest
 import os
 import json
+import requests
+from unittest.mock import Mock, patch
 
 test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_data")
 database_dir = os.path.join(test_dir, "database")
@@ -172,3 +174,53 @@ def test_save_transistor_rejects_path_separators(tmp_path: os.PathLike[str]) -> 
 
     with pytest.raises(ValueError, match="Invalid transistor name"):
         db.save_transistor(transistor)
+
+
+@patch("transistordatabase.database_manager.requests.get")
+def test_request_get_sets_finite_timeouts(mock_get: Mock) -> None:
+    """
+    Test that network requests use finite connect and read timeouts.
+
+    :param mock_get: Mocked requests.get function.
+    :type mock_get: Mock
+    :return: None.
+    :rtype: None
+    """
+    url = "https://example.test/data.json"
+    response = Mock()
+    mock_get.return_value = response
+
+    assert _request_get(url, "testing") is response
+    mock_get.assert_called_once_with(url, timeout=(5, 30))
+
+
+@patch("transistordatabase.database_manager.requests.get")
+def test_request_get_wraps_timeout_with_context(mock_get: Mock) -> None:
+    """
+    Test that a request timeout is raised with operation context.
+
+    :param mock_get: Mocked requests.get function.
+    :type mock_get: Mock
+    :return: None.
+    :rtype: None
+    """
+    mock_get.side_effect = requests.Timeout("read timed out")
+
+    with pytest.raises(TimeoutError, match="fetching test data"):
+        _request_get("https://example.test/data.json", "fetching test data")
+
+
+@patch("transistordatabase.database_manager.requests.get")
+def test_request_get_wraps_connection_errors(mock_get: Mock) -> None:
+    """
+    Test that request connection failures are raised with operation context.
+
+    :param mock_get: Mocked requests.get function.
+    :type mock_get: Mock
+    :return: None.
+    :rtype: None
+    """
+    mock_get.side_effect = requests.ConnectionError("connection refused")
+
+    with pytest.raises(ConnectionError, match="fetching test data"):
+        _request_get("https://example.test/data.json", "fetching test data")
