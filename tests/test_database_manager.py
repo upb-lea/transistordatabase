@@ -183,8 +183,6 @@ def test_request_get_sets_finite_timeouts(mock_get: Mock) -> None:
 
     :param mock_get: Mocked requests.get function.
     :type mock_get: Mock
-    :return: None.
-    :rtype: None
     """
     url = "https://example.test/data.json"
     response = Mock()
@@ -201,8 +199,6 @@ def test_request_get_wraps_timeout_with_context(mock_get: Mock) -> None:
 
     :param mock_get: Mocked requests.get function.
     :type mock_get: Mock
-    :return: None.
-    :rtype: None
     """
     mock_get.side_effect = requests.Timeout("read timed out")
 
@@ -217,8 +213,6 @@ def test_request_get_wraps_connection_errors(mock_get: Mock) -> None:
 
     :param mock_get: Mocked requests.get function.
     :type mock_get: Mock
-    :return: None.
-    :rtype: None
     """
     mock_get.side_effect = requests.ConnectionError("connection refused")
 
