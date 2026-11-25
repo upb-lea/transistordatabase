@@ -35,7 +35,7 @@ packages = ["transistordatabase/"]
 [tool.hatch.build.targets.sdist]
 include = [
     "transistordatabase/*.py",
-    "data",
+    "data/*.txt",
     "tests",
     "requirements.txt"
     "README.rst",
