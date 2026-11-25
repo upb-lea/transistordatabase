@@ -50,6 +50,8 @@ class Transistor:
         - Documentation on how to add or extract a transistor-object to/from the database can be found in
     """
 
+    _LOSS_CURVE_OWNERS = {"e_on": "switch", "e_off": "switch", "e_rr": "diode"}
+
     # ToDo: Add database id as attribute
     _id: int  #: ID of the object being created. (Automatic key) Only Used in MongoDB
     name: str  #: Name of the transistor. Choose as specific as possible. (Mandatory key)
@@ -826,6 +828,13 @@ class Transistor:
 
         return dataset
 
+    def _get_loss_curve_collection(self, loss_type: str) -> list[SwitchEnergyData]:
+        """Return a loss-curve collection selected from a fixed allow-list."""
+        if not isinstance(loss_type, str) or loss_type not in self._LOSS_CURVE_OWNERS:
+            raise ValueError("loss_type must be one of 'e_on', 'e_off', or 'e_rr'.")
+        owner = getattr(self, self._LOSS_CURVE_OWNERS[loss_type])
+        return getattr(owner, loss_type)
+
     def get_object_i_e(self, e_on_off_rr: str, t_j: float, v_g: float, v_supply: float, r_g: float) -> list:
         """
         Get the loss graphs out of the transistor class.
@@ -844,52 +853,18 @@ class Transistor:
         :return: e_on.graph_i_e or e_off.graph_i_e or e_rr.graph_i_e
         :rtype: list
         """
-        dataset = None
-        if e_on_off_rr == 'e_on':
-            candidate_datasets = [e_on for e_on in self.switch.e_on if (
-                e_on.t_j == t_j and e_on.v_g == v_g and e_on.v_supply == v_supply and e_on.r_g == r_g)]
-            if len(candidate_datasets) == 0:
-                available_datasets = [(e_on.t_j, e_on.v_g, e_on.v_supply, e_on.r_g) for e_on in self.switch.e_on]
-                logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
-                logger.info(available_datasets)
-                raise ValueError("No data available for get_graph_i_e at the given operating point. "
-                                 "A list of available operating points is printed above.")
-            elif len(candidate_datasets) > 1:
-                logger.info("multiple datasets were found that are consistent with the chosen "
-                            "operating point. The first of these sets is automatically chosen because selection of a "
-                            "different dataset is not yet implemented.")
-            dataset = candidate_datasets[0]
-
-        if e_on_off_rr == 'e_off':
-            candidate_datasets = [e_off for e_off in self.switch.e_off if (
-                e_off.t_j == t_j and e_off.v_g == v_g and e_off.v_supply == v_supply and e_off.r_g == r_g)]
-            if len(candidate_datasets) == 0:
-                available_datasets = [(e_off.t_j, e_off.v_g, e_off.v_supply, e_off.r_g) for e_off in self.switch.e_off]
-                logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
-                logger.info(available_datasets)
-                raise ValueError("No data available for get_graph_i_e at the given operating point. "
-                                 "A list of available operating points is printed above.")
-            elif len(candidate_datasets) > 1:
-                logger.info("multiple datasets were found that are consistent with the chosen "
-                            "operating point. The first of these sets is automatically chosen because selection of a "
-                            "different dataset is not yet implemented.")
-            dataset = candidate_datasets[0]
-
-        if e_on_off_rr == 'e_rr':
-            candidate_datasets = [e_rr for e_rr in self.diode.e_rr if (
-                e_rr.t_j == t_j and e_rr.v_g == v_g and e_rr.v_supply == v_supply and e_rr.r_g == r_g)]
-            if len(candidate_datasets) == 0:
-                available_datasets = [(e_rr.t_j, e_rr.v_g, e_rr.v_supply, e_rr.r_g) for e_rr in self.diode.e_rr]
-                logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
-                logger.info(available_datasets)
-                raise ValueError("No data available for get_graph_i_e at the given operating point. "
-                                 "A list of available operating points is printed above.")
-            elif len(candidate_datasets) > 1:
-                logger.info("multiple datasets were found that are consistent with the chosen "
-                            "operating point. The first of these sets is automatically chosen because selection of a "
-                            "different dataset is not yet implemented.")
-            dataset = candidate_datasets[0]
-        return dataset
+        curves = self._get_loss_curve_collection(e_on_off_rr)
+        candidate_datasets = [curve for curve in curves if (
+            curve.t_j == t_j and curve.v_g == v_g and curve.v_supply == v_supply and curve.r_g == r_g)]
+        if not candidate_datasets:
+            available_datasets = [(curve.t_j, curve.v_g, curve.v_supply, curve.r_g) for curve in curves]
+            logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
+            logger.info(available_datasets)
+            raise ValueError("No data available for get_graph_i_e at the given operating point. "
+                             "A list of available operating points is printed above.")
+        if len(candidate_datasets) > 1:
+            logger.info("Multiple datasets match the selected operating point; using the first.")
+        return candidate_datasets[0]
 
     def get_object_i_e_simplified(self, e_on_off_rr: str, t_j: float):
         """
@@ -904,28 +879,12 @@ class Transistor:
         :return: e_on.graph_i_e or e_off.graph_i_e or e_rr.graph_i_e, e_on.graph_r_e or e_off.graph_r_e or e_rr.graph_r_e
         :rtype: list, list or None
         """
-        # Note: this is necessary due to e_on/e_off and e_rr are stored to switch and diode
-        if e_on_off_rr == 'e_on' or e_on_off_rr == 'e_off':
-            # s_d stands for 'switch or diode'
-            s_d = 'switch'
-        else:
-            s_d = 'diode'
-
-        # use eval function to choose variable e_on/e_off/e_rr
-        # compile is necessary due to using eval combined with if-statement
-        # https://realpython.com/python-eval-function/
-        code = compile(
-            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if ({e_on_off_rr}.t_j == {t_j} and "
-            f"{e_on_off_rr}.dataset_type == 'graph_i_e')],[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if "
-            f"{e_on_off_rr}.dataset_type == 'graph_r_e']",
-            "<string>", "eval")
-        ie_datasets, re_datasets = eval(code)
+        curves = self._get_loss_curve_collection(e_on_off_rr)
+        ie_datasets = [curve for curve in curves if curve.t_j == t_j and curve.dataset_type == "graph_i_e"]
+        re_datasets = [curve for curve in curves if curve.dataset_type == "graph_r_e"]
         i_e_dataset, r_e_dataset = None, None
-        if len(ie_datasets) == 0 or re_datasets == 0:
-            code = compile(
-                f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]",
-                "<string>", "eval")
-            available_datasets = eval(code)
+        if not ie_datasets or not re_datasets:
+            available_datasets = [(curve.t_j, curve.v_g, curve.v_supply, curve.r_g) for curve in curves]
             logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
             logger.info(available_datasets)
             raise ValueError("No data available for get_graph_i_e at the given operating point. "
@@ -965,21 +924,15 @@ class Transistor:
         :return: e_on.graph_r_e or e_off.graph_r_e or e_rr.graph_r_e
         :rtype: list
         """
-        # Note: this is necessary due to e_on/e_off and e_rr are stored to switch and diode
-        if e_on_off_rr == 'e_on' or e_on_off_rr == 'e_off':
-            # s_d stands for 'switch or diode'
-            s_d = 'switch'
-        else:
-            s_d = 'diode'
-
-        # use eval function to choose variable e_on/e_off/e_rr
-        # compile is necessary due to using eval combined with if-statement
-        # https://realpython.com/python-eval-function/
-        code = compile(
-            f"[{e_on_off_rr} for {e_on_off_rr} in self.{s_d}.{e_on_off_rr} if {e_on_off_rr}.dataset_type == 'graph_r_e' and "
-            f"{e_on_off_rr}.v_supply == {v_supply}]",
-            "<string>", "eval")
-        candidate_datasets = eval(code)
+        curves = self._get_loss_curve_collection(e_on_off_rr)
+        candidate_datasets = [curve for curve in curves
+                              if curve.dataset_type == "graph_r_e" and curve.v_supply == v_supply]
+        if not candidate_datasets:
+            available_datasets = [(curve.t_j, curve.v_g, curve.v_supply, curve.r_g) for curve in curves]
+            logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
+            logger.info(available_datasets)
+            raise ValueError("No data available for get_graph_r_e at the given operating point. "
+                             "A list of available operating points is printed above.")
         # Find closest loss curve
         node = np.array([[t_j / normalize_t_to_v, v_g]])
         lossdata_t_js = np.array([curve.t_j for curve in candidate_datasets])
@@ -987,15 +940,6 @@ class Transistor:
         nodes = np.array([lossdata_t_js / normalize_t_to_v, lossdata_v_gs]).transpose()
         index_lossdata = distance.cdist(node, nodes).argmin()
         dataset = candidate_datasets[index_lossdata]
-        if dataset is None:
-            code = compile(
-                f"[({e_on_off_rr}.t_j, {e_on_off_rr}.v_g, {e_on_off_rr}.v_supply, {e_on_off_rr}.r_g) for {e_on_off_rr} in self.{s_d}.{e_on_off_rr}]",
-                "<string>", "eval")
-            available_datasets = eval(code)
-            logger.info("Available operating points: (t_j, v_g, v_supply, r_g)")
-            logger.info(available_datasets)
-            raise ValueError("No data available for get_graph_r_e at the given operating point. "
-                             "A list of available operating points is printed above.")
         return dataset
 
     def calc_object_i_e(self, e_on_off_rr: str, r_g: float, t_j: float, v_supply: float, normalize_t_to_v: float) \
@@ -1222,9 +1166,12 @@ class Transistor:
         :return: Foster object filled with missing parameters within the input_type object of transistor object
         :rtype: None
         """
+        if not isinstance(input_type, str) or input_type not in {"switch", "diode"}:
+            raise ValueError("input_type must be either 'switch' or 'diode'.")
+        thermal_object = self.switch if input_type == "switch" else self.diode
+
         try:
-            code = compile(f"self.{input_type}.thermal_foster", "<string>", "eval")
-            foster_args = eval(code)
+            foster_args = thermal_object.thermal_foster
             if foster_args.r_th_vector is not None and foster_args.tau_vector is not None and len(foster_args.tau_vector) == len(foster_args.r_th_vector):
                 foster_args.c_th_vector = [x / y for x, y in zip(foster_args.r_th_vector, foster_args.tau_vector)]
                 if foster_args.tau_total is None:
@@ -1284,7 +1231,7 @@ class Transistor:
             logger.info("Thermal parameter computation failed: {0}".format(e))
             logger.info("This also occurs when there is no thermal impedance given.")
         else:
-            exec(f"self.{input_type}.thermal_foster = foster_args")
+            thermal_object.thermal_foster = foster_args
             logger.info(input_type, ':Thermal parameters re-assigned to foster object')
 
     def compare_channel_linearized(self, i_channel: float, t_j: float = 150, v_g: float = 15) -> None:
@@ -1706,10 +1653,14 @@ class Transistor:
         :return: i_e, r_e indexes referencing to list[SwitchEnergyData] from the chosen switch_type
         :rtype: list, list
         """
+        if not isinstance(switch_type, str) or switch_type not in {"switch", "diode"}:
+            raise ValueError("switch_type must be either 'switch' or 'diode'.")
+        if not isinstance(loss_type, str) or self._LOSS_CURVE_OWNERS.get(loss_type) != switch_type:
+            raise ValueError("loss_type must match switch_type: use e_on/e_off for switch and e_rr for diode.")
+
+        curves_set = self._get_loss_curve_collection(loss_type)
         r_e_indexes = list()
         i_e_indexes = list()
-        code = compile(f"self.{switch_type}.{loss_type}", "<string>", "eval")
-        curves_set = eval(code)
         for index, _ in enumerate(curves_set):
             for next_index in range(index + 1, len(curves_set)):
                 if not curves_set[index].dataset_type == curves_set[next_index].dataset_type and \
