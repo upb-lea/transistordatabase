@@ -131,8 +131,14 @@ class DatabaseManager:
         if "_id" in transistor_dict:
             del transistor_dict["_id"]
         if self.operation_mode == OperationMode.JSON:
-            transistor_path = os.path.join(self.json_folder, f"{transistor.name}.json")
-            if str(transistor.name) in os.listdir(self.json_folder):
+            transistor_name = str(transistor.name)
+            if (not transistor_name or transistor_name in {".", ".."} \
+                    or "/" in transistor_name or "\\" in transistor_name \
+                    or not isvalid_transistor_name(transistor_name)):
+                raise ValueError(f"Invalid transistor name: {transistor_name!r}")
+
+            transistor_path = os.path.join(self.json_folder, f"{transistor_name}.json")
+            if os.path.isfile(transistor_path):
                 if overwrite is None:
                     logger.info(f"A transistor object with name {transistor.name} already exists. \
                     If you want to override it please set the override argument to true, if you want to create a copy with a \
@@ -142,9 +148,11 @@ class DatabaseManager:
                     with open(transistor_path, "w") as fd:
                         json.dump(transistor_dict, fd, indent=2)
                 else:
-                    new_name = get_copy_transistor_name(transistor_dict["name"])
-                    del transistor_dict["_id"]
-                    with open(os.path.join(self.json_folder, f"{new_name}.json")):
+                    new_name = get_copy_transistor_name(transistor_name)
+                    while os.path.exists(os.path.join(self.json_folder, f"{new_name}.json")):
+                        new_name = get_copy_transistor_name(new_name)
+                    transistor_dict["name"] = new_name
+                    with open(os.path.join(self.json_folder, f"{new_name}.json"), "w") as fd:
                         json.dump(transistor_dict, fd, indent=2)
             else:
                 with open(transistor_path, "w") as fd:
@@ -181,6 +189,7 @@ class DatabaseManager:
             for file in existing_files:
                 if file.endswith(".json") and file[:-5] == transistor_name and isvalid_transistor_name(file[:-5]):
                     os.remove(os.path.join(self.json_folder, file))
+                    break
             else:
                 logger.info(f"Can not find transistor with name {transistor_name} in the database. Therefore it cannot be deleted.")
         elif self.operation_mode == OperationMode.MONGODB:
@@ -204,7 +213,7 @@ class DatabaseManager:
         if self.operation_mode == OperationMode.JSON:
             existing_files = os.listdir(self.json_folder)
             for file_name in existing_files:
-                if file_name.endswith(".json") and file_name.startswith(str(transistor_name)) and isvalid_transistor_name(file_name[:-5]):
+                if file_name.endswith(".json") and file_name[:-5] == str(transistor_name) and isvalid_transistor_name(file_name[:-5]):
                     with open(os.path.join(self.json_folder, file_name), "r") as fd:
                         return self.convert_dict_to_transistor_object(json.load(fd))
             logger.info(f"Transitor with name {transistor_name} not found.")

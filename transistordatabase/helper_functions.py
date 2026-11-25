@@ -779,16 +779,12 @@ def get_copy_transistor_name(current_name: str) -> str:
 
     '{current_name} (i)'
     """
-    result = re.match(transistor_name_regex, current_name)
-    if len(result.groups) == 2:
-        # Name is default-name -> ' (1)' will be added.
-        return f"{current_name} (1)"
-    elif len(result.group) == 4:
-        # Name is already a copy-name -> Copy number will be raised
-        index = result.group(4)
-        return f"{current_name[-2]}{index+1})"
-    else:
+    result = re.fullmatch(r"(.+?)(?: \((\d+)\))?", current_name)
+    if result is None:
         raise Exception(f"Given transistor name {current_name} is not a valid name and therefore a copy-name cannot be created.")
+
+    base_name, index = result.groups()
+    return f"{base_name} ({int(index or 0) + 1})"
 
 def get_img_raw_data(plot):
     """

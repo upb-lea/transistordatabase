@@ -73,7 +73,7 @@ def test_save_transistor_json(database_json: DatabaseManager):
     database_json.save_transistor(t1)
 
     # Check new database status
-    assert ["CREE_C3M0060065J", "CREE_C3M0016120K"].sort() == database_json.get_transistor_names_list().sort(), \
+    assert sorted(["CREE_C3M0060065J", "CREE_C3M0016120K"]) == sorted(database_json.get_transistor_names_list()), \
         "Transistor is missing after adding it to database."
 
     # Check if transistor file is created in the database
@@ -114,3 +114,61 @@ def test_get_transistor_names_list_json(database_json: DatabaseManager):
     transistor_list = database_json.get_transistor_names_list()
 
     assert transistor_list == ["CREE_C3M0016120K"]
+
+
+def test_save_transistor_as_copy(tmp_path: os.PathLike[str]) -> None:
+    """
+    Test that saving an existing transistor as a copy creates a distinct JSON file.
+
+    :param tmp_path: Temporary directory used as the isolated JSON database.
+    :type tmp_path: os.PathLike[str]
+    """
+    db = DatabaseManager()
+    db.set_operation_mode_json(str(tmp_path))
+    with open(fixed_transistor_path, "r") as fd:
+        transistor = db.convert_dict_to_transistor_object(json.load(fd))
+
+    db.save_transistor(transistor)
+    db.save_transistor(transistor, overwrite=False)
+
+    copy_name = f"{transistor.name} (1)"
+    assert copy_name in db.get_transistor_names_list()
+    assert db.load_transistor(copy_name).name == copy_name
+
+
+def test_load_transistor_requires_exact_name(tmp_path: os.PathLike[str]) -> None:
+    """
+    Test that loading requires an exact match and does not accept a name prefix.
+
+    :param tmp_path: Temporary directory used as the isolated JSON database.
+    :type tmp_path: os.PathLike[str]
+    """
+    db = DatabaseManager()
+    db.set_operation_mode_json(str(tmp_path))
+    with open(fixed_transistor_path, "r") as fd:
+        transistor_dict = json.load(fd)
+
+    prefix_name = transistor_dict["name"]
+    transistor_dict["name"] = f"{prefix_name}_variant"
+    db.save_transistor(db.convert_dict_to_transistor_object(transistor_dict))
+
+    assert db.load_transistor(prefix_name) is None
+
+
+def test_save_transistor_rejects_path_separators(tmp_path: os.PathLike[str]) -> None:
+    """
+    Test that saving rejects transistor names containing path separators.
+
+    :param tmp_path: Temporary directory used as the isolated JSON database.
+    :type tmp_path: os.PathLike[str]
+    """
+    db = DatabaseManager()
+    db.set_operation_mode_json(str(tmp_path))
+    with open(fixed_transistor_path, "r") as fd:
+        transistor_dict = json.load(fd)
+
+    transistor_dict["name"] = "../outside"
+    transistor = db.convert_dict_to_transistor_object(transistor_dict)
+
+    with pytest.raises(ValueError, match="Invalid transistor name"):
+        db.save_transistor(transistor)
