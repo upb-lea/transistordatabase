@@ -8,6 +8,9 @@ import mongomock
 from unittest.mock import patch
 import os
 import json
+from types import SimpleNamespace
+
+from transistordatabase.helper_functions import matlab_compatibility_test
 
 ################
 # DEPRECATED - May not work since refactoring
@@ -658,3 +661,31 @@ def test_get_object_r_e_simplified(my_transistor):
     r_e_object = transistor.get_object_r_e_simplified("e_off", 200, 60, 600, 10)
     assert r_e_object.t_j == 25
     assert r_e_object.v_g == 15
+
+
+def test_matlab_compatibility_test_uses_allowlisted_paths():
+    """Verify supported MATLAB attribute paths are resolved without expression evaluation."""
+    transistor = SimpleNamespace(
+        name="test-device",
+        switch=SimpleNamespace(thermal_foster=SimpleNamespace(r_th_total=1.25)),
+    )
+
+    assert matlab_compatibility_test(transistor, "Transistor.name") == "test-device"
+    assert matlab_compatibility_test(transistor, "Transistor.switch.thermal_foster.r_th_total") == 1.25
+
+
+def test_dynamic_selectors_reject_unallowlisted_values():
+    """Verify dynamic selector arguments cannot be used as Python expressions."""
+    transistor = object.__new__(tdb.Transistor)
+    expression = "__import__('os').system('echo unsafe')"
+
+    with pytest.raises(ValueError, match="Unsupported MATLAB compatibility attribute"):
+        matlab_compatibility_test(transistor, expression)
+    with pytest.raises(ValueError, match="loss_type"):
+        transistor.get_object_i_e_simplified(expression, 25)
+    with pytest.raises(ValueError, match="loss_type"):
+        transistor.get_object_r_e_simplified(expression, 25, 15, 600, 10)
+    with pytest.raises(ValueError, match="input_type"):
+        transistor.calc_thermal_params(expression)
+    with pytest.raises(ValueError, match="loss_type"):
+        transistor.collect_i_e_and_r_e_combination("switch", expression)

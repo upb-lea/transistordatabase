@@ -264,20 +264,30 @@ def matlab_compatibility_test(transistor, attribute):
     :param attribute: path to given attribute
     :type attribute: str
 
-    :raises AttributeError: if the provided path evaluates to invalid attribute
+    :raises ValueError: if the provided attribute path is not allow-listed
 
     :return: attribute value or np.nan
     """
-    try:
-        att = eval(attribute)
-        if att is None:
-            return np.nan
-        else:
-            return att
+    attribute_paths = {
+        "Transistor.name": ("name",),
+        "Transistor.r_th_cs": ("r_th_cs",),
+        "Transistor.r_th_switch_cs": ("r_th_switch_cs",),
+        "Transistor.r_th_diode_cs": ("r_th_diode_cs",),
+        "Transistor.switch.thermal_foster.r_th_total": ("switch", "thermal_foster", "r_th_total"),
+        "Transistor.diode.thermal_foster.r_th_total": ("diode", "thermal_foster", "r_th_total"),
+    }
+    if not isinstance(attribute, str) or attribute not in attribute_paths:
+        raise ValueError(f"Unsupported MATLAB compatibility attribute: {attribute!r}")
 
+    try:
+        value = transistor
+        for attribute_name in attribute_paths[attribute]:
+            value = getattr(value, attribute_name)
     except AttributeError:
         return np.nan
-    
+
+    return np.nan if value is None else value
+
 
 # ==== Input/Output ====
 def get_xml_data(file: str) -> dict:
