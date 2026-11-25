@@ -442,7 +442,7 @@ If no index_url or module_manufacturers_url or housing_types_url is given the de
 <dd class="field-even"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Infineon_FF200R12KE3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'Infineon_FF200R12KE3'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parallel_transistorobject</span> <span class="o">=</span> <span class="n">transistor</span><span class="o">.</span><span class="n">parallel_transistors</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -500,20 +500,20 @@ Link: <a class="reference external" href="https://ieeexplore.ieee.org/document/8
 </dl>
 <p>example to call this function:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dpt_save_dict</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;C:/Users/.../GaN-Systems/400V/*.csv&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;dataset_type&#39;</span><span class="p">:</span> <span class="s1">&#39;graph_i_e&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;load_inductance&#39;</span><span class="p">:</span> <span class="mf">750e-6</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;commutation_inductance&#39;</span><span class="p">:</span> <span class="mf">15.63e-9</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;commutation_device&#39;</span><span class="p">:</span> <span class="s1">&#39;IDH06G65C6&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;measurement_date&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;measurement_testbench&#39;</span><span class="p">:</span> <span class="s1">&#39;LEA-UPB Testbench&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;v_g&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;v_g_off&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;energies&#39;</span><span class="p">:</span> <span class="s1">&#39;both&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;r_g_off&#39;</span><span class="p">:</span> <span class="mf">1.8</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;integration_interval&#39;</span><span class="p">:</span> <span class="s1">&#39;IEC 60747-8&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;analyze&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'path'</span><span class="p">:</span> <span class="s1">'C:/Users/.../GaN-Systems/400V/*.csv'</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'dataset_type'</span><span class="p">:</span> <span class="s1">'graph_i_e'</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'comment'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'load_inductance'</span><span class="p">:</span> <span class="mf">750e-6</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'commutation_inductance'</span><span class="p">:</span> <span class="mf">15.63e-9</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'commutation_device'</span><span class="p">:</span> <span class="s1">'IDH06G65C6'</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'measurement_date'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'measurement_testbench'</span><span class="p">:</span> <span class="s1">'LEA-UPB Testbench'</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'v_g'</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'v_g_off'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'energies'</span><span class="p">:</span> <span class="s1">'both'</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'r_g_off'</span><span class="p">:</span> <span class="mf">1.8</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'integration_interval'</span><span class="p">:</span> <span class="s1">'IEC 60747-8'</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">'mode'</span><span class="p">:</span> <span class="s1">'analyze'</span><span class="p">}</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
@@ -1346,7 +1346,7 @@ rtype decoded raw image data to utf-8</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'Fuji_2MBI100XAA120-50'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_datasheet</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1381,7 +1381,7 @@ rtype decoded raw image data to utf-8</p>
 <dd class="field-odd"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Infineon_FF200R12KE3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'Infineon_FF200R12KE3'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_simulink_loss_model</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1410,7 +1410,7 @@ rtype decoded raw image data to utf-8</p>
 <dd class="field-odd"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'Fuji_2MBI100XAA120-50'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_matlab</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1456,7 +1456,7 @@ rtype decoded raw image data to utf-8</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI100XAA120-50&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'Fuji_2MBI100XAA120-50'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_geckocircuits</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">v_supply</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">v_g_on</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">v_g_off</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">r_g_on</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">r_g_off</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1496,7 +1496,7 @@ rtype decoded raw image data to utf-8</p>
 <dd class="field-even"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Fuji_2MBI200XAA065-50&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'Fuji_2MBI200XAA065-50'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transistor</span><span class="o">.</span><span class="n">export_plecs</span><span class="p">(</span><span class="n">recheck</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">gate_voltages</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -1826,8 +1826,8 @@ for generating the diode and switch .xml files</p>
 </dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">transistordatabase</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tdb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_normal</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">csv2array</span><span class="p">(</span><span class="s1">&#39;transistor_c_oss.csv&#39;</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_detail</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">csv2array</span><span class="p">(</span><span class="s1">&#39;transistor_c_oss_detail.csv&#39;</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_normal</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">csv2array</span><span class="p">(</span><span class="s1">'transistor_c_oss.csv'</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_detail</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">csv2array</span><span class="p">(</span><span class="s1">'transistor_c_oss_detail.csv'</span><span class="p">,</span> <span class="n">first_x_to_0</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c_oss_merged</span> <span class="o">=</span> <span class="n">tdb</span><span class="o">.</span><span class="n">merge_curve</span><span class="p">(</span><span class="n">c_oss_normal</span><span class="p">,</span> <span class="n">c_oss_detail</span><span class="p">)</span>
 </pre></div>
 </div>

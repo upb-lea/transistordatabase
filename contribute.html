@@ -195,13 +195,13 @@
 <li><p>include a graphic</p></li>
 <li><p>Find a rst and sphinx cheat sheet <a class="reference external" href="https://sphinx-tutorial.readthedocs.io/cheatsheet/">here</a>.</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">print_tdb</span><span class="p">(</span><span class="n">filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">print_tdb</span><span class="p">(</span><span class="n">filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"local"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Print all transistorelements stored in the local database</span>
 
-<span class="sd">    :param filters: filters for searching the database, e.g. &#39;name&#39; or &#39;type&#39;</span>
+<span class="sd">    :param filters: filters for searching the database, e.g. 'name' or 'type'</span>
 <span class="sd">    :type filters: List[str]</span>
-<span class="sd">    :param collection_name: Choose database name in local mongodb client. Default name is &quot;collection&quot;</span>
+<span class="sd">    :param collection_name: Choose database name in local mongodb client. Default name is "collection"</span>
 <span class="sd">    :type collection_name: str</span>
 
 <span class="sd">    :return: Return a list with all transistor objects fitting to the search-filter</span>
@@ -211,7 +211,7 @@
 
 <span class="sd">    &gt;&gt;&gt; import transistordatabase as tdb</span>
 <span class="sd">    &gt;&gt;&gt; tdb.print_tdb()</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 </pre></div>
 </div>
 </section>
@@ -375,7 +375,7 @@ Go to /docs and runs</p>
 <span class="n">git</span> <span class="n">checkout</span> <span class="n">gh</span><span class="o">-</span><span class="n">pages</span>
 <span class="c1"># now, copy the files from docs/build/html to the gh-pages repository</span>
 <span class="n">git</span> <span class="n">add</span> <span class="c1">#newChangesHere</span>
-<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;update docu&quot;</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">"update docu"</span>
 <span class="n">git</span> <span class="n">push</span>
 <span class="c1"># change back to the main branch</span>
 <span class="n">git</span> <span class="n">checkout</span> <span class="n">main</span>
