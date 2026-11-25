@@ -37,7 +37,7 @@ include = [
     "transistordatabase/*.py",
     "data/*.txt",
     "tests",
-    "requirements.txt"
+    "requirements.txt",
     "README.rst",
 ]
 
